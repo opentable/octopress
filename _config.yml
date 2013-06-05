@@ -2,10 +2,10 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://yoursite.com
-title: TopTable Tech Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+url: http://tech.toptable.co.uk
+title: toptable Tech Blog
+subtitle: The technology blog for toptable and OpenTable.
+author: OpenTable
 simple_search: http://google.com/search
 description:
 

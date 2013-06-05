@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[TopTable Tech Blog]]></title>
-  <link href="http://yoursite.com/atom.xml" rel="self"/>
-  <link href="http://yoursite.com/"/>
-  <updated>2013-06-04T11:58:33+01:00</updated>
-  <id>http://yoursite.com/</id>
+  <title><![CDATA[toptable Tech Blog]]></title>
+  <link href="http://tech.toptable.co.uk/atom.xml" rel="self"/>
+  <link href="http://tech.toptable.co.uk/"/>
+  <updated>2013-06-05T13:09:14+01:00</updated>
+  <id>http://tech.toptable.co.uk/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[OpenTable]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>

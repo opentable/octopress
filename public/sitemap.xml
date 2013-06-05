@@ -1,15 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://yoursite.com/blog/archives/</loc>
-        <lastmod>2013-06-04T11:44:56+01:00</lastmod>
+        <loc>http://tech.toptable.co.uk/blog/archives/</loc>
+        <lastmod>2013-06-05T11:44:13+01:00</lastmod>
     </url>
     <url>
-        <loc>http://yoursite.com/</loc>
-        <lastmod>2013-06-04T11:44:56+01:00</lastmod>
+        <loc>http://tech.toptable.co.uk/</loc>
+        <lastmod>2013-06-05T11:44:13+01:00</lastmod>
     </url>
     <url>
-        <loc>http://yoursite.com/robots.txt</loc>
+        <loc>http://tech.toptable.co.uk/robots.txt</loc>
         <lastmod>2013-06-04T11:44:56+01:00</lastmod>
     </url>
 </urlset>

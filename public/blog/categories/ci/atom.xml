@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/atom.xml" rel="self"/>
+  <title><![CDATA[Category: CI | toptable Tech Blog]]></title>
+  <link href="http://tech.toptable.co.uk/blog/categories/ci/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
   <updated>2013-06-07T11:55:27+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
@@ -20,11 +20,11 @@
     <id>http://tech.toptable.co.uk/blog/2013/06/07/getting-started-with-specrun</id>
     <content type="html"><![CDATA[<h2>First some background</h2>
 
-<p>We recently switched from writing automated acceptance from Cucumber to SpecFlow&#8230; this is no slight on Cucumber it&#8217;s just that had a lot of C# developers who wanted to get closer to writing acceptance tests. Worth adding that SpecFlow has also come a long way as a .Net port of Cucumber and is pretty much like for like now.</p>
+<p>We recently switched from writing automated acceptance from Cucumber to SpecFlow... this is no slight on Cucumber it's just that had a lot of C# developers who wanted to get closer to writing acceptance tests. Worth adding that SpecFlow has also come a long way as a .Net port of Cucumber and is pretty much like for like now.</p>
 
 <h2>Why should I bother with SpecRun?</h2>
 
-<p>Initially we ran our entire unit, integration and acceptance tests via nUnit. Pretty much industry standard but we felt nUnit wasn&#8217;t really a good tool to run acceptance tests - yes it&#8217;ll do the job but we were looking for better performance, quicker failure feedback and more comprehensive reporting. If you want details on SpecRun vs. nUnit Gasper has a <a href="http://gasparnagy.com/2011/09/specrun-because-integration-tests-are-not-unit-tests/">great blog post</a>.</p>
+<p>Initially we ran our entire unit, integration and acceptance tests via nUnit. Pretty much industry standard but we felt nUnit wasn't really a good tool to run acceptance tests - yes it'll do the job but we were looking for better performance, quicker failure feedback and more comprehensive reporting. If you want details on SpecRun vs. nUnit Gasper has a <a href="http://gasparnagy.com/2011/09/specrun-because-integration-tests-are-not-unit-tests/">great blog post</a>.</p>
 
 <p><salespitch>SpecRun itself is free to use although there is a random delay when running acceptance locally, setting up SpecRun on a CI environment is totally free and does not include the same delay. Definitely worth trying out and you can purchase a licence later if you like what it offers.</salespitch></p>
 
@@ -32,11 +32,11 @@
 
 <p>If you are already using SpecFlow with nUnit the migration to SpecRun is really simple - <a href="http://www.youtube.com/watch?v=c2ge90BWeI0">this video</a> shows you how to setup the test runner but I found myself having to watch it too many times. This post is an attempt at recording the steps should we roll out SpecRun for another project.</p>
 
-<p>I&#8217;m assuming you&#8217;re running Visual Studio and are familiar with Nuget packages. I&#8217;ll break it down so I don&#8217;t miss anything:</p>
+<p>I'm assuming you're running Visual Studio and are familiar with Nuget packages. I'll break it down so I don't miss anything:</p>
 
 <ol>
 <li>In VS, select your Acceptance test project and get the Nuget package down for SpecRun: <code>install-package SpecRun</code>.</li>
-<li>You&#8217;ll notice Nuget automatically adds configuration to your app.config so it&#8217;s safe to remove the nUnit provider setting (this is to enable you to pick and choose your test runner but we prefer to only use SpecRun).</li>
+<li>You'll notice Nuget automatically adds configuration to your app.config so it's safe to remove the nUnit provider setting (this is to enable you to pick and choose your test runner but we prefer to only use SpecRun).</li>
 <li>Open the Default.srprofile file and we normally delete any commented settings here.</li>
 <li>Still inside Default.srprofile add the properties for projectName and projectId. The projectName is what you see in VS the projectId can be found by opening the acceptance .proj file and taking the projectGuid.</li>
 <li>Setup the execution properties - this really depends on what you want to get out of running the tool - what retry count you want, whether to run on multiple threads, etc. Here are the values we normally use:</li>
@@ -50,16 +50,7 @@
 </ol>
 
 
-<p>Once you&#8217;ve gone through those steps you should be able to browse to your project root, type <strong>runacceptance.cmd tag_to_run</strong> and it&#8217;ll run your acceptance tests tagged <strong>@tag_to_run</strong>  (NOTE: you don&#8217;t need to specify the @ symbol).</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Join Us]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/06/06/join-us/"/>
-    <updated>2013-06-06T15:24:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/06/06/join-us</id>
-    <content type="html"><![CDATA[<p>You should join us&#8230; we are fucking awesome!</p>
+<p>Once you've gone through those steps you should be able to browse to your project root, type <strong>runacceptance.cmd tag_to_run</strong> and it'll run your acceptance tests tagged <strong>@tag_to_run</strong>  (NOTE: you don't need to specify the @ symbol).</p>
 ]]></content>
   </entry>
   

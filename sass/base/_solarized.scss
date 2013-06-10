@@ -19,28 +19,26 @@ $solarized: dark !default;
 
 @if $solarized == light {
 
-  $_base03: $base03;
-  $_base02: $base02;
-  $_base01: $base01;
-  $_base00: $base00;
-  $_base0:  $base0;
-  $_base1:  $base1;
-  $_base2:  $base2;
-  $_base3:  $base3;
+    $_base03: $base03;
+    $_base02: $base02;
+    $_base01: $base01;
+    $_base00: $base00;
+    $_base0:  $base0;
+    $_base1:  $base1;
+    $_base2:  $base2;
+    $_base3:  $base3;
 
-  $base03:  $_base3;
-  $base02:  $_base2;
-  $base01:  $_base1;
-  $base00:  $_base0;
-  $base0:   $_base00;
-  $base1:   $_base01;
-  $base2:   $_base02;
-  $base3:   $_base03;
+    $base03:  $_base3;
+    $base02:  $_base2;
+    $base01:  $_base1;
+    $base00:  $_base0;
+    $base0:   $_base00;
+    $base1:   $_base01;
+    $base2:   $_base02;
+    $base3:   $_base03;
 }
 
 /* non highlighted code colors */
 $pre-bg: $base03 !default;
 $pre-border: darken($base02, 5) !default;
 $pre-color: $base1 !default;
-
-

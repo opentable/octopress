@@ -1,10 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://tech.toptable.co.uk/blog/2013/06/06/join-us/</loc>
-        <lastmod>2013-06-07T12:00:56+01:00</lastmod>
-    </url>
-    <url>
         <loc>http://tech.toptable.co.uk/blog/2013/06/07/getting-started-with-specrun/</loc>
         <lastmod>2013-06-10T10:48:13+01:00</lastmod>
     </url>
@@ -19,6 +15,10 @@
     <url>
         <loc>http://tech.toptable.co.uk/</loc>
         <lastmod>2013-06-10T10:48:13+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://tech.toptable.co.uk/join-us/</loc>
+        <lastmod>2013-06-10T11:51:52+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/robots.txt</loc>

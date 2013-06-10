@@ -4,7 +4,7 @@
   <title><![CDATA[toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2013-06-10T11:22:20+01:00</updated>
+  <updated>2013-06-10T11:52:23+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -97,15 +97,6 @@ var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);
 
 
 <p>Once you&#8217;ve gone through those steps you should be able to browse to your project root, type <strong>runacceptance.cmd tag_to_run</strong> and it&#8217;ll run your acceptance tests tagged <strong>@tag_to_run</strong>  (NOTE: you don&#8217;t need to specify the @ symbol).</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Join Us]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/06/06/join-us/"/>
-    <updated>2013-06-06T15:24:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/06/06/join-us</id>
-    <content type="html"><![CDATA[<p>You should join us&#8230; we are fucking awesome!</p>
 ]]></content>
   </entry>
   

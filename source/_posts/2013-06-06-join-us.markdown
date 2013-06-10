@@ -1,9 +1,0 @@
----
-layout: join-us
-title: "Join Us"
-date: 2013-06-06 15:24
-comments: true
-categories:
----
-
-You should join us... we are fucking awesome!

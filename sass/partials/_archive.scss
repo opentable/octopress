@@ -7,7 +7,7 @@
     }
 }
 
-#blog-archives 
+#blog-archives {
     article {
         padding: 1em 0 1em;
         position: relative;
@@ -80,7 +80,7 @@
             display: inline-block;
             position: relative; top: -1px;
             float: left;
-            &:first-child {
+            &:first-child { 
                 padding-top: .75em;
             }
         }

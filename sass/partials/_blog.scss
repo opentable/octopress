@@ -11,10 +11,11 @@ article {
         background: $img-border bottom left repeat-x;
         h1 {
             margin: 0;
-                a {
-                    text-decoration: none;
+            a {
+                text-decoration: none;
                 &:hover {
                     text-decoration: underline;
+                    color: $link-color
                 }
             }
         }
@@ -135,7 +136,7 @@ article + article {
         a {
             color: inherit;
             &:hover { 
-                color: $link-color-hover;
+                color: $link-color;
             }
         }
     }

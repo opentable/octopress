@@ -1,7 +1,7 @@
 @import "compass";
-@include global-reset;
-@include reset-html5;
+//@include reset-html5;
 
+@import "reset.scss";
 @import "custom/colors";
 @import "custom/fonts";
 @import "custom/layout";

@@ -3,7 +3,7 @@ layout: post
 title: "Getting Started With SpecRun"
 date: 2013-06-07 11:33
 comments: true
-author: Mark Barrett
+author: mbarrett
 categories: [specrun, acceptance tests, automation, CI]
 ---
 

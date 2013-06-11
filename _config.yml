@@ -22,6 +22,18 @@ subscribe_email:
 email:
 
 # ----------------------- #
+#        Authors          #
+# ----------------------- #
+
+authors:
+    mbarrett:
+        display_name: Mark Barrett
+        avatar: 2906955ae59c795275979d3782d7bfca
+    rhopton:
+        display_name: Richard Hopton
+        avatar: 2906955ae59c795275979d3782d7bfca
+
+# ----------------------- #
 #    Jekyll & Plugins     #
 # ----------------------- #
 

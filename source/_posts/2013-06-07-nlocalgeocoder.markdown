@@ -3,7 +3,7 @@ layout: post
 title: "nLocalGeoCoder"
 date: 2013-06-07 11:59
 comments: true
-author: Richard Hopton
+author: rhopton
 categories: [OSS, .Net, C#, Ruby, collaboration]
 ---
 

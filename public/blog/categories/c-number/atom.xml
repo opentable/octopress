@@ -4,7 +4,7 @@
   <title><![CDATA[Category: C# | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/c-number/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2013-06-11T12:35:38+01:00</updated>
+  <updated>2013-06-11T12:36:13+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -32,7 +32,7 @@
 
 <h2>Using nLocalGeocoder</h2>
 
-<p>It's really easy to use, just new up a Geocoder and your off...</p>
+<p>It's really easy to use, just new up a Geocoder and you're off...</p>
 
 <pre><code>var geocoder = new Geocoder();
 var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);

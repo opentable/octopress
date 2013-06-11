@@ -21,7 +21,7 @@ There are a number of online reverse geocoding providers, like Google, who can p
 
 ## Using nLocalGeocoder ##
 
-It's really easy to use, just new up a Geocoder and your off...
+It's really easy to use, just new up a Geocoder and you're off...
 
     var geocoder = new Geocoder();
     var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);

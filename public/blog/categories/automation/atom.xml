@@ -4,7 +4,7 @@
   <title><![CDATA[Category: automation | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/automation/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2013-06-11T17:04:19+01:00</updated>
+  <updated>2013-06-17T13:41:12+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -20,7 +20,7 @@
     <id>http://tech.toptable.co.uk/blog/2013/06/07/getting-started-with-specrun</id>
     <content type="html"><![CDATA[<h2>First some background</h2>
 
-<p>We recently switched from writing automated acceptance from Cucumber to SpecFlow... this is no slight on Cucumber it's just that had a lot of C# developers who wanted to get closer to writing acceptance tests. Worth adding that SpecFlow has also come a long way as a .Net port of Cucumber and is pretty much like for like now.</p>
+<p>We recently switched from writing automated acceptance from Cucumber to SpecFlow... this is no slight on Cucumber it's just that we had a lot of C# developers who wanted to get closer to writing acceptance tests. Worth adding that SpecFlow has also come a long way as a .Net port of Cucumber and is pretty much like for like now.</p>
 
 <h2>Why should I bother with SpecRun?</h2>
 

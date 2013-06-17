@@ -9,7 +9,7 @@ categories: [specrun, acceptance tests, automation, CI]
 
 ## First some background ##
 
-We recently switched from writing automated acceptance from Cucumber to SpecFlow... this is no slight on Cucumber it's just that had a lot of C# developers who wanted to get closer to writing acceptance tests. Worth adding that SpecFlow has also come a long way as a .Net port of Cucumber and is pretty much like for like now.
+We recently switched from writing automated acceptance from Cucumber to SpecFlow... this is no slight on Cucumber it's just that we had a lot of C# developers who wanted to get closer to writing acceptance tests. Worth adding that SpecFlow has also come a long way as a .Net port of Cucumber and is pretty much like for like now.
 
 ## Why should I bother with SpecRun? ##
 

@@ -18,7 +18,7 @@ When building our webservers on Windows, in order to install / activate Windows 
 
 This would present a screen as follows:
 
-![image](../images/posts/windowsfeature.PNG)
+{% img center /images/posts/windowsfeature.png %}
 
 You would need to find the correct features to enable and check the box, press OK and then wait for the features to be installed. 
 

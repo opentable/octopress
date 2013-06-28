@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Windows Feature Management with PowerShell - toptable Tech Blog</title>
+  <meta name="author" content="toptable">
+
+  
+  <meta name="description" content="In late 2012, our development team started to move towards our systems being much more automated. Long gone are the days of developers creating &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.toptable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="toptable Tech Blog" type="application/atom+xml">
+  <script type="text/javascript" src="http://use.typekit.com/syx2vfn.js"></script>
+  <script type="text/javascript">try { Typekit.load(); } catch (e) { }</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">toptable Tech Blog</a></h1>
+  
+    <h2>The technology blog for toptable and OpenTable.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.toptable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About toptable</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Windows Feature Management With PowerShell</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-14T20:31:00+01:00" pubdate data-updated="true">Jun 14<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>In late 2012, our development team started to move towards our systems being much more automated. Long gone are the days of developers creating runbooks in Word and giving them to our operations team to use to set up our production servers.</p>
+
+<p>When building our webservers on Windows, in order to install / activate Windows features, this was the general set of instructions that was needed to be followed:</p>
+
+<ul>
+<li>Click Start Button</li>
+<li>Click on Control Panel</li>
+<li>Click on Programs</li>
+<li>Click on Turn Windows features on or off</li>
+</ul>
+
+
+<p>This would present a screen as follows:</p>
+
+<p><img class="center" src="/images/posts/windowsfeature.png"></p>
+
+<p>You would need to find the correct features to enable and check the box, press OK and then wait for the features to be installed.</p>
+
+<p>When Microsoft introduced Windows Server 2008 and PowerShell 2.0, they also introducted the module &#8216;ServerManager&#8217;. This is a module that allows us to interact, with PowerShell, Windows Features using a range of cmdlets:</p>
+
+<ul>
+<li>Get-WindowsFeature</li>
+<li>Add-WindowsFeature</li>
+<li>Remove-WindowsFeature</li>
+</ul>
+
+
+<p>This meant that instead of creating runbooks in Word, our developers could create automation scripts that would take a base Windows Server 2008 server and enable all the Windows Features needed to run our applications. This allowed our operations team to move much faster in configuring our servers.</p>
+
+<p>To turn on the ASP.NET Application Development features in Windows, we would run the following script from PowerShell:</p>
+
+<pre><code>Import-Module ServerManager
+Add-WindowsFeature Web-Asp-Net
+</code></pre>
+
+<p>By knowing what Windows Features we needed to install on our servers, we were able to create the following script:</p>
+
+<pre><code>function enable_net_3_5_features()
+{
+    Add-WindowsFeature NET-HTTP-Activation
+    Add-WindowsFeature NET-Win-CFAC
+    Add-WindowsFeature NET-Non-HTTP-Activ
+    Add-WindowsFeature AS-MSMQ-Activation
+}
+
+function enable_iis_common_http_features()
+{
+    Add-WindowsFeature Web-Static-Content
+    Add-WindowsFeature Web-Http-Errors
+    Add-WindowsFeature Web-Default-Doc
+}
+
+function enable_iis_application_development_features()
+{
+    Add-WindowsFeature Web-Asp-Net
+    Add-WindowsFeature Web-Net-Ext
+    Add-WindowsFeature Web-ISAPI-Ext
+    Add-WindowsFeature Web-ISAPI-Filter
+}
+
+function enable_iis_health_and_diagnostics_features()
+{
+    Add-WindowsFeature Web-Http-Logging
+    Add-WindowsFeature Web-Request-Monitor
+}
+
+function enable_iis_security_features()
+{
+    Add-WindowsFeature Web-Filtering
+}
+
+function enable_iis_performance_features()
+{
+    Add-WindowsFeature Web-Stat-Compression
+    Add-WindowsFeature Web-Dyn-Compression
+}
+
+function enable_iis_management_tools()
+{
+    Add-WindowsFeature Web-Mgmt-Tools
+    Add-WindowsFeature Web-Mgmt-Console
+}
+
+
+Write-Host('Starting Application Server Setup')
+
+Import-Module ServerManager
+enable_net_3_5_features
+enable_iis_common_http_features
+enable_iis_application_development_features
+enable_iis_health_and_diagnostics_features
+enable_iis_security_features
+enable_iis_performance_features
+enable_iis_management_tools 
+
+Write-Host('Application Server Setup complete')
+</code></pre>
+
+<p>Running the script, meant that we could enable features much faster than we could enable them via the GUI. Notice how we have grouped how we enable Windows Features into the same groupings found in the &#8216;Turn Windows features on or off&#8217; menu. For a full list of the names of the features that can be turned on or off, please refer to this <a href="http://technet.microsoft.com/en-us/library/cc732757.aspx">technet article</a></p>
+
+<p>You can download a <a href="https://gist.github.com/opentable-devops/5886831">gist</a> of this script if you want to use it. Please note that the license that this script is available under can be read from our <a href="https://github.com/opentable/licensing/blob/master/LICENSE">github repository</a>. We hope that the script helps you as much as it helped us.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Paul Stack</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-14T20:31:00+01:00" pubdate data-updated="true">Jun 14<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/automation/'>automation</a>, <a class='category' href='/blog/categories/devops/'>devops</a>, <a class='category' href='/blog/categories/powershell/'>powershell</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.toptable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/" data-via="toptabletech" data-counturl="http://tech.toptable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/06/07/nlocalgeocoder/" title="Previous Post: nLocalGeoCoder">&laquo; nLocalGeoCoder</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/06/18/ndcoslo/" title="Next Post: NDC Oslo">NDC Oslo &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/06/18/ndcoslo/">NDC Oslo</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/14/windows-feature-management-with-powershell/">Windows Feature Management with PowerShell</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/07/nlocalgeocoder/">nLocalGeoCoder</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/07/getting-started-with-specrun/">Getting Started With SpecRun</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("toptabletech", , );
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <p>Follow <a href="http://twitter.com/toptabletech">@toptabletech</a></p>
+  
+</section>
+
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2013 - toptable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

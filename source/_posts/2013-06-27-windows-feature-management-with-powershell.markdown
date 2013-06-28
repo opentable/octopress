@@ -100,4 +100,4 @@ By knowing what Windows Features we needed to install on our servers, we were ab
 
 Running the script, meant that we could enable features much faster than we could enable them via the GUI. Notice how we have grouped how we enable Windows Features into the same groupings found in the 'Turn Windows features on or off' menu. For a full list of the names of the features that can be turned on or off, please refer to this [technet article](http://technet.microsoft.com/en-us/library/cc732757.aspx)
 
-You can download a [gist]() of this script if you want to use it. Please note that the license that this script is available under can be read from our [github repository](). We hope that the script helps you as much as it helped us.
+You can download a [gist](https://gist.github.com/opentable-devops/5886831) of this script if you want to use it. Please note that the license that this script is available under can be read from our [github repository](https://github.com/opentable/licensing/blob/master/LICENSE). We hope that the script helps you as much as it helped us.

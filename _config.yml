@@ -35,6 +35,9 @@ authors:
     ametcalfe:
         display_name: Andy Metcalfe
         #avatar: 2906955ae59c795275979d3782d7bfca
+    pstack:
+        display_name: Paul Stack
+        #avatar: 2906955ae59c795275979d3782d7bfca
 
 # ----------------------- #
 #    Jekyll & Plugins     #

@@ -4,6 +4,7 @@ title: "Windows Feature Management with PowerShell"
 date: 2013-06-14 20:31
 comments: true
 author: pstack
+
 categories: [powershell, automation, devops]
 ---
 In late 2012, our development team started to move towards our systems being much more automated. Long gone are the days of developers creating runbooks in Word and giving them to our operations team to use to set up our production servers. 

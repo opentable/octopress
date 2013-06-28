@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: PowerShell | toptable Tech Blog]]></title>
+  <link href="http://tech.toptable.co.uk/blog/categories/powershell/atom.xml" rel="self"/>
+  <link href="http://tech.toptable.co.uk/"/>
+  <updated>2013-06-27T20:37:00-07:00</updated>
+  <id>http://tech.toptable.co.uk/</id>
+  <author>
+    <name><![CDATA[toptable]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Windows Feature Management with PowerShell]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2013/06/27/windows-feature-management-with-powershell/"/>
+    <updated>2013-06-27T20:31:00-07:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2013/06/27/windows-feature-management-with-powershell</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+</feed>

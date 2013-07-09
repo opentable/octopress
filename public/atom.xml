@@ -4,7 +4,7 @@
   <title><![CDATA[toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2013-07-08T19:17:46+01:00</updated>
+  <updated>2013-07-09T14:26:33+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -18,19 +18,19 @@
     <link href="http://tech.toptable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell/"/>
     <updated>2013-07-08T18:51:00+01:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell</id>
-    <content type="html"><![CDATA[<p>Managing certificates on Windows is <em>really</em> painful. There is no easy way to do it and it can really cause some pain. The general way to install a certificate to a Windows Server 2008 machine is as follows:</p>
+    <content type="html"><![CDATA[<p>Managing certificates on Windows is <em>really</em> painful. There is no easy way to do it. The general way to install a certificate to a Windows Server 2008 machine is as follows:</p>
 
 <ul>
 <li>Open the Certificates snap-in for a user, computer, or service.</li>
 <li>In the console tree, click the logical store where you want to import the certificate.</li>
 <li>On the Action menu, point to All Tasks, and then click Import to start the Certificate Import Wizard.</li>
-<li>Type the file name containing the certificate to be imported. (You can also click Browse and navigate to the file.)</li>
+<li>Type the file name containing the certificate to be imported.</li>
 <li>If you want to specify where the certificate is stored, select Place all certificates in the following store, click Browse, and choose the certificate store to use. OR</li>
 <li>If the certificate should be automatically placed in a certificate store based on the type of certificate, click Automatically select the certificate store based on the type of certificate.</li>
 </ul>
 
 
-<p>The first time I ran this process, I felt as though this was jsut wrong to not be able to automate. The goal of our team is to no longer need to do things manually. PowerShell was able to automate this script import process easily as it allows you to write code to do this. As we all know, code is better for a number of reasons, I won&#8217;t go into the infrastructure as code argument in this post (but it is coming soon….). Using PowerShell, I can write a really simple function as follows:</p>
+<p>The first time I ran this process, I felt as though this was just wrong to not be able to automate. The goal of our team is to automate everything we are currently doing manually. PowerShell is a better option for this import process as it allows you to write code to do it. As we all know, code is better for a number of reasons, I won&#8217;t go into the infrastructure as code argument in this post (but it is coming soon….). Using PowerShell, I can write a simple function as follows:</p>
 
 <pre><code>function Import-PfxCertificate($certName, $CertLocaton, $certRootStore, $certStore) {    
      $pfx = new-object System.Security.Cryptography.X509Certificates.X509Certificate2    
@@ -47,7 +47,7 @@
 }
 </code></pre>
 
-<p>This makes certificate management easier. To manage certificates in this way, I just need to invoke a script similar to as follows:</p>
+<p>This makes certificate management easier. To manage certificates in this way, I just need to invoke a script similar to this:</p>
 
 <pre><code>.\import-certificate.ps1 -CertificateName "mycert.pfx" -CertLocation "c:\ssl\mycerts"
 </code></pre>

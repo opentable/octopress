@@ -138,4 +138,4 @@ This effectively tells Vagrant to create three instances of ElasticSearch using 
   		"unassigned_shards" : 0             
 	}
 	
-Using this method, we can continue to spin up as many instances as we need to replicate different scenarios or testing conditions. Vagrant has made this very easy to do. If you want a copy of the Vagrantfiles and Puppet modules to try this yourself, then you can find them on my [github repository](https://github.com/stack72/vagrant-examples/tree/master/elasticsearch). The scripts are available under the [MIT](http://opensource.org/licenses/MIT). 
+Using this method, we can continue to spin up as many instances as we need to replicate different scenarios or testing conditions. Vagrant has made this very easy to do. If you want a copy of the Vagrantfiles and Puppet modules to try this yourself, then you can find them on my [github repository](https://github.com/stack72/vagrant-examples/tree/master/elasticsearch). The scripts are available under the [MIT](http://opensource.org/licenses/MIT) license. 

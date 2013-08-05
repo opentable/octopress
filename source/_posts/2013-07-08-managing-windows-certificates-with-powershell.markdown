@@ -34,4 +34,4 @@ This makes certificate management easier. To manage certificates in this way, I 
 
     .\import-certificate.ps1 -CertificateName "mycert.pfx" -CertLocation "c:\ssl\mycerts"
     
-Much simplier! You can download a [gist](https://gist.github.com/opentable-devops/5951108) of this script should you wish to use it. Please note that the license that this script is available under can be read from our [github repository](https://github.com/opentable/licensing/blob/master/LICENSE). 
+Much simpler! You can download a [gist](https://gist.github.com/opentable-devops/5951108) of this script should you wish to use it. Please note that the license that this script is available under can be read from our [github repository](https://github.com/opentable/licensing/blob/master/LICENSE). 

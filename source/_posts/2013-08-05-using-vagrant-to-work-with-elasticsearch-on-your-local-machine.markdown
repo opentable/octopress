@@ -6,7 +6,7 @@ comments: true
 author: pstack
 categories: [Vagrant, ElasticSearch, DevOps]
 ---
-Recently, I have started to work a lot more with [Vagrant](http://www.vagrantup.com/) as a tool for creating a standard development environment across my team. This essentially means that regardless what the developers' machine is setup or running as, they can still reproduce the same environment as their colleagues just by entering a command. 
+Recently, I have started to work a lot more with [Vagrant](http://www.vagrantup.com/) as a tool for creating a standard development environment across my team. This essentially means that regardless what the developers' machine is set up or running as, they can still reproduce the same environment as their colleagues just by entering a command. 
 
 Configuration managgement is something we have had to embrace to help us maintain an ever changing world of technologies. The hardest thing is knowing what we actually have to build in these environments. We use Vagrant to help us understand this. The simple flow is as follows:
 
@@ -14,12 +14,12 @@ Configuration managgement is something we have had to embrace to help us maintai
 * Developer creates a Vagrantfile to spin up a local VM
 * Vagrantfile gets iterated on as the development process goes forward
 
-Once the developer understands what they need to actually run their software, we would then go about creating an environment for this software to actually be deployed to for end-to-end testing. I won't go any further into the details of our Vagrant flow in this post, if you want to read more about how to get started with Vagrant, then I would suggest reading [Vagrant Up and Running](http://shop.oreilly.com/product/0636920026358.do) by [Mitchell Hashimoto](https://twitter.com/mitchellh).
+Once the developer understands what they need to actually run their software, we would then go about creating an environment to which this software will actually be deployed for end-to-end testing. I won't go any further into the details of our Vagrant flow in this post, if you want to read more about how to get started with Vagrant, then I would suggest reading [Vagrant Up and Running](http://shop.oreilly.com/product/0636920026358.do) by [Mitchell Hashimoto](https://twitter.com/mitchellh).
 
 Vagrant and ElasticSearch
 --
 
-Whilst reviewing a book on [ElasticSearch](http://www.elasticsearch.org/), I noticed how simple the instructions were to get up and running with ElasticSearch. I didn't want to manually do this, so I decided to use Vagrant (and Puppet) to take care of it for me. The instructions can be summarised as following:
+Whilst reviewing a book on [ElasticSearch](http://www.elasticsearch.org/), I noticed how simple the instructions were to get up and running with ElasticSearch. I didn't want to manually do this, so I decided to use Vagrant (and Puppet) to take care of it for me. The instructions can be summarised as follows:
 
 * Download and install the JavaSDK
 * Download the specific ElasticSearch package
@@ -71,7 +71,7 @@ This defines that the command apt-get-update gets applied (due to both the class
 	    "tagline" : "You Know, for Search"
     }
     
-By entering the URL, '**http://localhost:9200/_cluster/health?pretty**', you can see the state of the ElasticSearch cluster. IT should show something like this:
+By entering the URL, '**http://localhost:9200/_cluster/health?pretty**', you can see the state of the ElasticSearch cluster. It should show something like this:
 
 	{
   		"cluster_name" : "elasticsearch",
@@ -123,7 +123,7 @@ I wanted to be able to provision multiple nodes and then let them create a clust
     	end
 	end
 	
-This effectively tells Vagrant to create 3 instances of ElasticSearch using the Puppet configuration (as above). Each ElasticSearch node is given it's own IP. Thanks to ElasticSearch using Multicast and Unicast discovery, it is able to find other nodes on the network and create a cluster. By running a similar url as before, '**http://192.168.1.10:9200/_cluster/health?pretty**', we can now see that the cluster looks as follows:
+This effectively tells Vagrant to create three instances of ElasticSearch using the Puppet configuration (as above). Each ElasticSearch node is given its own IP. Thanks to ElasticSearch using Multicast and Unicast discovery, it is able to find other nodes on the network and create a cluster. By running a similar url as before, '**http://192.168.1.10:9200/_cluster/health?pretty**', we can now see that the cluster looks as follows:
 
 	{
   		"cluster_name" : "elasticsearch",
@@ -138,4 +138,4 @@ This effectively tells Vagrant to create 3 instances of ElasticSearch using the 
   		"unassigned_shards" : 0             
 	}
 	
-USing this method, we can continue to spin up as many instances as we need to replicate different scenarios or testing conditions. Vagrant has made this very easy to do. If you want a copy of the Vagrantfiles and Puppet modules to try this yourself, then you can find them on my [github repository](https://github.com/stack72/vagrant-examples/tree/master/elasticsearch). The scripts are available under the [MIT](http://opensource.org/licenses/MIT). 
+Using this method, we can continue to spin up as many instances as we need to replicate different scenarios or testing conditions. Vagrant has made this very easy to do. If you want a copy of the Vagrantfiles and Puppet modules to try this yourself, then you can find them on my [github repository](https://github.com/stack72/vagrant-examples/tree/master/elasticsearch). The scripts are available under the [MIT](http://opensource.org/licenses/MIT). 

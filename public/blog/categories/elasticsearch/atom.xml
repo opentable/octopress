@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: DevOps | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/devops/atom.xml" rel="self"/>
+  <title><![CDATA[Category: ElasticSearch | toptable Tech Blog]]></title>
+  <link href="http://tech.toptable.co.uk/blog/categories/elasticsearch/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
   <updated>2013-08-05T13:33:47+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>

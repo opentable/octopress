@@ -19,7 +19,7 @@ Once the developer understands what they need to actually run their software, we
 Vagrant and ElasticSearch
 --
 
-Whilst reviewing a book on [ElasticSearch](http://www.elasticsearch.org/), I noticed how simple the instructions were to get up and running with ElasticSearch. I didn't want to manually do this, so I decided to use Vagrant (and Puppet) to take care of it for me. The instructions can be summarised as follows:
+Whilst reviewing a book on [ElasticSearch](http://www.elasticsearch.org/), I noticed how simple the instructions were to get up and running with ElasticSearch. Please note, that there are already lots of Puppet modules for configuring ElasticSearch on [Puppetlabs Forge](http://forge.puppetlabs.com/modules?q=elasticsearch). This post only talks about how I was able to quickly spin up some local instances. I didn't want to manually do this, so I decided to use Vagrant (and Puppet) to take care of it for me. The instructions can be summarised as follows:
 
 * Download and install the JavaSDK
 * Download the specific ElasticSearch package

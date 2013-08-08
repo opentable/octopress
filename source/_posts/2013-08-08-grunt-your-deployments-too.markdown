@@ -3,7 +3,8 @@ layout: post
 title: "Grunt your deployments too"
 date: 2013-08-08 15:27
 comments: true
-categories: 
+authro: aroyle
+categories: [Deployment, javascript, grunt] 
 ---
 iWe've been using [Grunt][1] as a build tool for our nodejs apps, and it's brilliant. It lints, it configures, it minifies, it tests, it packages, and if you find the right module, it can give you a reach-around too.
 

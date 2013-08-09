@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: javascript | toptable Tech Blog]]></title>
+  <title><![CDATA[Category: JavaScript | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2013-08-09T10:33:12+01:00</updated>
+  <updated>2013-08-09T13:51:35+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -304,6 +304,194 @@ grunt deploy --config production --server my.production.server --username user -
 
 
 <p><strong>Oink, Oink .....</strong></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[MapReduce in MongoDB]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2013/08/07/mapreduce-in-mongodb/"/>
+    <updated>2013-08-07T10:40:00+01:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2013/08/07/mapreduce-in-mongodb</id>
+    <content type="html"><![CDATA[<p>One of the first things I took on when joining toptable was building a new endpoint in our reviews API to aggregate and summarise restaurant review data. Thankfully, at the time, all the data I needed was cached in memory so building the response object was a simple set of linq queries over the cached reviews.</p>
+
+<h2>The problem</h2>
+
+<p>Over time the number of reviews grow, and grow, and grow!  In fact it is inevitable that, in time, it will reach a point where caching all this data in memory would be madness.  One option to mitigate this would be to limit the cache to a fixed date range but this won't work in this instance because the summary logic supports custom date ranges.  Another option would be to pull the data from the persistence store each and every time it's required however this would seriously impact load on the infrastructure and degrade performance of the API.</p>
+
+<p>We like to be proactive at toptable, so during innovation time (yes! we get time to innovate on our development) I looked at finding an alternate solution that would meet the requirements of the logic and wouldn't drastically increase load or degrade performance.</p>
+
+<h2>The solution</h2>
+
+<p>MongoDB supports <a href="http://en.wikipedia.org/wiki/MapReduce">MapReduce</a> which allows processing large volumes of data (Map), running arbitrary logic to summarise (Reduce) and producing some results.  In MongoDB the MapReduce functionality uses JavaScript functions to perform the map and reduce steps and the syntax is relatively simple to understand:-</p>
+
+<pre><code>db.largeDataset.mapReduce(mapFunction, 
+                          reduceFunction, 
+                          { out: "summary" }
+</code></pre>
+
+<p>In the above example the largeDataset collection is mapped using the predefined mapFunction, the results are passed to the reduceFunction and the reduced data is finally stored in the summary collection. On top of this you can specify queries as well as a finalize function to "tweak" the reduce results.</p>
+
+<p>Because map, reduce &amp; finalize are functions that only operate on their inputs the workload can be parallelized although the final results would be stored in one location.</p>
+
+<h4>Map</h4>
+
+<p>The key purpose of the map function is to take the complex documents and produce a structure conducive to summarising whilst at the same time defining the granularity of the results using grouping.</p>
+
+<p>For example if you wanted to get the number of reviews by restaurant then you'd group by the restaurant's unique identifier meaning that the reduce function would produce a single result for each restaurant:-</p>
+
+<pre><code>var mapFunction = function() {
+                    emit(this.RestaurantId, 1);
+                  };
+</code></pre>
+
+<p>This function, called on each review, maps the review to the value 1 and groups by the RestaurantId.  The value 1 was chosen because, as you will see in the continuation of this example below, it's the easiest way to calculate the count of reviews per restaurant.</p>
+
+<h4>Reduce</h4>
+
+<p>The key purpose of the reduce function is to take a batch of mapped values for a given group and return a single result.  All values emited from the map function are passed to the reduce function although since the batch size is decided by MongoDB there may be multiple calls to reduce.  In fact given a sufficiently large source dataset the reduce function will be passed results from previous reduce function calls as well.  For example if there were 250 mapped results in a group and batches of 100 were reduced by each call then four calls would be needed, three to reduce the initial 250 results and a final call to reduce these results into the final value for the group.</p>
+
+<p>To continue the example from above:-</p>
+
+<pre><code>var reduceFunction = function(group, values) {
+                       return Array.sum(values);
+                     };
+</code></pre>
+
+<p>The results from this function would be stored in the collection defined in the mapReduce call with an <em>id and value.  The </em>id property is populated with the group id and the value property will contain the final reduce result for that group.</p>
+
+<h2>Getting Started in C#</h2>
+
+<p>The following are a list of projects/resources to look at if you want to implement Mongo MapReduce in your scenario with emphasis on C#:-</p>
+
+<ul>
+<li><a href="http://docs.mongodb.org/manual/tutorial/map-reduce-examples">Mongo Map-Reduce Examples</a> is a useful primer document.</li>
+<li><a href="http://cookbook.mongodb.org">Mongo Cookbook</a> has a number of "real world" examples of MapReduce</li>
+<li><a href="http://docs.mongodb.org/ecosystem/drivers/csharp">Mongo C# driver</a> has some logic to perform MapReduce however it is only a thin layer over the underlying syntax and uses JavaScript functions passed as strings.</li>
+<li><a href="http://github.com/craiggwilson/fluent-mongo/wiki/Map-Reduce">Fluent-Mongo</a> provides a linq syntax over simple map reduce functions.  Interestingly it can perform multiple calculations on a set of data although at present it doesn't support more complex logic.</li>
+<li><a href="http://twitter.com/odetocode">K.Scott Allen</a> has written two articles on MapReduce, <a href="http://odetocode.com/blogs/scott/archive/2012/03/19/a-simple-mapreduce-with-mongodb-and-c.aspx">A Simple MapReduce...</a> and <a href="http://odetocode.com/blogs/scott/archive/2012/03/29/a-simpler-mapreduce-with-mongodb-and-c.aspx">A Simpler MapReduce...</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[One Gun - Many Enemies]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2013/07/24/one-gun-many-enemies/"/>
+    <updated>2013-07-24T14:32:00+01:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2013/07/24/one-gun-many-enemies</id>
+    <content type="html"><![CDATA[<p>I spent some time, re-investigating Javascript. After a few months of intensive TDD and SOLID training at OpenTable I was curious how those principles apply in a slightly different environment. Guess what, they do not differ that much... I planned to write about all this sometime in the future after gaining more experience from real battles ahead, however <a href="http://watirmelon.com/2013/02/09/why-i-dont-like-Jasmine/">Watirmelon post</a> invited me to attack this subject immediately.</p>
+
+<p>I went through the available testing frameworks for Javascript and decided on Jasmine. Why? Mainly because of its BDD syntax which is fashionable this season. The second reason is that it has really cool documentation. Finally, the basic set up of just running an HTML file in a browser got me up and running fast.</p>
+
+<p>Let's look at the basics - what I expect from different types of tests and how Jasmine fits into those requirements:</p>
+
+<h2>Unit Testing</h2>
+
+<h3>Advice from senior craftsman</h3>
+
+<ul>
+<li>Shoot them one by one
+(structure your code so that it is easier to maintain)</li>
+<li>Be sure you kill with every shot
+(verify small bits of code to nail down issues)</li>
+<li>Kill them all
+(verify edge cases)</li>
+<li>Kill them quick
+(provide fast feedback on issues)</li>
+<li>Choose a fast shooting gun - the faster you shoot, the more enemies you will kill
+(unit tests must be blazing fast)</li>
+<li>Choose the most reliable gun - if it is stuck then you are dead
+(when unit tests are brittle you will stop depending on them)</li>
+<li>Your gun needs to be light enough to carry everywhere
+(unit tests are your gun, so you must be able to run them all locally)</li>
+</ul>
+
+
+<p>Jasmine works great for all those aims, as it is really fast and it allows you to stub both objects and DOM elements (especially combined with a Jasmine-jQuery plugin). Keep in mind that Unit Testing is useful only if you either write new code or refactor old code. Do not ever try to write Unit Tests for existing code which you don't intend to refactor. It's like shooting the dead. You simply cannot kill them with another bullet.</p>
+
+<h2>Integration Testing</h2>
+
+<h3>Advice from senior craftsman</h3>
+
+<ul>
+<li>Beware of the hidden sniper
+(test against external dependencies like files, databases, network services)</li>
+<li>You are part of your squad
+(verify that components of the application work well together)</li>
+<li>Observe the environment
+(try to use depenedencies as close to the real problem as possible e.g. example file, database with test data, test version of an external service)</li>
+<li>Point in the right direction
+(do not try to test your stack top-down, instead concentrate on interfaces and adapters that you could not test in unit tests)</li>
+</ul>
+
+
+<p>Integration tests will naturally be harder to quickly setup - they might break due to configuration problems or inaccessible external services. That's why you don't want to have that many of them. Still, you want to know that all your problems are due to your partner changing protocol. Once again nothing stops us from using Jasmine here.</p>
+
+<p>Jasmine just executes your tests, so the tests that point towards external services, send example files to your code etc. will all be a breeze to implement with Jasmine.</p>
+
+<h2>Acceptance Testing</h2>
+
+<h3>Aims</h3>
+
+<ul>
+<li>Confirm you are fighting the right war
+(show specification to your product owner/manager/client)</li>
+<li>Keep clean supply routes
+(test the functionality of your app with full set up and all dependencies)</li>
+<li>Find hidden mines
+(test your application in all environments to which you deploy)</li>
+</ul>
+
+
+<h3>Advice from senior craftsman</h3>
+
+<ul>
+<li>Speak in their language
+(use a tool which allows writing tests in natural language such as Cucumber or SpecFlow)</li>
+<li>Take your time
+(those tests will be slower, so accept that you will not always run them locally and that you will not run them every minute)</li>
+<li>Spend your resources wisely
+(acceptance tests are naturally much more brittle then other types of tests, so try to keep their number reasonably small)</li>
+</ul>
+
+
+<p>This is where I would not recommend Jasmine, simply because it doesn't fit this job. Its syntax is based on programming language, so it is harder to read by non-engineers. Jasmine allows you to execute events and call your code. However, your users will be most likely be using a browser to interact with your code, so it is much better to use a tool that also uses a browser to test your web page.</p>
+
+<h2>Conclusion</h2>
+
+<p>I find Jasmine extremely well suited for unit and integration testing. I wouldn't use it for acceptance tests as there are quite few better tools for that job. And I guess that is the issue that Alister Scott has with Jasmine on his blog - he tried to use it for acceptance testing. In that case I wouldn't choose Jasmine either. On the other hand I don't like using a screwdriver to hammer a nail.</p>
+
+<h2>Post Scriptum (on DOM dependency)</h2>
+
+<p>Alister also complains about integration issues between his server-side code and client-side code. His experience is that changes to IDs and classes in MVC applications result in failing Javascript. The issue is serious and shows one important mistake, which is hardcoding dependencies. IDs and class names are configurable details and Javascript code should be agnostic of them. To illustrate let's look at a simple test case from my pet-project:</p>
+
+<pre><code>describe("GameController", function(){
+  describe("During Initialize", function() {
+    var view;
+    var subject;
+
+    beforeEach(function() {    
+        setFixtures("&lt;div id="myid"&gt;&lt;/div&gt;");
+        subject = new GameView();
+
+        subject.CreateFabricInDiv("#myid");
+    });
+
+    it("creates fabric in div", function(){
+        expect($("#myid")).not.toBeEmpty();
+    });
+
+    it("holds pointer to canvas", function(){
+        expect(subject._canvas).not.toBe(undefined);
+    });
+ }); 
+</code></pre>
+
+<p>Do you see how "#myid" parameter is passed into the method call? We moved the configuration detail out from the Javascript code, which in my opinion it is the simplest solution to Alister's problem.</p>
+
+<p>If code is designed in such a way that IDs/class names are not embedded all around the codebase you can figure out quite few nice ways to keep them consistent between Javascript and server-side code.</p>
+
+<p>It also helps with code re-usability as you can use the same code on two separate pages with differing IDs!</p>
 ]]></content>
   </entry>
   

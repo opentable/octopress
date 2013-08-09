@@ -4,7 +4,7 @@ title: "nLocalGeoCoder"
 date: 2013-06-07 11:59
 comments: true
 author: rhopton
-categories: [OSS, .Net, C#, Ruby, collaboration]
+categories: [OSS, .Net, C#, Ruby, Collaboration]
 ---
 
 ## History ##

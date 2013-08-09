@@ -4,7 +4,7 @@ title: "Getting Started With SpecRun"
 date: 2013-06-07 11:33
 comments: true
 author: mbarrett
-categories: [specrun, acceptance tests, automation, CI]
+categories: [SpecRun, Acceptance tests, Automation, CI]
 ---
 
 ## First some background ##

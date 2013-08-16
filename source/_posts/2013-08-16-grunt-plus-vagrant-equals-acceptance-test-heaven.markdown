@@ -145,7 +145,7 @@ The key part here is that everything is now in source control. So whenever someo
 
 The machine is brand-new every time, with it's own spangly mongodb instance ready for use.
 
-What's that I hear you whine? "_My application depends on shared data, I can't use an empty database_". Bullshit. If you need it, set it up or mock it out. The acceptance tests should set-up and tear-down all their own data, if you rely on shared data sources for acceptance tests then you're going to have a painful time. Script it once and it'll forever be your friend. It's time to enter the dynamic era, no more false failures on your CI build because a shared datasource is missing and/or has been changed.
+What's that I hear you whine? "_My application depends on shared data, I can't use an empty database_". Bollocks. If you need it, set it up or mock it out. The acceptance tests should set-up and tear-down all their own data, if you rely on shared data sources for acceptance tests then you're going to have a painful time. Script it once and it'll forever be your friend. It's time to enter the dynamic era, no more false failures on your CI build because a shared datasource is missing and/or has been changed.
 
 What's more you can now run `grunt acceptance` from anywhere and ___know___ that it'll be the same. No more environment pains!
 

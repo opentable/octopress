@@ -2,86 +2,86 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://tech.toptable.co.uk/blog/2013/06/07/getting-started-with-specrun/</loc>
-        <lastmod>2013-08-16T14:17:29+01:00</lastmod>
+        <lastmod>2013-08-16T06:17:29-07:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/blog/2013/06/07/nlocalgeocoder/</loc>
-        <lastmod>2013-08-16T14:17:29+01:00</lastmod>
+        <lastmod>2013-08-16T06:17:29-07:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.toptable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/
         </loc>
-        <lastmod>2013-08-16T14:17:29+01:00</lastmod>
+        <lastmod>2013-08-16T06:17:29-07:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/blog/2013/06/18/ndcoslo/</loc>
-        <lastmod>2013-06-28T06:16:00+01:00</lastmod>
+        <lastmod>2013-06-27T22:16:00-07:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.toptable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell/
         </loc>
-        <lastmod>2013-08-16T14:17:29+01:00</lastmod>
+        <lastmod>2013-08-16T06:17:29-07:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/blog/2013/07/24/one-gun-many-enemies/</loc>
-        <lastmod>2013-08-16T14:17:29+01:00</lastmod>
+        <lastmod>2013-08-16T06:17:29-07:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.toptable.co.uk/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine/
         </loc>
-        <lastmod>2013-08-05T13:41:52+01:00</lastmod>
+        <lastmod>2013-08-05T05:41:52-07:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/blog/2013/08/07/mapreduce-in-mongodb/</loc>
-        <lastmod>2013-08-07T10:41:46+01:00</lastmod>
+        <lastmod>2013-08-07T02:41:46-07:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/</loc>
-        <lastmod>2013-08-16T14:17:29+01:00</lastmod>
+        <lastmod>2013-08-16T06:17:29-07:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.toptable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/
         </loc>
-        <lastmod>2013-08-16T15:34:56+01:00</lastmod>
+        <lastmod>2013-08-16T07:34:56-07:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/about/</loc>
-        <lastmod>2013-08-16T15:34:56+01:00</lastmod>
+        <lastmod>2013-08-16T07:34:56-07:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/blog/archives/</loc>
-        <lastmod>2013-08-16T15:34:56+01:00</lastmod>
+        <lastmod>2013-08-16T07:34:56-07:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/blog/authors/</loc>
-        <lastmod>2013-08-16T15:34:56+01:00</lastmod>
+        <lastmod>2013-08-16T07:34:56-07:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/blog/authors/mbarrett.html</loc>
-        <lastmod>2013-06-17T14:05:11+01:00</lastmod>
+        <lastmod>2013-06-17T06:05:11-07:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/blog/authors/pstack.html</loc>
-        <lastmod>2013-06-28T06:12:27+01:00</lastmod>
+        <lastmod>2013-06-27T22:12:27-07:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/blog/authors/rhopton.html</loc>
-        <lastmod>2013-06-28T06:14:08+01:00</lastmod>
+        <lastmod>2013-06-27T22:14:08-07:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/</loc>
-        <lastmod>2013-08-16T15:34:56+01:00</lastmod>
+        <lastmod>2013-08-16T07:34:56-07:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/join-us/</loc>
-        <lastmod>2013-06-17T14:05:11+01:00</lastmod>
+        <lastmod>2013-06-17T06:05:11-07:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/robots.txt</loc>
-        <lastmod>2013-06-07T11:42:19+01:00</lastmod>
+        <lastmod>2013-06-07T03:42:19-07:00</lastmod>
     </url>
 </urlset>

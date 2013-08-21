@@ -4,7 +4,7 @@
   <title><![CDATA[Category: JavaScript | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2013-08-16T15:37:08+01:00</updated>
+  <updated>2013-08-21T15:55:33-07:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Grunt your deployments too]]></title>
     <link href="http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/"/>
-    <updated>2013-08-08T15:27:00+01:00</updated>
+    <updated>2013-08-08T15:27:00-07:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too</id>
     <content type="html"><![CDATA[<p>We've been using <a href="http://www.gruntjs.com">Grunt</a> as a build tool for our nodejs apps, and it's brilliant. It lints, it configures, it minifies, it tests and it packages.</p>
 
@@ -310,7 +310,7 @@ grunt deploy --config production --server my.production.server --username user -
   <entry>
     <title type="html"><![CDATA[MapReduce in MongoDB]]></title>
     <link href="http://tech.toptable.co.uk/blog/2013/08/07/mapreduce-in-mongodb/"/>
-    <updated>2013-08-07T10:40:00+01:00</updated>
+    <updated>2013-08-07T10:40:00-07:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/08/07/mapreduce-in-mongodb</id>
     <content type="html"><![CDATA[<p>One of the first things I took on when joining toptable was building a new endpoint in our reviews API to aggregate and summarise restaurant review data. Thankfully, at the time, all the data I needed was cached in memory so building the response object was a simple set of linq queries over the cached reviews.</p>
 
@@ -377,7 +377,7 @@ grunt deploy --config production --server my.production.server --username user -
   <entry>
     <title type="html"><![CDATA[One Gun - Many Enemies]]></title>
     <link href="http://tech.toptable.co.uk/blog/2013/07/24/one-gun-many-enemies/"/>
-    <updated>2013-07-24T14:32:00+01:00</updated>
+    <updated>2013-07-24T14:32:00-07:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/07/24/one-gun-many-enemies</id>
     <content type="html"><![CDATA[<p>I spent some time, re-investigating Javascript. After a few months of intensive TDD and SOLID training at OpenTable I was curious how those principles apply in a slightly different environment. Guess what, they do not differ that much... I planned to write about all this sometime in the future after gaining more experience from real battles ahead, however <a href="http://watirmelon.com/2013/02/09/why-i-dont-like-Jasmine/">Watirmelon post</a> invited me to attack this subject immediately.</p>
 

@@ -4,7 +4,7 @@ title: "Grunt + Vagrant = Acceptance Test Heaven"
 date: 2013-08-16 15:32
 comments: true
 author: aroyle
-categories: [grunt, vagrant, acceptance testing]
+categories: [Grunt, Vagrant, Acceptance tests, Automation]
 ---
 My continued love affair with Grunt reached a new high the other day, when I combined [Vagrant][2] with my [Grunt deployment tasks][1] and test runners.
 
@@ -12,9 +12,9 @@ I'm not going to bang on about how great Vagrant is, because better people than 
 
 The objective is simple, we want to have a virtualised environment to run our acceptance tests against, that we can create and provision on demand, to ensure that our acceptance tests only deal with functional-correctness, not data- or environment-correctness.
 
-I created a set of grunt tasks which were able to do the following:
+I created a set of Grunt tasks which were able to do the following:
 
-- Spin up an provision a vagrant instance
+- Spin up an provision a Vagrant instance
 - Deploy the project code	
 - Start the server
 - Run the acceptance tests
@@ -22,9 +22,9 @@ I created a set of grunt tasks which were able to do the following:
 
 All from a single command: `grunt acceptance`
 
-The price of this magic? About 10 lines of bash script, a 6 line Vagrantfile and some Grunt glue.
+The price of this magic? About ten lines of Bash script, a six line Vagrantfile and some Grunt glue.
 
-__Diving in__
+## Diving in ##
 
 Assuming you've got Vagrant installed, you can create a Vagrantfile in the root of your project, which looks like this:
 
@@ -35,7 +35,7 @@ Assuming you've got Vagrant installed, you can create a Vagrantfile in the root 
     	config.vm.provision :shell, :path => "setup/bootstrap.sh"
 	end
 
-Notice the last line 'config.vm.provision', this tells vagrant that there is a shell script at setup/bootstrap.sh which is going to provision your vm. You can provision the box with puppet, chef or a variety of other tools, but for the purposes of this simple testing machine, I'm happy to use a shell script.
+Notice the last line 'config.vm.provision', this tells Vagrant that there is a shell script at setup/bootstrap.sh which is going to provision your vm. You can provision the box with Puppet, Chef or a variety of other tools, but for the purposes of this simple testing machine, I'm happy to use a shell script.
 
 Let's have a look at the bootstrap file:
 
@@ -53,15 +53,15 @@ Let's have a look at the bootstrap file:
 	ln -s /opt/node/bin/node /usr/bin/node
 	ln -s /opt/node/bin/npm /usr/bin/npm
 
-After booting the VM, vagrant will run this script, which will can do anything you need it to. All the commands run as root, so there's very little restriction as to what you can achieve.
+After booting the VM, Vagrant will run this script, which will can do anything you need it to. All the commands run as root, so there's very little restriction as to what you can achieve.
 
-We're installing nodejs (downloading the binaries manually because the version of node in the Ubuntu repository is really old), and mongodb (which our app depends on).
+We're installing Node.js (downloading the binaries manually because the version of Node in the Ubuntu repository is really old), and MongoDB (which our app depends on).
 
-Note this line: `cp /vagrant/tests/acceptance-tests/mongodb.conf /etc/mongodb.conf` which installs a custom config for mongodb. 
+Note this line: `cp /vagrant/tests/acceptance-tests/mongodb.conf /etc/mongodb.conf` which installs a custom config for MongoDB. 
 
 By default, Vagrant will mount a share in /vagrant to the current directory (i.e. the directory on the host machine from which you executed `vagrant up`), you can map additional folders by adding `config.vm.synced_folder "path/on/host", "/path/on/guest"` to your Vagrantfile.
 
-Now that we've got our Vagrant config sorted, we can hook this into grunt, using a bit of glue code.
+Now that we've got our Vagrant config sorted, we can hook this into Grunt, using a bit of glue code.
 
 	var shell = require('shelljs');
 
@@ -75,7 +75,7 @@ Now that we've got our Vagrant config sorted, we can hook this into grunt, using
 
 So now that we've got our machine provisioned and booted, we can use Grunt to [deploy our code and start our service][1].
 
-Assuming that we've got all that going on, we can move on to the next step, getting Grunt to deploy the code to the vagrant box
+Assuming that we've got all that going on, we can move on to the next step, getting Grunt to deploy the code to the Vagrant box.
 
 What I'm going to do here is hook the deployment step into the 'vagrant-up' task.
 
@@ -91,7 +91,7 @@ You'll notice that I set the 'config' option inside the task, this option is req
 
 Now, when we run `grunt acceptance`, it'll do the following:
 
-- Spin up the vagrant box
+- Spin up the Vagrant box
 - Deploy the code
 - Tear it down again
 
@@ -143,9 +143,9 @@ Ta-Da! Wasn't that painless?
 
 The key part here is that everything is now in source control. So whenever someone checks out the project, it takes precisely ___one___ command to get the project going. No more time wasted configuring your dev machine to be able to run this, or that. 
 
-The machine is brand-new every time, with it's own spangly mongodb instance ready for use.
+The machine is brand-new every time, with its own spangly MongoDB instance ready for use.
 
-What's that I hear you whine? "_My application depends on shared data, I can't use an empty database_". Bollocks. If you need it, set it up or mock it out. The acceptance tests should set-up and tear-down all their own data, if you rely on shared data sources for acceptance tests then you're going to have a painful time. Script it once and it'll forever be your friend. It's time to enter the dynamic era, no more false failures on your CI build because a shared datasource is missing and/or has been changed.
+What's that I hear you whine? "_My application depends on shared data, I can't use an empty database_". Not true. If you need it, set it up or mock it out. The acceptance tests should set-up and tear-down all their own data, if you rely on shared data sources for acceptance tests then you're going to have a painful time. Script it once and it'll forever be your friend. It's time to enter the dynamic era, no more false failures on your CI build because a shared datasource is missing and/or has been changed.
 
 What's more you can now run `grunt acceptance` from anywhere and ___know___ that it'll be the same. No more environment pains!
 

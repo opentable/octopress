@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: vagrant | toptable Tech Blog]]></title>
+  <title><![CDATA[Category: Vagrant | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/vagrant/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2013-08-21T15:55:33-07:00</updated>
+  <updated>2013-08-22T14:35:21+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Grunt + Vagrant = Acceptance Test Heaven]]></title>
     <link href="http://tech.toptable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/"/>
-    <updated>2013-08-16T15:32:00-07:00</updated>
+    <updated>2013-08-16T15:32:00+01:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven</id>
     <content type="html"><![CDATA[<p>My continued love affair with Grunt reached a new high the other day, when I combined <a href="http://www.vagrantup.com">Vagrant</a> with my <a href="http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">Grunt deployment tasks</a> and test runners.</p>
 
@@ -24,10 +24,10 @@
 
 <p>The objective is simple, we want to have a virtualised environment to run our acceptance tests against, that we can create and provision on demand, to ensure that our acceptance tests only deal with functional-correctness, not data- or environment-correctness.</p>
 
-<p>I created a set of grunt tasks which were able to do the following:</p>
+<p>I created a set of Grunt tasks which were able to do the following:</p>
 
 <ul>
-<li>Spin up an provision a vagrant instance</li>
+<li>Spin up an provision a Vagrant instance</li>
 <li>Deploy the project code</li>
 <li>Start the server</li>
 <li>Run the acceptance tests</li>
@@ -37,9 +37,9 @@
 
 <p>All from a single command: <code>grunt acceptance</code></p>
 
-<p>The price of this magic? About 10 lines of bash script, a 6 line Vagrantfile and some Grunt glue.</p>
+<p>The price of this magic? About ten lines of Bash script, a six line Vagrantfile and some Grunt glue.</p>
 
-<p><strong>Diving in</strong></p>
+<h2>Diving in</h2>
 
 <p>Assuming you've got Vagrant installed, you can create a Vagrantfile in the root of your project, which looks like this:</p>
 
@@ -51,7 +51,7 @@
 end
 </code></pre>
 
-<p>Notice the last line 'config.vm.provision', this tells vagrant that there is a shell script at setup/bootstrap.sh which is going to provision your vm. You can provision the box with puppet, chef or a variety of other tools, but for the purposes of this simple testing machine, I'm happy to use a shell script.</p>
+<p>Notice the last line 'config.vm.provision', this tells Vagrant that there is a shell script at setup/bootstrap.sh which is going to provision your vm. You can provision the box with Puppet, Chef or a variety of other tools, but for the purposes of this simple testing machine, I'm happy to use a shell script.</p>
 
 <p>Let's have a look at the bootstrap file:</p>
 
@@ -70,15 +70,15 @@ ln -s /opt/node/bin/node /usr/bin/node
 ln -s /opt/node/bin/npm /usr/bin/npm
 </code></pre>
 
-<p>After booting the VM, vagrant will run this script, which will can do anything you need it to. All the commands run as root, so there's very little restriction as to what you can achieve.</p>
+<p>After booting the VM, Vagrant will run this script, which will can do anything you need it to. All the commands run as root, so there's very little restriction as to what you can achieve.</p>
 
-<p>We're installing nodejs (downloading the binaries manually because the version of node in the Ubuntu repository is really old), and mongodb (which our app depends on).</p>
+<p>We're installing Node.js (downloading the binaries manually because the version of Node in the Ubuntu repository is really old), and MongoDB (which our app depends on).</p>
 
-<p>Note this line: <code>cp /vagrant/tests/acceptance-tests/mongodb.conf /etc/mongodb.conf</code> which installs a custom config for mongodb.</p>
+<p>Note this line: <code>cp /vagrant/tests/acceptance-tests/mongodb.conf /etc/mongodb.conf</code> which installs a custom config for MongoDB.</p>
 
 <p>By default, Vagrant will mount a share in /vagrant to the current directory (i.e. the directory on the host machine from which you executed <code>vagrant up</code>), you can map additional folders by adding <code>config.vm.synced_folder "path/on/host", "/path/on/guest"</code> to your Vagrantfile.</p>
 
-<p>Now that we've got our Vagrant config sorted, we can hook this into grunt, using a bit of glue code.</p>
+<p>Now that we've got our Vagrant config sorted, we can hook this into Grunt, using a bit of glue code.</p>
 
 <pre><code>var shell = require('shelljs');
 
@@ -93,7 +93,7 @@ grunt.registerTask('vagrant-destroy', function(){
 
 <p>So now that we've got our machine provisioned and booted, we can use Grunt to <a href="http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">deploy our code and start our service</a>.</p>
 
-<p>Assuming that we've got all that going on, we can move on to the next step, getting Grunt to deploy the code to the vagrant box</p>
+<p>Assuming that we've got all that going on, we can move on to the next step, getting Grunt to deploy the code to the Vagrant box.</p>
 
 <p>What I'm going to do here is hook the deployment step into the 'vagrant-up' task.</p>
 
@@ -111,7 +111,7 @@ grunt.registerTask('vagrant-destroy', function(){
 <p>Now, when we run <code>grunt acceptance</code>, it'll do the following:</p>
 
 <ul>
-<li>Spin up the vagrant box</li>
+<li>Spin up the Vagrant box</li>
 <li>Deploy the code</li>
 <li>Tear it down again</li>
 </ul>
@@ -166,11 +166,163 @@ grunt.registerTask('acceptance', [
 
 <p>The key part here is that everything is now in source control. So whenever someone checks out the project, it takes precisely <strong><em>one</em></strong> command to get the project going. No more time wasted configuring your dev machine to be able to run this, or that.</p>
 
-<p>The machine is brand-new every time, with it's own spangly mongodb instance ready for use.</p>
+<p>The machine is brand-new every time, with its own spangly MongoDB instance ready for use.</p>
 
-<p>What's that I hear you whine? "<em>My application depends on shared data, I can't use an empty database</em>". Bollocks. If you need it, set it up or mock it out. The acceptance tests should set-up and tear-down all their own data, if you rely on shared data sources for acceptance tests then you're going to have a painful time. Script it once and it'll forever be your friend. It's time to enter the dynamic era, no more false failures on your CI build because a shared datasource is missing and/or has been changed.</p>
+<p>What's that I hear you whine? "<em>My application depends on shared data, I can't use an empty database</em>". Not true. If you need it, set it up or mock it out. The acceptance tests should set-up and tear-down all their own data, if you rely on shared data sources for acceptance tests then you're going to have a painful time. Script it once and it'll forever be your friend. It's time to enter the dynamic era, no more false failures on your CI build because a shared datasource is missing and/or has been changed.</p>
 
 <p>What's more you can now run <code>grunt acceptance</code> from anywhere and <strong><em>know</em></strong> that it'll be the same. No more environment pains!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Using Vagrant to work with ElasticSearch on your local machine]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine/"/>
+    <updated>2013-08-05T08:45:00+01:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine</id>
+    <content type="html"><![CDATA[<p>Recently, I have started to work a lot more with <a href="http://www.vagrantup.com/">Vagrant</a> as a tool for creating a standard development environment across my team. This essentially means that regardless what the developers' machine is set up or running as, they can still reproduce the same environment as their colleagues just by entering a command.</p>
+
+<p>Configuration managgement is something we have had to embrace to help us maintain an ever changing world of technologies. The hardest thing is knowing what we actually have to build in these environments. We use Vagrant to help us understand this. The simple flow is as follows:</p>
+
+<ul>
+<li>Developer starts a new project</li>
+<li>Developer creates a Vagrantfile to spin up a local VM</li>
+<li>Vagrantfile gets iterated on as the development process goes forward</li>
+</ul>
+
+
+<p>Once the developer understands what they need to actually run their software, we would then go about creating an environment to which this software will actually be deployed for end-to-end testing. I won't go any further into the details of our Vagrant flow in this post, if you want to read more about how to get started with Vagrant, then I would suggest reading <a href="http://shop.oreilly.com/product/0636920026358.do">Vagrant Up and Running</a> by <a href="https://twitter.com/mitchellh">Mitchell Hashimoto</a>.</p>
+
+<h2>Vagrant and ElasticSearch</h2>
+
+<p>Whilst reviewing a book on <a href="http://www.elasticsearch.org/">ElasticSearch</a>, I noticed how simple the instructions were to get up and running with ElasticSearch. Please note, that there are already lots of Puppet modules for configuring ElasticSearch on <a href="http://forge.puppetlabs.com/modules?q=elasticsearch">Puppetlabs Forge</a>. This post only talks about how I was able to quickly spin up some local instances. I didn't want to manually do this, so I decided to use Vagrant (and Puppet) to take care of it for me. The instructions can be summarised as follows:</p>
+
+<ul>
+<li>Download and install the JavaSDK</li>
+<li>Download the specific ElasticSearch package</li>
+<li>Install ElasticSearch</li>
+<li>Download and install curl (to be able to interact with ElasticSearch)</li>
+<li>Make sure the service is started</li>
+</ul>
+
+
+<p>I hate doing this manually. Luckily, with the correct script, I am able to automate all of this as follows:</p>
+
+<pre><code>Vagrant.configure("2") do |config|
+    config.vm.box = "Ubuntu precise 64 VMWare"
+    config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
+    config.vm.network :forwarded_port, guest: 9200, host: 9200
+    config.vm.provision :puppet do |puppet|
+        puppet.module_path = '../setup/modules'
+        puppet.manifests_path = '../setup/manifests'
+        puppet.manifest_file = 'default.pp'
+        puppet.options = '--verbose --debug'
+    end
+end
+</code></pre>
+
+<p>Essentially, this script says to create a clone of a VM from a predefined box, forward port 9200 on the vm to 9200 on my local machine and then provision the server using Puppet. The Puppet script works as follows:</p>
+
+<pre><code>exec { "apt-get-update":
+    command =&gt; "/usr/bin/apt-get update",
+}
+
+package {'curl':
+    provider =&gt; apt,
+    ensure   =&gt; latest,
+    require  =&gt; Exec['apt-get-update']
+}
+
+class {'elasticsearch':
+    version =&gt; '0.90.0',
+    require =&gt; Exec['apt-get-update'],
+}
+</code></pre>
+
+<p>This defines that the command apt-get-update gets applied (due to both the class and the package requiring it) and then will install curl and ElasticSearch in no particular order. Once the script runs, I will be able to open a browser on my local machine, go to http://localhost:9200 and see the newly provisioned ElasticSearch node. The result of the JSON was something similar to this:</p>
+
+<pre><code>{
+    "ok" : true,
+    "status" : 200,
+    "name" : "Gibborim",
+    "version" : {
+        "number" : "0.90.0",
+        "snapshot_build" : false,
+    },
+    "tagline" : "You Know, for Search"
+}
+</code></pre>
+
+<p>By entering the URL, '<strong>http://localhost:9200/_cluster/health?pretty</strong>', you can see the state of the ElasticSearch cluster. It should show something like this:</p>
+
+<pre><code>{
+    "cluster_name" : "elasticsearch",
+    "status" : "yellow",
+    "timed_out" : false,
+    "number_of_nodes" : 1,              
+    "number_of_data_nodes" : 1,         
+    "active_primary_shards" : 5,        
+    "active_shards" : 5,                
+    "relocating_shards" : 0,            
+    "initializing_shards" : 0,          
+    "unassigned_shards" : 5             
+}
+</code></pre>
+
+<p>I wanted to be able to provision multiple nodes and then let them create a cluster. I was able to take the existing Vagrantfile and then using the multi-environment features of Vagrant. This created a new Vagrantfile as follows:</p>
+
+<pre><code>Vagrant::Config.run do |config|
+    config.vm.box = "Ubuntu precise 64 VMWare"
+    config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
+
+    config.vm.define "es1" do |es1|
+        es1.vm.network :hostonly, "192.168.1.10"
+        es1.vm.provision :puppet do |puppet|
+            puppet.module_path = '../setup/modules'
+            puppet.manifests_path = '../setup/manifests'
+            puppet.manifest_file = 'default.pp'
+            puppet.options = '--verbose --debug'
+        end
+    end
+
+    config.vm.define "es2" do |es2|
+        es2.vm.network :hostonly, "192.168.1.11"
+        es2.vm.provision :puppet do |puppet|
+            puppet.module_path = '../setup/modules'
+            puppet.manifests_path = '../setup/manifests'
+            puppet.manifest_file = 'default.pp'
+            puppet.options = '--verbose --debug'
+        end
+    end
+
+    config.vm.define "es3" do |es3|
+        es3.vm.network :hostonly, "192.168.1.12"
+        es3.vm.provision :puppet do |puppet|
+            puppet.module_path = '../setup/modules'
+            puppet.manifests_path = '../setup/manifests'
+            puppet.manifest_file = 'default.pp'
+            puppet.options = '--verbose --debug'
+        end
+    end
+end
+</code></pre>
+
+<p>This effectively tells Vagrant to create three instances of ElasticSearch using the Puppet configuration (as above). Each ElasticSearch node is given its own IP. Thanks to ElasticSearch using Multicast and Unicast discovery, it is able to find other nodes on the network and create a cluster. By running a similar url as before, '<strong>http://192.168.1.10:9200/_cluster/health?pretty</strong>', we can now see that the cluster looks as follows:</p>
+
+<pre><code>{
+    "cluster_name" : "elasticsearch",
+    "status" : "green",
+    "timed_out" : false,
+    "number_of_nodes" : 3,              
+    "number_of_data_nodes" : 3,         
+    "active_primary_shards" : 5,        
+    "active_shards" : 15,                
+    "relocating_shards" : 0,            
+    "initializing_shards" : 0,          
+    "unassigned_shards" : 0             
+}
+</code></pre>
+
+<p>Using this method, we can continue to spin up as many instances as we need to replicate different scenarios or testing conditions. Vagrant has made this very easy to do. If you want a copy of the Vagrantfiles and Puppet modules to try this yourself, then you can find them on my <a href="https://github.com/stack72/vagrant-examples/tree/master/elasticsearch">github repository</a>. The scripts are available under the <a href="http://opensource.org/licenses/MIT">MIT</a> license.</p>
 ]]></content>
   </entry>
   

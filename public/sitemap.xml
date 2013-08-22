@@ -2,51 +2,51 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://tech.toptable.co.uk/blog/2013/06/07/getting-started-with-specrun/</loc>
-        <lastmod>2013-08-09T13:50:20+01:00</lastmod>
+        <lastmod>2013-08-22T14:51:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/blog/2013/06/07/nlocalgeocoder/</loc>
-        <lastmod>2013-08-09T13:50:31+01:00</lastmod>
+        <lastmod>2013-08-22T14:51:01+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.toptable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/
         </loc>
-        <lastmod>2013-08-09T13:50:57+01:00</lastmod>
+        <lastmod>2013-08-22T14:51:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/blog/2013/06/18/ndcoslo/</loc>
-        <lastmod>2013-06-18T17:58:00+01:00</lastmod>
+        <lastmod>2013-08-22T14:51:01+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.toptable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell/
         </loc>
-        <lastmod>2013-08-09T13:51:09+01:00</lastmod>
+        <lastmod>2013-08-22T14:51:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/blog/2013/07/24/one-gun-many-enemies/</loc>
-        <lastmod>2013-08-09T13:51:15+01:00</lastmod>
+        <lastmod>2013-08-22T14:51:01+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.toptable.co.uk/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine/
         </loc>
-        <lastmod>2013-08-08T12:34:42+01:00</lastmod>
+        <lastmod>2013-08-22T14:51:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/blog/2013/08/07/mapreduce-in-mongodb/</loc>
-        <lastmod>2013-08-08T12:34:42+01:00</lastmod>
+        <lastmod>2013-08-22T14:51:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/</loc>
-        <lastmod>2013-08-09T13:51:30+01:00</lastmod>
+        <lastmod>2013-08-22T14:51:01+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.toptable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/
         </loc>
-        <lastmod>2013-08-22T14:35:21+01:00</lastmod>
+        <lastmod>2013-08-22T14:51:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.toptable.co.uk/about/</loc>

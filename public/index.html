@@ -9,7 +9,8 @@
   <meta name="author" content="toptable">
 
   
-  <meta name="description" content="My continued love affair with Grunt reached a new high the other day, when I combined Vagrant with my Grunt deployment tasks and test runners. I&# &hellip;">
+  <meta name="description" content="Counting is the religion of this generation it is its hope and its salvation.
+Gertrude Stein In our NeverEnding quest to provide better experience to &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,6 +81,263 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/09/11/counting-in-elastic-search/">Counting in Elastic Search</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-11T15:48:00+01:00" pubdate data-updated="true">Sep 11<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>Counting is the religion of this generation it is its hope and its salvation.
+Gertrude Stein</p></blockquote>
+
+<p>In our NeverEnding quest to provide better experience to the users we utilise user behaviour logs to influence future results. One particular case is restaurant popularity, which is indicated by many factors, for example how often it is searched and viewed.</p>
+
+<p>In this blog post we will look into multiple ways of counting documents in Elastic Search which is crucial for this kind of activity. All examples here are provided using Elastic Search HTTP interface and code examples implemented with <a href="https://github.com/Yegoroff/PlainElastic.Net">PlainElastic.NET</a> are <a href="https://gist.github.com/gondar/6320578">available here</a></p>
+
+<p>Before we make a deep dive into Elastic Search Counting options let&#8217;s define our expectations:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>So that I can order restaurants by those that are most searched
+</span><span class='line'>As a potential diner
+</span><span class='line'>I want the most searched statistics from the logs to be part of the search database</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Okay, that&#8217;s not exactly how our story was defined but as we don&#8217;t want to discuss the whole search infrastructure here, let&#8217;s assume this is sufficient.</p>
+
+<p>Because we are eager engineers, we will quickly build some mock data against which to test our assumptions. Our restaurant name search logs look something like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{
+</span><span class='line'>  "RestaurantId" : 2,
+</span><span class='line'>  "RestaurantName" : "Restaurant Brian",
+</span><span class='line'>  "DateTime" : "2013-08-16T15:13:47.4833748+01:00"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So we will populate our mock database with appropriate commands and check that all is in place:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>curl http://localhost:9200/store/item/ -XPOST -d '{"RestaurantId":2,"RestaurantName":"Restaurant Brian","DateTime":"2013-08-16T15:13:47.4833748+01:00"}'
+</span><span class='line'>curl http://localhost:9200/store/item/ -XPOST -d '{"RestaurantId":1,"RestaurantName":"Restaurant Cecil","DateTime":"2013-08-16T15:13:47.4833748+01:00"}'
+</span><span class='line'>curl http://localhost:9200/store/item/ -XPOST -d '{"RestaurantId":1,"RestaurantName":"Restaurant Cecil","DateTime":"2013-08-16T15:13:47.4833748+01:00"}'
+</span><span class='line'>curl http://localhost:9200/store/item/_search?q=*\&pretty</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Our expected output is a count of documents for each restaurant. For example:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{
+</span><span class='line'>  "Restaurant Brian" : 1
+</span><span class='line'>  "Restaurant Cecil" : 2
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There are three ways this can be achieved in Elastic Search; using count API (which seems like the most obvious way), a search with type set to count, or using facets to generate counts of all objects grouped by given property. Let&#8217;s compare them:</p>
+
+<h3>Count API</h3>
+
+<p>(<a href="http://www.elasticsearch.org/guide/reference/api/count/">See documentation here</a>)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>curl -XPOST http://localhost:9200/store/item/_count -d '{
+</span><span class='line'>  "field": {
+</span><span class='line'>      "RestaurantName": {
+</span><span class='line'>          "query": "Restaurant Cecil",
+</span><span class='line'>          "default_operator": "AND"
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}'
+</span><span class='line'>{
+</span><span class='line'>  "count":2,
+</span><span class='line'>  "_shards":{"total":5,"successful":5,"failed":0}
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Count is nice little feature which solves our problem. However, if we need count for multiple restaurants we need to execute similar queries multiple times, which may hugely influence both performance of our query and usage of our ElasticSeach cluster.</p>
+
+<h3>Search</h3>
+
+<p>(<a href="http://www.elasticsearch.org/guide/reference/api/search/search-type/">See documentation here</a>)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>curl -XPOST http://localhost:9200/store/item/_search?search_type=count -d ' {
+</span><span class='line'>  "query": {
+</span><span class='line'>      "field": {
+</span><span class='line'>          "RestaurantName": {
+</span><span class='line'>              "query": "Restaurant Cecil",
+</span><span class='line'>              "default_operator": "AND"
+</span><span class='line'>          }
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}'
+</span><span class='line'>{
+</span><span class='line'>  "took":5,"timed_out":false,"_shards":{"total":5,"successful":5,"failed":0},
+</span><span class='line'>  "hits": {
+</span><span class='line'>      "total": 2,
+</span><span class='line'>      "max_score": 0.0,
+</span><span class='line'>      "hits":[]
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Using search type set to count is the same as executing a search request with size set to zero, but it&#8217;s internally optimised for performance. The nice thing about search is that we can use multi_search interface to execute many count queries at once.</p>
+
+<p>On the other hand, the query still will be executed multiple times, so it is only feasible if we want to get popularity for a small subset of all the restaurants we have.</p>
+
+<p>Comparing two previous requests highlights that the query language is slightly different. The DSL for <em>count API</em> is basically the same as for the <em>search API</em>, but you are immediately inside the &#8216;query&#8217; part. That inconsistency on the ElasticSearch side is only a minor inconvenience.</p>
+
+<h3>Facets</h3>
+
+<p>(<a href="http://www.elasticsearch.org/guide/reference/api/search/facets/">See documentation here</a>)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>curl -XPOST http://localhost:9200/store/item/_search?search_type=count -d '
+</span><span class='line'>{
+</span><span class='line'>  "query": {
+</span><span class='line'>      "match_all": {
+</span><span class='line'>           
+</span><span class='line'>      }
+</span><span class='line'>  },
+</span><span class='line'>  "facets": {
+</span><span class='line'>      "ItemsPerCategoryCount": {
+</span><span class='line'>          "terms": {
+</span><span class='line'>              "field": "RestaurantId",
+</span><span class='line'>              "size": 100
+</span><span class='line'>          }
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}'
+</span><span class='line'>{
+</span><span class='line'>  "took":1,"timed_out":false,"_shards":{"total":5,"successful":5,"failed":0},"hits":{"total":132,"max_score":0.0,"hits":[]},
+</span><span class='line'>  "facets": {
+</span><span class='line'>      "ItemsPerCategoryCount": {
+</span><span class='line'>          "_type": "terms",
+</span><span class='line'>          "missing":0,
+</span><span class='line'>          "total":3,
+</span><span class='line'>          "other":0,
+</span><span class='line'>          "terms": [
+</span><span class='line'>              {"term": 2, "count": 1},
+</span><span class='line'>              {"term": 1, "count":2}
+</span><span class='line'>          ]
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Facets is a means to obtain grouping by a given field together with count in a group. It is designed to ease creation of filters which are often naturally part of search results interface.</p>
+
+<p>This is nice feature which grabs for us all counts grouped by given field. That&#8217;s more then we need if we only care for a count of single type, but it&#8217;s invaluable if you want to have counts for all terms in a field. Also note that we are using search type count again, but facets work equally well for all types of searches including those which actually return results.</p>
+
+<p>In the example above we used &#8216;RestaurantId&#8217; field instead of restaurant name, as this field is not analysed. If we used restaurant name it would give us facets for each term e.g. [{&#8220;term&#8221;: &#8220;Restaurant&#8221;, &#8220;count&#8221;: 3}, {&#8220;term&#8221;:&#8221;Cecil&#8221;, &#8220;count&#8221;:2},{&#8220;term&#8221;:&#8221;Brian&#8221;, &#8220;count&#8221;:1}], which is not what we exactly want.</p>
+
+<h3>Conclusion</h3>
+
+<p>It&#8217;s hard to discuss which one is better. Count API is slightly faster then Search of type count. On the other hand search is more flexible, and its queries are consistent with normal search queries. Facets is a different beast altogether as it always grabs all the results. Still, it&#8217;s fun that ElasticSearch is elastic in this aspect giving us variety of approaches.</p>
+
+<p>We are really curious about your experiences in ElasticSearch. If you have any questions, proposals or comments feel free to <a href="mailto:mbazydlo@opentable.com">email me</a>.</p>
+
+<h3>Acknowledgement</h3>
+
+<p>This blog post benefited thanks to invaluable comments from my team (Andrew Metcalfe, Michael Wallett and Tom Harvey), <a href="https://github.com/Yegoroff/PlainElastic.Net">PlainElastic.Net</a> author (Yegoroff) and <a href="https://github.com/pbazydlo">my brother</a>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1486,75 +1744,9 @@ var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/06/07/getting-started-with-specrun/">Getting Started With SpecRun</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-06-07T11:33:00+01:00" pubdate data-updated="true">Jun 7<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>First some background</h2>
-
-<p>We recently switched from writing automated acceptance from Cucumber to SpecFlow&#8230; this is no slight on Cucumber it&#8217;s just that we had a lot of C# developers who wanted to get closer to writing acceptance tests. Worth adding that SpecFlow has also come a long way as a .Net port of Cucumber and is pretty much like for like now.</p>
-
-<h2>Why should I bother with SpecRun?</h2>
-
-<p>Initially we ran our entire unit, integration and acceptance tests via nUnit. Pretty much industry standard but we felt nUnit wasn&#8217;t really a good tool to run acceptance tests - yes it&#8217;ll do the job but we were looking for better performance, quicker failure feedback and more comprehensive reporting. If you want details on SpecRun vs. nUnit Gasper has a <a href="http://gasparnagy.com/2011/09/specrun-because-integration-tests-are-not-unit-tests/">great blog post</a>.</p>
-
-<p><salespitch>SpecRun itself is free to use although there is a random delay when running acceptance locally, setting up SpecRun on a CI environment is totally free and does not include the same delay. Definitely worth trying out and you can purchase a licence later if you like what it offers.</salespitch></p>
-
-<h2>Installing SpecRun</h2>
-
-<p>If you are already using SpecFlow with nUnit the migration to SpecRun is really simple - <a href="http://www.youtube.com/watch?v=c2ge90BWeI0">this video</a> shows you how to setup the test runner but I found myself having to watch it too many times. This post is an attempt at recording the steps should we roll out SpecRun for another project.</p>
-
-<p>I&#8217;m assuming you&#8217;re running Visual Studio and are familiar with Nuget packages. I&#8217;ll break it down so I don&#8217;t miss anything:</p>
-
-<ol>
-<li>In VS, select your Acceptance test project and get the Nuget package down for SpecRun: <code>install-package SpecRun</code>.</li>
-<li>You&#8217;ll notice Nuget automatically adds configuration to your app.config so it&#8217;s safe to remove the nUnit provider setting (this is to enable you to pick and choose your test runner but we prefer to only use SpecRun).</li>
-<li>Open the Default.srprofile file and we normally delete any commented settings here.</li>
-<li>Still inside Default.srprofile add the properties for projectName and projectId. The projectName is what you see in VS the projectId can be found by opening the acceptance .proj file and taking the projectGuid.</li>
-<li>Setup the execution properties - this really depends on what you want to get out of running the tool - what retry count you want, whether to run on multiple threads, etc. Here are the values we normally use:</li>
-</ol>
-
-
-<p><code>&lt;Execution retryFor="None" stopAfterFailures="100" testThreadCount="1" testSchedulingMode="Sequential" apartmentState="STA"/&gt;</code></p>
-
-<ol>
-<li>We did tweak the SpecRun .cmd file used to run acceptance via command line - <a href="https://dl.dropboxusercontent.com/u/8835075/runacceptance.cmd">copy this file</a> to your project root, you may need to tweak some names and paths.</li>
-</ol>
-
-
-<p>Once you&#8217;ve gone through those steps you should be able to browse to your project root, type <strong>runacceptance.cmd tag_to_run</strong> and it&#8217;ll run your acceptance tests tagged <strong>@tag_to_run</strong>  (NOTE: you don&#8217;t need to specify the @ symbol).</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/2/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -1565,6 +1757,10 @@ var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/09/11/counting-in-elastic-search/">Counting in Elastic Search</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">Grunt + Vagrant = Acceptance Test Heaven</a>
@@ -1580,10 +1776,6 @@ var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);
     
       <li class="post">
         <a href="/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine/">Using Vagrant to work with ElasticSearch on your local machine</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/24/one-gun-many-enemies/">One Gun - Many Enemies</a>
       </li>
     
   </ul>

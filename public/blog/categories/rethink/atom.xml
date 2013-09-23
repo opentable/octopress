@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: mongodb | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/mongodb/atom.xml" rel="self"/>
+  <title><![CDATA[Category: rethink | toptable Tech Blog]]></title>
+  <link href="http://tech.toptable.co.uk/blog/categories/rethink/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
   <updated>2013-09-23T16:35:28+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>

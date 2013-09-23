@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: Collaboration - toptable Tech Blog</title>
+  <title>Quick look at RethinkDB - toptable Tech Blog</title>
   <meta name="author" content="toptable">
 
   
-  <meta name="description" content="Category: Collaboration">
+  <meta name="description" content="Someone in the office mentioned RethinkDb and I was impressed by the rhetoric on the site, so I decided to spend a couple of hours spiking one of our &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://tech.toptable.co.ukblog/categories/collaboration/">
+  <link rel="canonical" href="http://tech.toptable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb/">
   <link href="/favicon.ico" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -79,35 +79,147 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Collaboration</h1>
+    
+      <h1 class="entry-title">Quick look at RethinkDB</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Andy Royle</span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-23T16:16:00+01:00" pubdate data-updated="true">Sep 23<span>rd</span>, 2013</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>Someone in the office mentioned <a href="http://www.rethinkdb.com">RethinkDb</a> and I was impressed by the rhetoric on the site, so I decided to spend a couple of hours spiking one of our existing nodejs apps with RethinkDb. The app currently uses MongoDb so inevitably I&#8217;m comparing the two.</p>
 
-  
-  <h2>2013</h2>
+<h1>Things I liked:</h1>
 
-<article>
-  
-<h1><a href="/blog/2013/06/07/nlocalgeocoder/">nLocalGeoCoder</a></h1>
-<time datetime="2013-06-07T11:59:00+01:00" pubdate><span class='month'>Jun</span> <span class='day'>07</span> <span class='year'>2013</span></time>
+<p><strong>Nodejs Driver</strong></p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/dot-net/'>.Net</a>, <a class='category' href='/blog/categories/c-number/'>C#</a>, <a class='category' href='/blog/categories/collaboration/'>Collaboration</a>, <a class='category' href='/blog/categories/oss/'>OSS</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a></span>
-</footer>
+<p>The api on the nodejs driver is pretty nice, it makes a concerted effort to reduce &#8220;pyramid code&#8221; by allowing you to build your query by method-chaining and then call a <code>.run()</code> extension to execute the query.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>r.db('Comics')
+</span><span class='line'> .table('Superheroes')
+</span><span class='line'> .getAll('Marvel', {index: 'universe'})
+</span><span class='line'> .filter({ hasSidekick: true })
+</span><span class='line'> .run(connection, function(err, cursor){
+</span><span class='line'>    cursor.toArray(function(err, items){
+</span><span class='line'>        callback(items);
+</span><span class='line'>    });
+</span><span class='line'> });
+</span></code></pre></td></tr></table></div></figure>
 
 
-</article>
+<p><strong>Interface</strong>
+The management interface is very good, incredibly friendly, and has guided access to things like sharding and replication settings (as well as the usual array of other things to tinker with).</p>
 
+<p><strong>Sharding, Replication and Clustering</strong></p>
+
+<p>It&#8217;s all there, up front in the web UI, written in plain English and with friendly guides to help. The health and performance monitoring is available up-front in clear and concise graphics.</p>
+
+<p><strong>Writes are non-locking operations</strong></p>
+
+<p>A major bugbear for us with mongoDb is that writes require a database-level lock. RethinkDb allows block-level locks for write operations, and furthermore, reads can still proceed while write locks are in effect. <a href="http://en.wikipedia.org/wiki/Multiversion_concurrency_control">MVCC ftw!</a></p>
+
+<h1>Things I didn&#8217;t like:</h1>
+
+<p><strong>Cannot query on unindexed fields</strong></p>
+
+<p>Meaning ad-hoc queries can be a pain-in-the-arse, especially if you have a large data set.</p>
+
+<p><strong>Performance</strong></p>
+
+<p>RethinkDb readily admit that their current release (v1.9.0) has taken a performance hit after implementing their clustering layer. They are hopeful that they can bring the performance back in the next few versions. My very simple, somewhat unscientific testing found it to be about 5 times slower than mongo, for a simple document read (20ms vs 120ms).</p>
+
+<p><strong>Joins</strong></p>
+
+<p>Don&#8217;t get me wrong, it&#8217;s a nice feature, it just makes me feel dirty to do joins on a document database.</p>
+
+<h1>Conclusion</h1>
+
+<p>RethinkDb is a good looking database. It&#8217;s feature-full and dead simple to use. Would I use it in production? Not yet. The performance issues are still a sticking point for me, but I have no doubt that once these are fixed RethinkDb will be a big contender.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Andy Royle</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-23T16:16:00+01:00" pubdate data-updated="true">Sep 23<span>rd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/mongodb/'>mongodb</a>, <a class='category' href='/blog/categories/nosql/'>nosql</a>, <a class='category' href='/blog/categories/rethink/'>rethink</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.toptable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb/" data-via="toptabletech" data-counturl="http://tech.toptable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/09/11/counting-in-elastic-search/" title="Previous Post: Counting in Elastic Search">&laquo; Counting in Elastic Search</a>
+      
+      
+    </p>
+  </footer>
 </article>
 
 </div>

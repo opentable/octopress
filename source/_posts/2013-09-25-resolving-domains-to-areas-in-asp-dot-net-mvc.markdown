@@ -1,0 +1,141 @@
+---
+layout: post
+title: "Resolving domains to areas in ASP.NET MVC"
+date: 2013-09-25 19:28
+comments: true
+author: pstack
+categories: [ASP.NET MVC, Routing, Hackiness]
+---
+When building a previous project, I created an ASP.NET MVC application that would allow subdomains to resolve to different areas of the project and thus show different views. I wanted to be able to extend this functionality. I wanted to allow different domains to point to different areas. This would allow me to deploy the application just once and then have different headers on the webserver. This would allow a single deployment of the application rather than having regionals varaiances. Whilst on a flight to San Francisco, I was able to hack together some code that allows just that. The details of that hackiness are below.
+
+I started with a simple ASP.NET MVC application. I then created an area. The default area registration looks as follows:
+
+	public class Domain1AreaRegistration: AreaRegistration 
+    {
+        public override void RegisterArea(AreaRegistrationContext context)
+        {
+            context.MapRoute(
+                "Domain_1_default",
+                "Domain1/{controller}/{action}/{id}",
+                new { controller = "Home", action = "Index", id = UrlParameter.Optional },
+                new[] { "WebApplication.Controllers" }
+            );
+        }
+
+        public override string AreaName
+        {
+            get { return "Domain1"; }
+        }
+    }
+
+The name of the folder in my project corresponds to the AreaName as above. I have approximately 6 areas in the application that relate to different views. Now is where the hacky magic happens. I build the routing for the application myself. In my global.asax.cs, I have the following declaration:
+
+	protected void Application_Start()
+    {
+        AreaRegistration.RegisterAllAreas();
+
+        //this is done using my IoC container
+		var routingEngine = new RoutingEngineFactory();
+        routingEngine.RoutingRegistration(RouteTable.Routes);
+    }
+
+This is the creation of my RoutingEngine. This class is responsible for taking each area in the system in turn and then creating the routes for my application based on these. I am sure you are asking why I am doing that. The answer is simply that I can use a combination of MapRoute and IRouteConstraints to build a sufficient route for the URLs I need to map. The code looks as follows:
+
+	public void RoutingRegistration(RouteCollection routes)
+    {
+        var areaNames = GetAllAreasRegistered(routes);
+        routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+        routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
+
+        foreach (var area in areaNames.Select(Area.From))
+        {
+            RegisterDefaultRoute(area.Name, routes);
+        }
+    }
+
+    private void RegisterDefaultRoute(string areaName, RouteCollection routes)
+    {
+        var defaultRoute = routes.MapRoute(
+                BuildRouteSegment(areaName, "Default"),
+                "{controller}/{action}/{id}",
+                new { controller = "Home", action = "Index", id = UrlParameter.Optional },
+                BuildUrlConstraint(areaName),
+                new[] { DefaultControllerNameSpace }
+                );
+        defaultRoute.SetAreaDataTokens(areaName);
+    }
+
+The code works as follows:
+
+1. Get a list of all the areas.
+2. Add the Ignore routes as these are more specific and need to be at the top of the list.
+3. To this list of areas, add a new area of name string.Empty. This will allow us to register the routes for the non area parts of the site. This is really hacky as denoted by the code above.
+4. Foreach area in the list, register a route. This route has the same URL for all routes.
+
+But how do we distinguish which of the routes match to a specific domain?
+
+routes.MapRoute in MVC has a number of overloads. The overload we will be using has the following signature:
+
+    public static Route MapRoute(this RouteCollection routes, string name, string url, object defaults, object constraints, string[] namespaces)
+
+
+Notice that is has a parameter for constraints. All I need to do is to build the correct constraint and I will be able to give my system a way to match a specific domain. There is another overload that has no parameter for constraints and that passes null down the stack - so I can pass a null constraint for the non areas based part of the site. There is only a need to pass a constraint to the route if there is an area specified. The code to create the correct constraint looks as following:
+
+	private static object BuildUrlConstraint(string areaName)
+    {
+        object constraint = null;
+        if (!string.IsNullOrWhiteSpace(areaName))
+        {
+            var constraintType = new DomainConstraintFactory(areaName).GetConstraint();
+            constraint = new {controller = constraintType};
+        }
+        return constraint;
+    }
+
+The domain constraint factory does all the work for me here. It can be as simple or as conplex as you need it to be. Here is a snippet of code to show you:
+
+	public class DomainConstraintFactory
+    {
+        private readonly string _areaName;
+        public DomainConstraintFactory(string areaName)
+        {
+            _areaName = areaName;
+        }
+
+        public IRouteConstraint GetConstraint()
+        {
+            switch (_areaName.ToLower())
+            {
+                case "domain1":
+                    return new Domain1Constraint();
+                case "domain2":
+                    return new Domain2Constraint();
+            }
+            return null;
+        }
+    }
+
+The correct constraint will now be able to be passed to the route. The constraints are very simple:
+
+	public class Domain1Constraint : IRouteConstraint
+    {
+        public bool Match(HttpContextBase httpContext, Route route, string parameterName, RouteValueDictionary values, RouteDirection routeDirection)
+        {
+            if (httpContext != null && httpContext.Request != null && httpContext.Request.Url != null)
+            {
+                if (httpContext.Request.Url.Host == "www.mydomain.com")
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+If we register Domain1 and Domain2 areas with the system, MVC will take each route in turn and test the constraint. It will return the Area to show based on the first match on the system. 
+
+I can now pass in www.mydomain1.com and show the specific styling of the views in the Domain1 areas folder. By passing www.mydomain2.com, I can show a completely different set of views and let the user believe that they are on a completely different version of the site
+
+The code needs to be cleaned up a lot. I will be doing this over the coming weeks. I wouldn't quite class this as the best practice way of doing this, but it certainly shows that there is no need to have different versions of a website deployed just to show a different version of an application on a different URL. The biggest usecase here for me is deploying the same application to different countries without the need for separate deployments
+
+

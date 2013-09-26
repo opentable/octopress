@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Vagrant | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/vagrant/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2013-09-23T16:35:28+01:00</updated>
+  <updated>2013-09-26T12:08:33-07:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Grunt + Vagrant = Acceptance Test Heaven]]></title>
     <link href="http://tech.toptable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/"/>
-    <updated>2013-08-16T15:32:00+01:00</updated>
+    <updated>2013-08-16T15:32:00-07:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven</id>
     <content type="html"><![CDATA[<p>My continued love affair with Grunt reached a new high the other day, when I combined <a href="http://www.vagrantup.com">Vagrant</a> with my <a href="http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">Grunt deployment tasks</a> and test runners.</p>
 
@@ -177,7 +177,7 @@ grunt.registerTask('acceptance', [
   <entry>
     <title type="html"><![CDATA[Using Vagrant to work with ElasticSearch on your local machine]]></title>
     <link href="http://tech.toptable.co.uk/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine/"/>
-    <updated>2013-08-05T08:45:00+01:00</updated>
+    <updated>2013-08-05T08:45:00-07:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine</id>
     <content type="html"><![CDATA[<p>Recently, I have started to work a lot more with <a href="http://www.vagrantup.com/">Vagrant</a> as a tool for creating a standard development environment across my team. This essentially means that regardless what the developers' machine is set up or running as, they can still reproduce the same environment as their colleagues just by entering a command.</p>
 

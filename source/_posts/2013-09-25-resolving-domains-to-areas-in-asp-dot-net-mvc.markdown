@@ -88,6 +88,7 @@ Notice that is has a parameter for constraints. All I need to do is to build the
     	}
     	return constraint;
 	}
+	
 The domain constraint factory does all the work for me here. It can be as simple or as complex as you need it to be. Here is a snippet of code to show you:
 
     public class DomainConstraintFactory
@@ -110,6 +111,7 @@ The domain constraint factory does all the work for me here. It can be as simple
         	return null;
     	}
 	}
+	
 The correct constraint will now be able to be passed to the route. The constraints are very simple:
 
     public class Domain1Constraint : IRouteConstraint
@@ -125,7 +127,8 @@ The correct constraint will now be able to be passed to the route. The constrain
             }
             return false;
         }
-}
+	}
+	
 If we register Domain1 and Domain2 areas with the system, MVC will take each route in turn and test the constraint. It will return the Area to show based on the first match on the system.
 
 I can now pass in www.mydomain1.com and show the specific styling of the views in the Domain1 areas folder. By passing www.mydomain2.com, I can show a completely different set of views and let the user believe that they are on a completely different version of the site

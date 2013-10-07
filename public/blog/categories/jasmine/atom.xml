@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Jasmine | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/jasmine/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2013-09-26T12:08:33-07:00</updated>
+  <updated>2013-10-07T10:02:05+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[One Gun - Many Enemies]]></title>
     <link href="http://tech.toptable.co.uk/blog/2013/07/24/one-gun-many-enemies/"/>
-    <updated>2013-07-24T14:32:00-07:00</updated>
+    <updated>2013-07-24T14:32:00+01:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/07/24/one-gun-many-enemies</id>
     <content type="html"><![CDATA[<p>I spent some time, re-investigating Javascript. After a few months of intensive TDD and SOLID training at OpenTable I was curious how those principles apply in a slightly different environment. Guess what, they do not differ that much... I planned to write about all this sometime in the future after gaining more experience from real battles ahead, however <a href="http://watirmelon.com/2013/02/09/why-i-dont-like-Jasmine/">Watirmelon post</a> invited me to attack this subject immediately.</p>
 

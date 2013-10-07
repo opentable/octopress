@@ -28,7 +28,7 @@ I started with a simple ASP.NET MVC application. I then created an area. The def
     	}
 	}
 	
-The name of the folder in my project corresponds to the AreaName as above. I have approximately 6 areas in the application that relate to different views. Now is where the hacky magic happens. I build the routing for the application myself. In my global.asax.cs, I have the following declaration:
+The name of the folder in my project corresponds to the AreaName as above. I have approximately six areas in the application that relate to different views. Now is where the hacky magic happens. I build the routing for the application myself. In my global.asax.cs, I have the following declaration:
 
 	protected void Application_Start()
 	{
@@ -39,7 +39,7 @@ The name of the folder in my project corresponds to the AreaName as above. I hav
     	routingEngine.RoutingRegistration(RouteTable.Routes);
 	}
 	
-This is the creation of my RoutingEngine. This class is responsible for taking each area in the system in turn and then creating the routes for my application based on these. I am sure you are asking why I am doing that. The answer is simply that I can use a combination of MapRoute and IRouteConstraints to build a sufficient route for the URLs I need to map. The code looks as follows:
+This is the creation of my RoutingEngine. This class is responsible for taking each area in the system in turn and then creating the routes for my application based on these. I am sure you are asking why I am doing that? The answer is simply that I can use a combination of MapRoute and IRouteConstraints to build a sufficient route for the URLs I need to map. The code looks as follows:
 
 	public void RoutingRegistration(RouteCollection routes)
 	{
@@ -65,7 +65,7 @@ This is the creation of my RoutingEngine. This class is responsible for taking e
     	defaultRoute.SetAreaDataTokens(areaName);
 	}
 	
-The code works as follows:
+The code works in the following way:
 
 Get a list of all the areas.
 Add the Ignore routes as these are more specific and need to be at the top of the list.
@@ -131,8 +131,6 @@ The correct constraint will now be able to be passed to the route. The constrain
 	
 If we register Domain1 and Domain2 areas with the system, MVC will take each route in turn and test the constraint. It will return the Area to show based on the first match on the system.
 
-I can now pass in www.mydomain1.com and show the specific styling of the views in the Domain1 areas folder. By passing www.mydomain2.com, I can show a completely different set of views and let the user believe that they are on a completely different version of the site
+I can now pass in www.mydomain1.com and show the specific styling of the views in the Domain1 areas folder. By passing www.mydomain2.com, I can show a completely different set of views and let the user believe that they are on a completely different version of the site.
 
-The code needs to be cleaned up a lot. I will be doing this over the coming weeks. I wouldn’t quite class this as the best practice way of doing this, but it certainly shows that there is no need to have different versions of a website deployed just to show a different version of an application on a different URL. The biggest usecase here for me is deploying the same application to different countries without the need for separate deployments
-
-
+The code needs to be cleaned up a lot. I will be doing this over the coming weeks. I wouldn’t quite class this as the best practice way of doing this, but it certainly shows that there is no need to have different versions of a website deployed just to show a different version of an application on a different URL. The biggest usecase here for me is deploying the same application to different countries without the need for separate deployments.

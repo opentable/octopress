@@ -102,7 +102,7 @@
   
 
 
-<time datetime="2013-09-25T19:28:00-07:00" pubdate data-updated="true">Sep 25<span>th</span>, 2013</time>
+<time datetime="2013-09-25T19:28:00+01:00" pubdate data-updated="true">Sep 25<span>th</span>, 2013</time>
         
       </p>
     
@@ -132,7 +132,7 @@
 }
 </code></pre>
 
-<p>The name of the folder in my project corresponds to the AreaName as above. I have approximately 6 areas in the application that relate to different views. Now is where the hacky magic happens. I build the routing for the application myself. In my global.asax.cs, I have the following declaration:</p>
+<p>The name of the folder in my project corresponds to the AreaName as above. I have approximately six areas in the application that relate to different views. Now is where the hacky magic happens. I build the routing for the application myself. In my global.asax.cs, I have the following declaration:</p>
 
 <pre><code>protected void Application_Start()
 {
@@ -144,7 +144,7 @@
 }
 </code></pre>
 
-<p>This is the creation of my RoutingEngine. This class is responsible for taking each area in the system in turn and then creating the routes for my application based on these. I am sure you are asking why I am doing that. The answer is simply that I can use a combination of MapRoute and IRouteConstraints to build a sufficient route for the URLs I need to map. The code looks as follows:</p>
+<p>This is the creation of my RoutingEngine. This class is responsible for taking each area in the system in turn and then creating the routes for my application based on these. I am sure you are asking why I am doing that? The answer is simply that I can use a combination of MapRoute and IRouteConstraints to build a sufficient route for the URLs I need to map. The code looks as follows:</p>
 
 <pre><code>public void RoutingRegistration(RouteCollection routes)
 {
@@ -171,7 +171,7 @@ private void RegisterDefaultRoute(string areaName, RouteCollection routes)
 }
 </code></pre>
 
-<p>The code works as follows:</p>
+<p>The code works in the following way:</p>
 
 <p>Get a list of all the areas.
 Add the Ignore routes as these are more specific and need to be at the top of the list.
@@ -240,9 +240,9 @@ Notice that is has a parameter for constraints. All I need to do is to build the
 
 <p>If we register Domain1 and Domain2 areas with the system, MVC will take each route in turn and test the constraint. It will return the Area to show based on the first match on the system.</p>
 
-<p>I can now pass in www.mydomain1.com and show the specific styling of the views in the Domain1 areas folder. By passing www.mydomain2.com, I can show a completely different set of views and let the user believe that they are on a completely different version of the site</p>
+<p>I can now pass in www.mydomain1.com and show the specific styling of the views in the Domain1 areas folder. By passing www.mydomain2.com, I can show a completely different set of views and let the user believe that they are on a completely different version of the site.</p>
 
-<p>The code needs to be cleaned up a lot. I will be doing this over the coming weeks. I wouldn’t quite class this as the best practice way of doing this, but it certainly shows that there is no need to have different versions of a website deployed just to show a different version of an application on a different URL. The biggest usecase here for me is deploying the same application to different countries without the need for separate deployments</p>
+<p>The code needs to be cleaned up a lot. I will be doing this over the coming weeks. I wouldn’t quite class this as the best practice way of doing this, but it certainly shows that there is no need to have different versions of a website deployed just to show a different version of an application on a different URL. The biggest usecase here for me is deploying the same application to different countries without the need for separate deployments.</p>
 </div>
   
   
@@ -271,7 +271,7 @@ Notice that is has a parameter for constraints. All I need to do is to build the
   
 
 
-<time datetime="2013-09-23T16:16:00-07:00" pubdate data-updated="true">Sep 23<span>rd</span>, 2013</time>
+<time datetime="2013-09-23T16:16:00+01:00" pubdate data-updated="true">Sep 23<span>rd</span>, 2013</time>
         
       </p>
     
@@ -365,7 +365,7 @@ The management interface is very good, incredibly friendly, and has guided acces
   
 
 
-<time datetime="2013-09-11T15:48:00-07:00" pubdate data-updated="true">Sep 11<span>th</span>, 2013</time>
+<time datetime="2013-09-11T15:48:00+01:00" pubdate data-updated="true">Sep 11<span>th</span>, 2013</time>
         
       </p>
     
@@ -622,7 +622,7 @@ Gertrude Stein</p></blockquote>
   
 
 
-<time datetime="2013-08-16T15:32:00-07:00" pubdate data-updated="true">Aug 16<span>th</span>, 2013</time>
+<time datetime="2013-08-16T15:32:00+01:00" pubdate data-updated="true">Aug 16<span>th</span>, 2013</time>
         
       </p>
     
@@ -810,7 +810,7 @@ grunt.registerTask('acceptance', [
   
 
 
-<time datetime="2013-08-08T15:27:00-07:00" pubdate data-updated="true">Aug 8<span>th</span>, 2013</time>
+<time datetime="2013-08-08T15:27:00+01:00" pubdate data-updated="true">Aug 8<span>th</span>, 2013</time>
         
       </p>
     
@@ -1277,7 +1277,7 @@ We&#8217;ve got all the component parts, now lets put it together (plus a few ot
   
 
 
-<time datetime="2013-08-07T10:40:00-07:00" pubdate data-updated="true">Aug 7<span>th</span>, 2013</time>
+<time datetime="2013-08-07T10:40:00+01:00" pubdate data-updated="true">Aug 7<span>th</span>, 2013</time>
         
       </p>
     
@@ -1371,7 +1371,7 @@ We&#8217;ve got all the component parts, now lets put it together (plus a few ot
   
 
 
-<time datetime="2013-08-05T08:45:00-07:00" pubdate data-updated="true">Aug 5<span>th</span>, 2013</time>
+<time datetime="2013-08-05T08:45:00+01:00" pubdate data-updated="true">Aug 5<span>th</span>, 2013</time>
         
       </p>
     
@@ -1550,7 +1550,7 @@ end
   
 
 
-<time datetime="2013-07-24T14:32:00-07:00" pubdate data-updated="true">Jul 24<span>th</span>, 2013</time>
+<time datetime="2013-07-24T14:32:00+01:00" pubdate data-updated="true">Jul 24<span>th</span>, 2013</time>
         
       </p>
     
@@ -1698,7 +1698,7 @@ end
   
 
 
-<time datetime="2013-07-08T18:51:00-07:00" pubdate data-updated="true">Jul 8<span>th</span>, 2013</time>
+<time datetime="2013-07-08T18:51:00+01:00" pubdate data-updated="true">Jul 8<span>th</span>, 2013</time>
         
       </p>
     
@@ -1768,7 +1768,7 @@ end
   
 
 
-<time datetime="2013-06-18T11:59:00-07:00" pubdate data-updated="true">Jun 18<span>th</span>, 2013</time>
+<time datetime="2013-06-18T11:59:00+01:00" pubdate data-updated="true">Jun 18<span>th</span>, 2013</time>
         
       </p>
     

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ElasticSearch | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/elasticsearch/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2013-09-26T12:08:33-07:00</updated>
+  <updated>2013-10-07T10:02:05+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Counting in Elastic Search]]></title>
     <link href="http://tech.toptable.co.uk/blog/2013/09/11/counting-in-elastic-search/"/>
-    <updated>2013-09-11T15:48:00-07:00</updated>
+    <updated>2013-09-11T15:48:00+01:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/09/11/counting-in-elastic-search</id>
     <content type="html"><![CDATA[<blockquote><p>Counting is the religion of this generation it is its hope and its salvation.
 Gertrude Stein</p></blockquote>
@@ -188,7 +188,7 @@ curl -XPOST http://localhost:9200/store/item/_search?search_type=count -d '
   <entry>
     <title type="html"><![CDATA[Using Vagrant to work with ElasticSearch on your local machine]]></title>
     <link href="http://tech.toptable.co.uk/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine/"/>
-    <updated>2013-08-05T08:45:00-07:00</updated>
+    <updated>2013-08-05T08:45:00+01:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine</id>
     <content type="html"><![CDATA[<p>Recently, I have started to work a lot more with <a href="http://www.vagrantup.com/">Vagrant</a> as a tool for creating a standard development environment across my team. This essentially means that regardless what the developers' machine is set up or running as, they can still reproduce the same environment as their colleagues just by entering a command.</p>
 

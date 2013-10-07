@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: mongodb | toptable Tech Blog]]></title>
+  <title><![CDATA[Category: MongoDB | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/mongodb/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2013-09-26T12:08:33-07:00</updated>
+  <updated>2013-10-07T10:02:05+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Quick look at RethinkDB]]></title>
     <link href="http://tech.toptable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb/"/>
-    <updated>2013-09-23T16:16:00-07:00</updated>
+    <updated>2013-09-23T16:16:00+01:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb</id>
     <content type="html"><![CDATA[<p>Someone in the office mentioned <a href="http://www.rethinkdb.com">RethinkDb</a> and I was impressed by the rhetoric on the site, so I decided to spend a couple of hours spiking one of our existing nodejs apps with RethinkDb. The app currently uses MongoDb so inevitably I'm comparing the two.</p>
 
@@ -71,6 +71,73 @@ The management interface is very good, incredibly friendly, and has guided acces
 <h1>Conclusion</h1>
 
 <p>RethinkDb is a good looking database. It's feature-full and dead simple to use. Would I use it in production? Not yet. The performance issues are still a sticking point for me, but I have no doubt that once these are fixed RethinkDb will be a big contender.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[MapReduce in MongoDB]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2013/08/07/mapreduce-in-mongodb/"/>
+    <updated>2013-08-07T10:40:00+01:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2013/08/07/mapreduce-in-mongodb</id>
+    <content type="html"><![CDATA[<p>One of the first things I took on when joining toptable was building a new endpoint in our reviews API to aggregate and summarise restaurant review data. Thankfully, at the time, all the data I needed was cached in memory so building the response object was a simple set of linq queries over the cached reviews.</p>
+
+<h2>The problem</h2>
+
+<p>Over time the number of reviews grow, and grow, and grow!  In fact it is inevitable that, in time, it will reach a point where caching all this data in memory would be madness.  One option to mitigate this would be to limit the cache to a fixed date range but this won't work in this instance because the summary logic supports custom date ranges.  Another option would be to pull the data from the persistence store each and every time it's required however this would seriously impact load on the infrastructure and degrade performance of the API.</p>
+
+<p>We like to be proactive at toptable, so during innovation time (yes! we get time to innovate on our development) I looked at finding an alternate solution that would meet the requirements of the logic and wouldn't drastically increase load or degrade performance.</p>
+
+<h2>The solution</h2>
+
+<p>MongoDB supports <a href="http://en.wikipedia.org/wiki/MapReduce">MapReduce</a> which allows processing large volumes of data (Map), running arbitrary logic to summarise (Reduce) and producing some results.  In MongoDB the MapReduce functionality uses JavaScript functions to perform the map and reduce steps and the syntax is relatively simple to understand:-</p>
+
+<pre><code>db.largeDataset.mapReduce(mapFunction, 
+                          reduceFunction, 
+                          { out: "summary" }
+</code></pre>
+
+<p>In the above example the largeDataset collection is mapped using the predefined mapFunction, the results are passed to the reduceFunction and the reduced data is finally stored in the summary collection. On top of this you can specify queries as well as a finalize function to "tweak" the reduce results.</p>
+
+<p>Because map, reduce &amp; finalize are functions that only operate on their inputs the workload can be parallelized although the final results would be stored in one location.</p>
+
+<h4>Map</h4>
+
+<p>The key purpose of the map function is to take the complex documents and produce a structure conducive to summarising whilst at the same time defining the granularity of the results using grouping.</p>
+
+<p>For example if you wanted to get the number of reviews by restaurant then you'd group by the restaurant's unique identifier meaning that the reduce function would produce a single result for each restaurant:-</p>
+
+<pre><code>var mapFunction = function() {
+                    emit(this.RestaurantId, 1);
+                  };
+</code></pre>
+
+<p>This function, called on each review, maps the review to the value 1 and groups by the RestaurantId.  The value 1 was chosen because, as you will see in the continuation of this example below, it's the easiest way to calculate the count of reviews per restaurant.</p>
+
+<h4>Reduce</h4>
+
+<p>The key purpose of the reduce function is to take a batch of mapped values for a given group and return a single result.  All values emited from the map function are passed to the reduce function although since the batch size is decided by MongoDB there may be multiple calls to reduce.  In fact given a sufficiently large source dataset the reduce function will be passed results from previous reduce function calls as well.  For example if there were 250 mapped results in a group and batches of 100 were reduced by each call then four calls would be needed, three to reduce the initial 250 results and a final call to reduce these results into the final value for the group.</p>
+
+<p>To continue the example from above:-</p>
+
+<pre><code>var reduceFunction = function(group, values) {
+                       return Array.sum(values);
+                     };
+</code></pre>
+
+<p>The results from this function would be stored in the collection defined in the mapReduce call with an <em>id and value.  The </em>id property is populated with the group id and the value property will contain the final reduce result for that group.</p>
+
+<h2>Getting Started in C#</h2>
+
+<p>The following are a list of projects/resources to look at if you want to implement Mongo MapReduce in your scenario with emphasis on C#:-</p>
+
+<ul>
+<li><a href="http://docs.mongodb.org/manual/tutorial/map-reduce-examples">Mongo Map-Reduce Examples</a> is a useful primer document.</li>
+<li><a href="http://cookbook.mongodb.org">Mongo Cookbook</a> has a number of "real world" examples of MapReduce</li>
+<li><a href="http://docs.mongodb.org/ecosystem/drivers/csharp">Mongo C# driver</a> has some logic to perform MapReduce however it is only a thin layer over the underlying syntax and uses JavaScript functions passed as strings.</li>
+<li><a href="http://github.com/craiggwilson/fluent-mongo/wiki/Map-Reduce">Fluent-Mongo</a> provides a linq syntax over simple map reduce functions.  Interestingly it can perform multiple calculations on a set of data although at present it doesn't support more complex logic.</li>
+<li><a href="http://twitter.com/odetocode">K.Scott Allen</a> has written two articles on MapReduce, <a href="http://odetocode.com/blogs/scott/archive/2012/03/19/a-simple-mapreduce-with-mongodb-and-c.aspx">A Simple MapReduce...</a> and <a href="http://odetocode.com/blogs/scott/archive/2012/03/29/a-simpler-mapreduce-with-mongodb-and-c.aspx">A Simpler MapReduce...</a></li>
+</ul>
+
 ]]></content>
   </entry>
   

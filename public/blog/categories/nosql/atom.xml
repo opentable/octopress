@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: nosql | toptable Tech Blog]]></title>
+  <title><![CDATA[Category: NoSQL | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/nosql/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2013-09-26T12:08:33-07:00</updated>
+  <updated>2013-10-07T10:02:05+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Quick look at RethinkDB]]></title>
     <link href="http://tech.toptable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb/"/>
-    <updated>2013-09-23T16:16:00-07:00</updated>
+    <updated>2013-09-23T16:16:00+01:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb</id>
     <content type="html"><![CDATA[<p>Someone in the office mentioned <a href="http://www.rethinkdb.com">RethinkDb</a> and I was impressed by the rhetoric on the site, so I decided to spend a couple of hours spiking one of our existing nodejs apps with RethinkDb. The app currently uses MongoDb so inevitably I'm comparing the two.</p>
 

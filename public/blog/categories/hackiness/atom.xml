@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Hackiness | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/hackiness/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2013-09-26T12:08:33-07:00</updated>
+  <updated>2013-10-07T10:02:05+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Resolving domains to areas in ASP.NET MVC]]></title>
     <link href="http://tech.toptable.co.uk/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc/"/>
-    <updated>2013-09-25T19:28:00-07:00</updated>
+    <updated>2013-09-25T19:28:00+01:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc</id>
     <content type="html"><![CDATA[<p>When building a previous project, I created an ASP.NET MVC application that would allow subdomains to resolve to different areas of the project and thus show different views. I wanted to be able to extend this functionality. I wanted to allow different domains to point to different areas. This would allow me to deploy the application just once and then have different headers on the web server rather than regional variances. Whilst on a flight to San Francisco, I was able to hack together some code that allows just that. The details of that hackiness are below.</p>
 
@@ -41,7 +41,7 @@
 }
 </code></pre>
 
-<p>The name of the folder in my project corresponds to the AreaName as above. I have approximately 6 areas in the application that relate to different views. Now is where the hacky magic happens. I build the routing for the application myself. In my global.asax.cs, I have the following declaration:</p>
+<p>The name of the folder in my project corresponds to the AreaName as above. I have approximately six areas in the application that relate to different views. Now is where the hacky magic happens. I build the routing for the application myself. In my global.asax.cs, I have the following declaration:</p>
 
 <pre><code>protected void Application_Start()
 {
@@ -53,7 +53,7 @@
 }
 </code></pre>
 
-<p>This is the creation of my RoutingEngine. This class is responsible for taking each area in the system in turn and then creating the routes for my application based on these. I am sure you are asking why I am doing that. The answer is simply that I can use a combination of MapRoute and IRouteConstraints to build a sufficient route for the URLs I need to map. The code looks as follows:</p>
+<p>This is the creation of my RoutingEngine. This class is responsible for taking each area in the system in turn and then creating the routes for my application based on these. I am sure you are asking why I am doing that? The answer is simply that I can use a combination of MapRoute and IRouteConstraints to build a sufficient route for the URLs I need to map. The code looks as follows:</p>
 
 <pre><code>public void RoutingRegistration(RouteCollection routes)
 {
@@ -80,7 +80,7 @@ private void RegisterDefaultRoute(string areaName, RouteCollection routes)
 }
 </code></pre>
 
-<p>The code works as follows:</p>
+<p>The code works in the following way:</p>
 
 <p>Get a list of all the areas.
 Add the Ignore routes as these are more specific and need to be at the top of the list.
@@ -149,9 +149,9 @@ Notice that is has a parameter for constraints. All I need to do is to build the
 
 <p>If we register Domain1 and Domain2 areas with the system, MVC will take each route in turn and test the constraint. It will return the Area to show based on the first match on the system.</p>
 
-<p>I can now pass in www.mydomain1.com and show the specific styling of the views in the Domain1 areas folder. By passing www.mydomain2.com, I can show a completely different set of views and let the user believe that they are on a completely different version of the site</p>
+<p>I can now pass in www.mydomain1.com and show the specific styling of the views in the Domain1 areas folder. By passing www.mydomain2.com, I can show a completely different set of views and let the user believe that they are on a completely different version of the site.</p>
 
-<p>The code needs to be cleaned up a lot. I will be doing this over the coming weeks. I wouldn’t quite class this as the best practice way of doing this, but it certainly shows that there is no need to have different versions of a website deployed just to show a different version of an application on a different URL. The biggest usecase here for me is deploying the same application to different countries without the need for separate deployments</p>
+<p>The code needs to be cleaned up a lot. I will be doing this over the coming weeks. I wouldn’t quite class this as the best practice way of doing this, but it certainly shows that there is no need to have different versions of a website deployed just to show a different version of an application on a different URL. The biggest usecase here for me is deploying the same application to different countries without the need for separate deployments.</p>
 ]]></content>
   </entry>
   

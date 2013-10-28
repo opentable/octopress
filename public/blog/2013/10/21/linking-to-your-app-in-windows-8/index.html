@@ -1,0 +1,314 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Linking to your app in Windows 8 - toptable Tech Blog</title>
+  <meta name="author" content="toptable">
+
+  
+  <meta name="description" content="In an effort to raise the visibility of our excellent Windows 8 app we have recently connected www.opentable.com to the Windows Store. This was &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.toptable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8/">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="toptable Tech Blog" type="application/atom+xml">
+  <script type="text/javascript" src="http://use.typekit.com/syx2vfn.js"></script>
+  <script type="text/javascript">try { Typekit.load(); } catch (e) { }</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">toptable Tech Blog</a></h1>
+  
+    <h2>The technology blog for toptable and OpenTable.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.toptable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Linking to your app in Windows 8</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">John Catterfeld</span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-21T17:36:00+01:00" pubdate data-updated="true">Oct 21<span>st</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>In an effort to raise the visibility of our excellent Windows 8 app we have recently connected <a href="http://www.opentable.com">www.opentable.com</a> to the Windows Store.  This was simply a case of adding two lines of meta data to our site. Or it should have been &ndash; there were several gotchas along the way that are worth sharing.</p>
+
+<h2>The code</h2>
+
+<p>The meta data that we added to the site are an <em>application ID</em>, and what Microsoft have termed the <em>Package Family name</em>.  Once you have these, add the following lines of code to your page &lt;head&gt;.</p>
+
+<pre><code>&lt;meta name="msApplication-ID" content="OpenTable.OpenTable"/&gt; 
+&lt;meta name="msApplication-PackageFamilyName" content="OpenTable.OpenTable_r44en0zefym0a"/&gt;
+</code></pre>
+
+<p><img class="right" src="/images/posts/get-app-for-this-site.png"></p>
+
+<p>This will enable the <strong>&#8220;Get app for this site&#8221;</strong> link when you are viewing your page in the full-screen Metro version of Internet Explorer (i.e. launched from the start screen); the desktop version of IE doesn&#8217;t have this capability.</p>
+
+<p>There are <a href="http://msdn.microsoft.com/en-us/library/ie/hh781489%28v=vs.85%29.aspx#code-snippet-1">three other optional meta values</a> that can also be used to control your link.</p>
+
+<h2>Finding the values</h2>
+
+<p>There are at least two ways of finding the values. If you have your application code and Visual Studio 2012 (or later) then the values can be found in the <strong>package.appxmanifest</strong> file &ndash; open this in VS and it automatically launches the manifest designer view.  Select the Packaging tab and the &#8220;Package name&#8221; is the <em>ID</em>, and the <em>Package family name</em> is at the bottom of this screen.</p>
+
+<p><img class="center" src="/images/posts/vs-screenshot.png"></p>
+
+<p>If you don&#8217;t have the local code with Visual Studio you can still find out these values by other means.</p>
+
+<p>The <strong>msApplication-PackageFamilyName</strong> can be found in the source code of your online Windows 8 app.  For example, <a href="view-source:http://apps.microsoft.com/windows/en-us/app/d7c37fb3-d594-4366-8003-e49c8e953095">viewing the source of the OpenTable app</a> shows a Javascript variable <code>packageFamilyName</code> embedded in the page head.</p>
+
+<pre><code>var packageFamilyName = 'OpenTable.OpenTable_r44en0zefym0a';
+</code></pre>
+
+<p>The <strong>msApplication-ID</strong> is still found in the <code>package.appxmanifest</code> file in your Win8 app, but you don&#8217;t necessarily need to have the local code or Visual Studio.  We were able to access package.appxmanifest in our GitHub repo (it&#8217;s an XML file) and the msApplication-ID was the same as the <strong>identity name</strong>.  I don&#8217;t know if the Application ID and the identity name are always the same, but they were for us.</p>
+
+<pre><code>&lt;Identity Name="OpenTable.OpenTable" Publisher="CN=9C8CE42A-5BD4-4679" Version="1.0.0.1910" /&gt; 
+</code></pre>
+
+<h2>Gotchas</h2>
+
+<p>We tried opening the site in Visual Studio 2012 in Windows 7, but the project containing package.appxmanifest wouldn&#8217;t open.  We had to open the solution in Windows 8, which finally worked once we&#8217;d logged into MSDN and installed the suggested updates.</p>
+
+<p>Also, the content values of the meta data are not case sensitive, but the names msApplication-ID and msApplication-PackageFamilyName are.</p>
+
+<p>Finally, having entered what we knew to be the correct values, clicking the &#8220;Get app for this site&#8221; link still wouldn&#8217;t take us to <a href="http://apps.microsoft.com/windows/en-us/app/d7c37fb3-d594-4366-8003-e49c8e953095">the OpenTable app in the Windows store</a>.  After checking with an American colleague the penny dropped that the OpenTable app is only available in the US and Microsoft have unfortunately not provided any visual feedback to explain this.</p>
+
+<p>Luckily instead of just having to take his word that the new code worked there is a way to change your Windows Store settings and fake your location.  <a href="http://www.guidingtech.com/20936/change-windows-8-store-region/">Have a look at this helpful article</a> and you&#8217;re all set to have your website and Windows app happily talking to each other.</p>
+
+<h3>Further reading</h3>
+
+<ul>
+<li><a href="http://msdn.microsoft.com/en-us/library/ie/hh781489%28v=vs.85%29.aspx">Connect your website to your Windows Store app</a> (Internet Explorer Dev Center)</li>
+<li><a href="http://blogs.msdn.com/b/windowsstore/archive/2012/02/22/linking-to-your-apps-on-the-web.aspx">Linking to your apps on the web</a> (MSDN blog)</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">John Catterfeld</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-21T17:36:00+01:00" pubdate data-updated="true">Oct 21<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/opentable/'>OpenTable</a>, <a class='category' href='/blog/categories/windows8/'>Windows8,</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.toptable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8/" data-via="toptabletech" data-counturl="http://tech.toptable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc/" title="Previous Post: Resolving domains to areas in ASP.NET MVC">&laquo; Resolving domains to areas in ASP.NET MVC</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/10/21/linking-to-your-app-in-windows-8/">Linking to your app in Windows 8</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc/">Resolving domains to areas in ASP.NET MVC</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/23/quick-look-at-rethinkdb/">Quick look at RethinkDB</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/11/counting-in-elastic-search/">Counting in Elastic Search</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">Grunt + Vagrant = Acceptance Test Heaven</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/toptabletech"  data-widget-id="351711375858466817">Tweets by @toptabletech</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2013 - toptable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

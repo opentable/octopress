@@ -4,7 +4,7 @@ title: "Linking to your app in Windows 8"
 date: 2013-10-21 17:36
 comments: true
 author: jcatterfeld
-categories: Windows8, OpenTable
+categories: OpenTable, Windows8
 ---
 
 In an effort to raise the visibility of our excellent Windows 8 app we have recently connected [www.opentable.com][1] to the Windows Store.  This was simply a case of adding two lines of meta data to our site. Or it should have been &ndash; there were several gotchas along the way that are worth sharing.

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Hipchat | toptable Tech Blog]]></title>
+  <link href="http://tech.toptable.co.uk/blog/categories/hipchat/atom.xml" rel="self"/>
+  <link href="http://tech.toptable.co.uk/"/>
+  <updated>2013-11-22T09:52:27+00:00</updated>
+  <id>http://tech.toptable.co.uk/</id>
+  <author>
+    <name><![CDATA[toptable]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Beginning a journey to chatops with Hubot]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/"/>
+    <updated>2013-11-22T09:34:00+00:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot</id>
+    <content type="html"><![CDATA[<p><img class="center" src="/images/posts/hubot_pug_me.png"></p>
+
+<p>As a part of our 30% time a few of our team, <a href="https://twitter.com/ajroyle">@ajroyle</a>, <a href="https://twitter.com/stack72">@stack72</a> and I (<a href="https://twitter.com/ryantomlinson">@ryantomlinson</a>) decided to get together and look at <a href="http://hubot.github.com/">Hubot</a> with <a href="https://www.hipchat.com/">Hipchat</a> integration. There are several weird and wonderful scripts that ship with Hubot (see above) but the core concept of driving tooling via chat is one that we see value in.</p>
+
+<h2>What is Chatops?</h2>
+
+<p><a href="https://speakerdeck.com/jnewland/chatops-at-github">Chatops</a> is a term coined by Github to describe their growing culture of “putting tools in the middle of the conversation”. But what does that exactly mean?</p>
+
+<p>To move fast and maintain stability it’s important to have a culture of automation, measurement and sharing (<a href="http://www.opscode.com/blog/2010/07/16/what-devops-means-to-me/">CAMS</a>). Tooling plays a key role in doing so and as your devops toolkit grows with the team there is an inherent learning and maintenance overhead. <a href="http://github.com/">Github</a> made a move to centralise the conversation by driving everything they do into chat. By building tools and executing commands in a chat room that can be automated by a bot, communication doesn’t become an afterthought to operational processes but is core to how you operate. If I want to deploy code, I type a command into chat. If I want to take a server offline, I type a command into chat. If I want to merge a git pull request into master, I type in a command into chat, and so on. Communication is baked in.</p>
+
+<h2>What is Hubot?</h2>
+
+<p>Hubot is a chat bot that sits in your chat room, listens for commands and executes them. It was written by Github in Coffeescript on Node.js and comes with a host of <a href="https://github.com/github/hubot-scripts/tree/master/src/scripts">prewritten scripts</a> to get started with. Hubot also comes with a range of adaptors that allow it to plug-in to chat servers such as Campfire, IRC and Hipchat. We chose the latter.</p>
+
+<h2>How do you get started?</h2>
+
+<p>I won’t re-write the readme because the getting started section <a href="https://github.com/github/hubot/tree/master/docs">here</a> says it all. Using the node package manager it’s so easy to get up and running with <a href="https://github.com/blog/968-say-hello-to-hubot">Hubot</a>. So many other people have documented this process that I won’t attempt to rewrite their <a href="http://net.tutsplus.com/tutorials/javascript-ajax/writing-hubot-plugins-with-coffeescript/">good</a> <a href="https://github.com/blog/968-say-hello-to-hubot">posts</a>.</p>
+
+<h2>How we want to use it and our first scripts</h2>
+
+<p>Although the core scripts that shipped with Hubot are helpful…</p>
+
+<p><img class="center" src="/images/posts/hubot_beer_me.png"></p>
+
+<p>…we started to focus on commands that would be most useful to how we work at <a href="http://www.toptable.co.uk/">toptable</a> and the tools and technologies that we employ. Specifically we got together and decided the following would be a useful starting point:</p>
+
+<ul>
+<li>Triggering TeamCity builds to ship to production</li>
+<li>Displaying the status of a JIRA ticket, adding comments and changing their status</li>
+<li>Checking London Underground tube lines for delays via Transport for London API</li>
+<li>Querying the status of our APIs (internal and external)</li>
+<li>Query ElasticSearch node and health cluster</li>
+</ul>
+
+
+<p>Within no time we had some useful scripts written:</p>
+
+<p><img class="center" src="/images/posts/hubot_tube_status.png"></p>
+
+<p><img class="center" src="/images/posts/hubot_jira.png"></p>
+
+<p><img class="center" src="/images/posts/hubot_teamcity.png"></p>
+
+<p>Immediately as we were developing these scripts we realised the potential of what else we could automate into Hubot and we will continue to do so. Some of which are:</p>
+
+<ul>
+<li>Github interaction</li>
+<li>AWS interaction to see host health</li>
+<li>Teamcity integration to trigger builds</li>
+<li>Nagios interaction to trigger status checks</li>
+<li>More JIRA integration to comment on tickets</li>
+<li>Kibana integration to create dashboard URLs</li>
+<li>AppDynamics interaction to query response times etc. (and more)</li>
+</ul>
+
+
+<p>Driving operations in chat has huge benefits for us. Collaboration, deployment and automation of common tasks can be done from anywhere, in the office (UK or US) or remotely for those that work from home. Hipchat has mobile support and their mobile apps are great. We hope it will improve on-call visibility, triaging of issues and resolving them without the need for VPN.</p>
+
+<h2>Resources</h2>
+
+<ul>
+<li>Chatops: Augmented reality for Ops (Video) by Mark Burgess - <a href="http://www.youtube.com/watch?v=pCVvYCjvoZI">http://www.youtube.com/watch?v=pCVvYCjvoZI</a></li>
+<li>ChatOps at Github by Jesse Newland - <a href="http://www.youtube.com/watch?v=NST3u-GjjFw">http://www.youtube.com/watch?v=NST3u-GjjFw</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

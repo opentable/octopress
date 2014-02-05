@@ -4,7 +4,7 @@
   <title><![CDATA[toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-02-03T11:42:54+00:00</updated>
+  <updated>2014-02-05T15:33:22+00:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -40,28 +40,28 @@
         <th style="padding:3px;"><b>Learn worst</b></th>
     </tr>
     <tr style="background-color: #E5E5E5">
-        <td style="padding:3px;"><b>Activists</b></td>
-        <td style="padding:3px;">Enjoy doing, tend to act first and think later. They like working with others but often hog the limelight.</td>
-        <td style="padding:3px;">When involved in new experiences, being thrown in the deep end and leading discussions.</td>
-        <td style="padding:3px;">Listening to long lectures, reading or writing on their own. Following precise information to the letter.</td>
+        <td style="padding:3px;vertical-align:top;"><b>Activists</b></td>
+        <td style="padding:3px;vertical-align:top;">Enjoy doing, tend to act first and think later. They like working with others but often hog the limelight.</td>
+        <td style="padding:3px;vertical-align:top;">When involved in new experiences, being thrown in the deep end and leading discussions.</td>
+        <td style="padding:3px;vertical-align:top;">Listening to long lectures, reading or writing on their own. Following precise information to the letter.</td>
     </tr>
     <tr>
-        <td style="padding:3px;"><b>Reflectors</b></td>
-        <td style="padding:3px;">Like to stand back, listen to others, look at the situation, gather data and carefully come to a conclusion.</td>
-        <td style="padding:3px;">Observing individuals or teams at work,  reviewing what has happened and what they have learned from it.</td>
-        <td style="padding:3px;">Acting as a leader in front of others, doing things without preparation, being rushed by deadlines.</td>
+        <td style="padding:3px;vertical-align:top;"><b>Reflectors</b></td>
+        <td style="padding:3px;vertical-align:top;">Like to stand back, listen to others, look at the situation, gather data and carefully come to a conclusion.</td>
+        <td style="padding:3px;vertical-align:top;">Observing individuals or teams at work,  reviewing what has happened and what they have learned from it.</td>
+        <td style="padding:3px;vertical-align:top;">Acting as a leader in front of others, doing things without preparation, being rushed by deadlines.</td>
     </tr>
     <tr style="background-color: #E5E5E5">
-        <td style="padding:3px;"><b>Theorists</b></td>
-        <td style="padding:3px;">Able to adapt and integrate observations into complex theories. Tend to be perfectionists. Detached and analytical rather than emotive.</td>
-        <td style="padding:3px;">When put into complex and structured situations having to apply their skill and knowledge. Have the chance to question and probe ideas.</td>
-        <td style="padding:3px;">With unstructured or poorly briefed activities. Will struggle in situations where emphasise is put on emotion or feelings.</td>
+        <td style="padding:3px;vertical-align:top;"><b>Theorists</b></td>
+        <td style="padding:3px;vertical-align:top;">Able to adapt and integrate observations into complex theories. Tend to be perfectionists. Detached and analytical rather than emotive.</td>
+        <td style="padding:3px;vertical-align:top;">When put into complex and structured situations having to apply their skill and knowledge. Have the chance to question and probe ideas.</td>
+        <td style="padding:3px;vertical-align:top;">With unstructured or poorly briefed activities. Will struggle in situations where emphasise is put on emotion or feelings.</td>
     </tr>
     <tr>
-        <td style="padding:3px;"><b>Pragmatists</b></td>
-        <td style="padding:3px;">Practical and down to earth. Keen to try things out they can be impatient especially with long discussions.</td>
-        <td style="padding:3px;">Respond well to demonstrations of techniques that show an obvious advantage.</td>
-        <td style="padding:3px;">Learning is all theory. No guidelines on how to accomplish activity. No apparent pay back.</td>
+        <td style="padding:3px;vertical-align:top;"><b>Pragmatists</b></td>
+        <td style="padding:3px;vertical-align:top;">Practical and down to earth. Keen to try things out they can be impatient especially with long discussions.</td>
+        <td style="padding:3px;vertical-align:top;">Respond well to demonstrations of techniques that show an obvious advantage.</td>
+        <td style="padding:3px;vertical-align:top;">Learning is all theory. No guidelines on how to accomplish activity. No apparent pay back.</td>
     </tr>
 </table>
 

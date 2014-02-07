@@ -31,8 +31,8 @@ Another rule, no fear, this applies in many situations of course. But unlike hac
 
 Better team as a result
 -----------------------
-I have found our whole engineering group has got a lot stronger through the time we have been doing 20% time, also we have been more attractive in interviews due to us having 20% time. So many developers just want an opportunity to learn and will leave a job to do so.
+I have seen our whole UK engineering group has got a lot stronger through the time we have been doing 20% time. We have also been more attractive in interviews and gets very positive responses when conducting interviews, so many developers just want an opportunity to learn and apply new skills and will leave a job to do so.
 
-I now have a child, trying to try new skills and do experiments at home is proving harder and harder. This 20% time becomes more important, as a team we are trying to really get to grips with the latest trends in the development community, I just don't have anywhere near as much time in the evenings now, it is a way to stop a divide coming between your team, the ones with spare time and the ones without.
+I personally now have a child, attempting to try new skills and do experiments at home is proving harder and harder. This 20% time becomes more important, as a team we are trying to really get to grips with the latest trends in the development community. I just don't have anywhere near as much time in the evenings now, it is a way to stop a divide coming between your team, the ones with spare time and the ones without.
 
 I recommend giving it some serious thought for your organisation. 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Windows8 | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/windows8/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-02-07T16:53:59+00:00</updated>
+  <updated>2014-02-07T18:58:38+00:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -28,7 +28,7 @@
 &lt;meta name="msApplication-PackageFamilyName" content="OpenTable.OpenTable_r44en0zefym0a"/&gt;
 </code></pre>
 
-<p><img class="right" src="/images/posts/get-app-for-this-site.png"></p>
+<p>{% img right /images/posts/get-app-for-this-site.png %}</p>
 
 <p>This will enable the <strong>"Get app for this site"</strong> link when you are viewing your page in the full-screen Metro version of Internet Explorer (i.e. launched from the start screen); the desktop version of IE doesn't have this capability.</p>
 
@@ -38,7 +38,7 @@
 
 <p>There are at least two ways of finding the values. If you have your application code and Visual Studio 2012 (or later) then the values can be found in the <strong>package.appxmanifest</strong> file &ndash; open this in VS and it automatically launches the manifest designer view.  Select the Packaging tab and the "Package name" is the <em>ID</em>, and the <em>Package family name</em> is at the bottom of this screen.</p>
 
-<p><img class="center" src="/images/posts/vs-screenshot.png"></p>
+<p>{% img center /images/posts/vs-screenshot.png %}</p>
 
 <p>If you don't have the local code with Visual Studio you can still find out these values by other means.</p>
 

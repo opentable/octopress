@@ -4,7 +4,7 @@
   <title><![CDATA[Category: PowerShell | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/powershell/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-02-07T16:53:59+00:00</updated>
+  <updated>2014-02-07T18:58:38+00:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -75,7 +75,7 @@
 
 <p>This would present a screen as follows:</p>
 
-<p><img class="center" src="/images/posts/windowsfeature.png"></p>
+<p>{% img center /images/posts/windowsfeature.png %}</p>
 
 <p>You would need to find the correct features to enable and check the box, press OK and then wait for the features to be installed.</p>
 

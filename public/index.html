@@ -9,7 +9,7 @@
   <meta name="author" content="toptable">
 
   
-  <meta name="description" content="Popular topic at conferences A lot of us were lucky enough to attend NDC London, we even sponsored one of the food stalls. I often see one or more &hellip;">
+  <meta name="description" content="We allow all our UK based developers to have some time to explore new technologies, try out prototypes and clean-up things that escape the day-to-day &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -86,54 +86,6 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/02/07/programme-management/">Programme management</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-07T15:54:00+00:00" pubdate data-updated="true">Feb 7<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>Popular topic at conferences</h2>
-
-<p>A lot of us were lucky enough to attend NDC London, we even sponsored one of the food stalls. I often see one or more real themes coming from talks at conferences. At NDC London I saw 3 talks around scaling agile. Indeed Dan North&#8217;s (<a href="https://twitter.com/tastapod">@tastapod</a>) talk was called exactly that. It is a topic OpenTable is trying to make happen. We are about 100 engineers on 3 continents, that is a lot of teams working together.</p>
-
-<p>I truly believe that the only way to make an individual team in an agile environment successful is to have ownership of an area, a system or similar. That enables fast feedback, quick decision making and also a sense of pride and responsibility for what people are working on.</p>
-
-<p>However, when you have a big project, you can&#8217;t give it to just one team. You need many teams working together. You can split it up and get teams to work on the parts of the project affecting the code they own. This will though mean certain parts of the project go faster than others, and if teams are autonomous, who really owns bringing all those pieces together. Also, imagine you are the project owner and need to have a rough handle on when things can actually be delivered, who is going to give you that? None of the individual teams know, everyone is agile and cool and hates estimates.</p>
-
-<p>The point made by 3 speakers at NDC London, <a href="https://twitter.com/tastapod">Dan North</a>, <a href="https://twitter.com/jezhumble">Jez Humble</a> and <a href="https://twitter.com/gojkoadzic">Gojko Adzic</a> came down to the need for the coordination piece across the teams. One thing Dan North said, [heavily sic] &#8220;If your team is really fast and all the others are slow, the project is slow, your team haven&#8217;t achieved their goal&#8221;. That was not the exact words he used but the sentiment came across.</p>
-
-<p>Indeed we have some big projects at OpenTable and as we have properly embraced agile in many ways, we still had some pain points in this exact area. We were getting to the same conclusions but since these talks we have had some more solid programme management and in the 3rd cross team meeting as a result, things starting taking shape. It really is an important piece of the jigsaw.</p>
-
-<p>I would also recommend a <a href="http://www.youtube.com/watch?v=ILP1pJAuT9c&amp;list=PLBMFXMTB7U74NdDghygvBaDcp67owVUUF&amp;feature=c4-overview-vl">DevDay talk</a> from Dariusz Dziuk on this and how Spotify make things scale. Slightly different content but a similar theme.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
       <h1 class="entry-title"><a href="/blog/2014/02/06/20-percent-time/">20% time. Why, as a manager, you should love your engineers to do it</a></h1>
     
     
@@ -163,9 +115,9 @@
 
 <p>We started doing our 20% time when we had two week sprints with a release each sprint. We actually had three days of testing, small bug fixing and signing things off. We didn&#8217;t like starting our new stories for the next sprint as our QAs got behind and never really caught up. We decided to use this time more for clean-up but also for prototyping or trying something out. We had read of other companies doing something similar so were excited to try it out.</p>
 
-<p>One of the first times we did this we actually decided we wanted to automate all the testing of one of our systems, so that our QAs weren&#8217;t bogged down for those three days. In our first 20% time, we got most of the team on board as it was painful watching, let alone doing manual testing and we wanted faster feedback on our changes.</p>
+<p>One of the first times we did this rakewe actually decided we wanted to automate all the testing of one of our systems, so that our QAs weren&#8217;t bogged down for those three days. In our first 20% time, we got most of the team on board as it was painful watching, let alone doing manual testing and we wanted faster feedback on our changes.</p>
 
-<p>We got a lot of the system in a state we could test it. We basically wrote a lot of a page object model and a few features to talk to it. The next 30% time it needed cleaning up, the next we had a lot under test. With a bit of work the three day test cycle was down to about one day. This would never have happened if we were trying in normal sprint time. Major win number one and something no business owner had had to wrestle against other priorities.</p>
+<p>We got a lot of the system in a state we could test it. We basically wrote a lot of a page object model and a few features to talk to it. The next 20% time it needed cleaning up, the next we had a lot under test. With a bit of work the three day test cycle was down to about one day. This would never have happened if we were trying in normal sprint time. Major win number one and something no business owner had had to wrestle against other priorities.</p>
 
 <p>After this instance we have had numerous similar examples, albeit on a smaller scale, where each team has been able to try things out, with no consequence in the event of failure, and achieved great prototypes. Much of our new architecture has been tested out in these sessions, new technologies, new approaches, can people work together?</p>
 
@@ -1694,6 +1646,100 @@ We&#8217;ve got all the component parts, now lets put it together (plus a few ot
 
     </article>
   
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/07/mapreduce-in-mongodb/">MapReduce in MongoDB</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-07T10:40:00+01:00" pubdate data-updated="true">Aug 7<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>One of the first things I took on when joining toptable was building a new endpoint in our reviews API to aggregate and summarise restaurant review data. Thankfully, at the time, all the data I needed was cached in memory so building the response object was a simple set of linq queries over the cached reviews.</p>
+
+<h2>The problem</h2>
+
+<p>Over time the number of reviews grow, and grow, and grow!  In fact it is inevitable that, in time, it will reach a point where caching all this data in memory would be madness.  One option to mitigate this would be to limit the cache to a fixed date range but this won&#8217;t work in this instance because the summary logic supports custom date ranges.  Another option would be to pull the data from the persistence store each and every time it&#8217;s required however this would seriously impact load on the infrastructure and degrade performance of the API.</p>
+
+<p>We like to be proactive at toptable, so during innovation time (yes! we get time to innovate on our development) I looked at finding an alternate solution that would meet the requirements of the logic and wouldn&#8217;t drastically increase load or degrade performance.</p>
+
+<h2>The solution</h2>
+
+<p>MongoDB supports <a href="http://en.wikipedia.org/wiki/MapReduce">MapReduce</a> which allows processing large volumes of data (Map), running arbitrary logic to summarise (Reduce) and producing some results.  In MongoDB the MapReduce functionality uses JavaScript functions to perform the map and reduce steps and the syntax is relatively simple to understand:-</p>
+
+<pre><code>db.largeDataset.mapReduce(mapFunction, 
+                          reduceFunction, 
+                          { out: "summary" }
+</code></pre>
+
+<p>In the above example the largeDataset collection is mapped using the predefined mapFunction, the results are passed to the reduceFunction and the reduced data is finally stored in the summary collection. On top of this you can specify queries as well as a finalize function to &#8220;tweak&#8221; the reduce results.</p>
+
+<p>Because map, reduce &amp; finalize are functions that only operate on their inputs the workload can be parallelized although the final results would be stored in one location.</p>
+
+<h4>Map</h4>
+
+<p>The key purpose of the map function is to take the complex documents and produce a structure conducive to summarising whilst at the same time defining the granularity of the results using grouping.</p>
+
+<p>For example if you wanted to get the number of reviews by restaurant then you&#8217;d group by the restaurant&#8217;s unique identifier meaning that the reduce function would produce a single result for each restaurant:-</p>
+
+<pre><code>var mapFunction = function() {
+                    emit(this.RestaurantId, 1);
+                  };
+</code></pre>
+
+<p>This function, called on each review, maps the review to the value 1 and groups by the RestaurantId.  The value 1 was chosen because, as you will see in the continuation of this example below, it&#8217;s the easiest way to calculate the count of reviews per restaurant.</p>
+
+<h4>Reduce</h4>
+
+<p>The key purpose of the reduce function is to take a batch of mapped values for a given group and return a single result.  All values emited from the map function are passed to the reduce function although since the batch size is decided by MongoDB there may be multiple calls to reduce.  In fact given a sufficiently large source dataset the reduce function will be passed results from previous reduce function calls as well.  For example if there were 250 mapped results in a group and batches of 100 were reduced by each call then four calls would be needed, three to reduce the initial 250 results and a final call to reduce these results into the final value for the group.</p>
+
+<p>To continue the example from above:-</p>
+
+<pre><code>var reduceFunction = function(group, values) {
+                       return Array.sum(values);
+                     };
+</code></pre>
+
+<p>The results from this function would be stored in the collection defined in the mapReduce call with an <em>id and value.  The </em>id property is populated with the group id and the value property will contain the final reduce result for that group.</p>
+
+<h2>Getting Started in C#</h2>
+
+<p>The following are a list of projects/resources to look at if you want to implement Mongo MapReduce in your scenario with emphasis on C#:-</p>
+
+<ul>
+<li><a href="http://docs.mongodb.org/manual/tutorial/map-reduce-examples">Mongo Map-Reduce Examples</a> is a useful primer document.</li>
+<li><a href="http://cookbook.mongodb.org">Mongo Cookbook</a> has a number of &#8220;real world&#8221; examples of MapReduce</li>
+<li><a href="http://docs.mongodb.org/ecosystem/drivers/csharp">Mongo C# driver</a> has some logic to perform MapReduce however it is only a thin layer over the underlying syntax and uses JavaScript functions passed as strings.</li>
+<li><a href="http://github.com/craiggwilson/fluent-mongo/wiki/Map-Reduce">Fluent-Mongo</a> provides a linq syntax over simple map reduce functions.  Interestingly it can perform multiple calculations on a set of data although at present it doesn&#8217;t support more complex logic.</li>
+<li><a href="http://twitter.com/odetocode">K.Scott Allen</a> has written two articles on MapReduce, <a href="http://odetocode.com/blogs/scott/archive/2012/03/19/a-simple-mapreduce-with-mongodb-and-c.aspx">A Simple MapReduce&#8230;</a> and <a href="http://odetocode.com/blogs/scott/archive/2012/03/29/a-simpler-mapreduce-with-mongodb-and-c.aspx">A Simpler MapReduce&#8230;</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1709,10 +1755,6 @@ We&#8217;ve got all the component parts, now lets put it together (plus a few ot
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2014/02/07/programme-management/">Programme management</a>
-      </li>
-    
-      <li class="post">
         <a href="/blog/2014/02/06/20-percent-time/">20% time. Why, as a manager, you should love your engineers to do it</a>
       </li>
     
@@ -1726,6 +1768,10 @@ We&#8217;ve got all the component parts, now lets put it together (plus a few ot
     
       <li class="post">
         <a href="/blog/2013/10/21/linking-to-your-app-in-windows-8/">Linking to your app in Windows 8</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc/">Resolving domains to areas in ASP.NET MVC</a>
       </li>
     
   </ul>

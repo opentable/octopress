@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Leadership | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/leadership/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-02-07T16:02:38+00:00</updated>
+  <updated>2014-02-07T16:53:59+00:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -12,27 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[Programme management]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/02/07/programme-management/"/>
-    <updated>2014-02-07T15:54:00+00:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/02/07/programme-management</id>
-    <content type="html"><![CDATA[<h2>Popular topic at conferences</h2>
-
-<p>A lot of us were lucky enough to attend NDC London, we even sponsored one of the food stalls. I often see one or more real themes coming from talks at conferences. At NDC London I saw 3 talks around scaling agile. Indeed Dan North's (<a href="https://twitter.com/tastapod">@tastapod</a>) talk was called exactly that. It is a topic OpenTable is trying to make happen. We are about 100 engineers on 3 continents, that is a lot of teams working together.</p>
-
-<p>I truly believe that the only way to make an individual team in an agile environment successful is to have ownership of an area, a system or similar. That enables fast feedback, quick decision making and also a sense of pride and responsibility for what people are working on.</p>
-
-<p>However, when you have a big project, you can't give it to just one team. You need many teams working together. You can split it up and get teams to work on the parts of the project affecting the code they own. This will though mean certain parts of the project go faster than others, and if teams are autonomous, who really owns bringing all those pieces together. Also, imagine you are the project owner and need to have a rough handle on when things can actually be delivered, who is going to give you that? None of the individual teams know, everyone is agile and cool and hates estimates.</p>
-
-<p>The point made by 3 speakers at NDC London, <a href="https://twitter.com/tastapod">Dan North</a>, <a href="https://twitter.com/jezhumble">Jez Humble</a> and <a href="https://twitter.com/gojkoadzic">Gojko Adzic</a> came down to the need for the coordination piece across the teams. One thing Dan North said, [heavily sic] "If your team is really fast and all the others are slow, the project is slow, your team haven't achieved their goal". That was not the exact words he used but the sentiment came across.</p>
-
-<p>Indeed we have some big projects at OpenTable and as we have properly embraced agile in many ways, we still had some pain points in this exact area. We were getting to the same conclusions but since these talks we have had some more solid programme management and in the 3rd cross team meeting as a result, things starting taking shape. It really is an important piece of the jigsaw.</p>
-
-<p>I would also recommend a <a href="http://www.youtube.com/watch?v=ILP1pJAuT9c&amp;list=PLBMFXMTB7U74NdDghygvBaDcp67owVUUF&amp;feature=c4-overview-vl">DevDay talk</a> from Dariusz Dziuk on this and how Spotify make things scale. Slightly different content but a similar theme.</p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[20% time. Why, as a manager, you should love your engineers to do it]]></title>
@@ -45,9 +24,9 @@
 
 <p>We started doing our 20% time when we had two week sprints with a release each sprint. We actually had three days of testing, small bug fixing and signing things off. We didn't like starting our new stories for the next sprint as our QAs got behind and never really caught up. We decided to use this time more for clean-up but also for prototyping or trying something out. We had read of other companies doing something similar so were excited to try it out.</p>
 
-<p>One of the first times we did this we actually decided we wanted to automate all the testing of one of our systems, so that our QAs weren't bogged down for those three days. In our first 20% time, we got most of the team on board as it was painful watching, let alone doing manual testing and we wanted faster feedback on our changes.</p>
+<p>One of the first times we did this rakewe actually decided we wanted to automate all the testing of one of our systems, so that our QAs weren't bogged down for those three days. In our first 20% time, we got most of the team on board as it was painful watching, let alone doing manual testing and we wanted faster feedback on our changes.</p>
 
-<p>We got a lot of the system in a state we could test it. We basically wrote a lot of a page object model and a few features to talk to it. The next 30% time it needed cleaning up, the next we had a lot under test. With a bit of work the three day test cycle was down to about one day. This would never have happened if we were trying in normal sprint time. Major win number one and something no business owner had had to wrestle against other priorities.</p>
+<p>We got a lot of the system in a state we could test it. We basically wrote a lot of a page object model and a few features to talk to it. The next 20% time it needed cleaning up, the next we had a lot under test. With a bit of work the three day test cycle was down to about one day. This would never have happened if we were trying in normal sprint time. Major win number one and something no business owner had had to wrestle against other priorities.</p>
 
 <p>After this instance we have had numerous similar examples, albeit on a smaller scale, where each team has been able to try things out, with no consequence in the event of failure, and achieved great prototypes. Much of our new architecture has been tested out in these sessions, new technologies, new approaches, can people work together?</p>
 

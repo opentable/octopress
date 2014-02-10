@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: puppet | toptable Tech Blog]]></title>
+  <link href="http://tech.toptable.co.uk/blog/categories/puppet/atom.xml" rel="self"/>
+  <link href="http://tech.toptable.co.uk/"/>
+  <updated>2014-02-10T18:20:48+00:00</updated>
+  <id>http://tech.toptable.co.uk/</id>
+  <author>
+    <name><![CDATA[toptable]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[The adoption of Configuration Management]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/"/>
+    <updated>2014-02-10T13:46:00+00:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management</id>
+    <content type="html"><![CDATA[<p>Of years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around 9 months ago, we started to really try and get these teams working together. We started a puppet experimentation repository and started configuring some of our applications using puppet.</p>
+
+<p>This was a major step for both sets of teams. The developers started being incharge of the configuration of their application. This meant that their application would guarantee to be configured the same in our CI environment as it was in production. We, as developers, would be more confident of our applications working as expected.</p>
+
+<p>To contribute to the project, as an engineer, you need to:</p>
+
+<ul>
+<li>fork the project</li>
+<li>make the changes you require</li>
+<li>test the changes in a vagrant environment (already created with a windows and linux system)</li>
+<li>send a PR</li>
+</ul>
+
+
+<p>We have just merged our #874 pull request. The stats of the repository look as follows:</p>
+
+<p><img class="center" src="/images/posts/puppet-adoption.png"></p>
+
+<p>Our puppet repository has had contributions by over 40% of our engineering / operations teams. We use puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage () nodes via puppet.</p>
+
+<p>Using a project called <a href="www.fullybaked.co.uk/articles/getting-gource-running-on-osx">Gource</a>, one of our engineering leads, <a href="http://twitter.com/ryantomlinson">Ryan Tomlinson</a>, created a video of the repository vizualization. It's just over 2 minutes long and shows the activity the repository has taken.</p>
+
+<p><div class="embed-video-container"><iframe src="http://player.vimeo.com/video/86201508 "></iframe></div></p>
+
+<p>I'm very happy with our configuration management adoption. We are by no means at a point where everyone does it, but we are working towards that. I would like our contributors to rise to over 75% of our engineering / operations team by the end of 2014. Let's see how that goes....</p>
+]]></content>
+  </entry>
+  
+</feed>

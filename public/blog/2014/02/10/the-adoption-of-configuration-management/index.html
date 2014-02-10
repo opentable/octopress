@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>The adoption of Configuration Management - toptable Tech Blog</title>
+  <meta name="author" content="toptable">
+
+  
+  <meta name="description" content="Of years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around 9 months ago, we started to &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="toptable Tech Blog" type="application/atom+xml">
+  <script type="text/javascript" src="http://use.typekit.com/syx2vfn.js"></script>
+  <script type="text/javascript">try { Typekit.load(); } catch (e) { }</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">toptable Tech Blog</a></h1>
+  
+    <h2>The technology blog for toptable and OpenTable.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.toptable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">The adoption of Configuration Management</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Paul Stack</span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-10T13:46:00+00:00" pubdate data-updated="true">Feb 10<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Of years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around 9 months ago, we started to really try and get these teams working together. We started a puppet experimentation repository and started configuring some of our applications using puppet.</p>
+
+<p>This was a major step for both sets of teams. The developers started being incharge of the configuration of their application. This meant that their application would guarantee to be configured the same in our CI environment as it was in production. We, as developers, would be more confident of our applications working as expected.</p>
+
+<p>To contribute to the project, as an engineer, you need to:</p>
+
+<ul>
+<li>fork the project</li>
+<li>make the changes you require</li>
+<li>test the changes in a vagrant environment (already created with a windows and linux system)</li>
+<li>send a PR</li>
+</ul>
+
+
+<p>We have just merged our #874 pull request. The stats of the repository look as follows:</p>
+
+<p><img class="center" src="/images/posts/puppet-adoption.png"></p>
+
+<p>Our puppet repository has had contributions by over 40% of our engineering / operations teams. We use puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage () nodes via puppet.</p>
+
+<p>Using a project called <a href="www.fullybaked.co.uk/articles/getting-gource-running-on-osx">Gource</a>, one of our engineering leads, <a href="http://twitter.com/ryantomlinson">Ryan Tomlinson</a>, created a video of the repository vizualization. It&#8217;s just over 2 minutes long and shows the activity the repository has taken.</p>
+
+<div class="embed-video-container"><iframe src="http://player.vimeo.com/video/86201508 "></iframe></div>
+
+
+<p>I&#8217;m very happy with our configuration management adoption. We are by no means at a point where everyone does it, but we are working towards that. I would like our contributors to rise to over 75% of our engineering / operations team by the end of 2014. Let&#8217;s see how that goes&#8230;.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Paul Stack</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-10T13:46:00+00:00" pubdate data-updated="true">Feb 10<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/configuration-management/'>configuration management</a>, <a class='category' href='/blog/categories/devops/'>devops</a>, <a class='category' href='/blog/categories/puppet/'>puppet</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/" data-via="toptabletech" data-counturl="http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/02/06/20-percent-time/" title="Previous Post: 20% time: Why, as a manager, you should love your engineers to be doing it">&laquo; 20% time: Why, as a manager, you should love your engineers to be doing it</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/10/the-adoption-of-configuration-management/">The adoption of Configuration Management</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/06/20-percent-time/">20% time: Why, as a manager, you should love your engineers to be doing it</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/03/coaching-style-over-substance/">Coaching style over substance</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">Beginning a journey to chatops with Hubot</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/21/linking-to-your-app-in-windows-8/">Linking to your app in Windows 8</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/toptabletech"  data-widget-id="351711375858466817">Tweets by @toptabletech</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2014 - toptable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

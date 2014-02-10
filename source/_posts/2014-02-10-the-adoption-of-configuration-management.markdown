@@ -1,0 +1,31 @@
+---
+layout: post
+title: "The adoption of Configuration Management"
+date: 2014-02-10 13:46
+comments: true
+author: pstack
+categories: [devops, configuration management, puppet] 
+---
+
+Of years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around 9 months ago, we started to really try and get these teams working together. We started a puppet experimentation repository and started configuring some of our applications using puppet. 
+
+This was a major step for both sets of teams. The developers started being incharge of the configuration of their application. This meant that their application would guarantee to be configured the same in our CI environment as it was in production. We, as developers, would be more confident of our applications working as expected. 
+
+To contribute to the project, as an engineer, you need to:
+
+* fork the project
+* make the changes you require
+* test the changes in a vagrant environment (already created with a windows and linux system)
+* send a PR
+
+We have just merged our #874 pull request. The stats of the repository look as follows:
+
+{% img center /images/posts/puppet-adoption.png %}
+
+Our puppet repository has had contributions by over 40% of our engineering / operations teams. We use puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage () nodes via puppet.
+
+Using a project called [Gource](www.fullybaked.co.uk/articles/getting-gource-running-on-osx), one of our engineering leads, [Ryan Tomlinson](http://twitter.com/ryantomlinson), created a video of the repository vizualization. It's just over 2 minutes long and shows the activity the repository has taken.
+
+{% vimeo 86201508 %}
+
+I'm very happy with our configuration management adoption. We are by no means at a point where everyone does it, but we are working towards that. I would like our contributors to rise to over 75% of our engineering / operations team by the end of 2014. Let's see how that goes....

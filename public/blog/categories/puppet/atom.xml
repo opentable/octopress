@@ -4,7 +4,7 @@
   <title><![CDATA[Category: puppet | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/puppet/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-02-10T18:39:42+00:00</updated>
+  <updated>2014-02-10T18:50:05+00:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -18,7 +18,7 @@
     <link href="http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/"/>
     <updated>2014-02-10T13:46:00+00:00</updated>
     <id>http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management</id>
-    <content type="html"><![CDATA[<p>Of years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around 9 months ago, we started to really try and get these teams working together. We introduced a configuration management tool, <a href="">Puppet</a>, into our eco system.</p>
+    <content type="html"><![CDATA[<p>Of years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around 9 months ago, we started to really try and get these teams working together. We introduced a configuration management tool, <a href="http://puppetlabs.com/puppet/what-is-puppet">Puppet</a>, into our eco system.</p>
 
 <p>Configuration management is one of the steps of continuous delivery that developers often forget. They feel that systems are magically created for them to deploy their application to. I used to believe this. When I was focused on developing software, I never gave any thought as to the work our operations team had to do to keep the train on the track. So give some respect to your operations teams! We started a repository and started to experiment by configuring some of our applications using puppet.</p>
 
@@ -38,11 +38,13 @@
 
 <p><img class="center" src="/images/posts/puppet-adoption.png"></p>
 
-<p>Our puppet repository has had contributions by over 40% of our engineering / operations teams. We use puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage 548 nodes (a combination of internal and production) via puppet. We have approx 60 nodes that are</p>
+<p>Our puppet repository has had contributions by over 40% of our engineering / operations teams. We use puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage 548 nodes (a combination of internal and production) via puppet.</p>
 
 <p>Using a project called <a href="www.fullybaked.co.uk/articles/getting-gource-running-on-osx">Gource</a>, one of our engineering leads, <a href="http://twitter.com/ryantomlinson">Ryan Tomlinson</a>, created a video of the repository vizualization. It's just over 2 minutes long and shows the activity the repository has taken.</p>
 
 <p><div class="embed-video-container"><iframe src="http://player.vimeo.com/video/86201508 "></iframe></div></p>
+
+<p>Each branch in the tree relates to a directory inside our repository. Green zaps are additions, orange are updates and red deletions. The important thing to take from the video is the evolution of the repository, the amount of changes and the number of people pushing those changes.</p>
 
 <p>I'm very happy with our configuration management adoption. We are by no means at a point where everyone does it, but we are working towards that. I would like our contributors to rise to over 75% of our engineering / operations team by the end of 2014. Let's see how that goes....</p>
 ]]></content>

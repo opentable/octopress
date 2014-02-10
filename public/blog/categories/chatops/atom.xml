@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Chatops | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/chatops/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-02-07T18:58:38+00:00</updated>
+  <updated>2014-02-10T10:17:54+00:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -18,7 +18,7 @@
     <link href="http://tech.toptable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/"/>
     <updated>2013-11-22T09:34:00+00:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot</id>
-    <content type="html"><![CDATA[<p>{% img center /images/posts/hubot_pug_me.png %}</p>
+    <content type="html"><![CDATA[<p><img class="center" src="/images/posts/hubot_pug_me.png"></p>
 
 <p>As a part of our 30% time a few of our team, <a href="https://twitter.com/ajroyle">@ajroyle</a>, <a href="https://twitter.com/stack72">@stack72</a> and I (<a href="https://twitter.com/ryantomlinson">@ryantomlinson</a>) decided to get together and look at <a href="http://hubot.github.com/">Hubot</a> with <a href="https://www.hipchat.com/">Hipchat</a> integration. There are several weird and wonderful scripts that ship with Hubot (see above) but the core concept of driving tooling via chat is one that we see value in.</p>
 
@@ -40,7 +40,7 @@
 
 <p>Although the core scripts that shipped with Hubot are helpful…</p>
 
-<p>{% img center /images/posts/hubot_beer_me.png %}</p>
+<p><img class="center" src="/images/posts/hubot_beer_me.png"></p>
 
 <p>…we started to focus on commands that would be most useful to how we work at <a href="http://www.toptable.co.uk/">toptable</a> and the tools and technologies that we employ. Specifically we got together and decided the following would be a useful starting point:</p>
 
@@ -55,11 +55,11 @@
 
 <p>Within no time we had some useful scripts written:</p>
 
-<p>{% img center /images/posts/hubot_tube_status.png %}</p>
+<p><img class="center" src="/images/posts/hubot_tube_status.png"></p>
 
-<p>{% img center /images/posts/hubot_jira.png %}</p>
+<p><img class="center" src="/images/posts/hubot_jira.png"></p>
 
-<p>{% img center /images/posts/hubot_teamcity.png %}</p>
+<p><img class="center" src="/images/posts/hubot_teamcity.png"></p>
 
 <p>Immediately as we were developing these scripts we realised the potential of what else we could automate into Hubot and we will continue to do so. Some of which are:</p>
 

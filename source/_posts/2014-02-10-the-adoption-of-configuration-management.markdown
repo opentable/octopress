@@ -24,7 +24,7 @@ We have just merged our #874 pull request. The stats of the repository look as f
 
 {% img center /images/posts/puppet-adoption.png %}
 
-Our puppet repository has had contributions by over 40% of our engineering / operations teams. We use puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage 548 nodes (a combination of internal and production) via puppet.
+Our puppet repository has had contributions by over 40% of our engineering / operations teams. We use puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage 548 nodes (a combination of internal and production) via puppet. 
 
 Using a project called [Gource](www.fullybaked.co.uk/articles/getting-gource-running-on-osx), one of our engineering leads, [Ryan Tomlinson](http://twitter.com/ryantomlinson), created a video of the repository vizualization. It's just over 2 minutes long and shows the activity the repository has taken.
 

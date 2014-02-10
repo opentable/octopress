@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devops | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/devops/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-02-10T18:34:59+00:00</updated>
+  <updated>2014-02-10T18:39:42+00:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -38,7 +38,7 @@
 
 <p><img class="center" src="/images/posts/puppet-adoption.png"></p>
 
-<p>Our puppet repository has had contributions by over 40% of our engineering / operations teams. We use puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage 548 nodes (a combination of internal and production) via puppet.</p>
+<p>Our puppet repository has had contributions by over 40% of our engineering / operations teams. We use puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage 548 nodes (a combination of internal and production) via puppet. We have approx 60 nodes that are</p>
 
 <p>Using a project called <a href="www.fullybaked.co.uk/articles/getting-gource-running-on-osx">Gource</a>, one of our engineering leads, <a href="http://twitter.com/ryantomlinson">Ryan Tomlinson</a>, created a video of the repository vizualization. It's just over 2 minutes long and shows the activity the repository has taken.</p>
 

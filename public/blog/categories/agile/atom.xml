@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Agile | toptable Tech Blog]]></title>
+  <link href="http://tech.toptable.co.uk/blog/categories/agile/atom.xml" rel="self"/>
+  <link href="http://tech.toptable.co.uk/"/>
+  <updated>2014-02-12T10:18:40+00:00</updated>
+  <id>http://tech.toptable.co.uk/</id>
+  <author>
+    <name><![CDATA[toptable]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Programme Management, making agile scale]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2014/02/12/programme-management/"/>
+    <updated>2014-02-12T10:16:00+00:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2014/02/12/programme-management</id>
+    <content type="html"><![CDATA[<h2>Popular topic at conferences</h2>
+
+<p>A lot of us were lucky enough to attend NDC London, we even sponsored one of the food stalls. I often see one or more real themes coming from talks at conferences. At NDC London I saw 3 talks around scaling agile. Indeed Dan North's (<a href="https://twitter.com/tastapod">@tastapod</a>) talk was called exactly that. It is a topic OpenTable is trying to make happen. We are about 100 engineers on 3 continents, that is a lot of teams working together.</p>
+
+<p>I truly believe that the only way to make an individual team in an agile environment successful is to have ownership of an area, a system or similar. That enables fast feedback, quick decision making and also a sense of pride and responsibility for what people are working on.</p>
+
+<p>However, when you have a big project, you can't give it to just one team. You need many teams working together. You can split it up and get teams to work on the parts of the project affecting the code they own. This will though mean certain parts of the project go faster than others, and if teams are autonomous, who really owns bringing all those pieces together. Also, imagine you are the project owner and need to have a rough handle on when things can actually be delivered, who is going to give you that? None of the individual teams know, everyone is agile and cool and hates estimates.</p>
+
+<p>The point made by 3 speakers at NDC London, <a href="https://twitter.com/tastapod">Dan North</a>, <a href="https://twitter.com/jezhumble">Jez Humble</a> and <a href="https://twitter.com/gojkoadzic">Gojko Adzic</a> came down to the need for the coordination piece across the teams. One thing Dan North said, [heavily sic] "If your team is really fast and all the others are slow, the project is slow, your team haven't achieved their goal". That was not the exact words he used but the sentiment came across.</p>
+
+<p>Indeed we have some big projects at OpenTable and as we have properly embraced agile in many ways, we still had some pain points in this exact area. We were getting to the same conclusions but since these talks we have had some more solid programme management and in the 3rd cross team meeting as a result, things starting taking shape. It really is an important piece of the jigsaw.</p>
+
+<p>I would also recommend a <a href="http://www.youtube.com/watch?v=ILP1pJAuT9c&amp;list=PLBMFXMTB7U74NdDghygvBaDcp67owVUUF&amp;feature=c4-overview-vl">DevDay talk</a> from Dariusz Dziuk on this and how Spotify make things scale. Slightly different content but a similar theme.</p>
+]]></content>
+  </entry>
+  
+</feed>

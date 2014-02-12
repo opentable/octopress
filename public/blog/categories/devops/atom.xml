@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: devops | toptable Tech Blog]]></title>
+  <title><![CDATA[Category: DevOps | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/devops/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-02-12T12:53:56+00:00</updated>
+  <updated>2014-02-12T14:07:47+00:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -18,19 +18,19 @@
     <link href="http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/"/>
     <updated>2014-02-10T13:46:00+00:00</updated>
     <id>http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management</id>
-    <content type="html"><![CDATA[<p>Of years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around 9 months ago, we started to really try and get these teams working together. We introduced a configuration management tool, <a href="http://puppetlabs.com/puppet/what-is-puppet">Puppet</a>, into our eco system.</p>
+    <content type="html"><![CDATA[<p>In years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around nine months ago we started to really try and get these teams working together. We introduced a configuration management tool, <a href="http://puppetlabs.com/puppet/what-is-puppet">Puppet</a>, into our ecosystem.</p>
 
-<p>Configuration management is one of the steps of continuous delivery that developers often forget. They feel that systems are magically created for them to deploy their application to. I used to believe this. When I was focused on developing software, I never gave any thought as to the work our operations team had to do to keep the train on the track. So give some respect to your operations teams! We started a repository and started to experiment by configuring some of our applications using puppet.</p>
+<p>Configuration management is one of the steps of continuous delivery that developers often forget. They feel that systems are magically created for them to deploy their application to. I used to believe this. When I was focused on developing software, I never gave any thought as to the work our operations team had to do to keep the train on the track. So give some respect to your operations teams! We created a repository and started to experiment by configuring some of our applications using Puppet.</p>
 
-<p>This was a major step for both sets of teams. The developers started being incharge of the configuration of their application. This meant that their application would guarantee to be configured the same in our CI environment as it was in production. We, as developers, would be more confident of our applications working as expected.</p>
+<p>This was a major step for both sets of teams. The developers started being in charge of the configuration of their application. This meant that their application would guarantee to be configured the same in our CI environment as it was in production. We, as developers, would be more confident of our applications working as expected.</p>
 
 <p>To contribute to the project, as an engineer, you need to:</p>
 
 <ul>
 <li>fork the project</li>
 <li>make the changes you require</li>
-<li>test the changes in a vagrant environment (already created with a windows and linux system)</li>
-<li>send a PR</li>
+<li>test the changes in a Vagrant environment (already created with a Windows and Linux system)</li>
+<li>send a PR (pull request)</li>
 </ul>
 
 
@@ -38,15 +38,319 @@
 
 <p><img class="center" src="/images/posts/puppet-adoption.png"></p>
 
-<p>Our puppet repository has had contributions by over 40% of our engineering / operations teams. We use puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage 548 nodes (a combination of internal and production) via puppet.</p>
+<p>Our puppet repository has had contributions from over 40% of our engineering / operations teams. We use Puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage 548 nodes (a combination of internal and production) via Puppet.</p>
 
-<p>Using a project called <a href="www.fullybaked.co.uk/articles/getting-gource-running-on-osx">Gource</a>, one of our engineering leads, <a href="http://twitter.com/ryantomlinson">Ryan Tomlinson</a>, created a video of the repository vizualization. It's just over 2 minutes long and shows the activity the repository has taken.</p>
+<p>Using a project called <a href="www.fullybaked.co.uk/articles/getting-gource-running-on-osx">Gource</a>, one of our engineering leads, <a href="http://twitter.com/ryantomlinson">Ryan Tomlinson</a>, created a video of the repository vizualization. It's just over two minutes long and shows the activity the repository has taken.</p>
 
 <p><div class="embed-video-container"><iframe src="http://player.vimeo.com/video/86201508 "></iframe></div></p>
 
 <p>Each branch in the tree relates to a directory inside our repository. Green zaps are additions, orange are updates and red deletions. The important thing to take from the video is the evolution of the repository, the amount of changes and the number of people pushing those changes.</p>
 
-<p>I'm very happy with our configuration management adoption. We are by no means at a point where everyone does it, but we are working towards that. I would like our contributors to rise to over 75% of our engineering / operations team by the end of 2014. Let's see how that goes....</p>
+<p>I'm very happy with our configuration management adoption. We are by no means at a point where everyone does it, but we are working towards that. I would like our contributors to rise to over 75% of our engineering / operations team by the end of 2014. Let's see how that goes...</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Using Vagrant to work with ElasticSearch on your local machine]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine/"/>
+    <updated>2013-08-05T08:45:00+01:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine</id>
+    <content type="html"><![CDATA[<p>Recently, I have started to work a lot more with <a href="http://www.vagrantup.com/">Vagrant</a> as a tool for creating a standard development environment across my team. This essentially means that regardless what the developers' machine is set up or running as, they can still reproduce the same environment as their colleagues just by entering a command.</p>
+
+<p>Configuration managgement is something we have had to embrace to help us maintain an ever changing world of technologies. The hardest thing is knowing what we actually have to build in these environments. We use Vagrant to help us understand this. The simple flow is as follows:</p>
+
+<ul>
+<li>Developer starts a new project</li>
+<li>Developer creates a Vagrantfile to spin up a local VM</li>
+<li>Vagrantfile gets iterated on as the development process goes forward</li>
+</ul>
+
+
+<p>Once the developer understands what they need to actually run their software, we would then go about creating an environment to which this software will actually be deployed for end-to-end testing. I won't go any further into the details of our Vagrant flow in this post, if you want to read more about how to get started with Vagrant, then I would suggest reading <a href="http://shop.oreilly.com/product/0636920026358.do">Vagrant Up and Running</a> by <a href="https://twitter.com/mitchellh">Mitchell Hashimoto</a>.</p>
+
+<h2>Vagrant and ElasticSearch</h2>
+
+<p>Whilst reviewing a book on <a href="http://www.elasticsearch.org/">ElasticSearch</a>, I noticed how simple the instructions were to get up and running with ElasticSearch. Please note, that there are already lots of Puppet modules for configuring ElasticSearch on <a href="http://forge.puppetlabs.com/modules?q=elasticsearch">Puppetlabs Forge</a>. This post only talks about how I was able to quickly spin up some local instances. I didn't want to manually do this, so I decided to use Vagrant (and Puppet) to take care of it for me. The instructions can be summarised as follows:</p>
+
+<ul>
+<li>Download and install the JavaSDK</li>
+<li>Download the specific ElasticSearch package</li>
+<li>Install ElasticSearch</li>
+<li>Download and install curl (to be able to interact with ElasticSearch)</li>
+<li>Make sure the service is started</li>
+</ul>
+
+
+<p>I hate doing this manually. Luckily, with the correct script, I am able to automate all of this as follows:</p>
+
+<pre><code>Vagrant.configure("2") do |config|
+    config.vm.box = "Ubuntu precise 64 VMWare"
+    config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
+    config.vm.network :forwarded_port, guest: 9200, host: 9200
+    config.vm.provision :puppet do |puppet|
+        puppet.module_path = '../setup/modules'
+        puppet.manifests_path = '../setup/manifests'
+        puppet.manifest_file = 'default.pp'
+        puppet.options = '--verbose --debug'
+    end
+end
+</code></pre>
+
+<p>Essentially, this script says to create a clone of a VM from a predefined box, forward port 9200 on the vm to 9200 on my local machine and then provision the server using Puppet. The Puppet script works as follows:</p>
+
+<pre><code>exec { "apt-get-update":
+    command =&gt; "/usr/bin/apt-get update",
+}
+
+package {'curl':
+    provider =&gt; apt,
+    ensure   =&gt; latest,
+    require  =&gt; Exec['apt-get-update']
+}
+
+class {'elasticsearch':
+    version =&gt; '0.90.0',
+    require =&gt; Exec['apt-get-update'],
+}
+</code></pre>
+
+<p>This defines that the command apt-get-update gets applied (due to both the class and the package requiring it) and then will install curl and ElasticSearch in no particular order. Once the script runs, I will be able to open a browser on my local machine, go to http://localhost:9200 and see the newly provisioned ElasticSearch node. The result of the JSON was something similar to this:</p>
+
+<pre><code>{
+    "ok" : true,
+    "status" : 200,
+    "name" : "Gibborim",
+    "version" : {
+        "number" : "0.90.0",
+        "snapshot_build" : false,
+    },
+    "tagline" : "You Know, for Search"
+}
+</code></pre>
+
+<p>By entering the URL, '<strong>http://localhost:9200/_cluster/health?pretty</strong>', you can see the state of the ElasticSearch cluster. It should show something like this:</p>
+
+<pre><code>{
+    "cluster_name" : "elasticsearch",
+    "status" : "yellow",
+    "timed_out" : false,
+    "number_of_nodes" : 1,              
+    "number_of_data_nodes" : 1,         
+    "active_primary_shards" : 5,        
+    "active_shards" : 5,                
+    "relocating_shards" : 0,            
+    "initializing_shards" : 0,          
+    "unassigned_shards" : 5             
+}
+</code></pre>
+
+<p>I wanted to be able to provision multiple nodes and then let them create a cluster. I was able to take the existing Vagrantfile and then using the multi-environment features of Vagrant. This created a new Vagrantfile as follows:</p>
+
+<pre><code>Vagrant::Config.run do |config|
+    config.vm.box = "Ubuntu precise 64 VMWare"
+    config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
+
+    config.vm.define "es1" do |es1|
+        es1.vm.network :hostonly, "192.168.1.10"
+        es1.vm.provision :puppet do |puppet|
+            puppet.module_path = '../setup/modules'
+            puppet.manifests_path = '../setup/manifests'
+            puppet.manifest_file = 'default.pp'
+            puppet.options = '--verbose --debug'
+        end
+    end
+
+    config.vm.define "es2" do |es2|
+        es2.vm.network :hostonly, "192.168.1.11"
+        es2.vm.provision :puppet do |puppet|
+            puppet.module_path = '../setup/modules'
+            puppet.manifests_path = '../setup/manifests'
+            puppet.manifest_file = 'default.pp'
+            puppet.options = '--verbose --debug'
+        end
+    end
+
+    config.vm.define "es3" do |es3|
+        es3.vm.network :hostonly, "192.168.1.12"
+        es3.vm.provision :puppet do |puppet|
+            puppet.module_path = '../setup/modules'
+            puppet.manifests_path = '../setup/manifests'
+            puppet.manifest_file = 'default.pp'
+            puppet.options = '--verbose --debug'
+        end
+    end
+end
+</code></pre>
+
+<p>This effectively tells Vagrant to create three instances of ElasticSearch using the Puppet configuration (as above). Each ElasticSearch node is given its own IP. Thanks to ElasticSearch using Multicast and Unicast discovery, it is able to find other nodes on the network and create a cluster. By running a similar url as before, '<strong>http://192.168.1.10:9200/_cluster/health?pretty</strong>', we can now see that the cluster looks as follows:</p>
+
+<pre><code>{
+    "cluster_name" : "elasticsearch",
+    "status" : "green",
+    "timed_out" : false,
+    "number_of_nodes" : 3,              
+    "number_of_data_nodes" : 3,         
+    "active_primary_shards" : 5,        
+    "active_shards" : 15,                
+    "relocating_shards" : 0,            
+    "initializing_shards" : 0,          
+    "unassigned_shards" : 0             
+}
+</code></pre>
+
+<p>Using this method, we can continue to spin up as many instances as we need to replicate different scenarios or testing conditions. Vagrant has made this very easy to do. If you want a copy of the Vagrantfiles and Puppet modules to try this yourself, then you can find them on my <a href="https://github.com/stack72/vagrant-examples/tree/master/elasticsearch">github repository</a>. The scripts are available under the <a href="http://opensource.org/licenses/MIT">MIT</a> license.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Managing Windows Certificates with PowerShell]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell/"/>
+    <updated>2013-07-08T18:51:00+01:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell</id>
+    <content type="html"><![CDATA[<p>Managing certificates on Windows is <em>really</em> painful. There is no easy way to do it. The general way to install a certificate to a Windows Server 2008 machine is as follows:</p>
+
+<ul>
+<li>Open the Certificates snap-in for a user, computer, or service.</li>
+<li>In the console tree, click the logical store where you want to import the certificate.</li>
+<li>On the Action menu, point to All Tasks, and then click Import to start the Certificate Import Wizard.</li>
+<li>Type the file name containing the certificate to be imported.</li>
+<li>If you want to specify where the certificate is stored, select Place all certificates in the following store, click Browse, and choose the certificate store to use. OR</li>
+<li>If the certificate should be automatically placed in a certificate store based on the type of certificate, click Automatically select the certificate store based on the type of certificate.</li>
+</ul>
+
+
+<p>The first time I ran this process, I felt as though this was just wrong to not be able to automate. The goal of our team is to automate everything we are currently doing manually. PowerShell is a better option for this import process as it allows you to write code to do it. As we all know, code is better for a number of reasons, I won't go into the infrastructure as code argument in this post (but it is coming soon….). Using PowerShell, I can write a simple function as follows:</p>
+
+<pre><code>function Import-PfxCertificate($certName, $CertLocaton, $certRootStore, $certStore) {    
+     $pfx = new-object System.Security.Cryptography.X509Certificates.X509Certificate2    
+
+     $pfxPass = convertto-securestring $CertPassword -asplaintext -force
+
+     $certPath = $CertLocaton + "\" + $certName   
+     $pfx.import($certPath,$pfxPass,"Exportable,PersistKeySet")    
+
+     $store = new-object System.Security.Cryptography.X509Certificates.X509Store($certStore,$certRootStore)    
+     $store.open("MaxAllowed")    
+     $store.add($pfx)    
+     $store.close()    
+}
+</code></pre>
+
+<p>This makes certificate management easier. To manage certificates in this way, I just need to invoke a script similar to this:</p>
+
+<pre><code>.\import-certificate.ps1 -CertificateName "mycert.pfx" -CertLocation "c:\ssl\mycerts"
+</code></pre>
+
+<p>Much simpler! You can download a <a href="https://gist.github.com/opentable-devops/5951108">gist</a> of this script should you wish to use it. Please note that the license that this script is available under can be read from our <a href="https://github.com/opentable/licensing/blob/master/LICENSE">github repository</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Windows Feature Management with PowerShell]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/"/>
+    <updated>2013-06-14T20:31:00+01:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell</id>
+    <content type="html"><![CDATA[<p>In late 2012, our development team started to move towards our systems being much more automated. Long gone are the days of developers creating runbooks in Word and giving them to our operations team to use to set up our production servers.</p>
+
+<p>When building our webservers on Windows, in order to install / activate Windows features, this was the general set of instructions that was needed to be followed:</p>
+
+<ul>
+<li>Click Start Button</li>
+<li>Click on Control Panel</li>
+<li>Click on Programs</li>
+<li>Click on Turn Windows features on or off</li>
+</ul>
+
+
+<p>This would present a screen as follows:</p>
+
+<p><img class="center" src="/images/posts/windowsfeature.png"></p>
+
+<p>You would need to find the correct features to enable and check the box, press OK and then wait for the features to be installed.</p>
+
+<p>When Microsoft introduced Windows Server 2008 and PowerShell 2.0, they also introducted the module 'ServerManager'. This is a module that allows us to interact, with PowerShell, Windows Features using a range of cmdlets:</p>
+
+<ul>
+<li>Get-WindowsFeature</li>
+<li>Add-WindowsFeature</li>
+<li>Remove-WindowsFeature</li>
+</ul>
+
+
+<p>This meant that instead of creating runbooks in Word, our developers could create automation scripts that would take a base Windows Server 2008 server and enable all the Windows Features needed to run our applications. This allowed our operations team to move much faster in configuring our servers.</p>
+
+<p>To turn on the ASP.NET Application Development features in Windows, we would run the following script from PowerShell:</p>
+
+<pre><code>Import-Module ServerManager
+Add-WindowsFeature Web-Asp-Net
+</code></pre>
+
+<p>By knowing what Windows Features we needed to install on our servers, we were able to create the following script:</p>
+
+<pre><code>function enable_net_3_5_features()
+{
+    Add-WindowsFeature NET-HTTP-Activation
+    Add-WindowsFeature NET-Win-CFAC
+    Add-WindowsFeature NET-Non-HTTP-Activ
+    Add-WindowsFeature AS-MSMQ-Activation
+}
+
+function enable_iis_common_http_features()
+{
+    Add-WindowsFeature Web-Static-Content
+    Add-WindowsFeature Web-Http-Errors
+    Add-WindowsFeature Web-Default-Doc
+}
+
+function enable_iis_application_development_features()
+{
+    Add-WindowsFeature Web-Asp-Net
+    Add-WindowsFeature Web-Net-Ext
+    Add-WindowsFeature Web-ISAPI-Ext
+    Add-WindowsFeature Web-ISAPI-Filter
+}
+
+function enable_iis_health_and_diagnostics_features()
+{
+    Add-WindowsFeature Web-Http-Logging
+    Add-WindowsFeature Web-Request-Monitor
+}
+
+function enable_iis_security_features()
+{
+    Add-WindowsFeature Web-Filtering
+}
+
+function enable_iis_performance_features()
+{
+    Add-WindowsFeature Web-Stat-Compression
+    Add-WindowsFeature Web-Dyn-Compression
+}
+
+function enable_iis_management_tools()
+{
+    Add-WindowsFeature Web-Mgmt-Tools
+    Add-WindowsFeature Web-Mgmt-Console
+}
+
+
+Write-Host('Starting Application Server Setup')
+
+Import-Module ServerManager
+enable_net_3_5_features
+enable_iis_common_http_features
+enable_iis_application_development_features
+enable_iis_health_and_diagnostics_features
+enable_iis_security_features
+enable_iis_performance_features
+enable_iis_management_tools 
+
+Write-Host('Application Server Setup complete')
+</code></pre>
+
+<p>Running the script, meant that we could enable features much faster than we could enable them via the GUI. Notice how we have grouped how we enable Windows Features into the same groupings found in the 'Turn Windows features on or off' menu. For a full list of the names of the features that can be turned on or off, please refer to this <a href="http://technet.microsoft.com/en-us/library/cc732757.aspx">technet article</a></p>
+
+<p>You can download a <a href="https://gist.github.com/opentable-devops/5886831">gist</a> of this script if you want to use it. Please note that the license that this script is available under can be read from our <a href="https://github.com/opentable/licensing/blob/master/LICENSE">github repository</a>. We hope that the script helps you as much as it helped us.</p>
 ]]></content>
   </entry>
   

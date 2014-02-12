@@ -4,7 +4,7 @@ title: "Programme Management, making Agile scale"
 date: 2014-02-12 10:16
 comments: true
 author: ametcalfe
-categories: [Agile, Leadership, Opportunity to have more meetings]
+categories: [Agile, Leadership, Opportunity to have more meetings, Conferences]
 ---
 Popular topic at conferences
 ----------------------------

@@ -20,7 +20,7 @@ To contribute to the project, as an engineer, you need to:
 * test the changes in a vagrant environment (already created with a windows and linux system)
 * send a PR (pull request)
 
-We have just merged our #874 pull request. The stats of the repository look as follows:
+We have just merged our #847 pull request. The stats of the repository look as follows:
 
 {% img center /images/posts/puppet-adoption.png %}
 

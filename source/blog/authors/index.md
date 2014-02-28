@@ -22,6 +22,8 @@ footer: false
 
 [Ryan Tomlinson]
 
+[Matteo Figus]
+
 [Mark Barrett]:/blog/authors/mbarrett.html
 [Richard Hopton]:/blog/authors/rhopton.html
 [Andy Metcalfe]:/blog/authors/ametcalfe.html
@@ -30,3 +32,4 @@ footer: false
 [Andy Royle]:/blog/authors/aroyle.html
 [John Catterfeld]:/blog/authors/jcatterfeld.html
 [Ryan Tomlinson]:/blog/authors/rtomlinson.html
+[Matteo Figus]:/blog/authors/mfigus.html

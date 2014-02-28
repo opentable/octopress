@@ -30,7 +30,7 @@ Fastest Service is nodeJS
 
 After trying to microbenchmark different layers of the software, I found the problem. On the .NET side I was reading a file synchronously, for every request; the file system’s library used with the node.js app, instead, was automatically caching the reads as default. After setting up a basic caching mechanism in the .NET app and running my script again the node.js API was only 1.4 times faster. After finding and solving that issue I thought how badly the application could have handled concurrency when deployed in production, even if it was heavily unit tested, the specs were well defined, and it was built using all the best techniques we all love.
 
-As developers we rely on technologies that, with a minimum effort, can guarantee some pretty decent results in terms of performance. Modern web frameworks handle concurrency and thread management without requiring much plumbing code. Sophisticated and relatively cheap cloud services help us monitor our applications, providing dashboards, reports and alerting systems. Deploying on the cloud we can run our services and even auto-scale them depending on how much power we need. Even with this tools we must still own the responsibility of writing good quality code, testing it properly, and deploying fast possible in order to optimise the delivery process of our products. 
+As developers we rely on technologies that, with a minimum effort, can guarantee some pretty decent results in terms of performance. Modern web frameworks handle concurrency and thread management without requiring much plumbing code. Sophisticated and relatively cheap cloud services help us monitor our applications, providing dashboards, reports and alerting systems. Deploying on the cloud we can run our services and even auto-scale them depending on how much power we need. Even with these tools we must still own the responsibility of writing good quality code, testing it properly, and deploying as fast as possible in order to optimise the delivery process of our products. 
 
 But what about performance? I mean, what about the relationship between the code we write every day, and the way we impact overall performance? Are we sure that we are not deploying to production something that is degrading our services’ performance?
 
@@ -177,7 +177,7 @@ Benchmarking doesn’t equal and doesn’t replace monitoring. Once you start ha
 
 Conclusions
 -----------
-I believe that take care about performances is our responsibility, as developers. We can and should do more, and I hope this subject will gain more interest. In the meanwhile, if [api-benchmark][2] sounds interesting for you and you are interested in trying it or contributing (it is totally open-source), don’t hesitate to [get in touch with me][5].
+I believe that taking care of performance is our responsibility, as developers. We can and should do more, and I hope this subject will gain more interest. In the meanwhile, if [api-benchmark][2] sounds interesting for you and you are interested in trying it or contributing (it is totally open-source), don’t hesitate to [get in touch with me][5].
 
 
 [1]: http://www.gruntjs.com

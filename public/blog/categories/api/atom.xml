@@ -4,7 +4,7 @@
   <title><![CDATA[Category: API | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/api/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-02-28T14:16:01+00:00</updated>
+  <updated>2014-02-28T15:26:34+00:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -43,7 +43,7 @@ Fastest Service is nodeJS
 
 <p>After trying to microbenchmark different layers of the software, I found the problem. On the .NET side I was reading a file synchronously, for every request; the file system’s library used with the node.js app, instead, was automatically caching the reads as default. After setting up a basic caching mechanism in the .NET app and running my script again the node.js API was only 1.4 times faster. After finding and solving that issue I thought how badly the application could have handled concurrency when deployed in production, even if it was heavily unit tested, the specs were well defined, and it was built using all the best techniques we all love.</p>
 
-<p>As developers we rely on technologies that, with a minimum effort, can guarantee some pretty decent results in terms of performance. Modern web frameworks handle concurrency and thread management without requiring much plumbing code. Sophisticated and relatively cheap cloud services help us monitor our applications, providing dashboards, reports and alerting systems. Deploying on the cloud we can run our services and even auto-scale them depending on how much power we need. Even with this tools we must still own the responsibility of writing good quality code, testing it properly, and deploying fast possible in order to optimise the delivery process of our products.</p>
+<p>As developers we rely on technologies that, with a minimum effort, can guarantee some pretty decent results in terms of performance. Modern web frameworks handle concurrency and thread management without requiring much plumbing code. Sophisticated and relatively cheap cloud services help us monitor our applications, providing dashboards, reports and alerting systems. Deploying on the cloud we can run our services and even auto-scale them depending on how much power we need. Even with these tools we must still own the responsibility of writing good quality code, testing it properly, and deploying as fast as possible in order to optimise the delivery process of our products.</p>
 
 <p>But what about performance? I mean, what about the relationship between the code we write every day, and the way we impact overall performance? Are we sure that we are not deploying to production something that is degrading our services’ performance?</p>
 
@@ -213,7 +213,7 @@ $ npm install
 
 <h2>Conclusions</h2>
 
-<p>I believe that take care about performances is our responsibility, as developers. We can and should do more, and I hope this subject will gain more interest. In the meanwhile, if <a href="https://github.com/matteofigus/api-benchmark">api-benchmark</a> sounds interesting for you and you are interested in trying it or contributing (it is totally open-source), don’t hesitate to <a href="http://www.twitter.com/matteofigus">get in touch with me</a>.</p>
+<p>I believe that taking care of performance is our responsibility, as developers. We can and should do more, and I hope this subject will gain more interest. In the meanwhile, if <a href="https://github.com/matteofigus/api-benchmark">api-benchmark</a> sounds interesting for you and you are interested in trying it or contributing (it is totally open-source), don’t hesitate to <a href="http://www.twitter.com/matteofigus">get in touch with me</a>.</p>
 ]]></content>
   </entry>
   

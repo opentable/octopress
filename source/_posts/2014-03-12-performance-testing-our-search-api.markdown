@@ -3,22 +3,25 @@ layout: post
 title: "Performance testing our Search API"
 date: 2014-03-12 16:44
 comments: true
+author: ametcalfe
 categories: [Benchmarks, API, REST, Performance, Being a numpty]
 ---
 
-It was midnight on the Friday before Christmas, my 7 week old child was tucked up asleep and I was pretty chilled. All was calm and it was time for bed. 2 minutes later I had a phone call, a series of nagios alerts through emails and a need to get up quickly. The search api was having trouble, as the manager of the team who develop this, I woke up pretty quickly. We were having an outage at one of our busiest times of the year, this was going to be fun.
+It was midnight on the Friday before Christmas, my 7 week old child was tucked up asleep and I was pretty chilled. All was calm and it was time for bed. 2 minutes later I had a phone call, a series of nagios alerts through emails and a need to my work hat on quickly. The search api was having trouble, as the manager of the team who develop this, I was not looking forward to this. We were having a real slow down at one of our busiest times of the year, this was going to be fun.
 
-Once the dust settled and we were back up and running we realised we needed to do a better job of performance testing and actually solve any performance issues. 
+Once the dust settled and we were back up and running we realised we needed to do a better job of performance testing and actually solve any performance issues. We had done some performance testing but clearly not the right kind.
 
-What had gone wrong
+What had gone wrong?
 ---
-We were indexing our data too frequently, and under load it started to take a long time and we created a race condition where multiple indexing operations started happening and performance started degrading as a result of that and a vicious circle occurred. The simple fix was just to index the data less often, however we wanted to get to the bottom of why we slowed down under load which exposed this race condition and what is the maximum load the system can take.
+We were indexing our data too frequently, and under load it started to take a long time and we created a race condition where multiple indexing operations started happening as each operation assumed the previous one had either failed or finished and a vicious circle occurred making the situation worse and worse. 
+
+The simple fix was just to index the data less often and not at all if another operation was running, however we wanted to get to the bottom of why we slowed down under load which exposed this race condition, improve that speed and understand what is the maximum load the system can take.
 
 Getting a benchmark
 ---
-In order to know if we were actually making improvements we needed to be able to recreate load and see the impact. In order to do this and truly appreciate how it was going we needed to use our live environment. It is the only environment I felt we could truy understand. Read why here EXPLANATION OF WHY TESTING IN LIVE AND THE PROBLEMS IT CAUSES LINK
+In order to know if we were actually making improvements we needed to be able to recreate load and see the impact. In order to do this and truly appreciate how it was going we needed to use our live environment. It is the only environment I felt we could truy understand. My next post will explain why we felt this was the best environment for the job.
 
-With search and availability it is actually quite hard to use response times as a benchmark and the name of this exercise was really to cope with greater load. Response times are still nice to improve though so we will be tracking it, just not using as our main benchmark.
+With search and availability it is actually quite hard to use response times as a benchmark and the name of this exercise was really to cope with greater load. Response times are still nice to improve though so we were tracking it, just not using as our main benchmark.
 
 Some perspective on our problem domain
 ---
@@ -29,43 +32,50 @@ We also have an autocomplete search endpoint served out of the same infrastructu
 Initial ideas to investigate
 ---
 We brainstormed a few things to investigate and assess as potential performance improvements. As we were still relatively new to Elastic Search (ES), a lot of these were related to the configuration of ES itself.
-- Improved sharding strategy, we were using the default
-- Check we were filtering before querying
-- Check the sorting is efficient
-- Optimise the index as part of the indexing process
-- Slow log checking
-- Check how we are using the source in the index
-- Warm-up the index after it is built
-- Gzip between API boxes and ES
-- Check connection pool is a singleton
-- Delete old indexes more rigorously
-- Check garbage collection on ES boxes
-- Check swappiness settings on ES boxes
-- Split different search types to different hardware
 
-I have provided links to the steps that need more perspective or were successful. 
+* Improved sharding strategy, we were using the default
+* Check we were [filtering before querying](http://elasticsearch-users.115913.n3.nabble.com/Elasticsearch-Filter-And-Query-td4027675.html)
+* Check the [sorting is efficient](http://elasticsearch-users.115913.n3.nabble.com/Performance-of-term-query-with-sorting-td4032901.html)
+* [Optimise the index](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-optimize.html) as part of the indexing process
+* [Slow log](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-optimize.html) checking
+* Check how we are using the [source](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-source-field.html) in the index
+* Warm-up the index after it is built
+* Gzip between API boxes and ES
+* Check connection pool is a singleton, internal detail
+* Delete old indexes more rigorously, we have a new index each release
+* Check [garbage collection](http://grokbase.com/t/gg/elasticsearch/13bezebw1p/garbage-collector-issues) on ES boxes
+* Check [swappiness](https://groups.google.com/forum/#!topic/logstash-users/gfTTbRABk1M) settings on ES boxes
+* Split different search types to different hardware
 
-Now, we were a bit stupid
+Now, we learned, we were a bit stupid
 ---
 Once we worked through a few things, our main findings showed that we had done some rookie errors. 
 
-We had a sharding policy that is great for large indexes but we only need one shard and then replicated on each ES server in the cluster. Changing that helped reduce the load across servers as each server could do our 
+We had a sharding policy that is great for large indexes but we only needed one shard and then replicated on each ES server in the cluster. Changing that helped reduce the load across servers as each server could do our queries entirely.
 
-Through Elastic HQ (the useful plugin to ES LINK TO ES HQ) we got the rather crude red boxes for various metrics. The 2 that stood out where high Garbage Collection and disk swaps. The main thing causing this was that we were using OpenJDK instead of the Oracle JVM, we don't really know why this happened either! The swappiness setting was less impactful but resolved some of the issues caused by the frequent writing to disk. 
+Through Elastic HQ ([the useful plugin to ES](http://www.elastichq.org/)) we got the rather crude red boxes for various metrics on the diagnostics page. The 2 that stood out were high Garbage Collection and disk swaps. The main thing causing this was that we were using OpenJDK instead of the Oracle JVM. If you are using OpenJDK, change it now! The swappiness setting was less impactful but resolved some of the issues caused by the frequent writing to disk. 
 
 Now we increased scale well until we moved our bottleneck. From our Elastic Search cluster, to our api boxes.
 
 And some things are limits of the technology
 ---
-Now the api boxes were the problem we realised that basically serialisation and deserialisation is the bottleneck. The number of boxes can be scaled out (more servers) or serialisation removed. 
+Now the api boxes were the problem we realised that basically serialisation and deserialisation is the bottleneck. The number of boxes can be scaled out (more servers) or serialisation removed. Also your programming language can be the limiting factor here. So we are now looking around at the best language options as an option for speeding things up.
 
 So what now
 ---
-We have scaled out and our benchmark improved (amount of the traffic can we serve remember) but the speed is probably as fast as we can go. As a result we are actually looking at using Elastic Search a lot less than we originally planned. We need to take serialisation out of the game, using in memory filtering seems a candidate again.
+We have tweaked the ES set-up and scaled out our API servers and our benchmark improved (the amount of traffic can we serve). We have a roadmap for how to take more and more traffic but the response time is probably as fast as we can go if we keep the same methodology. As a result we are actually looking at using Elastic Search a lot less than we originally planned. We need to take serialisation out of the game where possible, using in memory filtering seems a candidate again.
 
 That's it for Elastic Search?
 ---
-Not at all, we love it. We are definitely still going to use for autocomplete, free text search and also other indexing we want to do with future feature plans we have. We made some stupid errors with it and our architecture just prevents us using it for our one, currently most important, use case, if we grow massively, and let's hope we do, this problem might get too big for an in memory process and then we will back with ES for sure.
+Not at all, we love it. We are definitely still going to use for autocomplete, free text search and also other indexing we want to do with future feature plans we have. 
+
+We made some stupid errors with it, that was our fault and our architecture and technology decisions just prevent us using it for our one, currently most important, use case, right now. 
+
+Also solving serialisation issues creatively might mean we can use ES again.
+
+Summary
+---
+Get performance testing into your deployment pipeline, consider testing in production and expect the worst. The worst being that you might have got something stupid wrong and it is only exposed when you really don't want it to be.
 
 
 

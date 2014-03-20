@@ -4,7 +4,7 @@
   <title><![CDATA[toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-03-19T15:55:27+00:00</updated>
+  <updated>2014-03-20T12:56:00+00:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -12,6 +12,41 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[When to performance test in production]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2014/03/20/when-to-performance-test-in-production/"/>
+    <updated>2014-03-20T09:56:00+00:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2014/03/20/when-to-performance-test-in-production</id>
+    <content type="html"><![CDATA[<p>In <a href="http://tech.toptable.co.uk/blog/2014/03/19/performance-testing-our-search-api/">my last post</a> about performance testing I wrote about how we decided to do it in production as the ultimate test of success. Performance testing in production is enough to make some operations guys have a panic attack and a few odd looks were dished my way when I raised it on behalf of the team.</p>
+
+<h2>Why not have a dedicated environment?</h2>
+
+<p>If you can have a dedicated environment that you can build to be EXACTLY the same as where you are going to really need the performance (i.e. your production environment most likely, but possibly on a client machine) then do it in a dedicated, duplicated environment. Alternatively if there is no way you can use the production environment or your model means that everything will scale exactly like production, then a duplicate environment might work.</p>
+
+<p>For us, we had too many dependencies, mocking these out wasn&#8217;t really satisfactory and frankly, as a business where we are quiet at night, it is easy to use the production environment at these times. We use configuration management and virtual machines, much of what should help build a replica environment, but we also have machines in restaurants around the globe. That is not easy to replicate and not worth the effort.</p>
+
+<h2>Even if you can have a duplicated environment should you?</h2>
+
+<p>We felt in the search team that we just wouldn&#8217;t uncover a broken server (that can affect performance) or we wouldn&#8217;t see that we had a problem with interactions with these services (we have now got to serialisation as our bottleneck, maybe we would have missed that).</p>
+
+<p>We just didn&#8217;t trust that a duplicated environment would actually help us in this case. If you want to test a new idea as a prototype then the duplicate will probably work, even if just at first, we were trying to improve our actual environment.</p>
+
+<h2>Is testing in production right?</h2>
+
+<p>There is no &#8216;right&#8217; answer here, plenty of people test in a duplicate environment and then monitor in production. I think this is probably a valid approach and in a lot of use cases this would be fine for us too.</p>
+
+<p>Can you micro-optimise in a huge production system?  Probably not, so use a scaled down duplicate for that or even a local environment such as one created using Vagrant. Hopefully with enough micro-optimisations you will eventually see these in a larger environment.</p>
+
+<h2>Is it a free lunch?</h2>
+
+<p>Testing in production is not a free lunch. Even simple things like system logging will cost as you will be logging to production data centres, probably with backup costs etc. Do you need to code-in safeguards? Yes, and you will need to watch this running from your desk. When you are not watching it will be hard to be sure you will not cause production issues. We can use our regional environment that means we are testing during our day, that region&#8217;s night, other companies might see you having to work in your timezone&#8217;s evening &ndash; not fun.</p>
+
+<h2>Overall</h2>
+
+<p>Whilst, on the face of it, testing in production seems crazy, with all things considered we found it the easiest, most reliable and frankly most reassuring environment in which to test.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Performance testing our Search API]]></title>
@@ -2242,52 +2277,6 @@ Write-Host('Application Server Setup complete')
 <p>Running the script, meant that we could enable features much faster than we could enable them via the GUI. Notice how we have grouped how we enable Windows Features into the same groupings found in the &#8216;Turn Windows features on or off&#8217; menu. For a full list of the names of the features that can be turned on or off, please refer to this <a href="http://technet.microsoft.com/en-us/library/cc732757.aspx">technet article</a></p>
 
 <p>You can download a <a href="https://gist.github.com/opentable-devops/5886831">gist</a> of this script if you want to use it. Please note that the license that this script is available under can be read from our <a href="https://github.com/opentable/licensing/blob/master/LICENSE">github repository</a>. We hope that the script helps you as much as it helped us.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[nLocalGeoCoder]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/06/07/nlocalgeocoder/"/>
-    <updated>2013-06-07T11:59:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/06/07/nlocalgeocoder</id>
-    <content type="html"><![CDATA[<h2>History</h2>
-
-<p>With OpenTable having engineering teams spread across multiple offices it&#8217;s important for us to maintain open email dialogue about new products us or our teams have created, new tools we&#8217;ve discovered or problem solving approaches that have helped us achieve our goals.  Recently in one of these emails Aish introduced the team to a new open source ruby implementation of reverse geocode lookup for latitude and longitude he&#8217;d written called <a href="https://github.com/aishfenton/local-geocoder">local-geocoder</a>.  With an interest in understanding how this worked, to learn a bit of ruby, to make this project accessible to .net developers and just to see how long it would take I decided to port it to C# and .net.</p>
-
-<h2>How reverse geocoding works</h2>
-
-<p>Latitude and longitude geographical coordinates are great but 37.819548,-122.479046 doesn&#8217;t really mean much to me. Knowing this is in the San Francisco bay area is much more useful interpretation.</p>
-
-<p>That&#8217;s where reverse geocoding comes in.  Normally geocoding tries to locate geographical coordinates from other data like postal (zip) codes or street level addresses.  Reverse geocoding does the opposite and can, given enough lookup data, be very precise.</p>
-
-<p>There are a number of online reverse geocoding providers, like Google, who can perform this for you however there are normally usage limits or costs for using them.  To add to this the latency of these service can slow your logic down.  Wouldn&#8217;t it be nice if this could be done locally at high speed and in memory.</p>
-
-<h2>Using nLocalGeocoder</h2>
-
-<p>It&#8217;s really easy to use, just new up a Geocoder and you&#8217;re off&#8230;</p>
-
-<pre><code>var geocoder = new Geocoder();
-var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);
-</code></pre>
-
-<p>The result variable now holds an instance of the Result struct.  This type has the following properties:-</p>
-
-<ul>
-<li>Country <em>- Id and Name of the country</em></li>
-</ul>
-
-
-<p>and for USA only (because that&#8217;s all the data in our <a href="http://www.geojson.org">GeoJSON</a> data)</p>
-
-<ul>
-<li>AdministrativeArea1 <em>- Id and Name of the state</em></li>
-<li>AdministrativeArea2 <em>- Id and Name of the county</em></li>
-</ul>
-
-
-<p>The code is available for all to use and is available on our <a href="https://github.com/opentable/nLocalGeocoder">github repo</a></p>
-
-<p>It&#8217;s as simple as that really!</p>
 ]]></content>
   </entry>
   

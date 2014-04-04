@@ -9,7 +9,7 @@ categories: [i18n, internationalisation, REST, http, api]
 
 I18n is often a painful afterthought when serving content from a http-api. It can be taken for granted and tacked on using nasty query string values. But thankfully HTTP provides us with a solid gold opportunity. If you can look past the mire of content negotiation you can see the nuggets that lie inside.
 
-The accept-language header is used by most browsers and allows websites to serve content in a language that the user can (hopefully) understand. When we expose content from an api (in most our our use cases, at least), this content eventually ends up in front of a human (in some shape or form). Having our service-service communication serve localised resources can be invaluable because it frees the clients from having to think about i18n of the resources being served from our api.
+The accept-language header is used by most browsers and allows websites to serve content in a language that the user can (hopefully) understand. When we expose content from an api (in most of our use cases, at least), this content eventually ends up in front of a human (in some shape or form). Having our service-service communication serve localised resources can be invaluable because it frees the clients from having to think about i18n of the resources being served from our api.
 
 It is a simple part of the HTTP specification and is widely used and supported.
 
@@ -27,7 +27,7 @@ GET /product/123
 Accept-Language: en-US,en;q=0.8
 ```
 
-This header asks the service to provide en-US, and if it's unavailable then fall back to *any* english representation. The quality value (`q=0.8`) is a decimal value between 0 and 1 which indicates order of preference when specifying multiple languages. The server should pick the *first* available match. If there are multiple matches with the same quality value, then the server can pick any. If the client wants to specify some fierce preferences then they can crank out something like this:
+This header asks the service to provide en-US, and if it's unavailable then fall back to __any__ english representation. The quality value (`q=0.8`) is a decimal value between 0 and 1 which indicates order of preference when specifying multiple languages. The server should pick the __first__ available match. If there are multiple matches with the same quality value, then the server can pick any. If the client wants to specify some fierce preferences then they can crank out something like this:
 
 ```
 GET /product/123
@@ -119,7 +119,7 @@ Accept-Language: en-GB,en;q=0.8
 Vary: Accept-Language
 ```
 
-This instructs the cache that the response will vary with the value of Accept-Language, so when this changes it should be cached as a separate resource. Vary headers *should* be applied by the client to the request, however the server can apply them to the response if necessary.
+This instructs the cache that the response will vary with the value of Accept-Language, so when this changes it should be cached as a separate resource. Vary headers __should__ be applied by the client to the request, however the server can apply them to the response if necessary.
 
 [1]: http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
 [2]: https://github.com/andyroyle/accept-language-parser

@@ -1,25 +1,26 @@
 ---
 layout: post
 title: "Testing Puppet with Beaker"
-date: 2014-03-21 11:57
+date: 2014-04-04 17:30
 comments: true
-categories: 
+author: lbennett
+categories: [puppet, acceptance testing]
 ---
 
 One afternoon I got asked to write a new puppet module to manage local users on our linux boxes. Not a contrived example but a real-world need as we begin to move our infrastructure from windows to linux. Managing users is one of those tasks that is at the core of the Puppet echo system and I thought this would be pretty easy as I had done this sort of thing many times before. What added to the complexity was that we needed to support ubuntu, centos and freebsd machines that we had in our stack and we wanted to make it something that was open source and on the forge - so lot’s of testing was required.
 
-This was not the first module that I had written for the forge but it was the first that I had written since PuppetLabs had introduced their new acceptance testing framework Beaker and so I wanted to spend some time getting the module working with this new tool.
+This was not the first module that I had written for the forge but it was the first that I had written since PuppetLabs had introduced their new acceptance testing framework [Beaker](https://github.com/puppetlabs/beaker) and so I wanted to spend some time getting the module working with this new tool.
 
 ## Beaker ##
 
 
-The purpose of Beaker is to allow you to write acceptance tests for your modules, that is to write some manifests that use your module and test them out on a virtual machine. Some of you may remember rspec-system-puppet was previously used to accomplish this, well PuppetLabs has since deprecated that in favour of Beaker but the premise it’s very much the same.
+The purpose of [Beaker](https://github.com/puppetlabs/beaker) is to allow you to write acceptance tests for your modules, that is to write some manifests that use your module and test them out on a virtual machine. Some of you may remember [rspec-system-puppet](https://github.com/puppetlabs/rspec-system-puppet) was previously used to accomplish this, well PuppetLabs has since deprecated that in favour of Beaker but the premise it’s very much the same.
 
-Using rspec-puppet for unit testing your manifests really only goes so far. If your just using the standard puppet resources then if it pretty safe to assume that it does what it says on the tin (I mean PupeptLabs really test their stuff!) but as soon as you start doing things that are a little more complex, using exec statements, custom facts, custom functions or targeting multiple operating systems then your really going to want to make sure that once the catalogs compile that they are doing what they are meant to be doing and this is where your acceptance test suite will come in.
+Using rspec-puppet for unit testing your manifests really only goes so far. If your just using the standard puppet resources then if it pretty safe to assume that it does what it says on the tin (I mean PuppetLabs really test their stuff!) but as soon as you start doing things that are a little more complex, using exec statements, custom facts, custom functions or targeting multiple operating systems then your really going to want to make sure that once the catalogs compile that they are doing what they are meant to be doing and this is where your acceptance test suite will come in.
 
 With Beaker you can spin up a virtual machine, install modules, apply a manifest and then test what really happened.
 
-Beaker works with many different hypervisor technologies but most people will be using vagrant so that is what I will cover here.
+Beaker works with many different hypervisor technologies but most people will be using [vagrant](http://www.vagrantup.com/) so that is what I will cover here.
 
 ### Configuring Beaker ###
 
@@ -138,4 +139,4 @@ It’s actually worth noting that Beaker makes heavy use of [serverspec](https:/
 
 ## Summary ##
 
-So now you know a little about testing Beaker with puppet go forth and test all your modules against everything that you expect your users to be running it on - even Windows.
+So now you know a little about testing Beaker with puppet go forth and test all your modules against everything that you expect your users to be running it on.

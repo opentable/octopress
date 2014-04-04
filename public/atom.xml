@@ -4,7 +4,7 @@
   <title><![CDATA[toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-03-20T12:56:00+00:00</updated>
+  <updated>2014-04-04T13:59:00+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -12,6 +12,161 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Internationalisation in a RESTful world]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2014/04/02/internationalisation-in-a-restful-world/"/>
+    <updated>2014-04-02T14:11:00+01:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2014/04/02/internationalisation-in-a-restful-world</id>
+    <content type="html"><![CDATA[<p>I18n is often a painful afterthought when serving content from a http-api. It can be taken for granted and tacked on using nasty query string values. But thankfully HTTP provides us with a solid gold opportunity. If you can look past the mire of content negotiation you can see the nuggets that lie inside.</p>
+
+<p>The accept-language header is used by most browsers and allows websites to serve content in a language that the user can (hopefully) understand. When we expose content from an api (in most our our use cases, at least), this content eventually ends up in front of a human (in some shape or form). Having our service-service communication serve localised resources can be invaluable because it frees the clients from having to think about i18n of the resources being served from our api.</p>
+
+<p>It is a simple part of the HTTP specification and is widely used and supported.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>GET /product/123
+</span><span class='line'>Accept-Language: en-US</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The accept-language header is specifically designed to allow the server to provide a representation of the resource which approximates something the client can understand.</p>
+
+<p>The really useful bit comes from the quality value.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>GET /product/123
+</span><span class='line'>Accept-Language: en-US,en;q=0.8</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This header asks the service to provide en-US, and if it&#8217;s unavailable then fall back to <em>any</em> english representation. The quality value (<code>q=0.8</code>) is a decimal value between 0 and 1 which indicates order of preference when specifying multiple languages. The server should pick the <em>first</em> available match. If there are multiple matches with the same quality value, then the server can pick any. If the client wants to specify some fierce preferences then they can crank out something like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>GET /product/123
+</span><span class='line'>Accept-Language: fr-CA,fr-FR;q=0.8,fr;q=0.6,en-US;q=0.4,en;q=0.2,*;q=0.1</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you decipher this it&#8217;s pretty simple, you can see the quality headers giving the order in which the languages are preferred. What it does is give the client fantastic flexibility. For service-service communication you might have a use-case which will <em>never</em> serve a representation that doesn&#8217;t match the request, or you might need to <em>always</em> provide some representation (i.e. for cases where some content is always better than none).</p>
+
+<p>The accept-language header gives you that flexibility. In my opinon, if your http-api&#8217;s are serving content that <em>can</em> be internationalised, the server should always support this type of behaviour because it can shift the control from the server to the client. It allows the server&#8217;s behaviour to be incredibly explicit and the clients get all that lovely flexibility.</p>
+
+<p><strong>What happens when there is no matching representation?</strong></p>
+
+<p>Well, the specification is (intentionally) vague. In other words, it is up to the server to decide. I myself always prefer to be explicit. Thankfully the HTTP specification provides for just such an eventuality.</p>
+
+<p><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP 406 Not Acceptable</a> <em>&#8220;The resource identified by the request is only capable of generating response entities which have content characteristics not acceptable according to the accept headers sent in the request.&#8221;</em></p>
+
+<p>The 406 response <em>should</em> contain a list of characteristics which the resource does support. In this case, a list of available languages. The specification does allow the server to automatically select a representation to return, however in my opinion, the server should be explicit, rather than implicit.</p>
+
+<p>If the client has a use case where it <em>always</em> requires some sort of response (i.e. where any content is better than no content), then the client can append a wildcard to the end of the accept-language header, which will instruct the server to fall back to <em>any</em> language, in the event that there are none matching.</p>
+
+<p><strong>Parsing the Accept-Language header</strong></p>
+
+<p>I wrote a little npm module to help us in <a href="https://github.com/andyroyle/accept-language-parser">parsing the accept-language header</a>. Once you get past the (somewhat hairy) regex, it&#8217;s a simple little bit of code. (Disclaimer, I&#8217;m not a regex god, so there are a couple of little bugs in it).</p>
+
+<p>Parsing an accept-language string such as <code>en-US,en;q=0.8</code> gives an object looking like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[
+</span><span class='line'>  {
+</span><span class='line'>    code: "en",
+</span><span class='line'>    region: "GB",
+</span><span class='line'>    quality: 1.0
+</span><span class='line'>  },
+</span><span class='line'>  {
+</span><span class='line'>    code: "en",
+</span><span class='line'>    region: undefined,
+</span><span class='line'>    quality: 0.8
+</span><span class='line'>  }
+</span><span class='line'>];</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Output is always sorted in quality order from highest -> lowest. as per the http spec, omitting the quality value implies 1.0.</p>
+
+<p>We can pass this around our application and use it to select the representation which best matches the client&#8217;s request.</p>
+
+<p><strong>Using it</strong></p>
+
+<p>We use <a href="http://hapijs.com">hapi.js</a> for some of our api&#8217;s (and I&#8217;m very much in love), we use this module in a pre-requisite handler in our route:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var alparser = require('accept-language-parser');
+</span><span class='line'>server.route({
+</span><span class='line'>  method: "GET",
+</span><span class='line'>  path: "/v5/restaurants/{id}",
+</span><span class='line'>  config: {
+</span><span class='line'>    pre: [
+</span><span class='line'>      {
+</span><span class='line'>        method: function(req, next){
+</span><span class='line'>          next(alparser.parse(req.raw.req.headers["accept-language"] || ""));
+</span><span class='line'>        },
+</span><span class='line'>        assign: "language",
+</span><span class='line'>        mode: "parallel"
+</span><span class='line'>      }
+</span><span class='line'>    ],
+</span><span class='line'>    handler: function(req, reply){
+</span><span class='line'>        ...
+</span><span class='line'>    }
+</span><span class='line'>  }
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For those of you that don&#8217;t know, the prerequisites run before the handler, and assign their values to the request object. You can now get hold of the parsed language object here:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>req.pre.language</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Content-Negotiation is hard</strong></p>
+
+<p>Yes, it is. But suck it up. In my opinion the benefits outweigh the costs. Besides, the Accept-Language header is part of the HTTP specification and is well understood. If you have doubts, start small, and always try to be <em>explicit</em> rather than implicit.</p>
+
+<p><strong>Gotchas</strong></p>
+
+<p>Caching (both client-side and intermediate) can be picky. By default, most caches won&#8217;t respect the header content (i.e. the resource is cached by url only). You can get around this by using vary-headers:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>GET /product/123
+</span><span class='line'>Accept-Language: en-GB,en;q=0.8
+</span><span class='line'>Vary: Accept-Language</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This instructs the cache that the response will vary with the value of Accept-Language, so when this changes it should be cached as a separate resource. Vary headers <em>should</em> be applied by the client to the request, however the server can apply them to the response if necessary.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[When to performance test in production]]></title>
@@ -2168,115 +2323,6 @@ end
 <p>My final point is how often I should try to get to these; one a year for sure, any more than that? I need to think that through.</p>
 
 <p>Thanks to the organisers of the conference for a well organised, varied and enjoyable time. And if you have project work on, the wifi was excellent so you need never be too far away from the rest of the team, just do it.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Windows Feature Management with PowerShell]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/"/>
-    <updated>2013-06-14T20:31:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell</id>
-    <content type="html"><![CDATA[<p>In late 2012, our development team started to move towards our systems being much more automated. Long gone are the days of developers creating runbooks in Word and giving them to our operations team to use to set up our production servers.</p>
-
-<p>When building our webservers on Windows, in order to install / activate Windows features, this was the general set of instructions that was needed to be followed:</p>
-
-<ul>
-<li>Click Start Button</li>
-<li>Click on Control Panel</li>
-<li>Click on Programs</li>
-<li>Click on Turn Windows features on or off</li>
-</ul>
-
-
-<p>This would present a screen as follows:</p>
-
-<p><img class="center" src="http://tech.toptable.co.uk/images/posts/windowsfeature.png"></p>
-
-<p>You would need to find the correct features to enable and check the box, press OK and then wait for the features to be installed.</p>
-
-<p>When Microsoft introduced Windows Server 2008 and PowerShell 2.0, they also introducted the module &#8216;ServerManager&#8217;. This is a module that allows us to interact, with PowerShell, Windows Features using a range of cmdlets:</p>
-
-<ul>
-<li>Get-WindowsFeature</li>
-<li>Add-WindowsFeature</li>
-<li>Remove-WindowsFeature</li>
-</ul>
-
-
-<p>This meant that instead of creating runbooks in Word, our developers could create automation scripts that would take a base Windows Server 2008 server and enable all the Windows Features needed to run our applications. This allowed our operations team to move much faster in configuring our servers.</p>
-
-<p>To turn on the ASP.NET Application Development features in Windows, we would run the following script from PowerShell:</p>
-
-<pre><code>Import-Module ServerManager
-Add-WindowsFeature Web-Asp-Net
-</code></pre>
-
-<p>By knowing what Windows Features we needed to install on our servers, we were able to create the following script:</p>
-
-<pre><code>function enable_net_3_5_features()
-{
-    Add-WindowsFeature NET-HTTP-Activation
-    Add-WindowsFeature NET-Win-CFAC
-    Add-WindowsFeature NET-Non-HTTP-Activ
-    Add-WindowsFeature AS-MSMQ-Activation
-}
-
-function enable_iis_common_http_features()
-{
-    Add-WindowsFeature Web-Static-Content
-    Add-WindowsFeature Web-Http-Errors
-    Add-WindowsFeature Web-Default-Doc
-}
-
-function enable_iis_application_development_features()
-{
-    Add-WindowsFeature Web-Asp-Net
-    Add-WindowsFeature Web-Net-Ext
-    Add-WindowsFeature Web-ISAPI-Ext
-    Add-WindowsFeature Web-ISAPI-Filter
-}
-
-function enable_iis_health_and_diagnostics_features()
-{
-    Add-WindowsFeature Web-Http-Logging
-    Add-WindowsFeature Web-Request-Monitor
-}
-
-function enable_iis_security_features()
-{
-    Add-WindowsFeature Web-Filtering
-}
-
-function enable_iis_performance_features()
-{
-    Add-WindowsFeature Web-Stat-Compression
-    Add-WindowsFeature Web-Dyn-Compression
-}
-
-function enable_iis_management_tools()
-{
-    Add-WindowsFeature Web-Mgmt-Tools
-    Add-WindowsFeature Web-Mgmt-Console
-}
-
-
-Write-Host('Starting Application Server Setup')
-
-Import-Module ServerManager
-enable_net_3_5_features
-enable_iis_common_http_features
-enable_iis_application_development_features
-enable_iis_health_and_diagnostics_features
-enable_iis_security_features
-enable_iis_performance_features
-enable_iis_management_tools 
-
-Write-Host('Application Server Setup complete')
-</code></pre>
-
-<p>Running the script, meant that we could enable features much faster than we could enable them via the GUI. Notice how we have grouped how we enable Windows Features into the same groupings found in the &#8216;Turn Windows features on or off&#8217; menu. For a full list of the names of the features that can be turned on or off, please refer to this <a href="http://technet.microsoft.com/en-us/library/cc732757.aspx">technet article</a></p>
-
-<p>You can download a <a href="https://gist.github.com/opentable-devops/5886831">gist</a> of this script if you want to use it. Please note that the license that this script is available under can be read from our <a href="https://github.com/opentable/licensing/blob/master/LICENSE">github repository</a>. We hope that the script helps you as much as it helped us.</p>
 ]]></content>
   </entry>
   

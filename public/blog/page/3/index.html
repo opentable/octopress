@@ -9,7 +9,7 @@
   <meta name="author" content="toptable">
 
   
-  <meta name="description" content="History With OpenTable having engineering teams spread across multiple offices it&#8217;s important for us to maintain open email dialogue about new &hellip;">
+  <meta name="description" content="In late 2012, our development team started to move towards our systems being much more automated. Long gone are the days of developers creating &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +81,142 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/06/14/windows-feature-management-with-powershell/">Windows Feature Management with PowerShell</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-14T20:31:00+01:00" pubdate data-updated="true">Jun 14<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In late 2012, our development team started to move towards our systems being much more automated. Long gone are the days of developers creating runbooks in Word and giving them to our operations team to use to set up our production servers.</p>
+
+<p>When building our webservers on Windows, in order to install / activate Windows features, this was the general set of instructions that was needed to be followed:</p>
+
+<ul>
+<li>Click Start Button</li>
+<li>Click on Control Panel</li>
+<li>Click on Programs</li>
+<li>Click on Turn Windows features on or off</li>
+</ul>
+
+
+<p>This would present a screen as follows:</p>
+
+<p><img class="center" src="/images/posts/windowsfeature.png"></p>
+
+<p>You would need to find the correct features to enable and check the box, press OK and then wait for the features to be installed.</p>
+
+<p>When Microsoft introduced Windows Server 2008 and PowerShell 2.0, they also introducted the module &#8216;ServerManager&#8217;. This is a module that allows us to interact, with PowerShell, Windows Features using a range of cmdlets:</p>
+
+<ul>
+<li>Get-WindowsFeature</li>
+<li>Add-WindowsFeature</li>
+<li>Remove-WindowsFeature</li>
+</ul>
+
+
+<p>This meant that instead of creating runbooks in Word, our developers could create automation scripts that would take a base Windows Server 2008 server and enable all the Windows Features needed to run our applications. This allowed our operations team to move much faster in configuring our servers.</p>
+
+<p>To turn on the ASP.NET Application Development features in Windows, we would run the following script from PowerShell:</p>
+
+<pre><code>Import-Module ServerManager
+Add-WindowsFeature Web-Asp-Net
+</code></pre>
+
+<p>By knowing what Windows Features we needed to install on our servers, we were able to create the following script:</p>
+
+<pre><code>function enable_net_3_5_features()
+{
+    Add-WindowsFeature NET-HTTP-Activation
+    Add-WindowsFeature NET-Win-CFAC
+    Add-WindowsFeature NET-Non-HTTP-Activ
+    Add-WindowsFeature AS-MSMQ-Activation
+}
+
+function enable_iis_common_http_features()
+{
+    Add-WindowsFeature Web-Static-Content
+    Add-WindowsFeature Web-Http-Errors
+    Add-WindowsFeature Web-Default-Doc
+}
+
+function enable_iis_application_development_features()
+{
+    Add-WindowsFeature Web-Asp-Net
+    Add-WindowsFeature Web-Net-Ext
+    Add-WindowsFeature Web-ISAPI-Ext
+    Add-WindowsFeature Web-ISAPI-Filter
+}
+
+function enable_iis_health_and_diagnostics_features()
+{
+    Add-WindowsFeature Web-Http-Logging
+    Add-WindowsFeature Web-Request-Monitor
+}
+
+function enable_iis_security_features()
+{
+    Add-WindowsFeature Web-Filtering
+}
+
+function enable_iis_performance_features()
+{
+    Add-WindowsFeature Web-Stat-Compression
+    Add-WindowsFeature Web-Dyn-Compression
+}
+
+function enable_iis_management_tools()
+{
+    Add-WindowsFeature Web-Mgmt-Tools
+    Add-WindowsFeature Web-Mgmt-Console
+}
+
+
+Write-Host('Starting Application Server Setup')
+
+Import-Module ServerManager
+enable_net_3_5_features
+enable_iis_common_http_features
+enable_iis_application_development_features
+enable_iis_health_and_diagnostics_features
+enable_iis_security_features
+enable_iis_performance_features
+enable_iis_management_tools 
+
+Write-Host('Application Server Setup complete')
+</code></pre>
+
+<p>Running the script, meant that we could enable features much faster than we could enable them via the GUI. Notice how we have grouped how we enable Windows Features into the same groupings found in the &#8216;Turn Windows features on or off&#8217; menu. For a full list of the names of the features that can be turned on or off, please refer to this <a href="http://technet.microsoft.com/en-us/library/cc732757.aspx">technet article</a></p>
+
+<p>You can download a <a href="https://gist.github.com/opentable-devops/5886831">gist</a> of this script if you want to use it. Please note that the license that this script is available under can be read from our <a href="https://github.com/opentable/licensing/blob/master/LICENSE">github repository</a>. We hope that the script helps you as much as it helped us.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -238,6 +374,10 @@ var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/02/internationalisation-in-a-restful-world/">Internationalisation in a RESTful world</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/03/20/when-to-performance-test-in-production/">When to performance test in production</a>
       </li>
     
@@ -251,10 +391,6 @@ var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);
     
       <li class="post">
         <a href="/blog/2014/02/12/programme-management/">Programme Management, making Agile scale</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/02/10/the-adoption-of-configuration-management/">The adoption of Configuration Management</a>
       </li>
     
   </ul>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: puppet | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/puppet/atom.xml" rel="self"/>
+  <title><![CDATA[Category: open souce | toptable Tech Blog]]></title>
+  <link href="http://tech.toptable.co.uk/blog/categories/open-souce/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
   <updated>2014-04-04T16:41:09+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>

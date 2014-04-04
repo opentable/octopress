@@ -9,7 +9,7 @@
   <meta name="author" content="toptable">
 
   
-  <meta name="description" content="When building a previous project, I created an ASP.NET MVC application that would allow subdomains to resolve to different areas of the project and &hellip;">
+  <meta name="description" content="In an effort to raise the visibility of our excellent Windows 8 app we have recently connected www.opentable.com to the Windows Store. This was &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +81,92 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/10/21/linking-to-your-app-in-windows-8/">Linking to your app in Windows 8</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-21T17:36:00+01:00" pubdate data-updated="true">Oct 21<span>st</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In an effort to raise the visibility of our excellent Windows 8 app we have recently connected <a href="http://www.opentable.com">www.opentable.com</a> to the Windows Store.  This was simply a case of adding two lines of meta data to our site. Or it should have been &ndash; there were several gotchas along the way that are worth sharing.</p>
+
+<h2>The code</h2>
+
+<p>The meta data that we added to the site are an <em>application ID</em>, and what Microsoft have termed the <em>Package Family name</em>.  Once you have these, add the following lines of code to your page &lt;head&gt;.</p>
+
+<pre><code>&lt;meta name="msApplication-ID" content="OpenTable.OpenTable"/&gt; 
+&lt;meta name="msApplication-PackageFamilyName" content="OpenTable.OpenTable_r44en0zefym0a"/&gt;
+</code></pre>
+
+<p><img class="right" src="/images/posts/get-app-for-this-site.png"></p>
+
+<p>This will enable the <strong>&#8220;Get app for this site&#8221;</strong> link when you are viewing your page in the full-screen Metro version of Internet Explorer (i.e. launched from the start screen); the desktop version of IE doesn&#8217;t have this capability.</p>
+
+<p>There are <a href="http://msdn.microsoft.com/en-us/library/ie/hh781489%28v=vs.85%29.aspx#code-snippet-1">three other optional meta values</a> that can also be used to control your link.</p>
+
+<h2>Finding the values</h2>
+
+<p>There are at least two ways of finding the values. If you have your application code and Visual Studio 2012 (or later) then the values can be found in the <strong>package.appxmanifest</strong> file &ndash; open this in VS and it automatically launches the manifest designer view.  Select the Packaging tab and the &#8220;Package name&#8221; is the <em>ID</em>, and the <em>Package family name</em> is at the bottom of this screen.</p>
+
+<p><img class="center" src="/images/posts/vs-screenshot.png"></p>
+
+<p>If you don&#8217;t have the local code with Visual Studio you can still find out these values by other means.</p>
+
+<p>The <strong>msApplication-PackageFamilyName</strong> can be found in the source code of your online Windows 8 app.  For example, <a href="view-source:http://apps.microsoft.com/windows/en-us/app/d7c37fb3-d594-4366-8003-e49c8e953095">viewing the source of the OpenTable app</a> shows a Javascript variable <code>packageFamilyName</code> embedded in the page head.</p>
+
+<pre><code>var packageFamilyName = 'OpenTable.OpenTable_r44en0zefym0a';
+</code></pre>
+
+<p>The <strong>msApplication-ID</strong> is still found in the <code>package.appxmanifest</code> file in your Win8 app, but you don&#8217;t necessarily need to have the local code or Visual Studio.  We were able to access package.appxmanifest in our GitHub repo (it&#8217;s an XML file) and the msApplication-ID was the same as the <strong>identity name</strong>.  I don&#8217;t know if the Application ID and the identity name are always the same, but they were for us.</p>
+
+<pre><code>&lt;Identity Name="OpenTable.OpenTable" Publisher="CN=9C8CE42A-5BD4-4679" Version="1.0.0.1910" /&gt; 
+</code></pre>
+
+<h2>Gotchas</h2>
+
+<p>We tried opening the site in Visual Studio 2012 in Windows 7, but the project containing package.appxmanifest wouldn&#8217;t open.  We had to open the solution in Windows 8, which finally worked once we&#8217;d logged into MSDN and installed the suggested updates.</p>
+
+<p>Also, the content values of the meta data are not case sensitive, but the names msApplication-ID and msApplication-PackageFamilyName are.</p>
+
+<p>Finally, having entered what we knew to be the correct values, clicking the &#8220;Get app for this site&#8221; link still wouldn&#8217;t take us to <a href="http://apps.microsoft.com/windows/en-us/app/d7c37fb3-d594-4366-8003-e49c8e953095">the OpenTable app in the Windows store</a>.  After checking with an American colleague the penny dropped that the OpenTable app is only available in the US and Microsoft have unfortunately not provided any visual feedback to explain this.</p>
+
+<p>Luckily instead of just having to take his word that the new code worked there is a way to change your Windows Store settings and fake your location.  <a href="http://www.guidingtech.com/20936/change-windows-8-store-region/">Have a look at this helpful article</a> and you&#8217;re all set to have your website and Windows app happily talking to each other.</p>
+
+<h3>Further reading</h3>
+
+<ul>
+<li><a href="http://msdn.microsoft.com/en-us/library/ie/hh781489%28v=vs.85%29.aspx">Connect your website to your Windows Store app</a> (Internet Explorer Dev Center)</li>
+<li><a href="http://blogs.msdn.com/b/windowsstore/archive/2012/02/22/linking-to-your-apps-on-the-web.aspx">Linking to your apps on the web</a> (MSDN blog)</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1748,56 +1834,6 @@ end
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/06/18/ndcoslo/">NDC Oslo</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-06-18T11:59:00+01:00" pubdate data-updated="true">Jun 18<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Three toptable heroes took to Norway last week to attend NDC Oslo. For two of us it was our first major conference and for one, Paul Stack, he had to speak.</p>
-
-<p>Personally, as my first large, multi-discipline conference, I didn&#8217;t really know what to expect. Being away from the team for three days in a foreign country with major project work going on at the same time was a bit uncomfortable. I was worried that the time and expense needed to be justified. That fear went away after the first night in the bar!</p>
-
-<p>The sessions were great, many things I haven&#8217;t had a chance to investigate were covered, things like Functional Programming, the latest JavaScript frameworks and tooling. There were also sessions covering things I am more involved with, Agile Process, SOA &amp; Rest, Team Structure and Hiring.</p>
-
-<p>There are other posts around about the individual sessions but I am now much more enthusiastic about functional programming particularly how we could use it and getting back into front end development (even if just in my own time).</p>
-
-<p>The main thing I enjoyed and learnt though is meeting the other delegates. I think staying away from home makes this much more prevalent, something to consider for other conferences. Meeting people at all levels or experience and especially the speakers, most of whom are very generous with their time and ideas, teaches you the most. I probably learnt more over the shuffle board of The Dubliner Pub than reading blog post online in a year (that may be a stretch, but I did learn I was by far the best player on the night).</p>
-
-<p>Watching a colleague speak was also interesting, when you work with a buffoon, however passionate and hard working, to see people actually interested in what he has to say is an eye opener. It makes you realise what you are doing and all its challenges are a step forwards and one to keep pursuing. It also makes you think, &#8220;if he can do it, I must be able to, what knowledge should I share?&#8221;. What to share is the hard bit.</p>
-
-<p>My final point is how often I should try to get to these; one a year for sure, any more than that? I need to think that through.</p>
-
-<p>Thanks to the organisers of the conference for a well organised, varied and enjoyable time. And if you have project work on, the wifi was excellent so you need never be too far away from the rest of the team, just do it.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -1815,6 +1851,10 @@ end
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday - our commitment to the puppet forge</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/02/internationalisation-in-a-restful-world/">Internationalisation in a RESTful world</a>
       </li>
     
@@ -1828,10 +1868,6 @@ end
     
       <li class="post">
         <a href="/blog/2014/02/28/api-benchmark/">Benchmarking APIs - why it’s important, and how</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/02/12/programme-management/">Programme Management, making Agile scale</a>
       </li>
     
   </ul>

@@ -3,7 +3,8 @@ layout: post
 title: "ForgeFriday - our commitment to the puppet forge"
 date: 2014-04-04 15:30
 comments: true
-categories: 
+author: lbennett
+categories: [puppet, open souce]
 ---
 
 Those of you that read this blog on a regular basis will be aware that here at OpenTable we take our commitment to Open Source very seriously. As part of the infrastructure team at OpenTable we are begining a process of being open-first. That means that everything we write will be open-sourced unless it contains a significant amount of internal information but we will architect to limit this.

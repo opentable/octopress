@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "ForgeFriday - our commitment to the puppet forge"
+title: "ForgeFriday - our commitment to the Puppet Forge"
 date: 2014-04-04 15:30
 comments: true
 author: lbennett

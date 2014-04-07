@@ -4,7 +4,7 @@
   <title><![CDATA[toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-07T13:25:00+01:00</updated>
+  <updated>2014-04-07T13:31:01+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -163,7 +163,7 @@ end
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[ForgeFriday - our commitment to the puppet forge]]></title>
+    <title type="html"><![CDATA[ForgeFriday - our commitment to the Puppet Forge]]></title>
     <link href="http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/"/>
     <updated>2014-04-04T15:30:00+01:00</updated>
     <id>http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge</id>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: open souce | toptable Tech Blog]]></title>
+  <title><![CDATA[Category: Open souce | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/open-souce/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-07T11:26:08+01:00</updated>
+  <updated>2014-04-07T13:25:00+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -22,19 +22,19 @@
 
 <p>As part of that commitment we are trying to release all our Puppet configuration. The key to maintaining any good habit is to do little and often and with that in mind we wanted to let you know about ForgeFriday.</p>
 
-<p>Every Friday we will be releasing our Puppet code onto the <a href="http://forge.puppetlabs.com/opentable">PuppetLabs Forge</a> (until we run out of modules). That means all our windows modules, all our forks, our experiments, our custom facts and functions - anything and everything will start rolling out on Friday's.</p>
+<p>Every Friday we will be releasing our Puppet code onto the <a href="http://forge.puppetlabs.com/opentable">PuppetLabs Forge</a> (until we run out of modules). That means all our Windows modules, all our forks, our experiments, our custom facts and functions - anything and everything will start rolling out on Fridays.</p>
 
-<p>It's not just forge and forget either, we will continue to support all of our modules and those that use them. We will blog about some of the bigger, more important ones and continue to engage with the community as much as possible. If your using our modules (even if you have no issues) then let us know - we'd love to hear from you.</p>
+<p>It's not just forge and forget either, we will continue to support all of our modules and those that use them. We will blog about some of the bigger, more important ones and continue to engage with the community as much as possible. If you're using our modules (even if you have no issues) then let us know - we'd love to hear from you.</p>
 
-<p>In this mean time go and check out what we have already released:</p>
+<p>In the meantime go and check out what we have already released:</p>
 
-<p><a href="http://forge.puppetlabs.com/opentable/windowsfeature">opentable/windowsfeature</a> - Module that will turn windows features on or off<br/>
+<p><a href="http://forge.puppetlabs.com/opentable/windowsfeature">opentable/windowsfeature</a> - Module that will turn Windows features on or off<br/>
 <a href="http://forge.puppetlabs.com/opentable/iis_rewrite">opentable/iis_rewrite</a> - Module that will install the IIS Rewrite 2.0 Module on Windows <br/>
 <a href="http://forge.puppetlabs.com/opentable/remaster">opentable/remaster</a> - Module for managing the remaster of agent nodes <br/>
-<a href="http://forge.puppetlabs.com/opentable/puppetversion">opentable/puppetversion</a> - Module for managing the installation and upgrade of puppet <br/>
+<a href="http://forge.puppetlabs.com/opentable/puppetversion">opentable/puppetversion</a> - Module for managing the installation and upgrade of Puppet<br/>
 <a href="http://forge.puppetlabs.com/opentable/altlib">opentable/altlib</a> - Module providing some additional useful functions <br/></p>
 
-<p>Keep an eye on twitter for the latest ForgeFriday updates.</p>
+<p>Keep an eye on Twitter for the latest ForgeFriday updates.</p>
 ]]></content>
   </entry>
   

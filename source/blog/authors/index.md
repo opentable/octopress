@@ -10,6 +10,8 @@ footer: false
 
 [Marcin Bazydlo]
 
+[Liam Bennett]
+
 [John Catterfeld]
 
 [Richard Hopton]
@@ -33,3 +35,4 @@ footer: false
 [John Catterfeld]:/blog/authors/jcatterfeld.html
 [Ryan Tomlinson]:/blog/authors/rtomlinson.html
 [Matteo Figus]:/blog/authors/mfigus.html
+[Liam Bennett]:/blog/authors/lbennett.html

@@ -9,7 +9,7 @@
   <meta name="author" content="toptable">
 
   
-  <meta name="description" content="One afternoon I got asked to write a new puppet module to manage local users on our linux boxes. Not a contrived example but a real-world need as we &hellip;">
+  <meta name="description" content="One afternoon I got asked to write a new Puppet module to manage local users on our Linux boxes. Not a contrived example but a real-world need as we &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -112,23 +112,23 @@
   </header>
 
 
-<div class="entry-content"><p>One afternoon I got asked to write a new puppet module to manage local users on our linux boxes. Not a contrived example but a real-world need as we begin to move our infrastructure from windows to linux. Managing users is one of those tasks that is at the core of the Puppet echo system and I thought this would be pretty easy as I had done this sort of thing many times before. What added to the complexity was that we needed to support ubuntu, centos and freebsd machines that we had in our stack and we wanted to make it something that was open source and on the forge - so lot’s of testing was required.</p>
+<div class="entry-content"><p>One afternoon I got asked to write a new Puppet module to manage local users on our Linux boxes. Not a contrived example but a real-world need as we begin to move our infrastructure from Windows to Linux. Managing users is one of those tasks that is at the core of the Puppet ecosystem and I thought this would be pretty easy as I had done this sort of thing many times before. What added to the complexity was that we needed to support Ubuntu, Centos and FreeBSD machines that we had in our stack and we wanted to make it something that was open source and on the Forge - so lots of testing was required.</p>
 
-<p>This was not the first module that I had written for the forge but it was the first that I had written since PuppetLabs had introduced their new acceptance testing framework <a href="https://github.com/puppetlabs/beaker">Beaker</a> and so I wanted to spend some time getting the module working with this new tool.</p>
+<p>This was not the first module that I had written for the Forge but it was the first that I had written since PuppetLabs had introduced their new acceptance testing framework <a href="https://github.com/puppetlabs/beaker">Beaker</a> and so I wanted to spend some time getting the module working with this new tool.</p>
 
 <h2>Beaker</h2>
 
-<p>The purpose of <a href="https://github.com/puppetlabs/beaker">Beaker</a> is to allow you to write acceptance tests for your modules, that is to write some manifests that use your module and test them out on a virtual machine. Some of you may remember <a href="https://github.com/puppetlabs/rspec-system-puppet">rspec-system-puppet</a> was previously used to accomplish this, well PuppetLabs has since deprecated that in favour of Beaker but the premise it’s very much the same.</p>
+<p>The purpose of Beaker is to allow you to write acceptance tests for your modules, that is to write some manifests that use your module and test them out on a virtual machine. Some of you may remember <a href="https://github.com/puppetlabs/rspec-system-puppet">rspec-system-puppet</a> was previously used to accomplish this, well PuppetLabs has since deprecated that in favour of Beaker but the premise is very much the same.</p>
 
-<p>Using rspec-puppet for unit testing your manifests really only goes so far. If your just using the standard puppet resources then if it pretty safe to assume that it does what it says on the tin (I mean PuppetLabs really test their stuff!) but as soon as you start doing things that are a little more complex, using exec statements, custom facts, custom functions or targeting multiple operating systems then your really going to want to make sure that once the catalogs compile that they are doing what they are meant to be doing and this is where your acceptance test suite will come in.</p>
+<p>Using rspec-puppet for unit testing your manifests really only goes so far. If you&#8217;re just using the standard Puppet resources then it pretty safe to assume that it does what it says on the tin (I mean PuppetLabs really test their stuff!) but as soon as you start doing things that are a little more complex, using exec statements, custom facts, custom functions or targeting multiple operating systems then you&#8217;re really going to want to make sure that once the catalogs compile that they are doing what they are meant to be doing and this is where your acceptance test suite will come in.</p>
 
 <p>With Beaker you can spin up a virtual machine, install modules, apply a manifest and then test what really happened.</p>
 
-<p>Beaker works with many different hypervisor technologies but most people will be using <a href="http://www.vagrantup.com/">vagrant</a> so that is what I will cover here.</p>
+<p>Beaker works with many different hypervisor technologies but most people will be using <a href="http://www.vagrantup.com/">Vagrant</a> so that is what I will cover here.</p>
 
 <h3>Configuring Beaker</h3>
 
-<p>The first thing in configuring your existing project to use beaker is to add “beaker” and “beaker_rspec” to you Gemfile. Your then going to want to create a new spec_helper file called spec_helper_acceptence.rb that should look something like this:</p>
+<p>The first thing in configuring your existing project to use Beaker is to add “beaker” and “beaker_rspec” to you Gemfile. You&#8217;re then going to want to create a new spec_helper file called spec_helper_acceptence.rb that should look something like this:</p>
 
 <pre><code>require 'beaker-rspec/spec_helper'
 require 'beaker-rspec/helpers/serverspec'
@@ -155,9 +155,9 @@ RSpec.configure do |c|
 end
 </code></pre>
 
-<p>This contains quite a bit of new setup that you won’t have seen before. Beaker contains lots of useful helper methods for doing all the things that you going to want to do when running puppet against a virtual machine: install puppet (so your boxes don’t have to have it pre-baked), installing local modules and installing modules from the forge. We also specify the platforms that we don’t support - we’ll make use of this later.</p>
+<p>This contains quite a bit of new setup that you won’t have seen before. Beaker contains lots of useful helper methods for doing all the things that you&#8217;re going to want to do when running Puppet against a virtual machine; install Puppet (so your boxes don’t have to have it pre-baked), installing local modules and installing modules from the Forge. We also specify the platforms that we don’t support - we’ll make use of this later.</p>
 
-<p>The next step is to define some machines that we want to set against. Beaker calls these nodesets because while in most cases you’ll only want to test one host machine at a time, beaker does support testing multi-node configurations for more complex scenarios. Looking at the homes project your directory structure will look something like this:</p>
+<p>The next step is to define some machines that we want to set against. Beaker calls these nodesets because while in most cases you’ll only want to test one host machine at a time, Beaker does support testing multi-node configurations for more complex scenarios. Looking at the homes project your directory structure will look something like this:</p>
 
 <pre><code>puppet-homes
   manifests
@@ -175,7 +175,7 @@ end
   tests 
 </code></pre>
 
-<p>A nodeset is simply a yaml file that specifies the box name, where it downloads it from, it’s platform and the hypervisor you are using. A example from the homes module below:</p>
+<p>A nodeset is simply a yaml file that specifies the box name, where it downloads it from, its platform and the hypervisor you are using. A example from the homes module below:</p>
 
 <pre><code>HOSTS:
   ubuntu-server-12042-x64:
@@ -190,9 +190,9 @@ CONFIG:
   type: git
 </code></pre>
 
-<p>More detail about how to configure these yaml files can be found on the Beaker wiki: <a href="https://github.com/puppetlabs/beaker/wiki/Creating-A-Test-Environment">Creating A Test Environment</a></p>
+<p>More detail about how to configure these yaml files can be found on the Beaker wiki, <a href="https://github.com/puppetlabs/beaker/wiki/Creating-A-Test-Environment">Creating A Test Environment</a></p>
 
-<p>In the above example I am using vagrant boxes provided by PuppetLabs but there are a few other sources to discover already pre-build boxes:</p>
+<p>In the above example I am using Vagrant boxes provided by PuppetLabs but there are a few other sources to discover already pre-built boxes:</p>
 
 <ul>
 <li><a href="http://puppet-vagrant-boxes.puppetlabs.com/">http://puppet-vagrant-boxes.puppetlabs.com/</a></li>
@@ -201,7 +201,7 @@ CONFIG:
 </ul>
 
 
-<h3>Writing Tests in Beaker</h3>
+<h3>Writing tests in Beaker</h3>
 
 <p>So now that we have our environment set up let’s look at actually writing some tests. Here is an example from the homes project:</p>
 
@@ -234,13 +234,13 @@ describe 'homes defintion', :unless =&gt; UNSUPPORTED_PLATFORMS.include?(fact('o
      it { should be_directory }
    end
  end
+
+end
 </code></pre>
 
-<p>end</p>
+<p>In this case we are writing a test to make sure that when our module runs, it creates the user and its home directory as it expects. Using the UNSUPPORTED_PLATFORMS that we defined earlier we can also skip groups of tests if they are not supported on the current node.</p>
 
-<p>In this case we are writing a test to make sure that when our module runs, it creates the user and it’s home directory as it expects. Using the UNSUPPORTED_PLATFORMS that we defined earlier we can also skip groups of tests if they are not supported on the current node.</p>
-
-<p>The idea here is that we define a manifest (using heredoc - but please don’t make them too long!) and then we want to apply that manifest to the node. Beaker provides a nice helper methods that: apply_manifest. In our case we run it once, which will cause the changes and then we run it a second time with the scope of a test to check for idempotency. We can then make use of Beaker’s resource based helpers to actually test the functionality on the node itself. There many helper methods that will allow you to do almost everything that you need to do, either for setup purposes or for actually testing the node:</p>
+<p>The idea here is that we define a manifest (using Heredoc - but please don’t make them too long!) and then we want to apply that manifest to the node. Beaker provides a nice helper methods that: apply_manifest. In our case we run it once, which will cause the changes and then we run it a second time with the scope of a test to check for idempotency. We can then make use of Beaker’s resource based helpers to actually test the functionality on the node itself. Their many helper methods will allow you to do almost everything that you need to do, either for setup purposes or for actually testing the node:</p>
 
 <ul>
 <li><a href="https://github.com/puppetlabs/beaker/wiki/The-Beaker-DSL-API">The-Beaker-DSL-API</a></li>
@@ -252,7 +252,7 @@ describe 'homes defintion', :unless =&gt; UNSUPPORTED_PLATFORMS.include?(fact('o
 
 <h2>Summary</h2>
 
-<p>So now you know a little about testing Beaker with puppet go forth and test all your modules against everything that you expect your users to be running it on.</p>
+<p>So now you know a little about testing Beaker with Puppet go forth and test all your modules against everything that you expect your users to be running it on.</p>
 </div>
 
 
@@ -280,7 +280,7 @@ describe 'homes defintion', :unless =&gt; UNSUPPORTED_PLATFORMS.include?(fact('o
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/acceptance-testing/'>acceptance testing</a>, <a class='category' href='/blog/categories/puppet/'>puppet</a>
+    <a class='category' href='/blog/categories/acceptance-tests/'>Acceptance tests</a>, <a class='category' href='/blog/categories/beaker/'>Beaker</a>, <a class='category' href='/blog/categories/puppet/'>Puppet</a>, <a class='category' href='/blog/categories/vagrant/'>Vagrant</a>
   
 </span>
 

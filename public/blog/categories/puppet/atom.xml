@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Puppet | toptable Tech Blog]]></title>
+  <title><![CDATA[Category: puppet | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/puppet/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-07T13:31:01+01:00</updated>
+  <updated>2014-04-09T11:39:10+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -14,213 +14,62 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Testing Puppet with Beaker]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/"/>
-    <updated>2014-04-04T17:30:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/04/04/testing-puppet-with-beaker</id>
-    <content type="html"><![CDATA[<p>One afternoon I got asked to write a new Puppet module to manage local users on our Linux boxes. Not a contrived example but a real-world need as we begin to move our infrastructure from Windows to Linux. Managing users is one of those tasks that is at the core of the Puppet ecosystem and I thought this would be pretty easy as I had done this sort of thing many times before. What added to the complexity was that we needed to support Ubuntu, Centos and FreeBSD machines that we had in our stack and we wanted to make it something that was open source and on the Forge - so lots of testing was required.</p>
+    <title type="html"><![CDATA[Upgrading Puppet with Puppet]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/"/>
+    <updated>2014-04-07T13:23:00+01:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet</id>
+    <content type="html"><![CDATA[<p>As part of one of our recent <a href="http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of puppet in a platform agnostic way.</p>
 
-<p>This was not the first module that I had written for the Forge but it was the first that I had written since PuppetLabs had introduced their new acceptance testing framework <a href="https://github.com/puppetlabs/beaker">Beaker</a> and so I wanted to spend some time getting the module working with this new tool.</p>
+<p>This should be a very straightforward task to complete because this is one of the core resources that puppet manages - the upgrading of packages. With that in mind, putting <code>package { ‘puppet’: ensure =&gt; $version }</code> in one of our base profiles would be all that was needed but alas it was not. In this blog I want to take you through the history, the bugs, the platforms and the edge-cases that make performing an in-place upgrade of puppet a more complex task that it ought to be.</p>
 
-<h2>Beaker</h2>
+<h2>Debian</h2>
 
-<p>The purpose of Beaker is to allow you to write acceptance tests for your modules, that is to write some manifests that use your module and test them out on a virtual machine. Some of you may remember <a href="https://github.com/puppetlabs/rspec-system-puppet">rspec-system-puppet</a> was previously used to accomplish this, well PuppetLabs has since deprecated that in favour of Beaker but the premise is very much the same.</p>
+<p>Like many, Ubuntu is our Debian derivative of choice for much of our newer production infrastructure. Debian, has the apt package management system and PuppetLabs provide the required deb packages as well as hosting their own apt repository to point our systems to. The main point of package management systems is it that they take care of the dependency hell and the awkward upgrade paths all from within the confines of the package itself, and that is what happens with the PuppetLabs packages - great.</p>
 
-<p>Using rspec-puppet for unit testing your manifests really only goes so far. If you're just using the standard Puppet resources then it pretty safe to assume that it does what it says on the tin (I mean PuppetLabs really test their stuff!) but as soon as you start doing things that are a little more complex, using exec statements, custom facts, custom functions or targeting multiple operating systems then you're really going to want to make sure that once the catalogs compile that they are doing what they are meant to be doing and this is where your acceptance test suite will come in.</p>
+<p>The problem that we had in some of our systems was that they had been built without the PuppetLabs apt repository. This means that they picked up a slightly older version of the puppet packages from the main Ubuntu distribution repositories and didn’t have access to the newer versions of the puppet packages. Ok, so we solved that with the following code:</p>
 
-<p>With Beaker you can spin up a virtual machine, install modules, apply a manifest and then test what really happened.</p>
+<pre><code>  exec { 'rm_duplicate_puppet_source':
+    path    =&gt; '/usr/local/bin:/bin:/usr/bin',
+    command =&gt; 'sed -i \'s:deb\ http\:\/\/apt.puppetlabs.com\/ precise main::\' /etc/apt/sources.list',
+    onlyif  =&gt; 'grep \'deb http://apt.puppetlabs.com/ precise main\' /etc/apt/sources.list',
+  }
 
-<p>Beaker works with many different hypervisor technologies but most people will be using <a href="http://www.vagrantup.com/">Vagrant</a> so that is what I will cover here.</p>
-
-<h3>Configuring Beaker</h3>
-
-<p>The first thing in configuring your existing project to use Beaker is to add “beaker” and “beaker_rspec” to you Gemfile. You're then going to want to create a new spec_helper file called spec_helper_acceptence.rb that should look something like this:</p>
-
-<pre><code>require 'beaker-rspec/spec_helper'
-require 'beaker-rspec/helpers/serverspec'
-
-hosts.each do |host|
-  install_puppet
-end
-
-UNSUPPORTED_PLATFORMS = ['Suse','windows','AIX','Solaris']
-
-RSpec.configure do |c|
-  proj_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-
-  c.formatter = :documentation
-
-  # Configure all nodes in nodeset
-  c.before :suite do
-    puppet_module_install(:source =&gt; proj_root, :module_name =&gt; 'homes')
-    hosts.each do |host|
-      on host, puppet('module','install','puppetlabs-stdlib'), { :acceptable_exit_codes =&gt; [0,1] }
-      on host, puppet('module', 'install', 'opentable-altlib'), { :acceptable_exit_codes =&gt; [0,1] }
-    end
-  end
-end
+  apt::source { 'puppetlabs':
+    location    =&gt; 'http://apt.puppetlabs.com',
+    repos       =&gt; 'main dependencies',
+    key         =&gt; '4BD6EC30',
+    key_content =&gt; template('puppetversion/puppetlabs.gpg'),
+    require     =&gt; Exec['rm_duplicate_puppet_source']
+  }
 </code></pre>
 
-<p>This contains quite a bit of new setup that you won’t have seen before. Beaker contains lots of useful helper methods for doing all the things that you're going to want to do when running Puppet against a virtual machine; install Puppet (so your boxes don’t have to have it pre-baked), installing local modules and installing modules from the Forge. We also specify the platforms that we don’t support - we’ll make use of this later.</p>
+<p>We're making use of the <a href="http://forge.puppetlabs.com/puppetlabs/apt">puppetlabs/apt</a> module here. This removes the old reference and adding in the new apt source. Then we just add the package and ensure the version and we’re upgrading. Perfect.</p>
 
-<p>The next step is to define some machines that we want to set against. Beaker calls these nodesets because while in most cases you’ll only want to test one host machine at a time, Beaker does support testing multi-node configurations for more complex scenarios. Looking at the homes project your directory structure will look something like this:</p>
+<h2>RedHat</h2>
 
-<pre><code>puppet-homes
-  manifests
-  spec
-    acceptance
-      nodesets
-        centos-64-x64.yml
-        default.yml
-        ubuntu-server-12042-x64.yml
-      homes_spec.rb 
-    defines
-    fixtures
-    spec_helper.rb
-    spec_helper_acceptance.rb
-  tests 
-</code></pre>
+<p>Same problem different OS family - this time we had some older CentOS machines that needed fixing. Thankfully there is also a module <a href="http://forge.puppetlabs.com/stahnma/puppetlabs_yum">stahnma/puppetlabs_yum</a> for the yum repositories. Add that in, add the package resource and start upgrading. Phew! This seems like it’s getting easier.</p>
 
-<p>A nodeset is simply a yaml file that specifies the box name, where it downloads it from, its platform and the hypervisor you are using. A example from the homes module below:</p>
+<h2>Windows</h2>
 
-<pre><code>HOSTS:
-  ubuntu-server-12042-x64:
-  roles:
-    - master
-  platform: ubuntu-12.04-amd64
-  box : ubuntu-server-12042-x64-vbox4210-nocm
-  box_url : http://puppet-vagrant-boxes.puppetlabs.com/ubuntu-server-12042-x64-vbox4210-nocm.box
-  hypervisor : vagrant
-CONFIG:
-  log_level: verbose
-  type: git
-</code></pre>
+<p>Many of you will be following the work of OpenTable closely because of our work with puppet on windows. We have a pretty large windows infrastructure, with a wide range of client and server versions deployed ranging from 2012 R2 all the way back to the historic times of 2003. Windows also has it’s own package format, the msi, and PuppetLabs also provides all versions of puppet packaged as msi files.</p>
 
-<p>More detail about how to configure these yaml files can be found on the Beaker wiki, <a href="https://github.com/puppetlabs/beaker/wiki/Creating-A-Test-Environment">Creating A Test Environment</a></p>
+<p>This is where it gets a little tricky. The big problem we had was that the windows provider, prior to 3.4.0 was not versionable (<a href="http://projects.puppetlabs.com/issues/21133">issues/21133</a>) that means that <code>package { ‘puppet’: ensure =&gt; installed }</code> would work but <code>package { ‘puppet’: ensure =&gt; $version }</code> would not - the exact thing we were trying to do! The only way to resolve that problem is to uninstall and reinstall the package with the correct version.</p>
 
-<p>In the above example I am using Vagrant boxes provided by PuppetLabs but there are a few other sources to discover already pre-built boxes:</p>
+<p>Now there are a lot of problems with the uninstall/reinstall approach. Firstly we had to script the process because windows only allows one installer to run at any one time meaning that you had to wait for the uninstall to finish before that subsequent install takes place. Secondly we have to deal with puppet runs and make sure that when the upgrade script runs that we wait for any active puppet runs to complete before trying to uninstall puppet. Next we have to trigger our script using a scheduled task.</p>
 
-<ul>
-<li><a href="http://puppet-vagrant-boxes.puppetlabs.com/">http://puppet-vagrant-boxes.puppetlabs.com/</a></li>
-<li><a href="http://www.vagrantbox.es/">http://www.vagrantbox.es/</a></li>
-<li><a href="https://vagrantcloud.com">https://vagrantcloud.com</a></li>
-</ul>
+<p>Our experience with scheduled tasks has been painful. We attempted using the <a href="http://docs.puppetlabs.com/references/latest/type.html#scheduledtask">scheduled_task</a> resource type but soon realised that this wasn’t going to work for us. The resource type is good if you want to create a task to run at a fixed point in time but there is no way to provide a relative time e.g. “in the next 5 mins from now”. Also on occasion the task would not run or would silently fail - this was almost certainly due to another puppet issue we discovered (<a href="https://tickets.puppetlabs.com/browse/PUP-1368">PUP-1368</a>). Without being able to use the scheduled task resource we were again back in the land of Powershell using a script to create the scheduled task that would call our upgrade script.</p>
 
+<p>So if you're keeping up we now have something like this:</p>
 
-<h3>Writing tests in Beaker</h3>
+<p>Puppet -> calls script to create scheduled task -> scheduled task calls upgrade script -> upgrade script upgrade puppet and triggers next Puppet run -> Puppet</p>
 
-<p>So now that we have our environment set up let’s look at actually writing some tests. Here is an example from the homes project:</p>
+<p>Nice little cycle there, but it works.</p>
 
-<pre><code>require ‘spec_helper_acceptance'
-
-describe 'homes defintion', :unless =&gt; UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
-
-  context 'valid user parameter’ do
-
-    it 'should work with no errors’ do
-      pp = &lt;&lt;-EOS
-        $myuser = {
-        'testuser' =&gt; { 'shell' =&gt; '/bin/bash' }
-      }
-
-      homes { 'testuser':
-        user =&gt; $myuser
-      }
-      EOS
-
-      apply_manifest(pp, :catch_failures =&gt; true)
-      expect(apply_manifest(pp, :catch_failures =&gt; true).exit_code).to be_zero
-   end
-
-   describe user('testuser') do
-     it { should exist }
-   end
-
-   describe file('/home/testuser') do
-     it { should be_directory }
-   end
- end
-
-end
-</code></pre>
-
-<p>In this case we are writing a test to make sure that when our module runs, it creates the user and its home directory as it expects. Using the UNSUPPORTED_PLATFORMS that we defined earlier we can also skip groups of tests if they are not supported on the current node.</p>
-
-<p>The idea here is that we define a manifest (using Heredoc - but please don’t make them too long!) and then we want to apply that manifest to the node. Beaker provides a nice helper methods that: apply_manifest. In our case we run it once, which will cause the changes and then we run it a second time with the scope of a test to check for idempotency. We can then make use of Beaker’s resource based helpers to actually test the functionality on the node itself. Their many helper methods will allow you to do almost everything that you need to do, either for setup purposes or for actually testing the node:</p>
-
-<ul>
-<li><a href="https://github.com/puppetlabs/beaker/wiki/The-Beaker-DSL-API">The-Beaker-DSL-API</a></li>
-<li><a href="https://github.com/puppetlabs/beaker/blob/master/lib/beaker/dsl/helpers.rb">beaker/dsl/helpers.rb</a></li>
-</ul>
-
-
-<p>It’s actually worth noting that Beaker makes heavy use of <a href="https://github.com/serverspec/serverspec">serverspec</a> which you should go and take a look at.</p>
+<p>One final issue worth mentioning is that for Windows 2003 servers you’ll need to actually have Powershell installed. Luckily, we also have a module for that <a href="http://forge.puppetlabs.com/dcharleston/powershell">dcharleston/powershell</a></p>
 
 <h2>Summary</h2>
 
-<p>So now you know a little about testing Beaker with Puppet go forth and test all your modules against everything that you expect your users to be running it on.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ForgeFriday - our commitment to the Puppet Forge]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/"/>
-    <updated>2014-04-04T15:30:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge</id>
-    <content type="html"><![CDATA[<p>Those of you that read this blog on a regular basis will be aware that here at OpenTable we take our commitment to Open Source very seriously. As part of the infrastructure team at OpenTable we are begining a process of being open-first. That means that everything we write will be open-sourced unless it contains a significant amount of internal information but we will architect to limit this.</p>
-
-<p>As part of that commitment we are trying to release all our Puppet configuration. The key to maintaining any good habit is to do little and often and with that in mind we wanted to let you know about ForgeFriday.</p>
-
-<p>Every Friday we will be releasing our Puppet code onto the <a href="http://forge.puppetlabs.com/opentable">PuppetLabs Forge</a> (until we run out of modules). That means all our Windows modules, all our forks, our experiments, our custom facts and functions - anything and everything will start rolling out on Fridays.</p>
-
-<p>It's not just forge and forget either, we will continue to support all of our modules and those that use them. We will blog about some of the bigger, more important ones and continue to engage with the community as much as possible. If you're using our modules (even if you have no issues) then let us know - we'd love to hear from you.</p>
-
-<p>In the meantime go and check out what we have already released:</p>
-
-<p><a href="http://forge.puppetlabs.com/opentable/windowsfeature">opentable/windowsfeature</a> - Module that will turn Windows features on or off<br/>
-<a href="http://forge.puppetlabs.com/opentable/iis_rewrite">opentable/iis_rewrite</a> - Module that will install the IIS Rewrite 2.0 Module on Windows <br/>
-<a href="http://forge.puppetlabs.com/opentable/remaster">opentable/remaster</a> - Module for managing the remaster of agent nodes <br/>
-<a href="http://forge.puppetlabs.com/opentable/puppetversion">opentable/puppetversion</a> - Module for managing the installation and upgrade of Puppet<br/>
-<a href="http://forge.puppetlabs.com/opentable/altlib">opentable/altlib</a> - Module providing some additional useful functions <br/></p>
-
-<p>Keep an eye on Twitter for the latest ForgeFriday updates.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[The adoption of Configuration Management]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/"/>
-    <updated>2014-02-10T13:46:00+00:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management</id>
-    <content type="html"><![CDATA[<p>In years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around nine months ago we started to really try and get these teams working together. We introduced a configuration management tool, <a href="http://puppetlabs.com/puppet/what-is-puppet">Puppet</a>, into our ecosystem.</p>
-
-<p>Configuration management is one of the steps of continuous delivery that developers often forget. They feel that systems are magically created for them to deploy their application to. I used to believe this. When I was focused on developing software, I never gave any thought as to the work our operations team had to do to keep the train on the track. So give some respect to your operations teams! We created a repository and started to experiment by configuring some of our applications using Puppet.</p>
-
-<p>This was a major step for both sets of teams. The developers started being in charge of the configuration of their application. This meant that their application would guarantee to be configured the same in our CI environment as it was in production. We, as developers, would be more confident of our applications working as expected.</p>
-
-<p>To contribute to the project, as an engineer, you need to:</p>
-
-<ul>
-<li>fork the project</li>
-<li>make the changes you require</li>
-<li>test the changes in a Vagrant environment (already created with a Windows and Linux system)</li>
-<li>send a PR (pull request)</li>
-</ul>
-
-
-<p>We have just merged our #847 pull request. The stats of the repository look as follows:</p>
-
-<p><img class="center" src="/images/posts/puppet-adoption.png"></p>
-
-<p>Our puppet repository has had contributions from over 40% of our engineering / operations teams. We use Puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage 548 nodes (a combination of internal and production) via Puppet.</p>
-
-<p>Using a project called <a href="www.fullybaked.co.uk/articles/getting-gource-running-on-osx">Gource</a>, one of our engineering leads, <a href="http://twitter.com/ryantomlinson">Ryan Tomlinson</a>, created a video of the repository vizualization. It's just over two minutes long and shows the activity the repository has taken.</p>
-
-<p><div class="embed-video-container"><iframe src="http://player.vimeo.com/video/86201508 "></iframe></div></p>
-
-<p>Each branch in the tree relates to a directory inside our repository. Green zaps are additions, orange are updates and red deletions. The important thing to take from the video is the evolution of the repository, the amount of changes and the number of people pushing those changes.</p>
-
-<p>I'm very happy with our configuration management adoption. We are by no means at a point where everyone does it, but we are working towards that. I would like our contributors to rise to over 75% of our engineering / operations team by the end of 2014. Let's see how that goes...</p>
+<p>Well we’ve discussed some of the pain points, and we’ve discussed them in detail with PuppetLabs themselves. The advice here is to upgrade to puppet 3.4.3 as soon as you can as many of these issues are resolved in that version. For those of you not on that version yet then we have you covered with our puppetversion module.</p>
 ]]></content>
   </entry>
   

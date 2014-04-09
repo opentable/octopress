@@ -4,7 +4,7 @@
   <title><![CDATA[toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-07T13:31:01+01:00</updated>
+  <updated>2014-04-09T11:39:10+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -12,6 +12,66 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Upgrading Puppet with Puppet]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/"/>
+    <updated>2014-04-07T13:23:00+01:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet</id>
+    <content type="html"><![CDATA[<p>As part of one of our recent <a href="http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of puppet in a platform agnostic way.</p>
+
+<p>This should be a very straightforward task to complete because this is one of the core resources that puppet manages - the upgrading of packages. With that in mind, putting <code>package { ‘puppet’: ensure =&gt; $version }</code> in one of our base profiles would be all that was needed but alas it was not. In this blog I want to take you through the history, the bugs, the platforms and the edge-cases that make performing an in-place upgrade of puppet a more complex task that it ought to be.</p>
+
+<h2>Debian</h2>
+
+<p>Like many, Ubuntu is our Debian derivative of choice for much of our newer production infrastructure. Debian, has the apt package management system and PuppetLabs provide the required deb packages as well as hosting their own apt repository to point our systems to. The main point of package management systems is it that they take care of the dependency hell and the awkward upgrade paths all from within the confines of the package itself, and that is what happens with the PuppetLabs packages - great.</p>
+
+<p>The problem that we had in some of our systems was that they had been built without the PuppetLabs apt repository. This means that they picked up a slightly older version of the puppet packages from the main Ubuntu distribution repositories and didn’t have access to the newer versions of the puppet packages. Ok, so we solved that with the following code:</p>
+
+<pre><code>  exec { 'rm_duplicate_puppet_source':
+    path    =&gt; '/usr/local/bin:/bin:/usr/bin',
+    command =&gt; 'sed -i \'s:deb\ http\:\/\/apt.puppetlabs.com\/ precise main::\' /etc/apt/sources.list',
+    onlyif  =&gt; 'grep \'deb http://apt.puppetlabs.com/ precise main\' /etc/apt/sources.list',
+  }
+
+  apt::source { 'puppetlabs':
+    location    =&gt; 'http://apt.puppetlabs.com',
+    repos       =&gt; 'main dependencies',
+    key         =&gt; '4BD6EC30',
+    key_content =&gt; template('puppetversion/puppetlabs.gpg'),
+    require     =&gt; Exec['rm_duplicate_puppet_source']
+  }
+</code></pre>
+
+<p>We&#8217;re making use of the <a href="http://forge.puppetlabs.com/puppetlabs/apt">puppetlabs/apt</a> module here. This removes the old reference and adding in the new apt source. Then we just add the package and ensure the version and we’re upgrading. Perfect.</p>
+
+<h2>RedHat</h2>
+
+<p>Same problem different OS family - this time we had some older CentOS machines that needed fixing. Thankfully there is also a module <a href="http://forge.puppetlabs.com/stahnma/puppetlabs_yum">stahnma/puppetlabs_yum</a> for the yum repositories. Add that in, add the package resource and start upgrading. Phew! This seems like it’s getting easier.</p>
+
+<h2>Windows</h2>
+
+<p>Many of you will be following the work of OpenTable closely because of our work with puppet on windows. We have a pretty large windows infrastructure, with a wide range of client and server versions deployed ranging from 2012 R2 all the way back to the historic times of 2003. Windows also has it’s own package format, the msi, and PuppetLabs also provides all versions of puppet packaged as msi files.</p>
+
+<p>This is where it gets a little tricky. The big problem we had was that the windows provider, prior to 3.4.0 was not versionable (<a href="http://projects.puppetlabs.com/issues/21133">issues/21133</a>) that means that <code>package { ‘puppet’: ensure =&gt; installed }</code> would work but <code>package { ‘puppet’: ensure =&gt; $version }</code> would not - the exact thing we were trying to do! The only way to resolve that problem is to uninstall and reinstall the package with the correct version.</p>
+
+<p>Now there are a lot of problems with the uninstall/reinstall approach. Firstly we had to script the process because windows only allows one installer to run at any one time meaning that you had to wait for the uninstall to finish before that subsequent install takes place. Secondly we have to deal with puppet runs and make sure that when the upgrade script runs that we wait for any active puppet runs to complete before trying to uninstall puppet. Next we have to trigger our script using a scheduled task.</p>
+
+<p>Our experience with scheduled tasks has been painful. We attempted using the <a href="http://docs.puppetlabs.com/references/latest/type.html#scheduledtask">scheduled_task</a> resource type but soon realised that this wasn’t going to work for us. The resource type is good if you want to create a task to run at a fixed point in time but there is no way to provide a relative time e.g. “in the next 5 mins from now”. Also on occasion the task would not run or would silently fail - this was almost certainly due to another puppet issue we discovered (<a href="https://tickets.puppetlabs.com/browse/PUP-1368">PUP-1368</a>). Without being able to use the scheduled task resource we were again back in the land of Powershell using a script to create the scheduled task that would call our upgrade script.</p>
+
+<p>So if you&#8217;re keeping up we now have something like this:</p>
+
+<p>Puppet -> calls script to create scheduled task -> scheduled task calls upgrade script -> upgrade script upgrade puppet and triggers next Puppet run -> Puppet</p>
+
+<p>Nice little cycle there, but it works.</p>
+
+<p>One final issue worth mentioning is that for Windows 2003 servers you’ll need to actually have Powershell installed. Luckily, we also have a module for that <a href="http://forge.puppetlabs.com/dcharleston/powershell">dcharleston/powershell</a></p>
+
+<h2>Summary</h2>
+
+<p>Well we’ve discussed some of the pain points, and we’ve discussed them in detail with PuppetLabs themselves. The advice here is to upgrade to puppet 3.4.3 as soon as you can as many of these issues are resolved in that version. For those of you not on that version yet then we have you covered with our puppetversion module.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Testing Puppet with Beaker]]></title>
@@ -2310,127 +2370,6 @@ end
 </code></pre>
 
 <p>Using this method, we can continue to spin up as many instances as we need to replicate different scenarios or testing conditions. Vagrant has made this very easy to do. If you want a copy of the Vagrantfiles and Puppet modules to try this yourself, then you can find them on my <a href="https://github.com/stack72/vagrant-examples/tree/master/elasticsearch">github repository</a>. The scripts are available under the <a href="http://opensource.org/licenses/MIT">MIT</a> license.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[One Gun - Many Enemies]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/07/24/one-gun-many-enemies/"/>
-    <updated>2013-07-24T14:32:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/07/24/one-gun-many-enemies</id>
-    <content type="html"><![CDATA[<p>I spent some time, re-investigating Javascript. After a few months of intensive TDD and SOLID training at OpenTable I was curious how those principles apply in a slightly different environment. Guess what, they do not differ that much&#8230; I planned to write about all this sometime in the future after gaining more experience from real battles ahead, however <a href="http://watirmelon.com/2013/02/09/why-i-dont-like-Jasmine/">Watirmelon post</a> invited me to attack this subject immediately.</p>
-
-<p>I went through the available testing frameworks for Javascript and decided on Jasmine. Why? Mainly because of its BDD syntax which is fashionable this season. The second reason is that it has really cool documentation. Finally, the basic set up of just running an HTML file in a browser got me up and running fast.</p>
-
-<p>Let&#8217;s look at the basics - what I expect from different types of tests and how Jasmine fits into those requirements:</p>
-
-<h2>Unit Testing</h2>
-
-<h3>Advice from senior craftsman</h3>
-
-<ul>
-<li>Shoot them one by one
-(structure your code so that it is easier to maintain)</li>
-<li>Be sure you kill with every shot
-(verify small bits of code to nail down issues)</li>
-<li>Kill them all
-(verify edge cases)</li>
-<li>Kill them quick
-(provide fast feedback on issues)</li>
-<li>Choose a fast shooting gun - the faster you shoot, the more enemies you will kill
-(unit tests must be blazing fast)</li>
-<li>Choose the most reliable gun - if it is stuck then you are dead
-(when unit tests are brittle you will stop depending on them)</li>
-<li>Your gun needs to be light enough to carry everywhere
-(unit tests are your gun, so you must be able to run them all locally)</li>
-</ul>
-
-
-<p>Jasmine works great for all those aims, as it is really fast and it allows you to stub both objects and DOM elements (especially combined with a Jasmine-jQuery plugin). Keep in mind that Unit Testing is useful only if you either write new code or refactor old code. Do not ever try to write Unit Tests for existing code which you don&#8217;t intend to refactor. It&#8217;s like shooting the dead. You simply cannot kill them with another bullet.</p>
-
-<h2>Integration Testing</h2>
-
-<h3>Advice from senior craftsman</h3>
-
-<ul>
-<li>Beware of the hidden sniper
-(test against external dependencies like files, databases, network services)</li>
-<li>You are part of your squad
-(verify that components of the application work well together)</li>
-<li>Observe the environment
-(try to use depenedencies as close to the real problem as possible e.g. example file, database with test data, test version of an external service)</li>
-<li>Point in the right direction
-(do not try to test your stack top-down, instead concentrate on interfaces and adapters that you could not test in unit tests)</li>
-</ul>
-
-
-<p>Integration tests will naturally be harder to quickly setup - they might break due to configuration problems or inaccessible external services. That&#8217;s why you don&#8217;t want to have that many of them. Still, you want to know that all your problems are due to your partner changing protocol. Once again nothing stops us from using Jasmine here.</p>
-
-<p>Jasmine just executes your tests, so the tests that point towards external services, send example files to your code etc. will all be a breeze to implement with Jasmine.</p>
-
-<h2>Acceptance Testing</h2>
-
-<h3>Aims</h3>
-
-<ul>
-<li>Confirm you are fighting the right war
-(show specification to your product owner/manager/client)</li>
-<li>Keep clean supply routes
-(test the functionality of your app with full set up and all dependencies)</li>
-<li>Find hidden mines
-(test your application in all environments to which you deploy)</li>
-</ul>
-
-
-<h3>Advice from senior craftsman</h3>
-
-<ul>
-<li>Speak in their language
-(use a tool which allows writing tests in natural language such as Cucumber or SpecFlow)</li>
-<li>Take your time
-(those tests will be slower, so accept that you will not always run them locally and that you will not run them every minute)</li>
-<li>Spend your resources wisely
-(acceptance tests are naturally much more brittle then other types of tests, so try to keep their number reasonably small)</li>
-</ul>
-
-
-<p>This is where I would not recommend Jasmine, simply because it doesn&#8217;t fit this job. Its syntax is based on programming language, so it is harder to read by non-engineers. Jasmine allows you to execute events and call your code. However, your users will be most likely be using a browser to interact with your code, so it is much better to use a tool that also uses a browser to test your web page.</p>
-
-<h2>Conclusion</h2>
-
-<p>I find Jasmine extremely well suited for unit and integration testing. I wouldn&#8217;t use it for acceptance tests as there are quite few better tools for that job. And I guess that is the issue that Alister Scott has with Jasmine on his blog - he tried to use it for acceptance testing. In that case I wouldn&#8217;t choose Jasmine either. On the other hand I don&#8217;t like using a screwdriver to hammer a nail.</p>
-
-<h2>Post Scriptum (on DOM dependency)</h2>
-
-<p>Alister also complains about integration issues between his server-side code and client-side code. His experience is that changes to IDs and classes in MVC applications result in failing Javascript. The issue is serious and shows one important mistake, which is hardcoding dependencies. IDs and class names are configurable details and Javascript code should be agnostic of them. To illustrate let&#8217;s look at a simple test case from my pet-project:</p>
-
-<pre><code>describe("GameController", function(){
-  describe("During Initialize", function() {
-    var view;
-    var subject;
-
-    beforeEach(function() {    
-        setFixtures("&lt;div id="myid"&gt;&lt;/div&gt;");
-        subject = new GameView();
-
-        subject.CreateFabricInDiv("#myid");
-    });
-
-    it("creates fabric in div", function(){
-        expect($("#myid")).not.toBeEmpty();
-    });
-
-    it("holds pointer to canvas", function(){
-        expect(subject._canvas).not.toBe(undefined);
-    });
- }); 
-</code></pre>
-
-<p>Do you see how &#8220;#myid&#8221; parameter is passed into the method call? We moved the configuration detail out from the Javascript code, which in my opinion it is the simplest solution to Alister&#8217;s problem.</p>
-
-<p>If code is designed in such a way that IDs/class names are not embedded all around the codebase you can figure out quite few nice ways to keep them consistent between Javascript and server-side code.</p>
-
-<p>It also helps with code re-usability as you can use the same code on two separate pages with differing IDs!</p>
 ]]></content>
   </entry>
   

@@ -7,28 +7,26 @@ author: ssalisbury
 categories: [testing, engineering]
 ---
 
-At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for new tools and methods that allow us, the developers, to respond quickly and accurately to changing requirements and environments.
+At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for [new](/blog/2014/02/28/api-benchmark/) [tools](/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/) and [methods](/blog/2014/02/10/the-adoption-of-configuration-management/) that allow us, the developers, to respond quickly and accurately to changing requirements and environments.
 
-There are a number of practices that we already do, making us the most effective team I've ever worked in:
+There are a number of practices that we already make use of, helping us to be the most effective team I've ever worked in:
 
 - We operate in small teams who each own _most_ of their own vertical.
 - We use continuous delivery to ship code to production within minutes.
-- We have a high degree of test coverage.
+- We have a high degree of high-quality test coverage.
 - We are getting better and better at monitoring All The Things.
 - [We use ChatOps](/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/), so communication is central to our work, and keeps remote workers/teams in the loop.
 
-All of the above are truly empowering for the dev team, and are conducive to an amazingly stress-free working environment. However, these practices only address the infrastructure, culture, and ceremony surrounding our work. What if there was something else, something about the way we write the code itself, that could increase our velocity yet further, without compromising our integrity...
+All of the above are truly empowering for the dev team, and are conducive to an amazingly stress-free working environment. However, these practices only address the infrastructure, culture, and ceremony surrounding our work. What if there was something else? Something about the way we write the code itself, that could increase our velocity yet further, without compromising our integrity...
+
+> There are a number of practices that we already make use of, helping us to be the most effective team I've ever worked in... What if there was something else?
 
 Well, on a recent project, we found one such way: *_we decided to delete all of the unit and integration tests_*.
 
------
-
-What?! Are we quite mad? You may be thinking... Well, it took me a little time to get used to this idea as well, but read on and you'll see that it was actually the most sane thing we could possibly do.
-
------
+_What?! Are we quite mad?_ You may be thinking... Well, it took me a little time to get used to this idea as well, but read on and you'll see that it was actually the most sane thing we could possibly do.
 
 ## Survival of the testedest
-In the beginning, the Partner API project we worked on had 100% unit test coverage, there were no external dependencies, and the world was Good.
+In the beginning, the project had 100% unit test coverage, there were no external dependencies, and the world was Good.
 
 Soon afterwards, a tall shadow appeared in the glorious unit-tested sunset. External dependencies had arrived. Like good little developers we added integration tests. It hurt, our codebase grew, we had occasional false-failures, but we were travelling the path well trodden. We had evaded the First Menace, and surrounded ourselves with heavy armour, we were safe. Things seemed to be Good.
 
@@ -45,16 +43,18 @@ We were wrong.
 ## Tests, tests, tests, duplication.
 Up to this point, we had operated in a near-vacuum. That was fine, we had been working quickly to implement a sub-set of an existing and well-used API, so we knew which were the most important features that needed porting. We continued, largely happy with our creation, for some time.
 
-_Then, gazing from the receding tide of the third trimester were the hungry eyes of the Second Menace. Our users were upon us!_
+_Then, gazing up from the receding tide of the third trimester were the hungry eyes of the Second Menace. Our users were upon us!_
 
 Our early adopters were great, giving us a lot of helpful feedback and helping us shape the API into a genuinely usable v1. However, responding to this change required a greater degree of flexibility in the code than we had required up to this point. Our triple-chocolate-crunch of pithy tests was starting to really slow us down, and rot our teeth. The main reason for this: duplication.
 
-We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can't test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic in that test. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith a very heavy boulder, and had a hoarde of features we still wanted to smash, freely bounding over the mountain tops, and out of reach.
+We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can't test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic for that call. Code which was already covered by unit tests, and often integration tests as well. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith a very heavy boulder, and had a hoarde of features we still wanted to smash, freely bounding over the mountain tops, and out of reach.
 
 It was time to cut ourselves free.
 
 ## Ripping off the plaster
 The idea that we might not need all these layers of tests was first mooted by fellow OpenTable engineer Arnold Zokas. My initial reaction was one of slight incredulity. Delete all those tests that we've so carefully caressed and cajoled into a thing of beauty?! Strip off the armour?! I wasn't immediately convinced. However, the pain of implementing new features was starting to burn, so I was interested.
+
+> I wasn't immediately convinced.
 
 We talked about it&mdash;what was necessary about the unit tests? What was their real worth? We had to test many of those things from the outside-in anyway, with the acceptance tests, so why test them twice? The logic started to stack up. I was convinced this was the right thing to do.
 
@@ -64,13 +64,19 @@ There was a little bleeding, some gaps in our acceptance tests that had to be fi
 
 For me at least, this was a bold move. But it shouldn't have seemed so, we knew all of our endpoints were acceptance-tested, including every supported API call. My primary worry was how we were going to nail down the exact cause of bugs with no code-level testing. This turned out to be nowhere near as bad as I expected.
 
+> We knew all of our endpoints were acceptance-tested, including every supported API call.
+
 ## What just happened?
-I like to visualise this as if I was building [a giant arch](http://en.wikipedia.org/wiki/Gateway_Arch). At first, you build a temporary structure with scaffholding (the unit and integration tests), then as time goes on you construct a hardened permanent structure (the software). On top of the software, you layer your [structural integrity monitors](http://en.wikipedia.org/wiki/Structural_health_monitoring) (acceptance tests). Eventually, there is no need for the scaffholding any more, time to punch it out of the middle!
+I like to visualise this as if we were building [a giant arch](http://en.wikipedia.org/wiki/Gateway_Arch). At first, you build a temporary structure with scaffolding (the unit and integration tests), then as time goes on you construct a hardened permanent structure (the software). On top of the software, you layer your [structural integrity monitors](http://en.wikipedia.org/wiki/Structural_health_monitoring) (acceptance tests). Eventually, there is no need for the scaffolding any more; the structure is self-supporting, and future modifications can rely on this&mdash;time to punch out the middle!
 
 ## Was it worth it?
 Unequivocally, yes. Since making this decision, we have been unhindered by our tests, and they are back to being a much loved part of the project. We have had no problems that would have been caught by unit tests, and we can still do TDD with our acceptance tests. In addition, I think removing the crutch of unit tests may have improved our discipline somewhat: _it keeps us thinking in the context of the end-user at all times, so we never spend time working on a feature that isn't directly useful to our consumers._
 
+> It keeps us thinking in the context of the end-user at all times, so we never spend time working on a feature that isn't directly useful to our consumers.
+
 ## YMWMCV
-Of course, every project is unique (just like every other project), so your mileage will most certainly vary. We were working on a stateless facade over a small but crucial subset of the business&mdash;making reservations. For relatively small, stateless projects, this approach has worked brilliantly. However, when things do go wrong at development time, they could be at any layer in the stack, and you often need to attach a debugger to find out what happened. This is less than ideal, but in our case was a very cost-effective compromise.
+Of course, every project is unique (just like every other project), so _your mileage will most certainly vary._ We were working on a stateless facade over a small but crucial subset of the business&mdash;making reservations. For relatively small, stateless projects, this approach has worked brilliantly. However, when things do go wrong at development time, they could be at any layer in the stack, and you often need to attach a debugger to find out what happened. This is less than ideal, but in our case was a very cost-effective compromise.
 
 The upshot, for me at least, is that you shouldn't be afraid to shirk convention when the project demands it. By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster _without_ breaking stuff.
+
+> By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster _without_ breaking stuff.

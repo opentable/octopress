@@ -3,7 +3,7 @@ layout: post
 title: "Look ma, no unit tests!"
 date: 2014-04-15 12:00
 comments: true
-author: samsalisbury
+author: ssalisbury
 categories: [testing, engineering]
 ---
 

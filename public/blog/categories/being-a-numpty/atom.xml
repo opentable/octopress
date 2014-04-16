@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Being a numpty | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/being-a-numpty/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-09T11:39:10+01:00</updated>
+  <updated>2014-04-16T14:50:37+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -79,7 +79,7 @@
 
 <p>We have tweaked the ES set-up and scaled out our API servers and our benchmark improved (the amount of traffic can we serve). We have a roadmap for how to take more and more traffic but the response time is probably as fast as we can go if we keep the same methodology. As a result we are actually looking at using Elastic Search a lot less than we originally planned. We need to take serialisation out of the game where possible, using in-memory filtering seems a candidate again.</p>
 
-<h2>That's it for Elastic Search?</h2>
+<h2>That&rsquo;s it for Elastic Search?</h2>
 
 <p>Not at all, we love it. We are definitely still going to use for autocomplete, free-text search and also other indexing we want to do with future feature plans we have.</p>
 
@@ -89,7 +89,7 @@
 
 <h2>Summary</h2>
 
-<p>Get performance testing into your deployment pipeline, consider testing in production and expect the worst. The worst being that you might have got something stupid wrong and it is only exposed when you really don't want it to be.</p>
+<p>Get performance testing into your deployment pipeline, consider testing in production and expect the worst. The worst being that you might have got something stupid wrong and it is only exposed when you really don&rsquo;t want it to be.</p>
 ]]></content>
   </entry>
   

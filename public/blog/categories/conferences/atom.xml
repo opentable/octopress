@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Conferences | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/conferences/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-09T11:39:10+01:00</updated>
+  <updated>2014-04-16T14:50:37+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -20,13 +20,13 @@
     <id>http://tech.toptable.co.uk/blog/2014/02/12/programme-management</id>
     <content type="html"><![CDATA[<h2>Popular topic at conferences</h2>
 
-<p>A lot of us were lucky enough to attend NDC London this year, we even sponsored one of the food stalls. I often see one or more real themes coming from talks at conferences. At NDC London I saw three talks around scaling Agile. Indeed Dan North's (<a href="https://twitter.com/tastapod">@tastapod</a>) talk was called exactly that. It is a topic OpenTable is trying to make happen. We are about 100 engineers on three continents which is a lot of teams working together.</p>
+<p>A lot of us were lucky enough to attend NDC London this year, we even sponsored one of the food stalls. I often see one or more real themes coming from talks at conferences. At NDC London I saw three talks around scaling Agile. Indeed Dan North&rsquo;s (<a href="https://twitter.com/tastapod">@tastapod</a>) talk was called exactly that. It is a topic OpenTable is trying to make happen. We are about 100 engineers on three continents which is a lot of teams working together.</p>
 
 <p>I truly believe that the only way to make an individual team successful in an Agile environment is to have ownership of an area, a system or similar. That enables fast feedback, quick decision making and also a sense of pride and responsibility for what people are working on.</p>
 
-<p>However, when you have a big project, you can't give it to just one team. You need many teams working together. You can split it up and get teams to work on the parts of the project affecting the code they own. This will though mean certain parts of the project go faster than others, and if teams are autonomous, who is really responsible for bringing all those pieces together? Also, imagine you are the project owner and need to have a rough handle on when things can actually be delivered, who is going to give you that? None of the individual teams know, everyone is Agile and cool and so everyone hates estimates.</p>
+<p>However, when you have a big project, you can&rsquo;t give it to just one team. You need many teams working together. You can split it up and get teams to work on the parts of the project affecting the code they own. This will though mean certain parts of the project go faster than others, and if teams are autonomous, who is really responsible for bringing all those pieces together? Also, imagine you are the project owner and need to have a rough handle on when things can actually be delivered, who is going to give you that? None of the individual teams know, everyone is Agile and cool and so everyone hates estimates.</p>
 
-<p>The point made by three speakers at NDC London, <a href="https://twitter.com/tastapod">Dan North</a>, <a href="https://twitter.com/jezhumble">Jez Humble</a> and <a href="https://twitter.com/gojkoadzic">Gojko Adzic</a> came down to the need for the coordination piece across the teams. One thing Dan North (more or less) said is <em>"if your team is really fast and all the others are slow, the project is slow and your team haven't achieved their goal"</em>. That was not the exact words he used but the sentiment came across.</p>
+<p>The point made by three speakers at NDC London, <a href="https://twitter.com/tastapod">Dan North</a>, <a href="https://twitter.com/jezhumble">Jez Humble</a> and <a href="https://twitter.com/gojkoadzic">Gojko Adzic</a> came down to the need for the coordination piece across the teams. One thing Dan North (more or less) said is <em>&ldquo;if your team is really fast and all the others are slow, the project is slow and your team haven&rsquo;t achieved their goal&rdquo;</em>. That was not the exact words he used but the sentiment came across.</p>
 
 <p>Indeed we have some big projects at OpenTable and as we have properly embraced Agile in many ways, we still had some pain points in this exact area. We were getting to the same conclusions but since these talks we have had some more solid programme management and in the third cross-team meeting as a result, things starting taking shape. It really is an important piece of the jigsaw.</p>
 
@@ -41,15 +41,15 @@
     <id>http://tech.toptable.co.uk/blog/2013/06/18/ndcoslo</id>
     <content type="html"><![CDATA[<p>Three toptable heroes took to Norway last week to attend NDC Oslo. For two of us it was our first major conference and for one, Paul Stack, he had to speak.</p>
 
-<p>Personally, as my first large, multi-discipline conference, I didn't really know what to expect. Being away from the team for three days in a foreign country with major project work going on at the same time was a bit uncomfortable. I was worried that the time and expense needed to be justified. That fear went away after the first night in the bar!</p>
+<p>Personally, as my first large, multi-discipline conference, I didn&rsquo;t really know what to expect. Being away from the team for three days in a foreign country with major project work going on at the same time was a bit uncomfortable. I was worried that the time and expense needed to be justified. That fear went away after the first night in the bar!</p>
 
-<p>The sessions were great, many things I haven't had a chance to investigate were covered, things like Functional Programming, the latest JavaScript frameworks and tooling. There were also sessions covering things I am more involved with, Agile Process, SOA &amp; Rest, Team Structure and Hiring.</p>
+<p>The sessions were great, many things I haven&rsquo;t had a chance to investigate were covered, things like Functional Programming, the latest JavaScript frameworks and tooling. There were also sessions covering things I am more involved with, Agile Process, SOA &amp; Rest, Team Structure and Hiring.</p>
 
 <p>There are other posts around about the individual sessions but I am now much more enthusiastic about functional programming particularly how we could use it and getting back into front end development (even if just in my own time).</p>
 
 <p>The main thing I enjoyed and learnt though is meeting the other delegates. I think staying away from home makes this much more prevalent, something to consider for other conferences. Meeting people at all levels or experience and especially the speakers, most of whom are very generous with their time and ideas, teaches you the most. I probably learnt more over the shuffle board of The Dubliner Pub than reading blog post online in a year (that may be a stretch, but I did learn I was by far the best player on the night).</p>
 
-<p>Watching a colleague speak was also interesting, when you work with a buffoon, however passionate and hard working, to see people actually interested in what he has to say is an eye opener. It makes you realise what you are doing and all its challenges are a step forwards and one to keep pursuing. It also makes you think, "if he can do it, I must be able to, what knowledge should I share?". What to share is the hard bit.</p>
+<p>Watching a colleague speak was also interesting, when you work with a buffoon, however passionate and hard working, to see people actually interested in what he has to say is an eye opener. It makes you realise what you are doing and all its challenges are a step forwards and one to keep pursuing. It also makes you think, &ldquo;if he can do it, I must be able to, what knowledge should I share?&rdquo;. What to share is the hard bit.</p>
 
 <p>My final point is how often I should try to get to these; one a year for sure, any more than that? I need to think that through.</p>
 

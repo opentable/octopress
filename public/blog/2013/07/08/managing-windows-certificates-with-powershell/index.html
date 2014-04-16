@@ -124,7 +124,7 @@
 </ul>
 
 
-<p>The first time I ran this process, I felt as though this was just wrong to not be able to automate. The goal of our team is to automate everything we are currently doing manually. PowerShell is a better option for this import process as it allows you to write code to do it. As we all know, code is better for a number of reasons, I won&#8217;t go into the infrastructure as code argument in this post (but it is coming soon….). Using PowerShell, I can write a simple function as follows:</p>
+<p>The first time I ran this process, I felt as though this was just wrong to not be able to automate. The goal of our team is to automate everything we are currently doing manually. PowerShell is a better option for this import process as it allows you to write code to do it. As we all know, code is better for a number of reasons, I won&rsquo;t go into the infrastructure as code argument in this post (but it is coming soon….). Using PowerShell, I can write a simple function as follows:</p>
 
 <pre><code>function Import-PfxCertificate($certName, $CertLocaton, $certRootStore, $certStore) {    
      $pfx = new-object System.Security.Cryptography.X509Certificates.X509Certificate2    

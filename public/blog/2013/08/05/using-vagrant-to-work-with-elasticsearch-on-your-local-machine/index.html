@@ -123,11 +123,11 @@
 </ul>
 
 
-<p>Once the developer understands what they need to actually run their software, we would then go about creating an environment to which this software will actually be deployed for end-to-end testing. I won&#8217;t go any further into the details of our Vagrant flow in this post, if you want to read more about how to get started with Vagrant, then I would suggest reading <a href="http://shop.oreilly.com/product/0636920026358.do">Vagrant Up and Running</a> by <a href="https://twitter.com/mitchellh">Mitchell Hashimoto</a>.</p>
+<p>Once the developer understands what they need to actually run their software, we would then go about creating an environment to which this software will actually be deployed for end-to-end testing. I won&rsquo;t go any further into the details of our Vagrant flow in this post, if you want to read more about how to get started with Vagrant, then I would suggest reading <a href="http://shop.oreilly.com/product/0636920026358.do">Vagrant Up and Running</a> by <a href="https://twitter.com/mitchellh">Mitchell Hashimoto</a>.</p>
 
 <h2>Vagrant and ElasticSearch</h2>
 
-<p>Whilst reviewing a book on <a href="http://www.elasticsearch.org/">ElasticSearch</a>, I noticed how simple the instructions were to get up and running with ElasticSearch. Please note, that there are already lots of Puppet modules for configuring ElasticSearch on <a href="http://forge.puppetlabs.com/modules?q=elasticsearch">Puppetlabs Forge</a>. This post only talks about how I was able to quickly spin up some local instances. I didn&#8217;t want to manually do this, so I decided to use Vagrant (and Puppet) to take care of it for me. The instructions can be summarised as follows:</p>
+<p>Whilst reviewing a book on <a href="http://www.elasticsearch.org/">ElasticSearch</a>, I noticed how simple the instructions were to get up and running with ElasticSearch. Please note, that there are already lots of Puppet modules for configuring ElasticSearch on <a href="http://forge.puppetlabs.com/modules?q=elasticsearch">Puppetlabs Forge</a>. This post only talks about how I was able to quickly spin up some local instances. I didn&rsquo;t want to manually do this, so I decided to use Vagrant (and Puppet) to take care of it for me. The instructions can be summarised as follows:</p>
 
 <ul>
 <li>Download and install the JavaSDK</li>
@@ -171,7 +171,7 @@ class {'elasticsearch':
 }
 </code></pre>
 
-<p>This defines that the command apt-get-update gets applied (due to both the class and the package requiring it) and then will install curl and ElasticSearch in no particular order. Once the script runs, I will be able to open a browser on my local machine, go to http://localhost:9200 and see the newly provisioned ElasticSearch node. The result of the JSON was something similar to this:</p>
+<p>This defines that the command apt-get-update gets applied (due to both the class and the package requiring it) and then will install curl and ElasticSearch in no particular order. Once the script runs, I will be able to open a browser on my local machine, go to <a href="http://localhost:9200">http://localhost:9200</a> and see the newly provisioned ElasticSearch node. The result of the JSON was something similar to this:</p>
 
 <pre><code>{
     "ok" : true,
@@ -185,7 +185,7 @@ class {'elasticsearch':
 }
 </code></pre>
 
-<p>By entering the URL, &#8217;<strong>http://localhost:9200/_cluster/health?pretty</strong>&#8217;, you can see the state of the ElasticSearch cluster. It should show something like this:</p>
+<p>By entering the URL, &lsquo;**<a href="http://localhost:9200/_cluster/health?pretty**">http://localhost:9200/_cluster/health?pretty**</a>&rsquo;, you can see the state of the ElasticSearch cluster. It should show something like this:</p>
 
 <pre><code>{
     "cluster_name" : "elasticsearch",
@@ -239,7 +239,7 @@ class {'elasticsearch':
 end
 </code></pre>
 
-<p>This effectively tells Vagrant to create three instances of ElasticSearch using the Puppet configuration (as above). Each ElasticSearch node is given its own IP. Thanks to ElasticSearch using Multicast and Unicast discovery, it is able to find other nodes on the network and create a cluster. By running a similar url as before, &#8217;<strong>http://192.168.1.10:9200/_cluster/health?pretty</strong>&#8217;, we can now see that the cluster looks as follows:</p>
+<p>This effectively tells Vagrant to create three instances of ElasticSearch using the Puppet configuration (as above). Each ElasticSearch node is given its own IP. Thanks to ElasticSearch using Multicast and Unicast discovery, it is able to find other nodes on the network and create a cluster. By running a similar url as before, &lsquo;**<a href="http://192.168.1.10:9200/_cluster/health?pretty**">http://192.168.1.10:9200/_cluster/health?pretty**</a>&rsquo;, we can now see that the cluster looks as follows:</p>
 
 <pre><code>{
     "cluster_name" : "elasticsearch",

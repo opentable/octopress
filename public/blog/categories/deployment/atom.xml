@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Deployment | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/deployment/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-09T11:39:10+01:00</updated>
+  <updated>2014-04-16T14:50:37+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -18,17 +18,17 @@
     <link href="http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/"/>
     <updated>2013-08-08T15:27:00+01:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too</id>
-    <content type="html"><![CDATA[<p>We've been using <a href="http://www.gruntjs.com">Grunt</a> as a build tool for our nodejs apps, and it's brilliant. It lints, it configures, it minifies, it tests and it packages.</p>
+    <content type="html"><![CDATA[<p>We&rsquo;ve been using <a href="http://www.gruntjs.com">Grunt</a> as a build tool for our nodejs apps, and it&rsquo;s brilliant. It lints, it configures, it minifies, it tests and it packages.</p>
 
 <p>As we move towards getting our first node app into production, we were looking at ways to deploy it. First we thought of <a href="http://www.capistranorb.com">Capistrano</a>.</p>
 
-<p><strong><em>Capistrano</em></strong> is a fully featured deployment framework written in ruby and levering rake style tasks. It's extremely powerful and very robust, plus there is a <a href="https://github.com/loopj/capistrano-node-deploy">gem for node deployments</a>. Alas, it was not to be. After half a day of tail chasing and hoop jumping, it occurred to me that there must be an easier way. Capistrano was encouraging me to make my project fit their template, rather than allowing me to configure the deployment to match my project. When I dug down into the Capistrano source, I found that it was just using ssh and sftp to run remote commands and copy files. But we can simplify this process.</p>
+<p><strong><em>Capistrano</em></strong> is a fully featured deployment framework written in ruby and levering rake style tasks. It&rsquo;s extremely powerful and very robust, plus there is a <a href="https://github.com/loopj/capistrano-node-deploy">gem for node deployments</a>. Alas, it was not to be. After half a day of tail chasing and hoop jumping, it occurred to me that there must be an easier way. Capistrano was encouraging me to make my project fit their template, rather than allowing me to configure the deployment to match my project. When I dug down into the Capistrano source, I found that it was just using ssh and sftp to run remote commands and copy files. But we can simplify this process.</p>
 
 <p><strong><em>Grunt</em></strong> has been great so far, so I started looking at deploying directly through grunt. We would be deploying to Ubuntu server boxes, so the only tools necessary are ssh and sftp.</p>
 
 <p>There are Grunt modules for nearly <a href="https://npmjs.org/search?q=grunt">everything</a> (linting, minifying, testing, waiting, packaging, shell-exec'ing, tagging, etc.), and rather predictably, sshing (with sftp).</p>
 
-<p><a href="https://github.com/andrewrjones/grunt-ssh">Grunt-ssh</a> provides tasks for executing remote ssh commands, and for copying files using ssh. Let's dive into some code.</p>
+<p><a href="https://github.com/andrewrjones/grunt-ssh">Grunt-ssh</a> provides tasks for executing remote ssh commands, and for copying files using ssh. Let&rsquo;s dive into some code.</p>
 
 <p><strong><em>SSH commands</em></strong></p>
 
@@ -55,16 +55,16 @@ module.exports = function(grunt) {</p>
 
 <p>  });</p>
 
-<p>  // Load the plugin that provides the "sshexec" task.
-  grunt.loadNpmTasks('grunt-ssh');</p>
+<p>  // Load the plugin that provides the &ldquo;sshexec&rdquo; task.
+  grunt.loadNpmTasks(&lsquo;grunt-ssh&rsquo;);</p>
 
 <p>  // Default task.
-  grunt.registerTask('default', ['sshexec:uptime']);</p>
+  grunt.registerTask(&lsquo;default&rsquo;, [&lsquo;sshexec:uptime&rsquo;]);</p>
 
 <p>};
 ```</p>
 
-<p>We've registered a command, which we can invoke with:
+<p>We&rsquo;ve registered a command, which we can invoke with:
 <code>
 grunt sshexec:uptime
 </code></p>
@@ -99,16 +99,16 @@ sshexec: {
 <code>
 So when we invoke the grunt task, we can specify a config:
 </code>
-grunt sshexec:uptime --config qa
+grunt sshexec:uptime &mdash;config qa
 <code>
 Or we can set it programmatically (inside the Gruntfile)
 </code>
-grunt.option('config', 'qa');
+grunt.option(&lsquo;config&rsquo;, &lsquo;qa&rsquo;);
 ```</p>
 
 <p><strong><em>SFTP Tasks</em></strong></p>
 
-<p>Grunt-ssh allows you to upload files via SFTP:
+<p>Grunt-ssh allows you to upload files via S<a href="FTP:">FTP:</a>
 ```
 grunt.initConfig({</p>
 
@@ -149,22 +149,22 @@ sftp: {
 <p>});
 ```</p>
 
-<p>There are a couple of options here, so let's break it down:
+<p>There are a couple of options here, so let&rsquo;s break it down:
 <code>
 files: {
   "./": "package/**"
 }
 </code></p>
 
-<p>This will copy all files from the "package/" folder locally. If you want to specify only certain types of files, you can use grunt's standard <a href="https://github.com/gruntjs/grunt/wiki/grunt.file#globbing-patterns">file globbing</a>.</p>
+<p>This will copy all files from the &ldquo;package/&rdquo; folder locally. If you want to specify only certain types of files, you can use grunt&rsquo;s standard <a href="https://github.com/gruntjs/grunt/wiki/grunt.file#globbing-patterns">file globbing</a>.</p>
 
 <p><code>
 srcBasePath: "package/"
 </code>
-Optionally strip off an initial part of the path (without it, files would upload to "/path/on/server/package/").</p>
+Optionally strip off an initial part of the path (without it, files would upload to &ldquo;/path/on/server/package/&rdquo;).</p>
 
 <p><strong><em>Putting it all together</em></strong>
-We've got all the component parts, now lets put it together (plus a few other cool bits).</p>
+We&rsquo;ve got all the component parts, now lets put it together (plus a few other cool bits).</p>
 
 <p><em>Note: at the time of writing, there is a bug in Grunt-ssh where the sftp task does not use the shared sshconfig, so if you want the fixed code, use <a href="https://github.com/andyroyle/grunt-ssh">my fork</a> (there is a pull request outstanding)</em></p>
 
@@ -178,7 +178,7 @@ We've got all the component parts, now lets put it together (plus a few other co
 </ul>
 
 
-<p>(but, since we're just using bash commands, this is easily configurable)</p>
+<p>(but, since we&rsquo;re just using bash commands, this is easily configurable)</p>
 
 <p>```
 var dirname = (new Date()).toISOString();</p>
@@ -250,8 +250,8 @@ sftp: {
 
 <p>  });</p>
 
-<p>  grunt.loadNpmTasks('grunt-ssh');
-  grunt.registerTask('deploy', [</p>
+<p>  grunt.loadNpmTasks(&lsquo;grunt-ssh&rsquo;);
+  grunt.registerTask(&lsquo;deploy&rsquo;, [</p>
 
 <pre><code>'sshexec:stop',
 'sshexec:make-release-dir',
@@ -266,10 +266,10 @@ sftp: {
 });
 ```</p>
 
-<p>It should all make sense, the sshexec is just running remote ssh commands (making directories, starting and stopping using forever etc). Let's just re-iterate what this is doing:</p>
+<p>It should all make sense, the sshexec is just running remote ssh commands (making directories, starting and stopping using forever etc). Let&rsquo;s just re-iterate what this is doing:</p>
 
 <ol>
-<li><code>sshexec:stop</code>: stops the app (assumes you're using forever)</li>
+<li><code>sshexec:stop</code>: stops the app (assumes you&rsquo;re using forever)</li>
 <li><code>sshexec:make-release-dir</code>: this will create the folder /var/www/myapp/releases/[current-date-time]</li>
 <li><code>sshexec:update-symlinks</code>: this will create a symlink from /var/www/myapp/current to the release folder we just created (this means that rolling back is just a case of changing the symlink back).</li>
 <li><code>sftp:deploy</code>: copy the files into place</li>
@@ -284,17 +284,17 @@ sftp: {
 grunt deploy --config qa
 </code></p>
 
-<p>Also, if you noticed the <em>production</em> config I specified in that snippet, you'll see that I didn't include any host, username or password configs. The <code>grunt.option('value')</code> allows us to access the command line switches, which means we don't have to keep any sensitive passwords in source control; we can specify them on the command line.</p>
+<p>Also, if you noticed the <em>production</em> config I specified in that snippet, you&rsquo;ll see that I didn&rsquo;t include any host, username or password configs. The <code>grunt.option('value')</code> allows us to access the command line switches, which means we don&rsquo;t have to keep any sensitive passwords in source control; we can specify them on the command line.</p>
 
 <p><code>
 grunt deploy --config production --server my.production.server --username user --password password
 </code></p>
 
-<p>There are lots of other solutions to the problem of credentials, but this is by far the simplest. It's worth remembering the Grunt-ssh uses the ssh2 module, so by default it will look to <code>~/.ssh/</code> for keys when connecting without a password.</p>
+<p>There are lots of other solutions to the problem of credentials, but this is by far the simplest. It&rsquo;s worth remembering the Grunt-ssh uses the ssh2 module, so by default it will look to <code>~/.ssh/</code> for keys when connecting without a password.</p>
 
-<p><strong>But wait, there's more</strong></p>
+<p><strong>But wait, there&rsquo;s more</strong></p>
 
-<p>Basically any task you can think of is scriptable using grunt (and some combination of tools). Extra things that we've added to our deployment process include:</p>
+<p>Basically any task you can think of is scriptable using grunt (and some combination of tools). Extra things that we&rsquo;ve added to our deployment process include:</p>
 
 <ul>
 <li>Removing the application server from the load-balancer before deploying (and pushing it back when the deployment is complete).</li>
@@ -303,7 +303,7 @@ grunt deploy --config production --server my.production.server --username user -
 </ul>
 
 
-<p><strong>Oink, Oink .....</strong></p>
+<p><strong>Oink, Oink &hellip;..</strong></p>
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: MongoDB | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/mongodb/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-09T11:39:10+01:00</updated>
+  <updated>2014-04-16T14:50:37+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -18,19 +18,19 @@
     <link href="http://tech.toptable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb/"/>
     <updated>2013-09-23T16:16:00+01:00</updated>
     <id>http://tech.toptable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb</id>
-    <content type="html"><![CDATA[<p>Someone in the office mentioned <a href="http://www.rethinkdb.com">RethinkDb</a> and I was impressed by the rhetoric on the site, so I decided to spend a couple of hours spiking one of our existing nodejs apps with RethinkDb. The app currently uses MongoDb so inevitably I'm comparing the two.</p>
+    <content type="html"><![CDATA[<p>Someone in the office mentioned <a href="http://www.rethinkdb.com">RethinkDb</a> and I was impressed by the rhetoric on the site, so I decided to spend a couple of hours spiking one of our existing nodejs apps with RethinkDb. The app currently uses MongoDb so inevitably I&rsquo;m comparing the two.</p>
 
 <h1>Things I liked:</h1>
 
 <p><strong>Nodejs Driver</strong></p>
 
-<p>The api on the nodejs driver is pretty nice, it makes a concerted effort to reduce "pyramid code" by allowing you to build your query by method-chaining and then call a <code>.run()</code> extension to execute the query.</p>
+<p>The api on the nodejs driver is pretty nice, it makes a concerted effort to reduce &ldquo;pyramid code&rdquo; by allowing you to build your query by method-chaining and then call a <code>.run()</code> extension to execute the query.</p>
 
 <p>```</p>
 
-<p>r.db('Comics')
- .table('Superheroes')
- .getAll('Marvel', {index: 'universe'})
+<p>r.db(&lsquo;Comics&rsquo;)
+ .table(&lsquo;Superheroes&rsquo;)
+ .getAll(&lsquo;Marvel&rsquo;, {index: &lsquo;universe&rsquo;})
  .filter({ hasSidekick: true })
  .run(connection, function(err, cursor){</p>
 
@@ -48,13 +48,13 @@ The management interface is very good, incredibly friendly, and has guided acces
 
 <p><strong>Sharding, Replication and Clustering</strong></p>
 
-<p>It's all there, up front in the web UI, written in plain English and with friendly guides to help. The health and performance monitoring is available up-front in clear and concise graphics.</p>
+<p>It&rsquo;s all there, up front in the web UI, written in plain English and with friendly guides to help. The health and performance monitoring is available up-front in clear and concise graphics.</p>
 
 <p><strong>Writes are non-locking operations</strong></p>
 
 <p>A major bugbear for us with mongoDb is that writes require a database-level lock. RethinkDb allows block-level locks for write operations, and furthermore, reads can still proceed while write locks are in effect. <a href="http://en.wikipedia.org/wiki/Multiversion_concurrency_control">MVCC ftw!</a></p>
 
-<h1>Things I didn't like:</h1>
+<h1>Things I didn&rsquo;t like:</h1>
 
 <p><strong>Cannot query on unindexed fields</strong></p>
 
@@ -66,11 +66,11 @@ The management interface is very good, incredibly friendly, and has guided acces
 
 <p><strong>Joins</strong></p>
 
-<p>Don't get me wrong, it's a nice feature, it just makes me feel dirty to do joins on a document database.</p>
+<p>Don&rsquo;t get me wrong, it&rsquo;s a nice feature, it just makes me feel dirty to do joins on a document database.</p>
 
 <h1>Conclusion</h1>
 
-<p>RethinkDb is a good looking database. It's feature-full and dead simple to use. Would I use it in production? Not yet. The performance issues are still a sticking point for me, but I have no doubt that once these are fixed RethinkDb will be a big contender.</p>
+<p>RethinkDb is a good looking database. It&rsquo;s feature-full and dead simple to use. Would I use it in production? Not yet. The performance issues are still a sticking point for me, but I have no doubt that once these are fixed RethinkDb will be a big contender.</p>
 ]]></content>
   </entry>
   
@@ -83,20 +83,20 @@ The management interface is very good, incredibly friendly, and has guided acces
 
 <h2>The problem</h2>
 
-<p>Over time the number of reviews grow, and grow, and grow!  In fact it is inevitable that, in time, it will reach a point where caching all this data in memory would be madness.  One option to mitigate this would be to limit the cache to a fixed date range but this won't work in this instance because the summary logic supports custom date ranges.  Another option would be to pull the data from the persistence store each and every time it's required however this would seriously impact load on the infrastructure and degrade performance of the API.</p>
+<p>Over time the number of reviews grow, and grow, and grow!  In fact it is inevitable that, in time, it will reach a point where caching all this data in memory would be madness.  One option to mitigate this would be to limit the cache to a fixed date range but this won&rsquo;t work in this instance because the summary logic supports custom date ranges.  Another option would be to pull the data from the persistence store each and every time it&rsquo;s required however this would seriously impact load on the infrastructure and degrade performance of the API.</p>
 
-<p>We like to be proactive at toptable, so during innovation time (yes! we get time to innovate on our development) I looked at finding an alternate solution that would meet the requirements of the logic and wouldn't drastically increase load or degrade performance.</p>
+<p>We like to be proactive at toptable, so during innovation time (yes! we get time to innovate on our development) I looked at finding an alternate solution that would meet the requirements of the logic and wouldn&rsquo;t drastically increase load or degrade performance.</p>
 
 <h2>The solution</h2>
 
-<p>MongoDB supports <a href="http://en.wikipedia.org/wiki/MapReduce">MapReduce</a> which allows processing large volumes of data (Map), running arbitrary logic to summarise (Reduce) and producing some results.  In MongoDB the MapReduce functionality uses JavaScript functions to perform the map and reduce steps and the syntax is relatively simple to understand:-</p>
+<p>MongoDB supports <a href="http://en.wikipedia.org/wiki/MapReduce">MapReduce</a> which allows processing large volumes of data (Map), running arbitrary logic to summarise (Reduce) and producing some results.  In MongoDB the MapReduce functionality uses JavaScript functions to perform the map and reduce steps and the syntax is relatively simple to understand:&ndash;</p>
 
 <pre><code>db.largeDataset.mapReduce(mapFunction, 
                           reduceFunction, 
                           { out: "summary" }
 </code></pre>
 
-<p>In the above example the largeDataset collection is mapped using the predefined mapFunction, the results are passed to the reduceFunction and the reduced data is finally stored in the summary collection. On top of this you can specify queries as well as a finalize function to "tweak" the reduce results.</p>
+<p>In the above example the largeDataset collection is mapped using the predefined mapFunction, the results are passed to the reduceFunction and the reduced data is finally stored in the summary collection. On top of this you can specify queries as well as a finalize function to &ldquo;tweak&rdquo; the reduce results.</p>
 
 <p>Because map, reduce &amp; finalize are functions that only operate on their inputs the workload can be parallelized although the final results would be stored in one location.</p>
 
@@ -104,20 +104,20 @@ The management interface is very good, incredibly friendly, and has guided acces
 
 <p>The key purpose of the map function is to take the complex documents and produce a structure conducive to summarising whilst at the same time defining the granularity of the results using grouping.</p>
 
-<p>For example if you wanted to get the number of reviews by restaurant then you'd group by the restaurant's unique identifier meaning that the reduce function would produce a single result for each restaurant:-</p>
+<p>For example if you wanted to get the number of reviews by restaurant then you&rsquo;d group by the restaurant&rsquo;s unique identifier meaning that the reduce function would produce a single result for each restaurant:&ndash;</p>
 
 <pre><code>var mapFunction = function() {
                     emit(this.RestaurantId, 1);
                   };
 </code></pre>
 
-<p>This function, called on each review, maps the review to the value 1 and groups by the RestaurantId.  The value 1 was chosen because, as you will see in the continuation of this example below, it's the easiest way to calculate the count of reviews per restaurant.</p>
+<p>This function, called on each review, maps the review to the value 1 and groups by the RestaurantId.  The value 1 was chosen because, as you will see in the continuation of this example below, it&rsquo;s the easiest way to calculate the count of reviews per restaurant.</p>
 
 <h4>Reduce</h4>
 
 <p>The key purpose of the reduce function is to take a batch of mapped values for a given group and return a single result.  All values emited from the map function are passed to the reduce function although since the batch size is decided by MongoDB there may be multiple calls to reduce.  In fact given a sufficiently large source dataset the reduce function will be passed results from previous reduce function calls as well.  For example if there were 250 mapped results in a group and batches of 100 were reduced by each call then four calls would be needed, three to reduce the initial 250 results and a final call to reduce these results into the final value for the group.</p>
 
-<p>To continue the example from above:-</p>
+<p>To continue the example from above:&ndash;</p>
 
 <pre><code>var reduceFunction = function(group, values) {
                        return Array.sum(values);
@@ -128,14 +128,14 @@ The management interface is very good, incredibly friendly, and has guided acces
 
 <h2>Getting Started in C#</h2>
 
-<p>The following are a list of projects/resources to look at if you want to implement Mongo MapReduce in your scenario with emphasis on C#:-</p>
+<p>The following are a list of projects/resources to look at if you want to implement Mongo MapReduce in your scenario with emphasis on C#:&ndash;</p>
 
 <ul>
 <li><a href="http://docs.mongodb.org/manual/tutorial/map-reduce-examples">Mongo Map-Reduce Examples</a> is a useful primer document.</li>
-<li><a href="http://cookbook.mongodb.org">Mongo Cookbook</a> has a number of "real world" examples of MapReduce</li>
+<li><a href="http://cookbook.mongodb.org">Mongo Cookbook</a> has a number of &ldquo;real world&rdquo; examples of MapReduce</li>
 <li><a href="http://docs.mongodb.org/ecosystem/drivers/csharp">Mongo C# driver</a> has some logic to perform MapReduce however it is only a thin layer over the underlying syntax and uses JavaScript functions passed as strings.</li>
-<li><a href="http://github.com/craiggwilson/fluent-mongo/wiki/Map-Reduce">Fluent-Mongo</a> provides a linq syntax over simple map reduce functions.  Interestingly it can perform multiple calculations on a set of data although at present it doesn't support more complex logic.</li>
-<li><a href="http://twitter.com/odetocode">K.Scott Allen</a> has written two articles on MapReduce, <a href="http://odetocode.com/blogs/scott/archive/2012/03/19/a-simple-mapreduce-with-mongodb-and-c.aspx">A Simple MapReduce...</a> and <a href="http://odetocode.com/blogs/scott/archive/2012/03/29/a-simpler-mapreduce-with-mongodb-and-c.aspx">A Simpler MapReduce...</a></li>
+<li><a href="http://github.com/craiggwilson/fluent-mongo/wiki/Map-Reduce">Fluent-Mongo</a> provides a linq syntax over simple map reduce functions.  Interestingly it can perform multiple calculations on a set of data although at present it doesn&rsquo;t support more complex logic.</li>
+<li><a href="http://twitter.com/odetocode">K.Scott Allen</a> has written two articles on MapReduce, <a href="http://odetocode.com/blogs/scott/archive/2012/03/19/a-simple-mapreduce-with-mongodb-and-c.aspx">A Simple MapReduce&hellip;</a> and <a href="http://odetocode.com/blogs/scott/archive/2012/03/29/a-simpler-mapreduce-with-mongodb-and-c.aspx">A Simpler MapReduce&hellip;</a></li>
 </ul>
 
 ]]></content>

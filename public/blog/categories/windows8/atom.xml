@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Windows8 | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/windows8/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-09T11:39:10+01:00</updated>
+  <updated>2014-04-16T14:50:37+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -30,37 +30,37 @@
 
 <p><img class="right" src="/images/posts/get-app-for-this-site.png"></p>
 
-<p>This will enable the <strong>"Get app for this site"</strong> link when you are viewing your page in the full-screen Metro version of Internet Explorer (i.e. launched from the start screen); the desktop version of IE doesn't have this capability.</p>
+<p>This will enable the <strong>&ldquo;Get app for this site&rdquo;</strong> link when you are viewing your page in the full-screen Metro version of Internet Explorer (i.e. launched from the start screen); the desktop version of IE doesn&rsquo;t have this capability.</p>
 
 <p>There are <a href="http://msdn.microsoft.com/en-us/library/ie/hh781489%28v=vs.85%29.aspx#code-snippet-1">three other optional meta values</a> that can also be used to control your link.</p>
 
 <h2>Finding the values</h2>
 
-<p>There are at least two ways of finding the values. If you have your application code and Visual Studio 2012 (or later) then the values can be found in the <strong>package.appxmanifest</strong> file &ndash; open this in VS and it automatically launches the manifest designer view.  Select the Packaging tab and the "Package name" is the <em>ID</em>, and the <em>Package family name</em> is at the bottom of this screen.</p>
+<p>There are at least two ways of finding the values. If you have your application code and Visual Studio 2012 (or later) then the values can be found in the <strong>package.appxmanifest</strong> file &ndash; open this in VS and it automatically launches the manifest designer view.  Select the Packaging tab and the &ldquo;Package name&rdquo; is the <em>ID</em>, and the <em>Package family name</em> is at the bottom of this screen.</p>
 
 <p><img class="center" src="/images/posts/vs-screenshot.png"></p>
 
-<p>If you don't have the local code with Visual Studio you can still find out these values by other means.</p>
+<p>If you don&rsquo;t have the local code with Visual Studio you can still find out these values by other means.</p>
 
 <p>The <strong>msApplication-PackageFamilyName</strong> can be found in the source code of your online Windows 8 app.  For example, <a href="view-source:http://apps.microsoft.com/windows/en-us/app/d7c37fb3-d594-4366-8003-e49c8e953095">viewing the source of the OpenTable app</a> shows a Javascript variable <code>packageFamilyName</code> embedded in the page head.</p>
 
 <pre><code>var packageFamilyName = 'OpenTable.OpenTable_r44en0zefym0a';
 </code></pre>
 
-<p>The <strong>msApplication-ID</strong> is still found in the <code>package.appxmanifest</code> file in your Win8 app, but you don't necessarily need to have the local code or Visual Studio.  We were able to access package.appxmanifest in our GitHub repo (it's an XML file) and the msApplication-ID was the same as the <strong>identity name</strong>.  I don't know if the Application ID and the identity name are always the same, but they were for us.</p>
+<p>The <strong>msApplication-ID</strong> is still found in the <code>package.appxmanifest</code> file in your Win8 app, but you don&rsquo;t necessarily need to have the local code or Visual Studio.  We were able to access package.appxmanifest in our GitHub repo (it&rsquo;s an XML file) and the msApplication-ID was the same as the <strong>identity name</strong>.  I don&rsquo;t know if the Application ID and the identity name are always the same, but they were for us.</p>
 
 <pre><code>&lt;Identity Name="OpenTable.OpenTable" Publisher="CN=9C8CE42A-5BD4-4679" Version="1.0.0.1910" /&gt; 
 </code></pre>
 
 <h2>Gotchas</h2>
 
-<p>We tried opening the site in Visual Studio 2012 in Windows 7, but the project containing package.appxmanifest wouldn't open.  We had to open the solution in Windows 8, which finally worked once we'd logged into MSDN and installed the suggested updates.</p>
+<p>We tried opening the site in Visual Studio 2012 in Windows 7, but the project containing package.appxmanifest wouldn&rsquo;t open.  We had to open the solution in Windows 8, which finally worked once we&rsquo;d logged into MSDN and installed the suggested updates.</p>
 
 <p>Also, the content values of the meta data are not case sensitive, but the names msApplication-ID and msApplication-PackageFamilyName are.</p>
 
-<p>Finally, having entered what we knew to be the correct values, clicking the "Get app for this site" link still wouldn't take us to <a href="http://apps.microsoft.com/windows/en-us/app/d7c37fb3-d594-4366-8003-e49c8e953095">the OpenTable app in the Windows store</a>.  After checking with an American colleague the penny dropped that the OpenTable app is only available in the US and Microsoft have unfortunately not provided any visual feedback to explain this.</p>
+<p>Finally, having entered what we knew to be the correct values, clicking the &ldquo;Get app for this site&rdquo; link still wouldn&rsquo;t take us to <a href="http://apps.microsoft.com/windows/en-us/app/d7c37fb3-d594-4366-8003-e49c8e953095">the OpenTable app in the Windows store</a>.  After checking with an American colleague the penny dropped that the OpenTable app is only available in the US and Microsoft have unfortunately not provided any visual feedback to explain this.</p>
 
-<p>Luckily instead of just having to take his word that the new code worked there is a way to change your Windows Store settings and fake your location.  <a href="http://www.guidingtech.com/20936/change-windows-8-store-region/">Have a look at this helpful article</a> and you're all set to have your website and Windows app happily talking to each other.</p>
+<p>Luckily instead of just having to take his word that the new code worked there is a way to change your Windows Store settings and fake your location.  <a href="http://www.guidingtech.com/20936/change-windows-8-store-region/">Have a look at this helpful article</a> and you&rsquo;re all set to have your website and Windows app happily talking to each other.</p>
 
 <h3>Further reading</h3>
 

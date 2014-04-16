@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Leadership | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/leadership/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-09T11:39:10+01:00</updated>
+  <updated>2014-04-16T14:50:37+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -20,13 +20,13 @@
     <id>http://tech.toptable.co.uk/blog/2014/02/12/programme-management</id>
     <content type="html"><![CDATA[<h2>Popular topic at conferences</h2>
 
-<p>A lot of us were lucky enough to attend NDC London this year, we even sponsored one of the food stalls. I often see one or more real themes coming from talks at conferences. At NDC London I saw three talks around scaling Agile. Indeed Dan North's (<a href="https://twitter.com/tastapod">@tastapod</a>) talk was called exactly that. It is a topic OpenTable is trying to make happen. We are about 100 engineers on three continents which is a lot of teams working together.</p>
+<p>A lot of us were lucky enough to attend NDC London this year, we even sponsored one of the food stalls. I often see one or more real themes coming from talks at conferences. At NDC London I saw three talks around scaling Agile. Indeed Dan North&rsquo;s (<a href="https://twitter.com/tastapod">@tastapod</a>) talk was called exactly that. It is a topic OpenTable is trying to make happen. We are about 100 engineers on three continents which is a lot of teams working together.</p>
 
 <p>I truly believe that the only way to make an individual team successful in an Agile environment is to have ownership of an area, a system or similar. That enables fast feedback, quick decision making and also a sense of pride and responsibility for what people are working on.</p>
 
-<p>However, when you have a big project, you can't give it to just one team. You need many teams working together. You can split it up and get teams to work on the parts of the project affecting the code they own. This will though mean certain parts of the project go faster than others, and if teams are autonomous, who is really responsible for bringing all those pieces together? Also, imagine you are the project owner and need to have a rough handle on when things can actually be delivered, who is going to give you that? None of the individual teams know, everyone is Agile and cool and so everyone hates estimates.</p>
+<p>However, when you have a big project, you can&rsquo;t give it to just one team. You need many teams working together. You can split it up and get teams to work on the parts of the project affecting the code they own. This will though mean certain parts of the project go faster than others, and if teams are autonomous, who is really responsible for bringing all those pieces together? Also, imagine you are the project owner and need to have a rough handle on when things can actually be delivered, who is going to give you that? None of the individual teams know, everyone is Agile and cool and so everyone hates estimates.</p>
 
-<p>The point made by three speakers at NDC London, <a href="https://twitter.com/tastapod">Dan North</a>, <a href="https://twitter.com/jezhumble">Jez Humble</a> and <a href="https://twitter.com/gojkoadzic">Gojko Adzic</a> came down to the need for the coordination piece across the teams. One thing Dan North (more or less) said is <em>"if your team is really fast and all the others are slow, the project is slow and your team haven't achieved their goal"</em>. That was not the exact words he used but the sentiment came across.</p>
+<p>The point made by three speakers at NDC London, <a href="https://twitter.com/tastapod">Dan North</a>, <a href="https://twitter.com/jezhumble">Jez Humble</a> and <a href="https://twitter.com/gojkoadzic">Gojko Adzic</a> came down to the need for the coordination piece across the teams. One thing Dan North (more or less) said is <em>&ldquo;if your team is really fast and all the others are slow, the project is slow and your team haven&rsquo;t achieved their goal&rdquo;</em>. That was not the exact words he used but the sentiment came across.</p>
 
 <p>Indeed we have some big projects at OpenTable and as we have properly embraced Agile in many ways, we still had some pain points in this exact area. We were getting to the same conclusions but since these talks we have had some more solid programme management and in the third cross-team meeting as a result, things starting taking shape. It really is an important piece of the jigsaw.</p>
 
@@ -39,13 +39,13 @@
     <link href="http://tech.toptable.co.uk/blog/2014/02/06/20-percent-time/"/>
     <updated>2014-02-06T17:12:00+00:00</updated>
     <id>http://tech.toptable.co.uk/blog/2014/02/06/20-percent-time</id>
-    <content type="html"><![CDATA[<p>We allow all our UK based developers to have some time to explore new technologies, try out prototypes and clean-up things that escape the day-to-day process. Two days out of ten, seems a lot doesn't it?</p>
+    <content type="html"><![CDATA[<p>We allow all our UK based developers to have some time to explore new technologies, try out prototypes and clean-up things that escape the day-to-day process. Two days out of ten, seems a lot doesn&rsquo;t it?</p>
 
 <h2>How we started</h2>
 
-<p>We started doing our 20% time when we had two week sprints with a release each sprint. We actually had three days of testing, small bug fixing and signing things off. We didn't like starting our new stories for the next sprint as our QAs got behind and never really caught up. We decided to use this time more for clean-up but also for prototyping or trying something out. We had read of other companies doing something similar so were excited to give it a go.</p>
+<p>We started doing our 20% time when we had two week sprints with a release each sprint. We actually had three days of testing, small bug fixing and signing things off. We didn&rsquo;t like starting our new stories for the next sprint as our QAs got behind and never really caught up. We decided to use this time more for clean-up but also for prototyping or trying something out. We had read of other companies doing something similar so were excited to give it a go.</p>
 
-<p>One of the first times we did this we actually decided we wanted to automate all the testing of one of our systems, so that our QAs weren't bogged down for those three days. In our first 20% time, we got most of the team on board as it was painful watching, let alone doing manual testing and we wanted faster feedback on our changes.</p>
+<p>One of the first times we did this we actually decided we wanted to automate all the testing of one of our systems, so that our QAs weren&rsquo;t bogged down for those three days. In our first 20% time, we got most of the team on board as it was painful watching, let alone doing manual testing and we wanted faster feedback on our changes.</p>
 
 <p>We got a lot of the system in a state we could test it. We basically wrote a lot of a page object model and a few features to talk to it. The next 20% time it needed cleaning up, the next we had a lot under test. With a bit of work the three day test cycle was down to about one day. This would never have happened if we were trying in normal sprint time. Major win number one and something no business owner had had to wrestle against other priorities.</p>
 
@@ -53,9 +53,9 @@
 
 <h2>Failures, not so bad after all</h2>
 
-<p>Of course, we have had many failures, but maybe even that helps, we won't waste our proper sprint time. Some people ask me about rules when I talk about this. I think the key for me is that the engineers are truly given freedom to explore. If on the face of things something they are doing is completely away from what you are doing then it might seem a bit strange.</p>
+<p>Of course, we have had many failures, but maybe even that helps, we won&rsquo;t waste our proper sprint time. Some people ask me about rules when I talk about this. I think the key for me is that the engineers are truly given freedom to explore. If on the face of things something they are doing is completely away from what you are doing then it might seem a bit strange.</p>
 
-<p>But what if they are looking to try something new and would have left your company to do so? What if they think it might be a solution but don't know how to say? What if they can use it in nine months on an urgent project? All these things can and have happened.</p>
+<p>But what if they are looking to try something new and would have left your company to do so? What if they think it might be a solution but don&rsquo;t know how to say? What if they can use it in nine months on an urgent project? All these things can and have happened.</p>
 
 <h2>Fear, as always, is detrimental</h2>
 
@@ -65,7 +65,7 @@
 
 <p>I have seen our whole UK engineering group get a lot stronger through our use of 20% time. We have also been more attractive in interviews and gets very positive responses when discussing our job openings; so many developers just want an opportunity to learn and apply new skills and will leave a job to do so.</p>
 
-<p>I personally now have a child, attempting to try new skills and experiment at home is proving harder and harder. This 20% time becomes more important &ndash; as a team we are trying to really get to grips with the latest trends in the development community. I just don't have anywhere near as much time in the evenings now, it is a way to stop a divide coming between your team, the ones with spare time and the ones without.</p>
+<p>I personally now have a child, attempting to try new skills and experiment at home is proving harder and harder. This 20% time becomes more important &ndash; as a team we are trying to really get to grips with the latest trends in the development community. I just don&rsquo;t have anywhere near as much time in the evenings now, it is a way to stop a divide coming between your team, the ones with spare time and the ones without.</p>
 
 <p>I recommend giving it some serious thought for your organisation.</p>
 ]]></content>
@@ -76,19 +76,19 @@
     <link href="http://tech.toptable.co.uk/blog/2014/02/03/coaching-style-over-substance/"/>
     <updated>2014-02-03T11:12:00+00:00</updated>
     <id>http://tech.toptable.co.uk/blog/2014/02/03/coaching-style-over-substance</id>
-    <content type="html"><![CDATA[<p>Have you ever been lucky enough to mentor someone who really got it? Maybe you've had the opposite experience and the session ended up being a failure for both of you?</p>
+    <content type="html"><![CDATA[<p>Have you ever been lucky enough to mentor someone who really got it? Maybe you&rsquo;ve had the opposite experience and the session ended up being a failure for both of you?</p>
 
-<p>We are fortunate enough to be in an industry that gives us the chance to coach others and have a direct influence on the learning of individuals around us. But how do we know when we're doing it right, or more importantly what can we do when it starts to go wrong?</p>
+<p>We are fortunate enough to be in an industry that gives us the chance to coach others and have a direct influence on the learning of individuals around us. But how do we know when we&rsquo;re doing it right, or more importantly what can we do when it starts to go wrong?</p>
 
 <h2>Know your student, find their style</h2>
 
-<p>Let's start with the science behind how we learn.</p>
+<p>Let&rsquo;s start with the science behind how we learn.</p>
 
-<p>The first recognised attempt to identify different approaches individuals use in order to learn was David Kolb with the book '<a href="http://www.amazon.co.uk/Experiential-Learning-Experience-Source-Development/dp/0132952610">Experimental Learning</a>'. Kolb suggested that humans have a range of learning techniques available to us and that we tend to lean on one learning style above all others.</p>
+<p>The first recognised attempt to identify different approaches individuals use in order to learn was David Kolb with the book &lsquo;<a href="http://www.amazon.co.uk/Experiential-Learning-Experience-Source-Development/dp/0132952610">Experimental Learning</a>&rsquo;. Kolb suggested that humans have a range of learning techniques available to us and that we tend to lean on one learning style above all others.</p>
 
-<p>In recent times his research has proved to be inaccurate - yes people have different learning styles, yes they  show an emphasis in one particular style but Kolb's definition of separate styles was confused.</p>
+<p>In recent times his research has proved to be inaccurate &ndash; yes people have different learning styles, yes they  show an emphasis in one particular style but Kolb&rsquo;s definition of separate styles was confused.</p>
 
-<p>Enter <a href="http://en.wikipedia.org/wiki/Learning_styles#Peter_Honey_and_Alan_Mumford.27s_model">Honey and Mumford and their 1999 adaptation on Kolb's model</a>. They identified four distinct learning styles which have since grown to be the preferred assessment of human learning styles.</p>
+<p>Enter <a href="http://en.wikipedia.org/wiki/Learning_styles#Peter_Honey_and_Alan_Mumford.27s_model">Honey and Mumford and their 1999 adaptation on Kolb&rsquo;s model</a>. They identified four distinct learning styles which have since grown to be the preferred assessment of human learning styles.</p>
 
 <table style="font-size: 80%;margin-bottom:20px;">
     <tr>
@@ -130,7 +130,7 @@
 
 <h2>Complete the circle</h2>
 
-<p>Let me introduce you to <a href="http://www.linkedin.com/pub/bernice-mccarthy/15/564/715">Bernice McCarthy</a>. Bernice has been in education for more than 30 years so it's not surprising she has an insight into her field. During her time in education she spotted a pattern and designed a framework that increased the success rate of individual learning.</p>
+<p>Let me introduce you to <a href="http://www.linkedin.com/pub/bernice-mccarthy/15/564/715">Bernice McCarthy</a>. Bernice has been in education for more than 30 years so it&rsquo;s not surprising she has an insight into her field. During her time in education she spotted a pattern and designed a framework that increased the success rate of individual learning.</p>
 
 <p>Research suggests that this framework (<a href="http://www.4mat.eu/">4MAT</a>) is proven to be successful as it follows the thought processes of individuals when they try to learn. It works by explaining not just the WHY? but also the WHAT?, the HOW? and the WHAT IF?</p>
 
@@ -138,9 +138,9 @@
 
 <ol>
 <li><p>WHY? => Convey the meaning and purpose of the change in order to engage people. <strong>Engage the why</strong>.</p></li>
-<li><p>WHAT? => Once it's made relevant provide facts, structure or theory to explain what is going to happen. <strong>Inform the what</strong>.</p></li>
+<li><p>WHAT? => Once it&rsquo;s made relevant provide facts, structure or theory to explain what is going to happen. <strong>Inform the what</strong>.</p></li>
 <li><p>HOW? => Focus on the problems and how best to solve them. <strong>Applying the how</strong>.</p></li>
-<li><p>WHAT IF? => Ask questions and experiment. What else, what's next. <strong>Learn by doing</strong>.</p></li>
+<li><p>WHAT IF? => Ask questions and experiment. What else, what&rsquo;s next. <strong>Learn by doing</strong>.</p></li>
 </ol>
 
 
@@ -160,9 +160,9 @@
 
 <h2>Theory schmery, how does this work in practice?</h2>
 
-<p>It's easy enough for us to read this information and take it in, forget about it, move on.</p>
+<p>It&rsquo;s easy enough for us to read this information and take it in, forget about it, move on.</p>
 
-<p>But if we look at a real-world scenario, something that is relevant to our industry and is generally a tough problem to sell it'll make it more tangible. In my world, that can be breaking apart a legacy application that has become too difficult to work with.</p>
+<p>But if we look at a real-world scenario, something that is relevant to our industry and is generally a tough problem to sell it&rsquo;ll make it more tangible. In my world, that can be breaking apart a legacy application that has become too difficult to work with.</p>
 
 <p><strong>WHY?</strong>
 We have a monolithic website right now. The code is too complicated, has no obvious structure and is very tough to change. We need to be able to release solid code, fast.</p>
@@ -180,7 +180,7 @@ What if we refactor with the MVP pattern first and see where the duplication lie
 
 <p>Outlining and truly grasping these styles can really help push learning in your team further. Try reaching out to different learning styles and see how people respond.</p>
 
-<p>Maybe you are pairing on a tricky feature, struggling to get your point across. Perhaps you have a tough decision that you need to sell to your team. Let's say you are lucky enough to speak at a conference in front of hundreds of delegates - you could do a lot worse than to remember <strong>WHY?</strong>   <strong>WHAT?</strong> <strong>HOW? </strong> <strong>WHAT IF?</strong></p>
+<p>Maybe you are pairing on a tricky feature, struggling to get your point across. Perhaps you have a tough decision that you need to sell to your team. Let&rsquo;s say you are lucky enough to speak at a conference in front of hundreds of delegates &ndash; you could do a lot worse than to remember <strong>WHY?</strong>   <strong>WHAT?</strong> <strong>HOW? </strong> <strong>WHAT IF?</strong></p>
 ]]></content>
   </entry>
   

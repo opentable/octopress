@@ -185,7 +185,7 @@ But how do we distinguish which of the routes match to a specific domain?</p>
 <p>routes.MapRoute in MVC has a number of overloads. The overload we will be using has the following signature:</p>
 
 <p>public static Route MapRoute(this RouteCollection routes, string name, string url, object defaults, object constraints, string[] namespaces)
-Notice that is has a parameter for constraints. All I need to do is to build the correct constraint and I will be able to give my system a way to match a specific domain. There is another overload that has no parameter for constraints and that passes null down the stack - so I can pass a null constraint for the non areas based part of the site. There is only a need to pass a constraint to the route if there is an area specified. The code to create the correct constraint looks as following:</p>
+Notice that is has a parameter for constraints. All I need to do is to build the correct constraint and I will be able to give my system a way to match a specific domain. There is another overload that has no parameter for constraints and that passes null down the stack &ndash; so I can pass a null constraint for the non areas based part of the site. There is only a need to pass a constraint to the route if there is an area specified. The code to create the correct constraint looks as following:</p>
 
 <pre><code>private static object BuildUrlConstraint(string areaName)
 {

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Performance | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/performance/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-09T11:39:10+01:00</updated>
+  <updated>2014-04-16T14:50:37+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -24,23 +24,23 @@
 
 <p>If you can have a dedicated environment that you can build to be EXACTLY the same as where you are going to really need the performance (i.e. your production environment most likely, but possibly on a client machine) then do it in a dedicated, duplicated environment. Alternatively if there is no way you can use the production environment or your model means that everything will scale exactly like production, then a duplicate environment might work.</p>
 
-<p>For us, we had too many dependencies, mocking these out wasn't really satisfactory and frankly, as a business where we are quiet at night, it is easy to use the production environment at these times. We use configuration management and virtual machines, much of what should help build a replica environment, but we also have machines in restaurants around the globe. That is not easy to replicate and not worth the effort.</p>
+<p>For us, we had too many dependencies, mocking these out wasn&rsquo;t really satisfactory and frankly, as a business where we are quiet at night, it is easy to use the production environment at these times. We use configuration management and virtual machines, much of what should help build a replica environment, but we also have machines in restaurants around the globe. That is not easy to replicate and not worth the effort.</p>
 
 <h2>Even if you can have a duplicated environment should you?</h2>
 
-<p>We felt in the search team that we just wouldn't uncover a broken server (that can affect performance) or we wouldn't see that we had a problem with interactions with these services (we have now got to serialisation as our bottleneck, maybe we would have missed that).</p>
+<p>We felt in the search team that we just wouldn&rsquo;t uncover a broken server (that can affect performance) or we wouldn&rsquo;t see that we had a problem with interactions with these services (we have now got to serialisation as our bottleneck, maybe we would have missed that).</p>
 
-<p>We just didn't trust that a duplicated environment would actually help us in this case. If you want to test a new idea as a prototype then the duplicate will probably work, even if just at first, we were trying to improve our actual environment.</p>
+<p>We just didn&rsquo;t trust that a duplicated environment would actually help us in this case. If you want to test a new idea as a prototype then the duplicate will probably work, even if just at first, we were trying to improve our actual environment.</p>
 
 <h2>Is testing in production right?</h2>
 
-<p>There is no 'right' answer here, plenty of people test in a duplicate environment and then monitor in production. I think this is probably a valid approach and in a lot of use cases this would be fine for us too.</p>
+<p>There is no &lsquo;right&rsquo; answer here, plenty of people test in a duplicate environment and then monitor in production. I think this is probably a valid approach and in a lot of use cases this would be fine for us too.</p>
 
 <p>Can you micro-optimise in a huge production system?  Probably not, so use a scaled down duplicate for that or even a local environment such as one created using Vagrant. Hopefully with enough micro-optimisations you will eventually see these in a larger environment.</p>
 
 <h2>Is it a free lunch?</h2>
 
-<p>Testing in production is not a free lunch. Even simple things like system logging will cost as you will be logging to production data centres, probably with backup costs etc. Do you need to code-in safeguards? Yes, and you will need to watch this running from your desk. When you are not watching it will be hard to be sure you will not cause production issues. We can use our regional environment that means we are testing during our day, that region's night, other companies might see you having to work in your timezone's evening &ndash; not fun.</p>
+<p>Testing in production is not a free lunch. Even simple things like system logging will cost as you will be logging to production data centres, probably with backup costs etc. Do you need to code-in safeguards? Yes, and you will need to watch this running from your desk. When you are not watching it will be hard to be sure you will not cause production issues. We can use our regional environment that means we are testing during our day, that region&rsquo;s night, other companies might see you having to work in your timezone&rsquo;s evening &ndash; not fun.</p>
 
 <h2>Overall</h2>
 
@@ -114,7 +114,7 @@
 
 <p>We have tweaked the ES set-up and scaled out our API servers and our benchmark improved (the amount of traffic can we serve). We have a roadmap for how to take more and more traffic but the response time is probably as fast as we can go if we keep the same methodology. As a result we are actually looking at using Elastic Search a lot less than we originally planned. We need to take serialisation out of the game where possible, using in-memory filtering seems a candidate again.</p>
 
-<h2>That's it for Elastic Search?</h2>
+<h2>That&rsquo;s it for Elastic Search?</h2>
 
 <p>Not at all, we love it. We are definitely still going to use for autocomplete, free-text search and also other indexing we want to do with future feature plans we have.</p>
 
@@ -124,7 +124,7 @@
 
 <h2>Summary</h2>
 
-<p>Get performance testing into your deployment pipeline, consider testing in production and expect the worst. The worst being that you might have got something stupid wrong and it is only exposed when you really don't want it to be.</p>
+<p>Get performance testing into your deployment pipeline, consider testing in production and expect the worst. The worst being that you might have got something stupid wrong and it is only exposed when you really don&rsquo;t want it to be.</p>
 ]]></content>
   </entry>
   
@@ -164,7 +164,7 @@ Fastest Service is nodeJS
 
 <h2>The how</h2>
 
-<p>Talking about the ‘why’ could be relatively easy, but the ‘how’ is a controversial topic. In my experience there are three important steps to any dish. First, we need the right tools to manipulate the ingredients. I tried many different tools but I couldn't find a good fit for all my benchmarking requirements. It always makes sense to start with something to get you going but after a while it is important to find what’s the best for you, your team, and your project.</p>
+<p>Talking about the ‘why’ could be relatively easy, but the ‘how’ is a controversial topic. In my experience there are three important steps to any dish. First, we need the right tools to manipulate the ingredients. I tried many different tools but I couldn&rsquo;t find a good fit for all my benchmarking requirements. It always makes sense to start with something to get you going but after a while it is important to find what’s the best for you, your team, and your project.</p>
 
 <p>Then, you start cooking: personally, the number of things I’ve learned by just starting to benchmark some services is incredible. Nevertheless, as with every time we talk about metrics, it is key to know what is important about the data we are analysing, recognise the false positives/negatives and be aware of vanity metrics that could emphasize something irrelevant, or, more importantly, hide something significant.</p>
 
@@ -188,13 +188,13 @@ Fastest Service is nodeJS
 
 <p>```json
 {
-  "service": {</p>
+  &ldquo;service&rdquo;: {</p>
 
 <pre><code>"My api": "http://localhost:3007/api/"
 </code></pre>
 
 <p>  },
-  "endpoints": {</p>
+  &ldquo;endpoints&rdquo;: {</p>
 
 <pre><code>"simpleRoute": "v1/getJson",
 "postRoute": {
@@ -215,7 +215,7 @@ Fastest Service is nodeJS
 </code></pre>
 
 <p>  },
-  "options": {</p>
+  &ldquo;options&rdquo;: {</p>
 
 <pre><code>"minSamples": 1000,
 "runMode": "parallel",
@@ -263,8 +263,8 @@ api_benchmark: {
 
 <p>  });</p>
 
-<p>  grunt.loadNpmTasks('grunt-api-benchmark');
-  grunt.registerTask('benchmark', ['api_benchmark']);
+<p>  grunt.loadNpmTasks(&lsquo;grunt-api-benchmark&rsquo;);
+  grunt.registerTask(&lsquo;benchmark&rsquo;, [&lsquo;api_benchmark&rsquo;]);
 };
 ```</p>
 
@@ -280,7 +280,7 @@ $ grunt benchmark
 $ npm install
 </code></p>
 
-<h2>Let’s benchmark - some lessons learned</h2>
+<h2>Let’s benchmark &ndash; some lessons learned</h2>
 
 <p>I think this is the most important part of the whole process, however I don’t think there are any general rules that are applicable for every context. I believe that after testing and stressing your system you will find out what matters to you and to your business. Nevertheless, I want to share some of the lessons I’ve learned.</p>
 
@@ -300,7 +300,7 @@ $ npm install
 <li>10 seconds is not enough. 1 minute is nice, 5 is better.</li>
 <li>One route is not enough. Testing all the routes allow us to see the difference between different response lengths.</li>
 <li>Sometimes your application needs a warm-up, especially if you test it after a deployment. Set up a script to do that or set a proper time-out to be sure you are retrieving some valuable numbers back.</li>
-<li>Don't benchmark the live production environment. Your results are affected by too many variables. If possible, set-up a staging environment with exactly the same configuration to run benchmarks.</li>
+<li>Don&rsquo;t benchmark the live production environment. Your results are affected by too many variables. If possible, set-up a staging environment with exactly the same configuration to run benchmarks.</li>
 </ul>
 
 

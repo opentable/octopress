@@ -4,7 +4,7 @@
   <title><![CDATA[Category: C# | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/c-number/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-09T11:39:10+01:00</updated>
+  <updated>2014-04-16T14:50:37+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -20,42 +20,42 @@
     <id>http://tech.toptable.co.uk/blog/2013/06/07/nlocalgeocoder</id>
     <content type="html"><![CDATA[<h2>History</h2>
 
-<p>With OpenTable having engineering teams spread across multiple offices it's important for us to maintain open email dialogue about new products us or our teams have created, new tools we've discovered or problem solving approaches that have helped us achieve our goals.  Recently in one of these emails Aish introduced the team to a new open source ruby implementation of reverse geocode lookup for latitude and longitude he'd written called <a href="https://github.com/aishfenton/local-geocoder">local-geocoder</a>.  With an interest in understanding how this worked, to learn a bit of ruby, to make this project accessible to .net developers and just to see how long it would take I decided to port it to C# and .net.</p>
+<p>With OpenTable having engineering teams spread across multiple offices it&rsquo;s important for us to maintain open email dialogue about new products us or our teams have created, new tools we&rsquo;ve discovered or problem solving approaches that have helped us achieve our goals.  Recently in one of these emails Aish introduced the team to a new open source ruby implementation of reverse geocode lookup for latitude and longitude he&rsquo;d written called <a href="https://github.com/aishfenton/local-geocoder">local-geocoder</a>.  With an interest in understanding how this worked, to learn a bit of ruby, to make this project accessible to .net developers and just to see how long it would take I decided to port it to C# and .net.</p>
 
 <h2>How reverse geocoding works</h2>
 
-<p>Latitude and longitude geographical coordinates are great but 37.819548,-122.479046 doesn't really mean much to me. Knowing this is in the San Francisco bay area is much more useful interpretation.</p>
+<p>Latitude and longitude geographical coordinates are great but 37.819548,-122.479046 doesn&rsquo;t really mean much to me. Knowing this is in the San Francisco bay area is much more useful interpretation.</p>
 
-<p>That's where reverse geocoding comes in.  Normally geocoding tries to locate geographical coordinates from other data like postal (zip) codes or street level addresses.  Reverse geocoding does the opposite and can, given enough lookup data, be very precise.</p>
+<p>That&rsquo;s where reverse geocoding comes in.  Normally geocoding tries to locate geographical coordinates from other data like postal (zip) codes or street level addresses.  Reverse geocoding does the opposite and can, given enough lookup data, be very precise.</p>
 
-<p>There are a number of online reverse geocoding providers, like Google, who can perform this for you however there are normally usage limits or costs for using them.  To add to this the latency of these service can slow your logic down.  Wouldn't it be nice if this could be done locally at high speed and in memory.</p>
+<p>There are a number of online reverse geocoding providers, like Google, who can perform this for you however there are normally usage limits or costs for using them.  To add to this the latency of these service can slow your logic down.  Wouldn&rsquo;t it be nice if this could be done locally at high speed and in memory.</p>
 
 <h2>Using nLocalGeocoder</h2>
 
-<p>It's really easy to use, just new up a Geocoder and you're off...</p>
+<p>It&rsquo;s really easy to use, just new up a Geocoder and you&rsquo;re off&hellip;</p>
 
 <pre><code>var geocoder = new Geocoder();
 var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);
 </code></pre>
 
-<p>The result variable now holds an instance of the Result struct.  This type has the following properties:-</p>
+<p>The result variable now holds an instance of the Result struct.  This type has the following properties:&ndash;</p>
 
 <ul>
-<li>Country <em>- Id and Name of the country</em></li>
+<li>Country <em>&ndash; Id and Name of the country</em></li>
 </ul>
 
 
-<p>and for USA only (because that's all the data in our <a href="http://www.geojson.org">GeoJSON</a> data)</p>
+<p>and for USA only (because that&rsquo;s all the data in our <a href="http://www.geojson.org">GeoJSON</a> data)</p>
 
 <ul>
-<li>AdministrativeArea1 <em>- Id and Name of the state</em></li>
-<li>AdministrativeArea2 <em>- Id and Name of the county</em></li>
+<li>AdministrativeArea1 <em>&ndash; Id and Name of the state</em></li>
+<li>AdministrativeArea2 <em>&ndash; Id and Name of the county</em></li>
 </ul>
 
 
 <p>The code is available for all to use and is available on our <a href="https://github.com/opentable/nLocalGeocoder">github repo</a></p>
 
-<p>It's as simple as that really!</p>
+<p>It&rsquo;s as simple as that really!</p>
 ]]></content>
   </entry>
   

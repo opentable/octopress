@@ -120,7 +120,7 @@ Gertrude Stein</p></blockquote>
 
 <p>In this blog post we will look into multiple ways of counting documents in Elastic Search which is crucial for this kind of activity. All examples here are provided using Elastic Search HTTP interface and code examples implemented with <a href="https://github.com/Yegoroff/PlainElastic.Net">PlainElastic.NET</a> are <a href="https://gist.github.com/gondar/6320578">available here</a></p>
 
-<p>Before we make a deep dive into Elastic Search Counting options let&#8217;s define our expectations:</p>
+<p>Before we make a deep dive into Elastic Search Counting options let&rsquo;s define our expectations:</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -130,7 +130,7 @@ Gertrude Stein</p></blockquote>
 </span><span class='line'>I want the most searched statistics from the logs to be part of the search database</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Okay, that&#8217;s not exactly how our story was defined but as we don&#8217;t want to discuss the whole search infrastructure here, let&#8217;s assume this is sufficient.</p>
+<p>Okay, that&rsquo;s not exactly how our story was defined but as we don&rsquo;t want to discuss the whole search infrastructure here, let&rsquo;s assume this is sufficient.</p>
 
 <p>Because we are eager engineers, we will quickly build some mock data against which to test our assumptions. Our restaurant name search logs look something like this:</p>
 
@@ -170,7 +170,7 @@ Gertrude Stein</p></blockquote>
 </span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
-<p>There are three ways this can be achieved in Elastic Search; using count API (which seems like the most obvious way), a search with type set to count, or using facets to generate counts of all objects grouped by given property. Let&#8217;s compare them:</p>
+<p>There are three ways this can be achieved in Elastic Search; using count API (which seems like the most obvious way), a search with type set to count, or using facets to generate counts of all objects grouped by given property. Let&rsquo;s compare them:</p>
 
 <h3>Count API</h3>
 
@@ -246,11 +246,11 @@ Gertrude Stein</p></blockquote>
 </span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Using search type set to count is the same as executing a search request with size set to zero, but it&#8217;s internally optimised for performance. The nice thing about search is that we can use multi_search interface to execute many count queries at once.</p>
+<p>Using search type set to count is the same as executing a search request with size set to zero, but it&rsquo;s internally optimised for performance. The nice thing about search is that we can use multi_search interface to execute many count queries at once.</p>
 
 <p>On the other hand, the query still will be executed multiple times, so it is only feasible if we want to get popularity for a small subset of all the restaurants we have.</p>
 
-<p>Comparing two previous requests highlights that the query language is slightly different. The DSL for <em>count API</em> is basically the same as for the <em>search API</em>, but you are immediately inside the &#8216;query&#8217; part. That inconsistency on the ElasticSearch side is only a minor inconvenience.</p>
+<p>Comparing two previous requests highlights that the query language is slightly different. The DSL for <em>count API</em> is basically the same as for the <em>search API</em>, but you are immediately inside the &lsquo;query&rsquo; part. That inconsistency on the ElasticSearch side is only a minor inconvenience.</p>
 
 <h3>Facets</h3>
 
@@ -322,13 +322,13 @@ Gertrude Stein</p></blockquote>
 
 <p>Facets is a means to obtain grouping by a given field together with count in a group. It is designed to ease creation of filters which are often naturally part of search results interface.</p>
 
-<p>This is nice feature which grabs for us all counts grouped by given field. That&#8217;s more then we need if we only care for a count of single type, but it&#8217;s invaluable if you want to have counts for all terms in a field. Also note that we are using search type count again, but facets work equally well for all types of searches including those which actually return results.</p>
+<p>This is nice feature which grabs for us all counts grouped by given field. That&rsquo;s more then we need if we only care for a count of single type, but it&rsquo;s invaluable if you want to have counts for all terms in a field. Also note that we are using search type count again, but facets work equally well for all types of searches including those which actually return results.</p>
 
-<p>In the example above we used &#8216;RestaurantId&#8217; field instead of restaurant name, as this field is not analysed. If we used restaurant name it would give us facets for each term e.g. [{&#8220;term&#8221;: &#8220;Restaurant&#8221;, &#8220;count&#8221;: 3}, {&#8220;term&#8221;:&#8221;Cecil&#8221;, &#8220;count&#8221;:2},{&#8220;term&#8221;:&#8221;Brian&#8221;, &#8220;count&#8221;:1}], which is not what we exactly want.</p>
+<p>In the example above we used &lsquo;RestaurantId&rsquo; field instead of restaurant name, as this field is not analysed. If we used restaurant name it would give us facets for each term e.g. [{&ldquo;term&rdquo;: &ldquo;Restaurant&rdquo;, &ldquo;count&rdquo;: 3}, {&ldquo;term&rdquo;:&ldquo;Cecil&rdquo;, &ldquo;count&rdquo;:2},{&ldquo;term&rdquo;:&ldquo;Brian&rdquo;, &ldquo;count&rdquo;:1}], which is not what we exactly want.</p>
 
 <h3>Conclusion</h3>
 
-<p>It&#8217;s hard to discuss which one is better. Count API is slightly faster then Search of type count. On the other hand search is more flexible, and its queries are consistent with normal search queries. Facets is a different beast altogether as it always grabs all the results. Still, it&#8217;s fun that ElasticSearch is elastic in this aspect giving us variety of approaches.</p>
+<p>It&rsquo;s hard to discuss which one is better. Count API is slightly faster then Search of type count. On the other hand search is more flexible, and its queries are consistent with normal search queries. Facets is a different beast altogether as it always grabs all the results. Still, it&rsquo;s fun that ElasticSearch is elastic in this aspect giving us variety of approaches.</p>
 
 <p>We are really curious about your experiences in ElasticSearch. If you have any questions, proposals or comments feel free to <a href="mailto:mbazydlo@opentable.com">email me</a>.</p>
 

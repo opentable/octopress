@@ -4,7 +4,7 @@
   <title><![CDATA[Category: internationalisation | toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/blog/categories/internationalisation/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-09T11:39:10+01:00</updated>
+  <updated>2014-04-16T14:50:37+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -38,22 +38,22 @@ GET /product/123
 Accept-Language: en-US,en;q=0.8
 </code></p>
 
-<p>This header asks the service to provide en-US, and if it's unavailable then fall back to <strong>any</strong> english representation. The quality value (<code>q=0.8</code>) is a decimal value between 0 and 1 which indicates order of preference when specifying multiple languages. The server should pick the <strong>first</strong> available match. If there are multiple matches with the same quality value, then the server can pick any. If the client wants to specify some fierce preferences then they can crank out something like this:</p>
+<p>This header asks the service to provide en-US, and if it&rsquo;s unavailable then fall back to <strong>any</strong> english representation. The quality value (<code>q=0.8</code>) is a decimal value between 0 and 1 which indicates order of preference when specifying multiple languages. The server should pick the <strong>first</strong> available match. If there are multiple matches with the same quality value, then the server can pick any. If the client wants to specify some fierce preferences then they can crank out something like this:</p>
 
 <p><code>
 GET /product/123
 Accept-Language: fr-CA,fr-FR;q=0.8,fr;q=0.6,en-US;q=0.4,en;q=0.2,*;q=0.1
 </code></p>
 
-<p>If you decipher this it's pretty simple, you can see the quality headers giving the order in which the languages are preferred. What it does is give the client fantastic flexibility. For service-service communication you might have a use-case which will <em>never</em> serve a representation that doesn't match the request, or you might need to <em>always</em> provide some representation (i.e. for cases where some content is always better than none).</p>
+<p>If you decipher this it&rsquo;s pretty simple, you can see the quality headers giving the order in which the languages are preferred. What it does is give the client fantastic flexibility. For service-service communication you might have a use-case which will <em>never</em> serve a representation that doesn&rsquo;t match the request, or you might need to <em>always</em> provide some representation (i.e. for cases where some content is always better than none).</p>
 
-<p>The accept-language header gives you that flexibility. In my opinon, if your http-api's are serving content that <em>can</em> be internationalised, the server should always support this type of behaviour because it can shift the control from the server to the client. It allows the server's behaviour to be incredibly explicit and the clients get all that lovely flexibility.</p>
+<p>The accept-language header gives you that flexibility. In my opinon, if your http-api&rsquo;s are serving content that <em>can</em> be internationalised, the server should always support this type of behaviour because it can shift the control from the server to the client. It allows the server&rsquo;s behaviour to be incredibly explicit and the clients get all that lovely flexibility.</p>
 
 <p><strong>What happens when there is no matching representation?</strong></p>
 
 <p>Well, the specification is (intentionally) vague. In other words, it is up to the server to decide. I myself always prefer to be explicit. Thankfully the HTTP specification provides for just such an eventuality.</p>
 
-<p><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP 406 Not Acceptable</a> <em>"The resource identified by the request is only capable of generating response entities which have content characteristics not acceptable according to the accept headers sent in the request."</em></p>
+<p><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP 406 Not Acceptable</a> <em>&ldquo;The resource identified by the request is only capable of generating response entities which have content characteristics not acceptable according to the accept headers sent in the request.&rdquo;</em></p>
 
 <p>The 406 response <em>should</em> contain a list of characteristics which the resource does support. In this case, a list of available languages. The specification does allow the server to automatically select a representation to return, however in my opinion, the server should be explicit, rather than implicit.</p>
 
@@ -61,7 +61,7 @@ Accept-Language: fr-CA,fr-FR;q=0.8,fr;q=0.6,en-US;q=0.4,en;q=0.2,*;q=0.1
 
 <p><strong>Parsing the Accept-Language header</strong></p>
 
-<p>I wrote a little npm module to help us in <a href="https://github.com/andyroyle/accept-language-parser">parsing the accept-language header</a>. Once you get past the (somewhat hairy) regex, it's a simple little bit of code. (Disclaimer, I'm not a regex god, so there are a couple of little bugs in it).</p>
+<p>I wrote a little npm module to help us in <a href="https://github.com/andyroyle/accept-language-parser">parsing the accept-language header</a>. Once you get past the (somewhat hairy) regex, it&rsquo;s a simple little bit of code. (Disclaimer, I&rsquo;m not a regex god, so there are a couple of little bugs in it).</p>
 
 <p>Parsing an accept-language string such as <code>en-US,en;q=0.8</code> gives an object looking like this:</p>
 
@@ -86,19 +86,19 @@ quality: 0.8
 ];
 ```</p>
 
-<p>Output is always sorted in quality order from highest -> lowest. as per the http spec, omitting the quality value implies 1.0.</p>
+<p>Output is always sorted in quality order from highest &ndash;> lowest. as per the http spec, omitting the quality value implies 1.0.</p>
 
-<p>We can pass this around our application and use it to select the representation which best matches the client's request.</p>
+<p>We can pass this around our application and use it to select the representation which best matches the client&rsquo;s request.</p>
 
 <p><strong>Using it</strong></p>
 
-<p>We use <a href="http://hapijs.com">hapi.js</a> for some of our api's (and I'm very much in love), we use this module in a pre-requisite handler in our route:</p>
+<p>We use <a href="http://hapijs.com">hapi.js</a> for some of our api&rsquo;s (and I&rsquo;m very much in love), we use this module in a pre-requisite handler in our route:</p>
 
 <p>```
-var alparser = require('accept-language-parser');
+var alparser = require(&lsquo;accept-language-parser&rsquo;);
 server.route({
-  method: "GET",
-  path: "/v5/restaurants/{id}",
+  method: &ldquo;GET&rdquo;,
+  path: &ldquo;/v5/restaurants/{id}&rdquo;,
   config: {</p>
 
 <pre><code>pre: [
@@ -119,7 +119,7 @@ handler: function(req, reply){
 });
 ```</p>
 
-<p>For those of you that don't know, the prerequisites run before the handler, and assign their values to the request object. You can now get hold of the parsed language object here:</p>
+<p>For those of you that don&rsquo;t know, the prerequisites run before the handler, and assign their values to the request object. You can now get hold of the parsed language object here:</p>
 
 <p><code>
 req.pre.language
@@ -131,7 +131,7 @@ req.pre.language
 
 <p><strong>Gotchas</strong></p>
 
-<p>Caching (both client-side and intermediate) can be picky. By default, most caches won't respect the header content (i.e. the resource is cached by url only). You can get around this by using vary-headers:</p>
+<p>Caching (both client-side and intermediate) can be picky. By default, most caches won&rsquo;t respect the header content (i.e. the resource is cached by url only). You can get around this by using vary-headers:</p>
 
 <p><code>
 GET /product/123

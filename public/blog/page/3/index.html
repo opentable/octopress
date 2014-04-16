@@ -110,11 +110,11 @@
   </header>
 
 
-  <div class="entry-content"><p>I spent some time, re-investigating Javascript. After a few months of intensive TDD and SOLID training at OpenTable I was curious how those principles apply in a slightly different environment. Guess what, they do not differ that much&#8230; I planned to write about all this sometime in the future after gaining more experience from real battles ahead, however <a href="http://watirmelon.com/2013/02/09/why-i-dont-like-Jasmine/">Watirmelon post</a> invited me to attack this subject immediately.</p>
+  <div class="entry-content"><p>I spent some time, re-investigating Javascript. After a few months of intensive TDD and SOLID training at OpenTable I was curious how those principles apply in a slightly different environment. Guess what, they do not differ that much&hellip; I planned to write about all this sometime in the future after gaining more experience from real battles ahead, however <a href="http://watirmelon.com/2013/02/09/why-i-dont-like-Jasmine/">Watirmelon post</a> invited me to attack this subject immediately.</p>
 
 <p>I went through the available testing frameworks for Javascript and decided on Jasmine. Why? Mainly because of its BDD syntax which is fashionable this season. The second reason is that it has really cool documentation. Finally, the basic set up of just running an HTML file in a browser got me up and running fast.</p>
 
-<p>Let&#8217;s look at the basics - what I expect from different types of tests and how Jasmine fits into those requirements:</p>
+<p>Let&rsquo;s look at the basics &ndash; what I expect from different types of tests and how Jasmine fits into those requirements:</p>
 
 <h2>Unit Testing</h2>
 
@@ -129,16 +129,16 @@
 (verify edge cases)</li>
 <li>Kill them quick
 (provide fast feedback on issues)</li>
-<li>Choose a fast shooting gun - the faster you shoot, the more enemies you will kill
+<li>Choose a fast shooting gun &ndash; the faster you shoot, the more enemies you will kill
 (unit tests must be blazing fast)</li>
-<li>Choose the most reliable gun - if it is stuck then you are dead
+<li>Choose the most reliable gun &ndash; if it is stuck then you are dead
 (when unit tests are brittle you will stop depending on them)</li>
 <li>Your gun needs to be light enough to carry everywhere
 (unit tests are your gun, so you must be able to run them all locally)</li>
 </ul>
 
 
-<p>Jasmine works great for all those aims, as it is really fast and it allows you to stub both objects and DOM elements (especially combined with a Jasmine-jQuery plugin). Keep in mind that Unit Testing is useful only if you either write new code or refactor old code. Do not ever try to write Unit Tests for existing code which you don&#8217;t intend to refactor. It&#8217;s like shooting the dead. You simply cannot kill them with another bullet.</p>
+<p>Jasmine works great for all those aims, as it is really fast and it allows you to stub both objects and DOM elements (especially combined with a Jasmine-jQuery plugin). Keep in mind that Unit Testing is useful only if you either write new code or refactor old code. Do not ever try to write Unit Tests for existing code which you don&rsquo;t intend to refactor. It&rsquo;s like shooting the dead. You simply cannot kill them with another bullet.</p>
 
 <h2>Integration Testing</h2>
 
@@ -156,7 +156,7 @@
 </ul>
 
 
-<p>Integration tests will naturally be harder to quickly setup - they might break due to configuration problems or inaccessible external services. That&#8217;s why you don&#8217;t want to have that many of them. Still, you want to know that all your problems are due to your partner changing protocol. Once again nothing stops us from using Jasmine here.</p>
+<p>Integration tests will naturally be harder to quickly setup &ndash; they might break due to configuration problems or inaccessible external services. That&rsquo;s why you don&rsquo;t want to have that many of them. Still, you want to know that all your problems are due to your partner changing protocol. Once again nothing stops us from using Jasmine here.</p>
 
 <p>Jasmine just executes your tests, so the tests that point towards external services, send example files to your code etc. will all be a breeze to implement with Jasmine.</p>
 
@@ -186,15 +186,15 @@
 </ul>
 
 
-<p>This is where I would not recommend Jasmine, simply because it doesn&#8217;t fit this job. Its syntax is based on programming language, so it is harder to read by non-engineers. Jasmine allows you to execute events and call your code. However, your users will be most likely be using a browser to interact with your code, so it is much better to use a tool that also uses a browser to test your web page.</p>
+<p>This is where I would not recommend Jasmine, simply because it doesn&rsquo;t fit this job. Its syntax is based on programming language, so it is harder to read by non-engineers. Jasmine allows you to execute events and call your code. However, your users will be most likely be using a browser to interact with your code, so it is much better to use a tool that also uses a browser to test your web page.</p>
 
 <h2>Conclusion</h2>
 
-<p>I find Jasmine extremely well suited for unit and integration testing. I wouldn&#8217;t use it for acceptance tests as there are quite few better tools for that job. And I guess that is the issue that Alister Scott has with Jasmine on his blog - he tried to use it for acceptance testing. In that case I wouldn&#8217;t choose Jasmine either. On the other hand I don&#8217;t like using a screwdriver to hammer a nail.</p>
+<p>I find Jasmine extremely well suited for unit and integration testing. I wouldn&rsquo;t use it for acceptance tests as there are quite few better tools for that job. And I guess that is the issue that Alister Scott has with Jasmine on his blog &ndash; he tried to use it for acceptance testing. In that case I wouldn&rsquo;t choose Jasmine either. On the other hand I don&rsquo;t like using a screwdriver to hammer a nail.</p>
 
 <h2>Post Scriptum (on DOM dependency)</h2>
 
-<p>Alister also complains about integration issues between his server-side code and client-side code. His experience is that changes to IDs and classes in MVC applications result in failing Javascript. The issue is serious and shows one important mistake, which is hardcoding dependencies. IDs and class names are configurable details and Javascript code should be agnostic of them. To illustrate let&#8217;s look at a simple test case from my pet-project:</p>
+<p>Alister also complains about integration issues between his server-side code and client-side code. His experience is that changes to IDs and classes in MVC applications result in failing Javascript. The issue is serious and shows one important mistake, which is hardcoding dependencies. IDs and class names are configurable details and Javascript code should be agnostic of them. To illustrate let&rsquo;s look at a simple test case from my pet-project:</p>
 
 <pre><code>describe("GameController", function(){
   describe("During Initialize", function() {
@@ -218,7 +218,7 @@
  }); 
 </code></pre>
 
-<p>Do you see how &#8220;#myid&#8221; parameter is passed into the method call? We moved the configuration detail out from the Javascript code, which in my opinion it is the simplest solution to Alister&#8217;s problem.</p>
+<p>Do you see how &ldquo;#myid&rdquo; parameter is passed into the method call? We moved the configuration detail out from the Javascript code, which in my opinion it is the simplest solution to Alister&rsquo;s problem.</p>
 
 <p>If code is designed in such a way that IDs/class names are not embedded all around the codebase you can figure out quite few nice ways to keep them consistent between Javascript and server-side code.</p>
 
@@ -270,7 +270,7 @@
 </ul>
 
 
-<p>The first time I ran this process, I felt as though this was just wrong to not be able to automate. The goal of our team is to automate everything we are currently doing manually. PowerShell is a better option for this import process as it allows you to write code to do it. As we all know, code is better for a number of reasons, I won&#8217;t go into the infrastructure as code argument in this post (but it is coming soon….). Using PowerShell, I can write a simple function as follows:</p>
+<p>The first time I ran this process, I felt as though this was just wrong to not be able to automate. The goal of our team is to automate everything we are currently doing manually. PowerShell is a better option for this import process as it allows you to write code to do it. As we all know, code is better for a number of reasons, I won&rsquo;t go into the infrastructure as code argument in this post (but it is coming soon….). Using PowerShell, I can write a simple function as follows:</p>
 
 <pre><code>function Import-PfxCertificate($certName, $CertLocaton, $certRootStore, $certStore) {    
      $pfx = new-object System.Security.Cryptography.X509Certificates.X509Certificate2    
@@ -330,15 +330,15 @@
 
   <div class="entry-content"><p>Three toptable heroes took to Norway last week to attend NDC Oslo. For two of us it was our first major conference and for one, Paul Stack, he had to speak.</p>
 
-<p>Personally, as my first large, multi-discipline conference, I didn&#8217;t really know what to expect. Being away from the team for three days in a foreign country with major project work going on at the same time was a bit uncomfortable. I was worried that the time and expense needed to be justified. That fear went away after the first night in the bar!</p>
+<p>Personally, as my first large, multi-discipline conference, I didn&rsquo;t really know what to expect. Being away from the team for three days in a foreign country with major project work going on at the same time was a bit uncomfortable. I was worried that the time and expense needed to be justified. That fear went away after the first night in the bar!</p>
 
-<p>The sessions were great, many things I haven&#8217;t had a chance to investigate were covered, things like Functional Programming, the latest JavaScript frameworks and tooling. There were also sessions covering things I am more involved with, Agile Process, SOA &amp; Rest, Team Structure and Hiring.</p>
+<p>The sessions were great, many things I haven&rsquo;t had a chance to investigate were covered, things like Functional Programming, the latest JavaScript frameworks and tooling. There were also sessions covering things I am more involved with, Agile Process, SOA &amp; Rest, Team Structure and Hiring.</p>
 
 <p>There are other posts around about the individual sessions but I am now much more enthusiastic about functional programming particularly how we could use it and getting back into front end development (even if just in my own time).</p>
 
 <p>The main thing I enjoyed and learnt though is meeting the other delegates. I think staying away from home makes this much more prevalent, something to consider for other conferences. Meeting people at all levels or experience and especially the speakers, most of whom are very generous with their time and ideas, teaches you the most. I probably learnt more over the shuffle board of The Dubliner Pub than reading blog post online in a year (that may be a stretch, but I did learn I was by far the best player on the night).</p>
 
-<p>Watching a colleague speak was also interesting, when you work with a buffoon, however passionate and hard working, to see people actually interested in what he has to say is an eye opener. It makes you realise what you are doing and all its challenges are a step forwards and one to keep pursuing. It also makes you think, &#8220;if he can do it, I must be able to, what knowledge should I share?&#8221;. What to share is the hard bit.</p>
+<p>Watching a colleague speak was also interesting, when you work with a buffoon, however passionate and hard working, to see people actually interested in what he has to say is an eye opener. It makes you realise what you are doing and all its challenges are a step forwards and one to keep pursuing. It also makes you think, &ldquo;if he can do it, I must be able to, what knowledge should I share?&rdquo;. What to share is the hard bit.</p>
 
 <p>My final point is how often I should try to get to these; one a year for sure, any more than that? I need to think that through.</p>
 
@@ -396,7 +396,7 @@
 
 <p>You would need to find the correct features to enable and check the box, press OK and then wait for the features to be installed.</p>
 
-<p>When Microsoft introduced Windows Server 2008 and PowerShell 2.0, they also introducted the module &#8216;ServerManager&#8217;. This is a module that allows us to interact, with PowerShell, Windows Features using a range of cmdlets:</p>
+<p>When Microsoft introduced Windows Server 2008 and PowerShell 2.0, they also introducted the module &lsquo;ServerManager&rsquo;. This is a module that allows us to interact, with PowerShell, Windows Features using a range of cmdlets:</p>
 
 <ul>
 <li>Get-WindowsFeature</li>
@@ -476,7 +476,7 @@ enable_iis_management_tools
 Write-Host('Application Server Setup complete')
 </code></pre>
 
-<p>Running the script, meant that we could enable features much faster than we could enable them via the GUI. Notice how we have grouped how we enable Windows Features into the same groupings found in the &#8216;Turn Windows features on or off&#8217; menu. For a full list of the names of the features that can be turned on or off, please refer to this <a href="http://technet.microsoft.com/en-us/library/cc732757.aspx">technet article</a></p>
+<p>Running the script, meant that we could enable features much faster than we could enable them via the GUI. Notice how we have grouped how we enable Windows Features into the same groupings found in the &lsquo;Turn Windows features on or off&rsquo; menu. For a full list of the names of the features that can be turned on or off, please refer to this <a href="http://technet.microsoft.com/en-us/library/cc732757.aspx">technet article</a></p>
 
 <p>You can download a <a href="https://gist.github.com/opentable-devops/5886831">gist</a> of this script if you want to use it. Please note that the license that this script is available under can be read from our <a href="https://github.com/opentable/licensing/blob/master/LICENSE">github repository</a>. We hope that the script helps you as much as it helped us.</p>
 </div>
@@ -516,42 +516,42 @@ Write-Host('Application Server Setup complete')
 
   <div class="entry-content"><h2>History</h2>
 
-<p>With OpenTable having engineering teams spread across multiple offices it&#8217;s important for us to maintain open email dialogue about new products us or our teams have created, new tools we&#8217;ve discovered or problem solving approaches that have helped us achieve our goals.  Recently in one of these emails Aish introduced the team to a new open source ruby implementation of reverse geocode lookup for latitude and longitude he&#8217;d written called <a href="https://github.com/aishfenton/local-geocoder">local-geocoder</a>.  With an interest in understanding how this worked, to learn a bit of ruby, to make this project accessible to .net developers and just to see how long it would take I decided to port it to C# and .net.</p>
+<p>With OpenTable having engineering teams spread across multiple offices it&rsquo;s important for us to maintain open email dialogue about new products us or our teams have created, new tools we&rsquo;ve discovered or problem solving approaches that have helped us achieve our goals.  Recently in one of these emails Aish introduced the team to a new open source ruby implementation of reverse geocode lookup for latitude and longitude he&rsquo;d written called <a href="https://github.com/aishfenton/local-geocoder">local-geocoder</a>.  With an interest in understanding how this worked, to learn a bit of ruby, to make this project accessible to .net developers and just to see how long it would take I decided to port it to C# and .net.</p>
 
 <h2>How reverse geocoding works</h2>
 
-<p>Latitude and longitude geographical coordinates are great but 37.819548,-122.479046 doesn&#8217;t really mean much to me. Knowing this is in the San Francisco bay area is much more useful interpretation.</p>
+<p>Latitude and longitude geographical coordinates are great but 37.819548,-122.479046 doesn&rsquo;t really mean much to me. Knowing this is in the San Francisco bay area is much more useful interpretation.</p>
 
-<p>That&#8217;s where reverse geocoding comes in.  Normally geocoding tries to locate geographical coordinates from other data like postal (zip) codes or street level addresses.  Reverse geocoding does the opposite and can, given enough lookup data, be very precise.</p>
+<p>That&rsquo;s where reverse geocoding comes in.  Normally geocoding tries to locate geographical coordinates from other data like postal (zip) codes or street level addresses.  Reverse geocoding does the opposite and can, given enough lookup data, be very precise.</p>
 
-<p>There are a number of online reverse geocoding providers, like Google, who can perform this for you however there are normally usage limits or costs for using them.  To add to this the latency of these service can slow your logic down.  Wouldn&#8217;t it be nice if this could be done locally at high speed and in memory.</p>
+<p>There are a number of online reverse geocoding providers, like Google, who can perform this for you however there are normally usage limits or costs for using them.  To add to this the latency of these service can slow your logic down.  Wouldn&rsquo;t it be nice if this could be done locally at high speed and in memory.</p>
 
 <h2>Using nLocalGeocoder</h2>
 
-<p>It&#8217;s really easy to use, just new up a Geocoder and you&#8217;re off&#8230;</p>
+<p>It&rsquo;s really easy to use, just new up a Geocoder and you&rsquo;re off&hellip;</p>
 
 <pre><code>var geocoder = new Geocoder();
 var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);
 </code></pre>
 
-<p>The result variable now holds an instance of the Result struct.  This type has the following properties:-</p>
+<p>The result variable now holds an instance of the Result struct.  This type has the following properties:&ndash;</p>
 
 <ul>
-<li>Country <em>- Id and Name of the country</em></li>
+<li>Country <em>&ndash; Id and Name of the country</em></li>
 </ul>
 
 
-<p>and for USA only (because that&#8217;s all the data in our <a href="http://www.geojson.org">GeoJSON</a> data)</p>
+<p>and for USA only (because that&rsquo;s all the data in our <a href="http://www.geojson.org">GeoJSON</a> data)</p>
 
 <ul>
-<li>AdministrativeArea1 <em>- Id and Name of the state</em></li>
-<li>AdministrativeArea2 <em>- Id and Name of the county</em></li>
+<li>AdministrativeArea1 <em>&ndash; Id and Name of the state</em></li>
+<li>AdministrativeArea2 <em>&ndash; Id and Name of the county</em></li>
 </ul>
 
 
 <p>The code is available for all to use and is available on our <a href="https://github.com/opentable/nLocalGeocoder">github repo</a></p>
 
-<p>It&#8217;s as simple as that really!</p>
+<p>It&rsquo;s as simple as that really!</p>
 </div>
   
   
@@ -589,37 +589,37 @@ var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);
 
   <div class="entry-content"><h2>First some background</h2>
 
-<p>We recently switched from writing automated acceptance from Cucumber to SpecFlow&#8230; this is no slight on Cucumber it&#8217;s just that we had a lot of C# developers who wanted to get closer to writing acceptance tests. Worth adding that SpecFlow has also come a long way as a .Net port of Cucumber and is pretty much like for like now.</p>
+<p>We recently switched from writing automated acceptance from Cucumber to SpecFlow&hellip; this is no slight on Cucumber it&rsquo;s just that we had a lot of C# developers who wanted to get closer to writing acceptance tests. Worth adding that SpecFlow has also come a long way as a .Net port of Cucumber and is pretty much like for like now.</p>
 
 <h2>Why should I bother with SpecRun?</h2>
 
-<p>Initially we ran our entire unit, integration and acceptance tests via nUnit. Pretty much industry standard but we felt nUnit wasn&#8217;t really a good tool to run acceptance tests - yes it&#8217;ll do the job but we were looking for better performance, quicker failure feedback and more comprehensive reporting. If you want details on SpecRun vs. nUnit Gasper has a <a href="http://gasparnagy.com/2011/09/specrun-because-integration-tests-are-not-unit-tests/">great blog post</a>.</p>
+<p>Initially we ran our entire unit, integration and acceptance tests via nUnit. Pretty much industry standard but we felt nUnit wasn&rsquo;t really a good tool to run acceptance tests &ndash; yes it&rsquo;ll do the job but we were looking for better performance, quicker failure feedback and more comprehensive reporting. If you want details on SpecRun vs. nUnit Gasper has a <a href="http://gasparnagy.com/2011/09/specrun-because-integration-tests-are-not-unit-tests/">great blog post</a>.</p>
 
 <p><salespitch>SpecRun itself is free to use although there is a random delay when running acceptance locally, setting up SpecRun on a CI environment is totally free and does not include the same delay. Definitely worth trying out and you can purchase a licence later if you like what it offers.</salespitch></p>
 
 <h2>Installing SpecRun</h2>
 
-<p>If you are already using SpecFlow with nUnit the migration to SpecRun is really simple - <a href="http://www.youtube.com/watch?v=c2ge90BWeI0">this video</a> shows you how to setup the test runner but I found myself having to watch it too many times. This post is an attempt at recording the steps should we roll out SpecRun for another project.</p>
+<p>If you are already using SpecFlow with nUnit the migration to SpecRun is really simple &ndash; <a href="http://www.youtube.com/watch?v=c2ge90BWeI0">this video</a> shows you how to setup the test runner but I found myself having to watch it too many times. This post is an attempt at recording the steps should we roll out SpecRun for another project.</p>
 
-<p>I&#8217;m assuming you&#8217;re running Visual Studio and are familiar with Nuget packages. I&#8217;ll break it down so I don&#8217;t miss anything:</p>
+<p>I&rsquo;m assuming you&rsquo;re running Visual Studio and are familiar with Nuget packages. I&rsquo;ll break it down so I don&rsquo;t miss anything:</p>
 
 <ol>
 <li>In VS, select your Acceptance test project and get the Nuget package down for SpecRun: <code>install-package SpecRun</code>.</li>
-<li>You&#8217;ll notice Nuget automatically adds configuration to your app.config so it&#8217;s safe to remove the nUnit provider setting (this is to enable you to pick and choose your test runner but we prefer to only use SpecRun).</li>
+<li>You&rsquo;ll notice Nuget automatically adds configuration to your app.config so it&rsquo;s safe to remove the nUnit provider setting (this is to enable you to pick and choose your test runner but we prefer to only use SpecRun).</li>
 <li>Open the Default.srprofile file and we normally delete any commented settings here.</li>
 <li>Still inside Default.srprofile add the properties for projectName and projectId. The projectName is what you see in VS the projectId can be found by opening the acceptance .proj file and taking the projectGuid.</li>
-<li>Setup the execution properties - this really depends on what you want to get out of running the tool - what retry count you want, whether to run on multiple threads, etc. Here are the values we normally use:</li>
+<li>Setup the execution properties &ndash; this really depends on what you want to get out of running the tool &ndash; what retry count you want, whether to run on multiple threads, etc. Here are the values we normally use:</li>
 </ol>
 
 
 <p><code>&lt;Execution retryFor="None" stopAfterFailures="100" testThreadCount="1" testSchedulingMode="Sequential" apartmentState="STA"/&gt;</code></p>
 
 <ol>
-<li>We did tweak the SpecRun .cmd file used to run acceptance via command line - <a href="https://dl.dropboxusercontent.com/u/8835075/runacceptance.cmd">copy this file</a> to your project root, you may need to tweak some names and paths.</li>
+<li>We did tweak the SpecRun .cmd file used to run acceptance via command line &ndash; <a href="https://dl.dropboxusercontent.com/u/8835075/runacceptance.cmd">copy this file</a> to your project root, you may need to tweak some names and paths.</li>
 </ol>
 
 
-<p>Once you&#8217;ve gone through those steps you should be able to browse to your project root, type <strong>runacceptance.cmd tag_to_run</strong> and it&#8217;ll run your acceptance tests tagged <strong>@tag_to_run</strong>  (NOTE: you don&#8217;t need to specify the @ symbol).</p>
+<p>Once you&rsquo;ve gone through those steps you should be able to browse to your project root, type <strong>runacceptance.cmd tag_to_run</strong> and it&rsquo;ll run your acceptance tests tagged <strong>@tag_to_run</strong>  (NOTE: you don&rsquo;t need to specify the @ symbol).</p>
 </div>
   
   

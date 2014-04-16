@@ -9,7 +9,7 @@
   <meta name="author" content="toptable">
 
   
-  <meta name="description" content="Have you ever been lucky enough to mentor someone who really got it? Maybe you&rsquo;ve had the opposite experience and the session ended up being a &hellip;">
+  <meta name="description" content="We allow all our UK based developers to have some time to explore new technologies, try out prototypes and clean-up things that escape the day-to-day &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +81,70 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/06/20-percent-time/">20% time: Why, as a manager, you should love your engineers to be doing it</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-06T17:12:00+00:00" pubdate data-updated="true">Feb 6<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>We allow all our UK based developers to have some time to explore new technologies, try out prototypes and clean-up things that escape the day-to-day process. Two days out of ten, seems a lot doesn&rsquo;t it?</p>
+
+<h2>How we started</h2>
+
+<p>We started doing our 20% time when we had two week sprints with a release each sprint. We actually had three days of testing, small bug fixing and signing things off. We didn&rsquo;t like starting our new stories for the next sprint as our QAs got behind and never really caught up. We decided to use this time more for clean-up but also for prototyping or trying something out. We had read of other companies doing something similar so were excited to give it a go.</p>
+
+<p>One of the first times we did this we actually decided we wanted to automate all the testing of one of our systems, so that our QAs weren&rsquo;t bogged down for those three days. In our first 20% time, we got most of the team on board as it was painful watching, let alone doing manual testing and we wanted faster feedback on our changes.</p>
+
+<p>We got a lot of the system in a state we could test it. We basically wrote a lot of a page object model and a few features to talk to it. The next 20% time it needed cleaning up, the next we had a lot under test. With a bit of work the three day test cycle was down to about one day. This would never have happened if we were trying in normal sprint time. Major win number one and something no business owner had had to wrestle against other priorities.</p>
+
+<p>After this instance we have had numerous similar examples, albeit on a smaller scale, where each team has been able to try things out, with no consequence in the event of failure, and achieved great prototypes. Much of our new architecture has been tested out in these sessions, new technologies, new approaches, can people work together?</p>
+
+<h2>Failures, not so bad after all</h2>
+
+<p>Of course, we have had many failures, but maybe even that helps, we won&rsquo;t waste our proper sprint time. Some people ask me about rules when I talk about this. I think the key for me is that the engineers are truly given freedom to explore. If on the face of things something they are doing is completely away from what you are doing then it might seem a bit strange.</p>
+
+<p>But what if they are looking to try something new and would have left your company to do so? What if they think it might be a solution but don&rsquo;t know how to say? What if they can use it in nine months on an urgent project? All these things can and have happened.</p>
+
+<h2>Fear, as always, is detrimental</h2>
+
+<p>Another rule, <em>no fear</em>,  applies in many situations of course. But unlike hackathons where you feel the need to present at the end, presenting should be through excitement of the creator, not demand of the manager.</p>
+
+<h2>Better team as a result</h2>
+
+<p>I have seen our whole UK engineering group get a lot stronger through our use of 20% time. We have also been more attractive in interviews and gets very positive responses when discussing our job openings; so many developers just want an opportunity to learn and apply new skills and will leave a job to do so.</p>
+
+<p>I personally now have a child, attempting to try new skills and experiment at home is proving harder and harder. This 20% time becomes more important &ndash; as a team we are trying to really get to grips with the latest trends in the development community. I just don&rsquo;t have anywhere near as much time in the evenings now, it is a way to stop a divide coming between your team, the ones with spare time and the ones without.</p>
+
+<p>I recommend giving it some serious thought for your organisation.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1677,185 +1741,6 @@ We&rsquo;ve got all the component parts, now lets put it together (plus a few ot
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine/">Using Vagrant to work with ElasticSearch on your local machine</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-05T08:45:00+01:00" pubdate data-updated="true">Aug 5<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Recently, I have started to work a lot more with <a href="http://www.vagrantup.com/">Vagrant</a> as a tool for creating a standard development environment across my team. This essentially means that regardless what the developers&#8217; machine is set up or running as, they can still reproduce the same environment as their colleagues just by entering a command.</p>
-
-<p>Configuration managgement is something we have had to embrace to help us maintain an ever changing world of technologies. The hardest thing is knowing what we actually have to build in these environments. We use Vagrant to help us understand this. The simple flow is as follows:</p>
-
-<ul>
-<li>Developer starts a new project</li>
-<li>Developer creates a Vagrantfile to spin up a local VM</li>
-<li>Vagrantfile gets iterated on as the development process goes forward</li>
-</ul>
-
-
-<p>Once the developer understands what they need to actually run their software, we would then go about creating an environment to which this software will actually be deployed for end-to-end testing. I won&rsquo;t go any further into the details of our Vagrant flow in this post, if you want to read more about how to get started with Vagrant, then I would suggest reading <a href="http://shop.oreilly.com/product/0636920026358.do">Vagrant Up and Running</a> by <a href="https://twitter.com/mitchellh">Mitchell Hashimoto</a>.</p>
-
-<h2>Vagrant and ElasticSearch</h2>
-
-<p>Whilst reviewing a book on <a href="http://www.elasticsearch.org/">ElasticSearch</a>, I noticed how simple the instructions were to get up and running with ElasticSearch. Please note, that there are already lots of Puppet modules for configuring ElasticSearch on <a href="http://forge.puppetlabs.com/modules?q=elasticsearch">Puppetlabs Forge</a>. This post only talks about how I was able to quickly spin up some local instances. I didn&rsquo;t want to manually do this, so I decided to use Vagrant (and Puppet) to take care of it for me. The instructions can be summarised as follows:</p>
-
-<ul>
-<li>Download and install the JavaSDK</li>
-<li>Download the specific ElasticSearch package</li>
-<li>Install ElasticSearch</li>
-<li>Download and install curl (to be able to interact with ElasticSearch)</li>
-<li>Make sure the service is started</li>
-</ul>
-
-
-<p>I hate doing this manually. Luckily, with the correct script, I am able to automate all of this as follows:</p>
-
-<pre><code>Vagrant.configure("2") do |config|
-    config.vm.box = "Ubuntu precise 64 VMWare"
-    config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
-    config.vm.network :forwarded_port, guest: 9200, host: 9200
-    config.vm.provision :puppet do |puppet|
-        puppet.module_path = '../setup/modules'
-        puppet.manifests_path = '../setup/manifests'
-        puppet.manifest_file = 'default.pp'
-        puppet.options = '--verbose --debug'
-    end
-end
-</code></pre>
-
-<p>Essentially, this script says to create a clone of a VM from a predefined box, forward port 9200 on the vm to 9200 on my local machine and then provision the server using Puppet. The Puppet script works as follows:</p>
-
-<pre><code>exec { "apt-get-update":
-    command =&gt; "/usr/bin/apt-get update",
-}
-
-package {'curl':
-    provider =&gt; apt,
-    ensure   =&gt; latest,
-    require  =&gt; Exec['apt-get-update']
-}
-
-class {'elasticsearch':
-    version =&gt; '0.90.0',
-    require =&gt; Exec['apt-get-update'],
-}
-</code></pre>
-
-<p>This defines that the command apt-get-update gets applied (due to both the class and the package requiring it) and then will install curl and ElasticSearch in no particular order. Once the script runs, I will be able to open a browser on my local machine, go to <a href="http://localhost:9200">http://localhost:9200</a> and see the newly provisioned ElasticSearch node. The result of the JSON was something similar to this:</p>
-
-<pre><code>{
-    "ok" : true,
-    "status" : 200,
-    "name" : "Gibborim",
-    "version" : {
-        "number" : "0.90.0",
-        "snapshot_build" : false,
-    },
-    "tagline" : "You Know, for Search"
-}
-</code></pre>
-
-<p>By entering the URL, &lsquo;**<a href="http://localhost:9200/_cluster/health?pretty**">http://localhost:9200/_cluster/health?pretty**</a>&rsquo;, you can see the state of the ElasticSearch cluster. It should show something like this:</p>
-
-<pre><code>{
-    "cluster_name" : "elasticsearch",
-    "status" : "yellow",
-    "timed_out" : false,
-    "number_of_nodes" : 1,              
-    "number_of_data_nodes" : 1,         
-    "active_primary_shards" : 5,        
-    "active_shards" : 5,                
-    "relocating_shards" : 0,            
-    "initializing_shards" : 0,          
-    "unassigned_shards" : 5             
-}
-</code></pre>
-
-<p>I wanted to be able to provision multiple nodes and then let them create a cluster. I was able to take the existing Vagrantfile and then using the multi-environment features of Vagrant. This created a new Vagrantfile as follows:</p>
-
-<pre><code>Vagrant::Config.run do |config|
-    config.vm.box = "Ubuntu precise 64 VMWare"
-    config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
-
-    config.vm.define "es1" do |es1|
-        es1.vm.network :hostonly, "192.168.1.10"
-        es1.vm.provision :puppet do |puppet|
-            puppet.module_path = '../setup/modules'
-            puppet.manifests_path = '../setup/manifests'
-            puppet.manifest_file = 'default.pp'
-            puppet.options = '--verbose --debug'
-        end
-    end
-
-    config.vm.define "es2" do |es2|
-        es2.vm.network :hostonly, "192.168.1.11"
-        es2.vm.provision :puppet do |puppet|
-            puppet.module_path = '../setup/modules'
-            puppet.manifests_path = '../setup/manifests'
-            puppet.manifest_file = 'default.pp'
-            puppet.options = '--verbose --debug'
-        end
-    end
-
-    config.vm.define "es3" do |es3|
-        es3.vm.network :hostonly, "192.168.1.12"
-        es3.vm.provision :puppet do |puppet|
-            puppet.module_path = '../setup/modules'
-            puppet.manifests_path = '../setup/manifests'
-            puppet.manifest_file = 'default.pp'
-            puppet.options = '--verbose --debug'
-        end
-    end
-end
-</code></pre>
-
-<p>This effectively tells Vagrant to create three instances of ElasticSearch using the Puppet configuration (as above). Each ElasticSearch node is given its own IP. Thanks to ElasticSearch using Multicast and Unicast discovery, it is able to find other nodes on the network and create a cluster. By running a similar url as before, &lsquo;**<a href="http://192.168.1.10:9200/_cluster/health?pretty**">http://192.168.1.10:9200/_cluster/health?pretty**</a>&rsquo;, we can now see that the cluster looks as follows:</p>
-
-<pre><code>{
-    "cluster_name" : "elasticsearch",
-    "status" : "green",
-    "timed_out" : false,
-    "number_of_nodes" : 3,              
-    "number_of_data_nodes" : 3,         
-    "active_primary_shards" : 5,        
-    "active_shards" : 15,                
-    "relocating_shards" : 0,            
-    "initializing_shards" : 0,          
-    "unassigned_shards" : 0             
-}
-</code></pre>
-
-<p>Using this method, we can continue to spin up as many instances as we need to replicate different scenarios or testing conditions. Vagrant has made this very easy to do. If you want a copy of the Vagrantfiles and Puppet modules to try this yourself, then you can find them on my <a href="https://github.com/stack72/vagrant-examples/tree/master/elasticsearch">github repository</a>. The scripts are available under the <a href="http://opensource.org/licenses/MIT">MIT</a> license.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -1873,6 +1758,10 @@ end
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/16/look-ma-no-unit-tests/">Look ma, no unit tests!</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/07/upgrading-puppet-with-puppet/">Upgrading Puppet with Puppet</a>
       </li>
     
@@ -1886,10 +1775,6 @@ end
     
       <li class="post">
         <a href="/blog/2014/04/02/internationalisation-in-a-restful-world/">Internationalisation in a RESTful world</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/03/20/when-to-performance-test-in-production/">When to performance test in production</a>
       </li>
     
   </ul>

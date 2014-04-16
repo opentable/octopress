@@ -4,7 +4,7 @@
   <title><![CDATA[toptable Tech Blog]]></title>
   <link href="http://tech.toptable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-16T14:50:37+01:00</updated>
+  <updated>2014-04-16T14:51:42+01:00</updated>
   <id>http://tech.toptable.co.uk/</id>
   <author>
     <name><![CDATA[toptable]]></name>
@@ -14,19 +14,111 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Look ma, no unit tests!]]></title>
+    <link href="http://tech.toptable.co.uk/blog/2014/04/16/look-ma-no-unit-tests/"/>
+    <updated>2014-04-16T17:00:00+01:00</updated>
+    <id>http://tech.toptable.co.uk/blog/2014/04/16/look-ma-no-unit-tests</id>
+    <content type="html"><![CDATA[<p>At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for <a href="http://tech.toptable.co.uk/blog/2014/02/28/api-benchmark/">new</a> <a href="http://tech.toptable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">tools</a> <a href="http://tech.toptable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/">and</a> <a href="http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/">methods</a> that allow us, the developers, to respond quickly and accurately to changing requirements and environments.</p>
+
+<p>There are a number of practices that we already make use of, helping us to be the most effective team I&rsquo;ve ever worked in:</p>
+
+<ul>
+<li>We operate in small teams who each own <em>most</em> of their own vertical.</li>
+<li>We use continuous delivery to ship code to production within minutes.</li>
+<li>We have a high degree of high-quality test coverage.</li>
+<li>We are getting better and better at monitoring All The Things.</li>
+<li><a href="http://tech.toptable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">We use ChatOps</a>, so communication is central to our work, and keeps remote workers/teams in the loop.</li>
+</ul>
+
+
+<p>All of the above are truly empowering for the dev team, and are conducive to an amazingly stress-free working environment. However, these practices only address the infrastructure, culture, and ceremony surrounding our work. What if there was something else? Something about the way we write the code itself, that could increase our velocity yet further, without compromising our integrity&hellip;</p>
+
+<blockquote><p>There are a number of practices that we already make use of, helping us to be the most effective team I&rsquo;ve ever worked in&hellip; What if there was something else?</p></blockquote>
+
+<p>Well, on a recent project, we found one such way: <em><em>we decided to delete all of the unit and integration tests</em></em>.</p>
+
+<p><em>What?! Are we quite mad?</em> You may be thinking&hellip; Well, it took me a little time to get used to this idea as well, but read on and you&rsquo;ll see that it was actually the most sane thing we could possibly do.</p>
+
+<h2>Survival of the testedest</h2>
+
+<p>In the beginning, the project had 100% unit test coverage, there were no external dependencies, and the world was Good.</p>
+
+<p>Soon afterwards, a tall shadow appeared in the glorious unit-tested sunset. External dependencies had arrived. Like good little developers we added integration tests. It hurt, our codebase grew, we had occasional false-failures, but we were travelling the path well trodden. We had evaded the First Menace, and surrounded ourselves with heavy armour, we were safe. Things seemed to be Good.</p>
+
+<p><em>Meanwhile&hellip;</em></p>
+
+<p>We realised that some of the things that would be important to our consumers were still not covered by our tests. Things like actual HTTP responses, serialisation, and the like. These are things that don&rsquo;t always need to be tested explicitly, but, since this was a third-party-developer-facing system, we really wanted to be sure that the interface worked exactly as we wanted, HTTP headers, character encoding, date formatting, the lot.</p>
+
+<p>So, playing the role of our consumers, we engineered high-level acceptance tests, behaving byte-for-byte as we expected our customers to do.</p>
+
+<p>Now, with the triple-action protection of three layers of tests, we felt our project was the most minty-fresh piece of haute engineering we had ever layed keyboards on.</p>
+
+<p>We were wrong.</p>
+
+<h2>Tests, tests, tests, duplication.</h2>
+
+<p>Up to this point, we had operated in a near-vacuum. That was fine, we had been working quickly to implement a sub-set of an existing and well-used API, so we knew which were the most important features that needed porting. We continued, largely happy with our creation, for some time.</p>
+
+<p><em>Then, gazing up from the receding tide of the third trimester were the hungry eyes of the Second Menace. Our users were upon us!</em></p>
+
+<p>Our early adopters were great, giving us a lot of helpful feedback and helping us shape the API into a genuinely usable v1. However, responding to this change required a greater degree of flexibility in the code than we had required up to this point. Our triple-chocolate-crunch of pithy tests was starting to really slow us down, and rot our teeth. The main reason for this: duplication.</p>
+
+<p>We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can&rsquo;t test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic for that call. Code which was already covered by unit tests, and often integration tests as well. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith a very heavy boulder&mdash;and had a hoarde of features we still wanted to smash, who were freely bounding over the mountain tops, and out of reach.</p>
+
+<p>It was time to cut ourselves free.</p>
+
+<h2>Ripping off the plaster</h2>
+
+<p>The idea that we might not need all these layers of tests was first mooted by fellow OpenTable engineer Arnold Zokas. My initial reaction was one of slight incredulity. Delete all those tests that we&rsquo;ve so carefully caressed and cajoled into a thing of beauty?! Strip off the armour?! I wasn&rsquo;t immediately convinced. However, the pain of implementing new features was starting to burn, so I was interested.</p>
+
+<blockquote><p>I wasn&rsquo;t immediately convinced.</p></blockquote>
+
+<p>We talked about it&mdash;what was necessary about the unit tests? What was their real worth? We had to test many of those things from the outside-in anyway, with the acceptance tests, so why test them twice? The logic started to stack up. I was convinced this was the right thing to do.</p>
+
+<p>Take a deep breath. <em>RIP!</em> Aah, there, done.</p>
+
+<p>There was a little bleeding, some gaps in our acceptance tests that had to be filled, some complex set-up logic from the integration tests that had to be ported to work with the acceptance tests. A few day&rsquo;s worth of cleanup and patching in the background, and&hellip; tentatively&hellip; we were done.</p>
+
+<p>For me at least, this was a bold move. But it shouldn&rsquo;t have seemed so, we knew all of our endpoints were acceptance-tested, including every supported API call. My primary worry was how we were going to nail down the exact cause of bugs with no code-level testing. This turned out to be nowhere near as bad as I expected.</p>
+
+<blockquote><p>We knew all of our endpoints were acceptance-tested, including every supported API call.</p></blockquote>
+
+<h2>What just happened?</h2>
+
+<p>I like to visualise this as if we were building <a href="http://en.wikipedia.org/wiki/Gateway_Arch">a giant arch</a>. At first, you build a temporary structure with scaffolding (the unit and integration tests). As time goes on you construct a hardened permanent structure (the software). On top of the software, you layer your <a href="http://en.wikipedia.org/wiki/Structural_health_monitoring">structural integrity monitors</a> (acceptance tests). Eventually, there is no need for the scaffolding any more; the structure is self-supporting, and future modifications can rely on this&mdash;time to punch out the middle!</p>
+
+<p><em>Of course, there are other considerations, like logging, monitoring, and providing sandbox data, which all contributed to making this feasable&mdash;but that&rsquo;s for another post.</em></p>
+
+<h2>Was it worth it?</h2>
+
+<p>Unequivocally, yes. Since making this decision, we have been unhindered by our tests, and they are back to being a much loved part of the project. We have had no problems that would have been caught by unit tests, and we can still do TDD with our acceptance tests. In addition, I think removing the crutch of unit tests may have improved our discipline somewhat: <em>it keeps us thinking in the context of the end-user at all times, so we never spend time working on a feature that isn&rsquo;t directly useful to our consumers.</em></p>
+
+<blockquote><p>It keeps us thinking in the context of the end-user at all times, so we never spend time working on a feature that isn&rsquo;t directly useful to our consumers.</p></blockquote>
+
+<h2>YMWMCV</h2>
+
+<p>Of course, every project is unique (just like every other project), so <em>your mileage will most certainly vary.</em> We were working on a stateless facade over a small but crucial subset of the business&mdash;making reservations. For relatively small, stateless projects, this approach has worked brilliantly. However, when things do go wrong at development time, they could be at any layer in the stack, and you often need to attach a debugger to find out what happened. This is less than ideal, but in our case was a very cost-effective compromise.</p>
+
+<p>The upshot, for me at least, is that you shouldn&rsquo;t be afraid to shirk convention when the project demands it. By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster <em>without</em> breaking stuff.</p>
+
+<blockquote><p>By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster <em>without</em> breaking stuff.</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Upgrading Puppet with Puppet]]></title>
     <link href="http://tech.toptable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/"/>
     <updated>2014-04-07T13:23:00+01:00</updated>
     <id>http://tech.toptable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet</id>
-    <content type="html"><![CDATA[<p>As part of one of our recent <a href="http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of puppet in a platform agnostic way.</p>
+    <content type="html"><![CDATA[<p>As part of one of our recent <a href="http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
 
-<p>This should be a very straightforward task to complete because this is one of the core resources that puppet manages &ndash; the upgrading of packages. With that in mind, putting <code>package { ‘puppet’: ensure =&gt; $version }</code> in one of our base profiles would be all that was needed but alas it was not. In this blog I want to take you through the history, the bugs, the platforms and the edge-cases that make performing an in-place upgrade of puppet a more complex task that it ought to be.</p>
+<p>This should be a very straightforward task to complete because this is one of the core resources that Puppet manages &ndash; the upgrading of packages. With that in mind, putting <code>package { ‘puppet’: ensure =&gt; $version }</code> in one of our base profiles would be all that was needed but alas it was not. In this blog I want to take you through the history, the bugs, the platforms and the edge-cases that make performing an in-place upgrade of Puppet a more complex task that it ought to be.</p>
 
 <h2>Debian</h2>
 
-<p>Like many, Ubuntu is our Debian derivative of choice for much of our newer production infrastructure. Debian, has the apt package management system and PuppetLabs provide the required deb packages as well as hosting their own apt repository to point our systems to. The main point of package management systems is it that they take care of the dependency hell and the awkward upgrade paths all from within the confines of the package itself, and that is what happens with the PuppetLabs packages &ndash; great.</p>
+<p>Like many, Ubuntu is our Debian derivative of choice for much of our newer production infrastructure. Debian, has the apt package management system and PuppetLabs provide the required deb packages as well as hosting their own apt repository to point our systems to. The main point of package management systems is that they take care of the dependency hell and the awkward upgrade paths all from within the confines of the package itself, and that is what happens with the PuppetLabs packages &ndash; great.</p>
 
-<p>The problem that we had in some of our systems was that they had been built without the PuppetLabs apt repository. This means that they picked up a slightly older version of the puppet packages from the main Ubuntu distribution repositories and didn’t have access to the newer versions of the puppet packages. Ok, so we solved that with the following code:</p>
+<p>The problem that we had in some of our systems was that they had been built without the PuppetLabs apt repository. This means that they picked up a slightly older version of the Puppet packages from the main Ubuntu distribution repositories and didn’t have access to the newer versions of the Puppet packages. Ok, so we solved that with the following code:</p>
 
 <pre><code>  exec { 'rm_duplicate_puppet_source':
     path    =&gt; '/usr/local/bin:/bin:/usr/bin',
@@ -43,7 +135,7 @@
   }
 </code></pre>
 
-<p>We&rsquo;re making use of the <a href="http://forge.puppetlabs.com/puppetlabs/apt">puppetlabs/apt</a> module here. This removes the old reference and adding in the new apt source. Then we just add the package and ensure the version and we’re upgrading. Perfect.</p>
+<p>We&rsquo;re making use of the <a href="http://forge.puppetlabs.com/puppetlabs/apt">puppetlabs/apt</a> module here. This removes the old reference and adding in the new apt source. Then we just add the package and ensure the version we’re upgrading. Perfect.</p>
 
 <h2>RedHat</h2>
 
@@ -51,17 +143,17 @@
 
 <h2>Windows</h2>
 
-<p>Many of you will be following the work of OpenTable closely because of our work with puppet on windows. We have a pretty large windows infrastructure, with a wide range of client and server versions deployed ranging from 2012 R2 all the way back to the historic times of 2003. Windows also has it’s own package format, the msi, and PuppetLabs also provides all versions of puppet packaged as msi files.</p>
+<p>Many of you will be following the work of OpenTable closely because of our work with Puppet on Windows. We have a pretty large Windows infrastructure, with a wide range of client and server versions deployed ranging from 2012 R2 all the way back to the historic times of 2003. Windows also has its own package format, the msi, and PuppetLabs also provides all versions of Puppet packaged as msi files.</p>
 
-<p>This is where it gets a little tricky. The big problem we had was that the windows provider, prior to 3.4.0 was not versionable (<a href="http://projects.puppetlabs.com/issues/21133">issues/21133</a>) that means that <code>package { ‘puppet’: ensure =&gt; installed }</code> would work but <code>package { ‘puppet’: ensure =&gt; $version }</code> would not &ndash; the exact thing we were trying to do! The only way to resolve that problem is to uninstall and reinstall the package with the correct version.</p>
+<p>This is where it gets a little tricky. The big problem we had was that the Windows provider, prior to 3.4.0 was not versionable (<a href="http://projects.puppetlabs.com/issues/21133">issues/21133</a>) that means that <code>package { ‘puppet’: ensure =&gt; installed }</code> would work but <code>package { ‘puppet’: ensure =&gt; $version }</code> would not &ndash; the exact thing we were trying to do! The only way to resolve that problem is to uninstall and reinstall the package with the correct version.</p>
 
-<p>Now there are a lot of problems with the uninstall/reinstall approach. Firstly we had to script the process because windows only allows one installer to run at any one time meaning that you had to wait for the uninstall to finish before that subsequent install takes place. Secondly we have to deal with puppet runs and make sure that when the upgrade script runs that we wait for any active puppet runs to complete before trying to uninstall puppet. Next we have to trigger our script using a scheduled task.</p>
+<p>Now there are a lot of problems with the uninstall/reinstall approach. Firstly we had to script the process because Windows only allows one installer to run at any one time meaning that you had to wait for the uninstall to finish before that subsequent install takes place. Secondly we have to deal with Puppet runs and make sure that when the upgrade script runs that we wait for any active Puppet runs to complete before trying to uninstall Puppet. Next we have to trigger our script using a scheduled task.</p>
 
-<p>Our experience with scheduled tasks has been painful. We attempted using the <a href="http://docs.puppetlabs.com/references/latest/type.html#scheduledtask">scheduled_task</a> resource type but soon realised that this wasn’t going to work for us. The resource type is good if you want to create a task to run at a fixed point in time but there is no way to provide a relative time e.g. “in the next 5 mins from now”. Also on occasion the task would not run or would silently fail &ndash; this was almost certainly due to another puppet issue we discovered (<a href="https://tickets.puppetlabs.com/browse/PUP-1368">PUP-1368</a>). Without being able to use the scheduled task resource we were again back in the land of Powershell using a script to create the scheduled task that would call our upgrade script.</p>
+<p>Our experience with scheduled tasks has been painful. We attempted using the <a href="http://docs.puppetlabs.com/references/latest/type.html#scheduledtask">scheduled_task</a> resource type but soon realised that this wasn’t going to work for us. The resource type is good if you want to create a task to run at a fixed point in time but there is no way to provide a relative time e.g. “in five mins from now”. Also on occasion the task would not run or would silently fail &ndash; this was almost certainly due to another Puppet issue we discovered (<a href="https://tickets.puppetlabs.com/browse/PUP-1368">PUP-1368</a>). Without being able to use the scheduled task resource we were again back in the land of Powershell using a script to create the scheduled task that would call our upgrade script.</p>
 
 <p>So if you&rsquo;re keeping up we now have something like this:</p>
 
-<p>Puppet &ndash;> calls script to create scheduled task &ndash;> scheduled task calls upgrade script &ndash;> upgrade script upgrade puppet and triggers next Puppet run &ndash;> Puppet</p>
+<p>Puppet &ndash;> calls script to create scheduled task &ndash;> scheduled task calls upgrade script &ndash;> upgrade script upgrade Puppet and triggers next Puppet run &ndash;> Puppet</p>
 
 <p>Nice little cycle there, but it works.</p>
 
@@ -69,7 +161,7 @@
 
 <h2>Summary</h2>
 
-<p>Well we’ve discussed some of the pain points, and we’ve discussed them in detail with PuppetLabs themselves. The advice here is to upgrade to puppet 3.4.3 as soon as you can as many of these issues are resolved in that version. For those of you not on that version yet then we have you covered with our puppetversion module.</p>
+<p>Well we’ve discussed some of the pain points, and we’ve discussed them in detail with PuppetLabs themselves. The advice here is to upgrade to Puppet 3.4.3 as soon as you can as many of these issues are resolved in that version. For those of you not on that version yet then we have you covered with our puppetversion module.</p>
 ]]></content>
   </entry>
   
@@ -2218,158 +2310,6 @@ We&rsquo;ve got all the component parts, now lets put it together (plus a few ot
 <li><a href="http://twitter.com/odetocode">K.Scott Allen</a> has written two articles on MapReduce, <a href="http://odetocode.com/blogs/scott/archive/2012/03/19/a-simple-mapreduce-with-mongodb-and-c.aspx">A Simple MapReduce&hellip;</a> and <a href="http://odetocode.com/blogs/scott/archive/2012/03/29/a-simpler-mapreduce-with-mongodb-and-c.aspx">A Simpler MapReduce&hellip;</a></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Using Vagrant to work with ElasticSearch on your local machine]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine/"/>
-    <updated>2013-08-05T08:45:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine</id>
-    <content type="html"><![CDATA[<p>Recently, I have started to work a lot more with <a href="http://www.vagrantup.com/">Vagrant</a> as a tool for creating a standard development environment across my team. This essentially means that regardless what the developers&#8217; machine is set up or running as, they can still reproduce the same environment as their colleagues just by entering a command.</p>
-
-<p>Configuration managgement is something we have had to embrace to help us maintain an ever changing world of technologies. The hardest thing is knowing what we actually have to build in these environments. We use Vagrant to help us understand this. The simple flow is as follows:</p>
-
-<ul>
-<li>Developer starts a new project</li>
-<li>Developer creates a Vagrantfile to spin up a local VM</li>
-<li>Vagrantfile gets iterated on as the development process goes forward</li>
-</ul>
-
-
-<p>Once the developer understands what they need to actually run their software, we would then go about creating an environment to which this software will actually be deployed for end-to-end testing. I won&rsquo;t go any further into the details of our Vagrant flow in this post, if you want to read more about how to get started with Vagrant, then I would suggest reading <a href="http://shop.oreilly.com/product/0636920026358.do">Vagrant Up and Running</a> by <a href="https://twitter.com/mitchellh">Mitchell Hashimoto</a>.</p>
-
-<h2>Vagrant and ElasticSearch</h2>
-
-<p>Whilst reviewing a book on <a href="http://www.elasticsearch.org/">ElasticSearch</a>, I noticed how simple the instructions were to get up and running with ElasticSearch. Please note, that there are already lots of Puppet modules for configuring ElasticSearch on <a href="http://forge.puppetlabs.com/modules?q=elasticsearch">Puppetlabs Forge</a>. This post only talks about how I was able to quickly spin up some local instances. I didn&rsquo;t want to manually do this, so I decided to use Vagrant (and Puppet) to take care of it for me. The instructions can be summarised as follows:</p>
-
-<ul>
-<li>Download and install the JavaSDK</li>
-<li>Download the specific ElasticSearch package</li>
-<li>Install ElasticSearch</li>
-<li>Download and install curl (to be able to interact with ElasticSearch)</li>
-<li>Make sure the service is started</li>
-</ul>
-
-
-<p>I hate doing this manually. Luckily, with the correct script, I am able to automate all of this as follows:</p>
-
-<pre><code>Vagrant.configure("2") do |config|
-    config.vm.box = "Ubuntu precise 64 VMWare"
-    config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
-    config.vm.network :forwarded_port, guest: 9200, host: 9200
-    config.vm.provision :puppet do |puppet|
-        puppet.module_path = '../setup/modules'
-        puppet.manifests_path = '../setup/manifests'
-        puppet.manifest_file = 'default.pp'
-        puppet.options = '--verbose --debug'
-    end
-end
-</code></pre>
-
-<p>Essentially, this script says to create a clone of a VM from a predefined box, forward port 9200 on the vm to 9200 on my local machine and then provision the server using Puppet. The Puppet script works as follows:</p>
-
-<pre><code>exec { "apt-get-update":
-    command =&gt; "/usr/bin/apt-get update",
-}
-
-package {'curl':
-    provider =&gt; apt,
-    ensure   =&gt; latest,
-    require  =&gt; Exec['apt-get-update']
-}
-
-class {'elasticsearch':
-    version =&gt; '0.90.0',
-    require =&gt; Exec['apt-get-update'],
-}
-</code></pre>
-
-<p>This defines that the command apt-get-update gets applied (due to both the class and the package requiring it) and then will install curl and ElasticSearch in no particular order. Once the script runs, I will be able to open a browser on my local machine, go to <a href="http://localhost:9200">http://localhost:9200</a> and see the newly provisioned ElasticSearch node. The result of the JSON was something similar to this:</p>
-
-<pre><code>{
-    "ok" : true,
-    "status" : 200,
-    "name" : "Gibborim",
-    "version" : {
-        "number" : "0.90.0",
-        "snapshot_build" : false,
-    },
-    "tagline" : "You Know, for Search"
-}
-</code></pre>
-
-<p>By entering the URL, &lsquo;**<a href="http://localhost:9200/_cluster/health?pretty**">http://localhost:9200/_cluster/health?pretty**</a>&rsquo;, you can see the state of the ElasticSearch cluster. It should show something like this:</p>
-
-<pre><code>{
-    "cluster_name" : "elasticsearch",
-    "status" : "yellow",
-    "timed_out" : false,
-    "number_of_nodes" : 1,              
-    "number_of_data_nodes" : 1,         
-    "active_primary_shards" : 5,        
-    "active_shards" : 5,                
-    "relocating_shards" : 0,            
-    "initializing_shards" : 0,          
-    "unassigned_shards" : 5             
-}
-</code></pre>
-
-<p>I wanted to be able to provision multiple nodes and then let them create a cluster. I was able to take the existing Vagrantfile and then using the multi-environment features of Vagrant. This created a new Vagrantfile as follows:</p>
-
-<pre><code>Vagrant::Config.run do |config|
-    config.vm.box = "Ubuntu precise 64 VMWare"
-    config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
-
-    config.vm.define "es1" do |es1|
-        es1.vm.network :hostonly, "192.168.1.10"
-        es1.vm.provision :puppet do |puppet|
-            puppet.module_path = '../setup/modules'
-            puppet.manifests_path = '../setup/manifests'
-            puppet.manifest_file = 'default.pp'
-            puppet.options = '--verbose --debug'
-        end
-    end
-
-    config.vm.define "es2" do |es2|
-        es2.vm.network :hostonly, "192.168.1.11"
-        es2.vm.provision :puppet do |puppet|
-            puppet.module_path = '../setup/modules'
-            puppet.manifests_path = '../setup/manifests'
-            puppet.manifest_file = 'default.pp'
-            puppet.options = '--verbose --debug'
-        end
-    end
-
-    config.vm.define "es3" do |es3|
-        es3.vm.network :hostonly, "192.168.1.12"
-        es3.vm.provision :puppet do |puppet|
-            puppet.module_path = '../setup/modules'
-            puppet.manifests_path = '../setup/manifests'
-            puppet.manifest_file = 'default.pp'
-            puppet.options = '--verbose --debug'
-        end
-    end
-end
-</code></pre>
-
-<p>This effectively tells Vagrant to create three instances of ElasticSearch using the Puppet configuration (as above). Each ElasticSearch node is given its own IP. Thanks to ElasticSearch using Multicast and Unicast discovery, it is able to find other nodes on the network and create a cluster. By running a similar url as before, &lsquo;**<a href="http://192.168.1.10:9200/_cluster/health?pretty**">http://192.168.1.10:9200/_cluster/health?pretty**</a>&rsquo;, we can now see that the cluster looks as follows:</p>
-
-<pre><code>{
-    "cluster_name" : "elasticsearch",
-    "status" : "green",
-    "timed_out" : false,
-    "number_of_nodes" : 3,              
-    "number_of_data_nodes" : 3,         
-    "active_primary_shards" : 5,        
-    "active_shards" : 15,                
-    "relocating_shards" : 0,            
-    "initializing_shards" : 0,          
-    "unassigned_shards" : 0             
-}
-</code></pre>
-
-<p>Using this method, we can continue to spin up as many instances as we need to replicate different scenarios or testing conditions. Vagrant has made this very easy to do. If you want a copy of the Vagrantfiles and Puppet modules to try this yourself, then you can find them on my <a href="https://github.com/stack72/vagrant-examples/tree/master/elasticsearch">github repository</a>. The scripts are available under the <a href="http://opensource.org/licenses/MIT">MIT</a> license.</p>
 ]]></content>
   </entry>
   

@@ -14,19 +14,19 @@ footer: false
 
 [John Catterfeld]
 
+[Matteo Figus]
+
 [Richard Hopton]
 
 [Andy Metcalfe]
 
 [Andy Royle]
 
+[Sam Salisbury]
+
 [Paul Stack]
 
 [Ryan Tomlinson]
-
-[Matteo Figus]
-
-[Sam Salisbury]
 
 [Mark Barrett]:/blog/authors/mbarrett.html
 [Richard Hopton]:/blog/authors/rhopton.html

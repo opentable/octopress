@@ -4,7 +4,7 @@ title: "Look ma, no unit tests!"
 date: 2014-04-16 17:00
 comments: true
 author: ssalisbury
-categories: [testing, engineering]
+categories: [Testing, Engineering, Acceptance tests, Innovation]
 ---
 
 At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for [new](/blog/2014/02/28/api-benchmark/) [tools](/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/) [and](/blog/2014/04/07/upgrading-puppet-with-puppet/) [methods](/blog/2014/02/10/the-adoption-of-configuration-management/) that allow us, the developers, to respond quickly and accurately to changing requirements and environments.
@@ -23,7 +23,7 @@ All of the above are truly empowering for the dev team, and are conducive to an 
 
 Well, on a recent project, we found one such way: *_we decided to delete all of the unit and integration tests_*.
 
-_What?! Are we quite mad?_ You may be thinking... Well, it took me a little time to get used to this idea as well, but read on and you'll see that it was actually the most sane thing we could possibly do.
+_What?! Are we quite mad?_ You may be thinking... Well, it took me a little time to get used to this idea as well, but read on and you'll see that it was actually the most sane thing we could have possibly done	.
 
 ## Survival of the testedest
 In the beginning, the project had 100% unit test coverage, there were no external dependencies, and the world was Good.
@@ -32,11 +32,11 @@ Soon afterwards, a tall shadow appeared in the glorious unit-tested sunset. Exte
 
 _Meanwhile..._
 
-We realised that some of the things that would be important to our consumers were still not covered by our tests. Things like actual HTTP responses, serialisation, and the like. These are things that don't always need to be tested explicitly, but, since this was a third-party-developer-facing system, we really wanted to be sure that the interface worked exactly as we wanted, HTTP headers, character encoding, date formatting, the lot.
+We realised that some of the things that would be important to our consumers were still not covered by our tests. Things like actual HTTP responses, serialisation, and the like. These are things that don't always need to be tested explicitly, but since this was a third-party-developer-facing system, we really wanted to be sure that the interface worked exactly as we wanted, HTTP headers, character encoding, date formatting, the lot.
 
 So, playing the role of our consumers, we engineered high-level acceptance tests, behaving byte-for-byte as we expected our customers to do.
 
-Now, with the triple-action protection of three layers of tests, we felt our project was the most minty-fresh piece of haute engineering we had ever layed keyboards on.
+Now, with the triple-action protection of three layers of tests, we felt our project was the most minty-fresh piece of haute engineering we had ever laid keyboards on.
 
 We were wrong.
 
@@ -47,7 +47,7 @@ _Then, gazing up from the receding tide of the third trimester were the hungry e
 
 Our early adopters were great, giving us a lot of helpful feedback and helping us shape the API into a genuinely usable v1. However, responding to this change required a greater degree of flexibility in the code than we had required up to this point. Our triple-chocolate-crunch of pithy tests was starting to really slow us down, and rot our teeth. The main reason for this: duplication.
 
-We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can't test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic for that call. Code which was already covered by unit tests, and often integration tests as well. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith a very heavy boulder&mdash;and had a hoarde of features we still wanted to smash, who were freely bounding over the mountain tops, and out of reach.
+We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can't test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic for that call. Code which was already covered by unit tests, and often integration tests as well. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith and a very heavy boulder&mdash;and had a hoarde of features we still wanted to smash, who were freely bounding over the mountain tops, and out of reach.
 
 It was time to cut ourselves free.
 
@@ -60,7 +60,7 @@ We talked about it&mdash;what was necessary about the unit tests? What was their
 
 Take a deep breath. _RIP!_ Aah, there, done.
 
-There was a little bleeding, some gaps in our acceptance tests that had to be filled, some complex set-up logic from the integration tests that had to be ported to work with the acceptance tests. A few day's worth of cleanup and patching in the background, and... tentatively... we were done.
+There was a little bleeding, some gaps in our acceptance tests that had to be filled, some complex set-up logic from the integration tests that had to be ported to work with the acceptance tests. A few days' worth of cleanup and patching in the background, and... tentatively... we were done.
 
 For me at least, this was a bold move. But it shouldn't have seemed so, we knew all of our endpoints were acceptance-tested, including every supported API call. My primary worry was how we were going to nail down the exact cause of bugs with no code-level testing. This turned out to be nowhere near as bad as I expected.
 

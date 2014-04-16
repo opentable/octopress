@@ -1,13 +1,13 @@
 ---
 layout: post
 title: "Look ma, no unit tests!"
-date: 2014-04-15 12:00
+date: 2014-04-16 17:00
 comments: true
 author: ssalisbury
 categories: [testing, engineering]
 ---
 
-At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for [new](/blog/2014/02/28/api-benchmark/) [tools](/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/) and [methods](/blog/2014/02/10/the-adoption-of-configuration-management/) that allow us, the developers, to respond quickly and accurately to changing requirements and environments.
+At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for [new](/blog/2014/02/28/api-benchmark/) [tools](/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/) [and](/blog/2014/04/07/upgrading-puppet-with-puppet/) [methods](/blog/2014/02/10/the-adoption-of-configuration-management/) that allow us, the developers, to respond quickly and accurately to changing requirements and environments.
 
 There are a number of practices that we already make use of, helping us to be the most effective team I've ever worked in:
 
@@ -47,7 +47,7 @@ _Then, gazing up from the receding tide of the third trimester were the hungry e
 
 Our early adopters were great, giving us a lot of helpful feedback and helping us shape the API into a genuinely usable v1. However, responding to this change required a greater degree of flexibility in the code than we had required up to this point. Our triple-chocolate-crunch of pithy tests was starting to really slow us down, and rot our teeth. The main reason for this: duplication.
 
-We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can't test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic for that call. Code which was already covered by unit tests, and often integration tests as well. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith a very heavy boulder, and had a hoarde of features we still wanted to smash, freely bounding over the mountain tops, and out of reach.
+We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can't test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic for that call. Code which was already covered by unit tests, and often integration tests as well. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith a very heavy boulder&mdash;and had a hoarde of features we still wanted to smash, who were freely bounding over the mountain tops, and out of reach.
 
 It was time to cut ourselves free.
 
@@ -58,7 +58,7 @@ The idea that we might not need all these layers of tests was first mooted by fe
 
 We talked about it&mdash;what was necessary about the unit tests? What was their real worth? We had to test many of those things from the outside-in anyway, with the acceptance tests, so why test them twice? The logic started to stack up. I was convinced this was the right thing to do.
 
-Take a deep breath. _RIP!_ aah, there, done.
+Take a deep breath. _RIP!_ Aah, there, done.
 
 There was a little bleeding, some gaps in our acceptance tests that had to be filled, some complex set-up logic from the integration tests that had to be ported to work with the acceptance tests. A few day's worth of cleanup and patching in the background, and... tentatively... we were done.
 
@@ -67,7 +67,9 @@ For me at least, this was a bold move. But it shouldn't have seemed so, we knew 
 > We knew all of our endpoints were acceptance-tested, including every supported API call.
 
 ## What just happened?
-I like to visualise this as if we were building [a giant arch](http://en.wikipedia.org/wiki/Gateway_Arch). At first, you build a temporary structure with scaffolding (the unit and integration tests), then as time goes on you construct a hardened permanent structure (the software). On top of the software, you layer your [structural integrity monitors](http://en.wikipedia.org/wiki/Structural_health_monitoring) (acceptance tests). Eventually, there is no need for the scaffolding any more; the structure is self-supporting, and future modifications can rely on this&mdash;time to punch out the middle!
+I like to visualise this as if we were building [a giant arch](http://en.wikipedia.org/wiki/Gateway_Arch). At first, you build a temporary structure with scaffolding (the unit and integration tests). As time goes on you construct a hardened permanent structure (the software). On top of the software, you layer your [structural integrity monitors](http://en.wikipedia.org/wiki/Structural_health_monitoring) (acceptance tests). Eventually, there is no need for the scaffolding any more; the structure is self-supporting, and future modifications can rely on this&mdash;time to punch out the middle!
+
+_Of course, there are other considerations, like logging, monitoring, and providing sandbox data, which all contributed to making this feasable&mdash;but that's for another post._
 
 ## Was it worth it?
 Unequivocally, yes. Since making this decision, we have been unhindered by our tests, and they are back to being a much loved part of the project. We have had no problems that would have been caught by unit tests, and we can still do TDD with our acceptance tests. In addition, I think removing the crutch of unit tests may have improved our discipline somewhat: _it keeps us thinking in the context of the end-user at all times, so we never spend time working on a feature that isn't directly useful to our consumers._

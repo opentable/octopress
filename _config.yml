@@ -2,10 +2,10 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://tech.toptable.co.uk
-title: toptable Tech Blog
-subtitle: The technology blog for toptable and OpenTable.
-author: toptable
+url: http://tech.opentable.co.uk
+title: OpenTable UK Tech Blog
+subtitle: The technology blog for OpenTable UK.
+author: OpenTable
 simple_search: http://google.com/search
 description:
 

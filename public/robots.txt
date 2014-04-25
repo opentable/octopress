@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://tech.toptable.co.uk/sitemap.xml 
+Sitemap: http://tech.opentable.co.uk/sitemap.xml 

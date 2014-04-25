@@ -7,7 +7,7 @@ author: ametcalfe
 categories: [Conferences, Buffoons]
 ---
 
-Three toptable heroes took to Norway last week to attend NDC Oslo. For two of us it was our first major conference and for one, Paul Stack, he had to speak.
+Three OpenTable heroes took to Norway last week to attend NDC Oslo. For two of us it was our first major conference and for one, Paul Stack, he had to speak.
 
 Personally, as my first large, multi-discipline conference, I didn't really know what to expect. Being away from the team for three days in a foreign country with major project work going on at the same time was a bit uncomfortable. I was worried that the time and expense needed to be justified. That fear went away after the first night in the bar!
 

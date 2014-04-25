@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Being a numpty | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/being-a-numpty/atom.xml" rel="self"/>
-  <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-16T14:51:42+01:00</updated>
-  <id>http://tech.toptable.co.uk/</id>
+  <title><![CDATA[Category: Being a numpty | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/being-a-numpty/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-04-25T15:21:07+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
   <author>
-    <name><![CDATA[toptable]]></name>
+    <name><![CDATA[OpenTable]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Performance testing our Search API]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/03/19/performance-testing-our-search-api/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api/"/>
     <updated>2014-03-19T15:53:00+00:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/03/19/performance-testing-our-search-api</id>
+    <id>http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api</id>
     <content type="html"><![CDATA[<p>It was midnight on the Friday before Christmas, my seven-week old child was tucked up asleep and I was pretty chilled. All was calm and it was time for bed. Two minutes later I had a phone call, followed by a series of Nagios email alerts, and a need to put my work hat on quickly. The search API was having trouble; as the manager of the team who developed it, I was not looking forward to this. We were having a real slowdown at one of our busiest times of the year &ndash; this was going to be fun.</p>
 
 <p>Once the dust settled and we were back up and running we realised we needed to do a better job of performance testing and actually solve any performance issues. We <em>had</em> done some performance testing but clearly not the right kind.</p>

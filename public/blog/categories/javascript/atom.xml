@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: JavaScript | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/javascript/atom.xml" rel="self"/>
-  <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-16T14:51:42+01:00</updated>
-  <id>http://tech.toptable.co.uk/</id>
+  <title><![CDATA[Category: JavaScript | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/javascript/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-04-25T15:21:07+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
   <author>
-    <name><![CDATA[toptable]]></name>
+    <name><![CDATA[OpenTable]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Grunt your deployments too]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/"/>
     <updated>2013-08-08T15:27:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too</id>
+    <id>http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too</id>
     <content type="html"><![CDATA[<p>We&rsquo;ve been using <a href="http://www.gruntjs.com">Grunt</a> as a build tool for our nodejs apps, and it&rsquo;s brilliant. It lints, it configures, it minifies, it tests and it packages.</p>
 
 <p>As we move towards getting our first node app into production, we were looking at ways to deploy it. First we thought of <a href="http://www.capistranorb.com">Capistrano</a>.</p>
@@ -309,16 +309,16 @@ grunt deploy --config production --server my.production.server --username user -
   
   <entry>
     <title type="html"><![CDATA[MapReduce in MongoDB]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/08/07/mapreduce-in-mongodb/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/08/07/mapreduce-in-mongodb/"/>
     <updated>2013-08-07T10:40:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/08/07/mapreduce-in-mongodb</id>
-    <content type="html"><![CDATA[<p>One of the first things I took on when joining toptable was building a new endpoint in our reviews API to aggregate and summarise restaurant review data. Thankfully, at the time, all the data I needed was cached in memory so building the response object was a simple set of linq queries over the cached reviews.</p>
+    <id>http://tech.opentable.co.uk/blog/2013/08/07/mapreduce-in-mongodb</id>
+    <content type="html"><![CDATA[<p>One of the first things I took on when joining OpenTable was building a new endpoint in our reviews API to aggregate and summarise restaurant review data. Thankfully, at the time, all the data I needed was cached in memory so building the response object was a simple set of linq queries over the cached reviews.</p>
 
 <h2>The problem</h2>
 
 <p>Over time the number of reviews grow, and grow, and grow!  In fact it is inevitable that, in time, it will reach a point where caching all this data in memory would be madness.  One option to mitigate this would be to limit the cache to a fixed date range but this won&rsquo;t work in this instance because the summary logic supports custom date ranges.  Another option would be to pull the data from the persistence store each and every time it&rsquo;s required however this would seriously impact load on the infrastructure and degrade performance of the API.</p>
 
-<p>We like to be proactive at toptable, so during innovation time (yes! we get time to innovate on our development) I looked at finding an alternate solution that would meet the requirements of the logic and wouldn&rsquo;t drastically increase load or degrade performance.</p>
+<p>We like to be proactive at OpenTable, so during innovation time (yes! we get time to innovate on our development) I looked at finding an alternate solution that would meet the requirements of the logic and wouldn&rsquo;t drastically increase load or degrade performance.</p>
 
 <h2>The solution</h2>
 
@@ -376,9 +376,9 @@ grunt deploy --config production --server my.production.server --username user -
   
   <entry>
     <title type="html"><![CDATA[One Gun - Many Enemies]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/07/24/one-gun-many-enemies/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/07/24/one-gun-many-enemies/"/>
     <updated>2013-07-24T14:32:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/07/24/one-gun-many-enemies</id>
+    <id>http://tech.opentable.co.uk/blog/2013/07/24/one-gun-many-enemies</id>
     <content type="html"><![CDATA[<p>I spent some time, re-investigating Javascript. After a few months of intensive TDD and SOLID training at OpenTable I was curious how those principles apply in a slightly different environment. Guess what, they do not differ that much&hellip; I planned to write about all this sometime in the future after gaining more experience from real battles ahead, however <a href="http://watirmelon.com/2013/02/09/why-i-dont-like-Jasmine/">Watirmelon post</a> invited me to attack this subject immediately.</p>
 
 <p>I went through the available testing frameworks for Javascript and decided on Jasmine. Why? Mainly because of its BDD syntax which is fashionable this season. The second reason is that it has really cool documentation. Finally, the basic set up of just running an HTML file in a browser got me up and running fast.</p>

@@ -6,13 +6,13 @@ comments: true
 author: rhopton
 categories: [MapReduce, MongoDB, JavaScript, Innovation]
 ---
-One of the first things I took on when joining toptable was building a new endpoint in our reviews API to aggregate and summarise restaurant review data. Thankfully, at the time, all the data I needed was cached in memory so building the response object was a simple set of linq queries over the cached reviews.
+One of the first things I took on when joining OpenTable was building a new endpoint in our reviews API to aggregate and summarise restaurant review data. Thankfully, at the time, all the data I needed was cached in memory so building the response object was a simple set of linq queries over the cached reviews.
 
 ## The problem ##
 
 Over time the number of reviews grow, and grow, and grow!  In fact it is inevitable that, in time, it will reach a point where caching all this data in memory would be madness.  One option to mitigate this would be to limit the cache to a fixed date range but this won't work in this instance because the summary logic supports custom date ranges.  Another option would be to pull the data from the persistence store each and every time it's required however this would seriously impact load on the infrastructure and degrade performance of the API.
 
-We like to be proactive at toptable, so during innovation time (yes! we get time to innovate on our development) I looked at finding an alternate solution that would meet the requirements of the logic and wouldn't drastically increase load or degrade performance.
+We like to be proactive at OpenTable, so during innovation time (yes! we get time to innovate on our development) I looked at finding an alternate solution that would meet the requirements of the logic and wouldn't drastically increase load or degrade performance.
 
 ## The solution ##
 

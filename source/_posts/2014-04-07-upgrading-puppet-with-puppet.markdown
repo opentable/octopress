@@ -7,7 +7,7 @@ author: lbennett
 categories: [Puppet, Maintenance, Windows, Puppetversion]
 ---
 
-As part of one of our recent [ForgeFriday](http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/) efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.
+As part of one of our recent [ForgeFriday](http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/) efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.
 
 
 This should be a very straightforward task to complete because this is one of the core resources that Puppet manages - the upgrading of packages. With that in mind, putting `package { ‘puppet’: ensure => $version }` in one of our base profiles would be all that was needed but alas it was not. In this blog I want to take you through the history, the bugs, the platforms and the edge-cases that make performing an in-place upgrade of Puppet a more complex task that it ought to be.

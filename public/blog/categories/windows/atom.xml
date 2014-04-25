@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Windows | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/windows/atom.xml" rel="self"/>
-  <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-16T14:51:42+01:00</updated>
-  <id>http://tech.toptable.co.uk/</id>
+  <title><![CDATA[Category: Windows | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/windows/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-04-25T15:21:07+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
   <author>
-    <name><![CDATA[toptable]]></name>
+    <name><![CDATA[OpenTable]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,10 +15,10 @@
   
   <entry>
     <title type="html"><![CDATA[Upgrading Puppet with Puppet]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/"/>
     <updated>2014-04-07T13:23:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet</id>
-    <content type="html"><![CDATA[<p>As part of one of our recent <a href="http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
+    <id>http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet</id>
+    <content type="html"><![CDATA[<p>As part of one of our recent <a href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
 
 <p>This should be a very straightforward task to complete because this is one of the core resources that Puppet manages &ndash; the upgrading of packages. With that in mind, putting <code>package { ‘puppet’: ensure =&gt; $version }</code> in one of our base profiles would be all that was needed but alas it was not. In this blog I want to take you through the history, the bugs, the platforms and the edge-cases that make performing an in-place upgrade of Puppet a more complex task that it ought to be.</p>
 

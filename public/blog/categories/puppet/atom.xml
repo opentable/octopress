@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Puppet | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/puppet/atom.xml" rel="self"/>
-  <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-16T14:51:42+01:00</updated>
-  <id>http://tech.toptable.co.uk/</id>
+  <title><![CDATA[Category: Puppet | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/puppet/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-04-25T15:21:07+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
   <author>
-    <name><![CDATA[toptable]]></name>
+    <name><![CDATA[OpenTable]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,10 +15,10 @@
   
   <entry>
     <title type="html"><![CDATA[Upgrading Puppet with Puppet]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/"/>
     <updated>2014-04-07T13:23:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet</id>
-    <content type="html"><![CDATA[<p>As part of one of our recent <a href="http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
+    <id>http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet</id>
+    <content type="html"><![CDATA[<p>As part of one of our recent <a href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
 
 <p>This should be a very straightforward task to complete because this is one of the core resources that Puppet manages &ndash; the upgrading of packages. With that in mind, putting <code>package { ‘puppet’: ensure =&gt; $version }</code> in one of our base profiles would be all that was needed but alas it was not. In this blog I want to take you through the history, the bugs, the platforms and the edge-cases that make performing an in-place upgrade of Puppet a more complex task that it ought to be.</p>
 
@@ -75,9 +75,9 @@
   
   <entry>
     <title type="html"><![CDATA[Testing Puppet with Beaker]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/"/>
     <updated>2014-04-04T17:30:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/04/04/testing-puppet-with-beaker</id>
+    <id>http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker</id>
     <content type="html"><![CDATA[<p>One afternoon I got asked to write a new Puppet module to manage local users on our Linux boxes. Not a contrived example but a real-world need as we begin to move our infrastructure from Windows to Linux. Managing users is one of those tasks that is at the core of the Puppet ecosystem and I thought this would be pretty easy as I had done this sort of thing many times before. What added to the complexity was that we needed to support Ubuntu, Centos and FreeBSD machines that we had in our stack and we wanted to make it something that was open source and on the Forge &ndash; so lots of testing was required.</p>
 
 <p>This was not the first module that I had written for the Forge but it was the first that I had written since PuppetLabs had introduced their new acceptance testing framework <a href="https://github.com/puppetlabs/beaker">Beaker</a> and so I wanted to spend some time getting the module working with this new tool.</p>
@@ -224,9 +224,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[ForgeFriday - our commitment to the Puppet Forge]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/"/>
     <updated>2014-04-04T15:30:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge</id>
+    <id>http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge</id>
     <content type="html"><![CDATA[<p>Those of you that read this blog on a regular basis will be aware that here at OpenTable we take our commitment to Open Source very seriously. As part of the infrastructure team at OpenTable we are begining a process of being open-first. That means that everything we write will be open-sourced unless it contains a significant amount of internal information but we will architect to limit this.</p>
 
 <p>As part of that commitment we are trying to release all our Puppet configuration. The key to maintaining any good habit is to do little and often and with that in mind we wanted to let you know about ForgeFriday.</p>
@@ -249,9 +249,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[The adoption of Configuration Management]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/"/>
     <updated>2014-02-10T13:46:00+00:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management</id>
+    <id>http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management</id>
     <content type="html"><![CDATA[<p>In years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around nine months ago we started to really try and get these teams working together. We introduced a configuration management tool, <a href="http://puppetlabs.com/puppet/what-is-puppet">Puppet</a>, into our ecosystem.</p>
 
 <p>Configuration management is one of the steps of continuous delivery that developers often forget. They feel that systems are magically created for them to deploy their application to. I used to believe this. When I was focused on developing software, I never gave any thought as to the work our operations team had to do to keep the train on the track. So give some respect to your operations teams! We created a repository and started to experiment by configuring some of our applications using Puppet.</p>

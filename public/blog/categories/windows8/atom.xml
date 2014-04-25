@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Windows8 | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/windows8/atom.xml" rel="self"/>
-  <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-16T14:51:42+01:00</updated>
-  <id>http://tech.toptable.co.uk/</id>
+  <title><![CDATA[Category: Windows8 | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/windows8/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-04-25T15:21:07+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
   <author>
-    <name><![CDATA[toptable]]></name>
+    <name><![CDATA[OpenTable]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Linking to your app in Windows 8]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8/"/>
     <updated>2013-10-21T17:36:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8</id>
+    <id>http://tech.opentable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8</id>
     <content type="html"><![CDATA[<p>In an effort to raise the visibility of our excellent Windows 8 app we have recently connected <a href="http://www.opentable.com">www.opentable.com</a> to the Windows Store.  This was simply a case of adding two lines of meta data to our site. Or it should have been &ndash; there were several gotchas along the way that are worth sharing.</p>
 
 <h2>The code</h2>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: CI | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/ci/atom.xml" rel="self"/>
-  <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-16T14:51:42+01:00</updated>
-  <id>http://tech.toptable.co.uk/</id>
+  <title><![CDATA[Category: CI | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/ci/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-04-25T15:21:07+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
   <author>
-    <name><![CDATA[toptable]]></name>
+    <name><![CDATA[OpenTable]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Getting Started With SpecRun]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/06/07/getting-started-with-specrun/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/06/07/getting-started-with-specrun/"/>
     <updated>2013-06-07T11:33:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/06/07/getting-started-with-specrun</id>
+    <id>http://tech.opentable.co.uk/blog/2013/06/07/getting-started-with-specrun</id>
     <content type="html"><![CDATA[<h2>First some background</h2>
 
 <p>We recently switched from writing automated acceptance from Cucumber to SpecFlow&hellip; this is no slight on Cucumber it&rsquo;s just that we had a lot of C# developers who wanted to get closer to writing acceptance tests. Worth adding that SpecFlow has also come a long way as a .Net port of Cucumber and is pretty much like for like now.</p>

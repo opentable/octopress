@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Leadership | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/leadership/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-04-25T15:21:07+01:00</updated>
+  <updated>2014-04-28T15:20:52+01:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -12,6 +12,99 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Effective prioritisation]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/28/effective-prioritisation/"/>
+    <updated>2014-04-28T14:51:51+01:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/04/28/effective-prioritisation</id>
+    <content type="html"><![CDATA[<p>Prioritisation is a huge part of modern life.</p>
+
+<p>No.</p>
+
+<p>Prioritisation is an ESSENTIAL part of modern life.</p>
+
+<p>I&rsquo;m not talking solely about Agile here either. Yes we plan stories, yes we prioritise them to get them into the backlog but I&rsquo;m aiming at a higher level. Life lessons that are useful to all of us.</p>
+
+<p>How do we know what to do next? Perhaps you lean on your gut feeling to order your to-do list. Maybe it is real-time cost and budget implications that influence your priorities or does it come down to who shouts loudest?</p>
+
+<h2>Why is prioritisation important?</h2>
+
+<p>The experts would have us believe we are living through the Digital Age, also know as the Computer Age. Increasingly this has been more accurately redefined as the Information Age.</p>
+
+<p>The society we live in today truly bombardes us with information. Whether it be TV, mobile, emails, blog posts, status updates, tweets, likes and check-in&rsquo;s we are rarely unconnected to modern day life and have a vast amount of data and information at our disposal.</p>
+
+<p>This flood of information leads to a problem: we often confuse the importance of everyday tasks and activities.</p>
+
+<p>For instance how many times have we said &ldquo;I don&rsquo;t have time to read&rdquo; or &ldquo;I&rsquo;d love to be able to go to the gym more&rdquo;. Perhaps a more honest way to say this is &ldquo;reading is not a high priority for me&rdquo; or &ldquo;I prioritise other activities higher than going to the gym&rdquo;.</p>
+
+<p>The decision not to spend time reading or working-out in the gym means you are spending time on other activities you consider more important. Consciously or unconsciously, we prioritise our life. The key is to prioritise effectively.</p>
+
+<h2>The Focus Quadrant</h2>
+
+<p>I&rsquo;ve been introduced to a framework that helped me to grab this idea of effective prioritisation and certainly opened my eyes to some of the mistakes I made previously.</p>
+
+<p>Stephen Covey, a sadly deceased educator, author and businessman, designed a matrix called The Focus Quadrant that categorises activities and helps us deal with the struggle of prioritisation by clearly outlining the conflicts involved.</p>
+
+<p><img src="http://www.chowamigo.co.uk/images/focus.jpg" alt="image" /></p>
+
+<table style="font-size: 80%;margin-bottom:20px;">
+    <tr>
+        <th style="padding:3px;"></th>
+        <th style="padding:3px;"><b>Description</b></th>
+        <th style="padding:3px;"><b>Examples</b></th>
+    </tr>
+<tr style="background-color: #E5E5E5">
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">A. Important/Urgent</td>
+    <td style="padding:3px;vertical-align:top;">Tasks that are necessary usually deadline driven or time sensitive. This usually this means panic and problems.</td>
+    <td style="padding:3px;vertical-align:top;">Fixing the server crash, firefighting a site outage, entering expenses before a deadline</td>
+</tr>
+<tr>
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">B. Important/Not urgent</td>
+    <td style="padding:3px;vertical-align:top;">Activities in direct alignment to your goals. Typically these tasks involve planning ahead. Prevention rather than cure.</td>
+    <td style="padding:3px;vertical-align:top;">Relationship building, researching your next API, learning a new coding language, taking time out to exercise</td>
+</tr>
+<tr style="background-color: #E5E5E5">
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">C. Not important/Urgent</td>
+    <td style="padding:3px;vertical-align:top;">Activities that seem important but in reality are not. It's thought these tasks will make you popular as you are responding to requests for your time.</td>
+    <td style="padding:3px;vertical-align:top;">Going to a meeting, answering the phone, replying instantly on IMs or email</td>
+</tr>
+<tr>
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">D. Not important/Not urgent</td>
+    <td style="padding:3px;vertical-align:top;">While it would seem pleasant enough to live here permentantly, in reality these activities are time wasters that should be eliminated as much as possible.</td>
+    <td style="padding:3px;vertical-align:top;">Playing video games, surfing the net, getting a tea or coffee, flicking through the magazine on your desk</td>
+</tr>
+</table>
+
+
+<h2>How does this help?</h2>
+
+<p>Covey&rsquo;s point is that if we have a long list of items and activities and we are struggling to prioritise them, spending 20 minutes writing the list down and assigning each task A, B, C or D can help clarify importance.</p>
+
+<p>For me the interesting part is that we should not be spending too much time in A. This goes against our natural reaction that A is good &ndash; probably the fault of our education system. In fact category A is considered beneficial only in the short term. We are not overly productive even if we spend a lot of time on A category tasks. We really want to shift our attention to more longer term plans.</p>
+
+<p>Category B on the other hand is considered the sweet spot. This is where we are doing our best work. It is where we will be ticking off a lot of our important long term goals. Yes we all have different goals but the majority of the goals we want to achieve fit into B &ndash; non urgent and important.</p>
+
+<p>For category C there is a great saying &lsquo;The quadrant of deception&rsquo;. These are tasks we THINK are urgent but in reality they are not. Considered to be a distraction, get used to politely saying no to any activities in the C category. We should look to regain control of our time and not be forced to respond when it suits others.</p>
+
+<p>Finally category D is the worst place to spend your time. It&rsquo;s okay to roam across each of these four quadrants but if we identify we are spending too much time in quadrant D we need to step back, reassess and pick up a task more aligned to our goals &ndash; ideally something from category B.</p>
+
+<h2>Money => mouth</h2>
+
+<p>While this is useful in theory, we of course need to be realistic. You should factor in time for impromptu interruptions &ndash; saying no to every meeting isn&rsquo;t possible and this isn&rsquo;t an excuse to push back difficult tasks. However, the next time your to-do list gets unmanageable, take time out to clarify your priorities.</p>
+
+<p>Now my current my to-do list looks like this&hellip;</p>
+
+<ol>
+<li>Investigate a blip in our API performance <strong><code>(A)</code></strong></li>
+<li>Scope out our next API <strong><code>(B)</code></strong></li>
+<li>Improve the way our current API deploys to production <strong><code>(B)</code></strong></li>
+<li>Send out a team update to interested parties <strong><code>(C)</code></strong></li>
+<li>Go and grab a cup of tea :) <strong><code>(D)</code></strong></li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Programme Management, making Agile scale]]></title>

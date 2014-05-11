@@ -149,5 +149,5 @@ What's that I hear you whine? "_My application depends on shared data, I can't u
 
 What's more you can now run `grunt acceptance` from anywhere and ___know___ that it'll be the same. No more environment pains!
 
-[1]: http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/
+[1]: http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/
 [2]: http://www.vagrantup.com

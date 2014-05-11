@@ -185,4 +185,4 @@ I believe that taking care of performance is our responsibility, as developers. 
 [3]: https://github.com/matteofigus/grunt-api-benchmark
 [4]: http://www.nodejs.org
 [5]: http://www.twitter.com/matteofigus
-[6]: http://tech.toptable.co.uk/blog/2014/02/06/20-percent-time/
+[6]: http://tech.opentable.co.uk/blog/2014/02/06/20-percent-time/

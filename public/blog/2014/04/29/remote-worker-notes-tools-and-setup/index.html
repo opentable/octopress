@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Remote Worker Notes &ndash; Tools and Setup - OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
+
+  
+  <meta name="description" content="For the last couple months I&rsquo;ve been working remotely with our search team at OpenTable. Let me share our remote working setup and some &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup/">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
+  <script type="text/javascript" src="http://use.typekit.com/syx2vfn.js"></script>
+  <script type="text/javascript">try { Typekit.load(); } catch (e) { }</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
+  
+    <h2>The technology blog for OpenTable UK.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/authors">Authors</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Remote Worker Notes &ndash; Tools and Setup</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Marcin Bazydlo</span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-29T10:56:49+01:00" pubdate data-updated="true">Apr 29<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>For the last couple months I&rsquo;ve been working remotely with our search team at OpenTable. Let me share our remote working setup and some rationale for our choices. I will shy away from judging how it&rsquo;s all worked out and leave that for subsequent blog posts.</p>
+
+<h2>The deal</h2>
+
+<p>I started as an on-site engineer and subsequently became a remote worker and my challenge was to make remote working as similar to on-site working as possible. Thus it is natural that <strong>I work the same working hours</strong> as my colleagues in the office (despite the time difference) and I take <strong>public holidays</strong> at the same time that there are bank holidays in UK (even though in Poland they are different).</p>
+
+<p>We also decided that every two months I will <strong>visit the office for a week</strong> as well as arranging visits to coincide with other office guests (like contractors, overseas colleagues and so on). All this is to try to keep me as close to the team as possible and disrupt the normal work-flow as little as possible.</p>
+
+<h2>The workplace setup</h2>
+
+<p>Once home in Poland I had to carefully consider my options for a workplace. I tried three obvious possibilities:</p>
+
+<ul>
+<li>Dining room in my own one bedroom flat</li>
+<li>Co-working space</li>
+<li>Private room in my parents&#8217; house</li>
+</ul>
+
+
+<p>The <strong>dining room</strong> worked pretty well, for a time&hellip;  I would &lsquo;arrive&rsquo; really early in the office (just after taking a shower), and then be &lsquo;home&rsquo; straight after the laptop lid was closed. My wife kindly respected that I am focused at work and distracted me only to share lunch (or to kick me out of house to bring the lunch in).</p>
+
+<p>A couple of things made it only a short-term solution &ndash; the first being my back complaining about working on a chair that&rsquo;s nice for a dinner, but awful for working on computer. Then I realised that I really miss a second monitor and separate keyboard &ndash; I guess anybody who coded in the middle of summer on a laptop knows the pain of a hot computer under your fingers.  Finally, my child was born, and that was it &ndash; a crying child in the same room when you are trying to pair with somebody is a deal-breaker.</p>
+
+<p>In the meantime I evaluated a local <strong>co-working space</strong>. The problem was that it was quiet, <em>really quiet</em>, up to the point that I was embarrassed to pair with somebody remotely. The way we work fluctuates over time; there are weeks when I do stuff alone and in silence, there are weeks when I spend whole days on conversations or pairing. I just cannot be too quiet. For that matter I tried also a coffee shop, but it failed me for exactly the same reasons as the dining room table.</p>
+
+<p><strong>My little own office is currently the winner</strong> and the only way it could be better is if behind the closed doors there was my house, not my parents&#8217; one. But even this one is pretty good &ndash; I have access to an always full fridge and a decent coffee machine. I can bring my family with me and it is not awkward.</p>
+
+<p>Finally, I can share a lunch with whoever is at home. With a decent chair and desk I cannot complain about anything. Actually, I found that even after work if we stay for a coffee or dinner I am tempted to pop in into the office and look at our dashboards or chat room.</p>
+
+<h2>The tools setup</h2>
+
+<p>To facilitate continuous communication <em>you first need a good attitude, and then good tools</em>. With the attitude two things matter the most:</p>
+
+<ul>
+<li>A quick response</li>
+<li>Patience</li>
+</ul>
+
+
+<p>By nature all remote communication channels are asynchronous, which is hugely different to face-to-face communication. It is much easier this way for an important question to go unnoticed by you. Conversely it is easy to get annoyed that somebody is not responding, when in fact they may just be talking to the person at the desk next to them.</p>
+
+<p>Our primary tool is <strong>Google Hangout</strong>. It works quite well for a team, being nice for stand-ups, though it fails miserably as a constant communication tool. There are two reasons for that; the first is that its messages often get lost and the second is it makes our MacBook radiators spin like crazy when open for too long. <em>Unfortunately we had to rule out an online window to the office after a couple of days trying</em>.</p>
+
+<p>We also extensively use <a href="http://www.hipchat.com"><strong>HipChat</strong></a>, and that brought one of best breakthroughs in our communication patterns. It has a few features which make it great as a team collaboration tool:</p>
+
+<ol>
+<li>You get messages whether you pay attention or not</li>
+<li>You can interrupt other people by mentioning them</li>
+<li>It makes sharing links and images really easy</li>
+<li>When you type you can collaborate with multiple persons at the same time</li>
+</ol>
+
+
+<p>I also mentioned that pairing is a big part of our daily work. I have to admit that I haven&rsquo;t yet found a tool that would make the experience seamless. There is always a bit of delay on the line, or shortcuts not working, or problems of mismatch between screen resolutions that would never appear when pairing on the same machine.</p>
+
+<p>On the other hand when you have a keyboard just under your fingers it is much easier to swap sides and while discussing actually write code constructs. For this we use combination of <strong>Hangout</strong> screen share feature (for quick debug help) and <strong>RDP</strong>.</p>
+
+<p>One last tool that I like to use quite extensively is <strong>Google Drive</strong> as a shared whiteboard. It has proved to be especially useful for retrospectives or architecture discussion. The nice thing about the Drive draw tool is that it forces you to use shapes, lines and text. Those three primitives allow for an unlimited number of possible drawings. Being vector means you can easily move stuff around (nothing will fall on the floor), you never run out of space and you have an immediate and lasting backup of your board. I also found that a distributed retrospective facilitates a more equal participation of those attending.</p>
+
+<p>The best feature of the most of those tools is that they allow to <strong>easily save and store the outcomes of your conversations.</strong> Hangouts can be recorded, HipChat naturally creates history of chats and Google Drive&rsquo;s drawings become a persistent track of team discussions.</p>
+
+<h2>Get Involved</h2>
+
+<p>If you have a different setup or tools that help with having a distributed team member, or you want to share your experiences be sure to tweet us <a href="http://www.twitter.com/OpenTableTechUK">@OpenTableTechUK</a> or me personally <a href="http://www.twitter.com/mbazydlo">@mbazydlo</a>.​</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Marcin Bazydlo</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-29T10:56:49+01:00" pubdate data-updated="true">Apr 29<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/agile/'>Agile</a>, <a class='category' href='/blog/categories/culture/'>Culture</a>, <a class='category' href='/blog/categories/remote-working/'>Remote working</a>, <a class='category' href='/blog/categories/work-smarter/'>Work smarter</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup/" data-via="opentabletechuk" data-counturl="http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/04/28/effective-prioritisation/" title="Previous Post: Effective prioritisation">&laquo; Effective prioritisation</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/04/29/remote-worker-notes-tools-and-setup/">Remote Worker Notes &ndash; Tools and Setup</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/28/effective-prioritisation/">Effective prioritisation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/16/look-ma-no-unit-tests/">Look ma, no unit tests!</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/07/upgrading-puppet-with-puppet/">Upgrading Puppet with Puppet</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/04/testing-puppet-with-beaker/">Testing Puppet with Beaker</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2014 - OpenTable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

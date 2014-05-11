@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Grunt | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/grunt/atom.xml" rel="self"/>
-  <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-16T14:51:42+01:00</updated>
-  <id>http://tech.toptable.co.uk/</id>
+  <title><![CDATA[Category: Grunt | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/grunt/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-05-02T15:56:30+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
   <author>
-    <name><![CDATA[toptable]]></name>
+    <name><![CDATA[OpenTable]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,10 +15,10 @@
   
   <entry>
     <title type="html"><![CDATA[Grunt + Vagrant = Acceptance Test Heaven]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/"/>
     <updated>2013-08-16T15:32:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven</id>
-    <content type="html"><![CDATA[<p>My continued love affair with Grunt reached a new high the other day, when I combined <a href="http://www.vagrantup.com">Vagrant</a> with my <a href="http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">Grunt deployment tasks</a> and test runners.</p>
+    <id>http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven</id>
+    <content type="html"><![CDATA[<p>My continued love affair with Grunt reached a new high the other day, when I combined <a href="http://www.vagrantup.com">Vagrant</a> with my <a href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">Grunt deployment tasks</a> and test runners.</p>
 
 <p>I&rsquo;m not going to bang on about how great Vagrant is, because better people than me have already soliloquised at length on that subject. Let&rsquo;s just take it as writ that <strong>Vagrant is awesome</strong>.</p>
 
@@ -91,7 +91,7 @@ grunt.registerTask('vagrant-destroy', function(){
 });
 </code></pre>
 
-<p>So now that we&rsquo;ve got our machine provisioned and booted, we can use Grunt to <a href="http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">deploy our code and start our service</a>.</p>
+<p>So now that we&rsquo;ve got our machine provisioned and booted, we can use Grunt to <a href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">deploy our code and start our service</a>.</p>
 
 <p>Assuming that we&rsquo;ve got all that going on, we can move on to the next step, getting Grunt to deploy the code to the Vagrant box.</p>
 
@@ -176,9 +176,9 @@ grunt.registerTask('acceptance', [
   
   <entry>
     <title type="html"><![CDATA[Grunt your deployments too]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/"/>
     <updated>2013-08-08T15:27:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too</id>
+    <id>http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too</id>
     <content type="html"><![CDATA[<p>We&rsquo;ve been using <a href="http://www.gruntjs.com">Grunt</a> as a build tool for our nodejs apps, and it&rsquo;s brilliant. It lints, it configures, it minifies, it tests and it packages.</p>
 
 <p>As we move towards getting our first node app into production, we were looking at ways to deploy it. First we thought of <a href="http://www.capistranorb.com">Capistrano</a>.</p>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: PowerShell | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/powershell/atom.xml" rel="self"/>
-  <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-16T14:51:42+01:00</updated>
-  <id>http://tech.toptable.co.uk/</id>
+  <title><![CDATA[Category: PowerShell | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/powershell/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-05-02T15:56:30+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
   <author>
-    <name><![CDATA[toptable]]></name>
+    <name><![CDATA[OpenTable]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Managing Windows Certificates with PowerShell]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell/"/>
     <updated>2013-07-08T18:51:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell</id>
+    <id>http://tech.opentable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell</id>
     <content type="html"><![CDATA[<p>Managing certificates on Windows is <em>really</em> painful. There is no easy way to do it. The general way to install a certificate to a Windows Server 2008 machine is as follows:</p>
 
 <ul>
@@ -58,9 +58,9 @@
   
   <entry>
     <title type="html"><![CDATA[Windows Feature Management with PowerShell]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/"/>
     <updated>2013-06-14T20:31:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell</id>
+    <id>http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell</id>
     <content type="html"><![CDATA[<p>In late 2012, our development team started to move towards our systems being much more automated. Long gone are the days of developers creating runbooks in Word and giving them to our operations team to use to set up our production servers.</p>
 
 <p>When building our webservers on Windows, in order to install / activate Windows features, this was the general set of instructions that was needed to be followed:</p>

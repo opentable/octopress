@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Opportunity to have more meetings | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/opportunity-to-have-more-meetings/atom.xml" rel="self"/>
-  <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-16T14:51:42+01:00</updated>
-  <id>http://tech.toptable.co.uk/</id>
+  <title><![CDATA[Category: Opportunity to have more meetings | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/opportunity-to-have-more-meetings/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-05-02T15:56:30+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
   <author>
-    <name><![CDATA[toptable]]></name>
+    <name><![CDATA[OpenTable]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Programme Management, making Agile scale]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/02/12/programme-management/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/02/12/programme-management/"/>
     <updated>2014-02-12T10:16:00+00:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/02/12/programme-management</id>
+    <id>http://tech.opentable.co.uk/blog/2014/02/12/programme-management</id>
     <content type="html"><![CDATA[<h2>Popular topic at conferences</h2>
 
 <p>A lot of us were lucky enough to attend NDC London this year, we even sponsored one of the food stalls. I often see one or more real themes coming from talks at conferences. At NDC London I saw three talks around scaling Agile. Indeed Dan North&rsquo;s (<a href="https://twitter.com/tastapod">@tastapod</a>) talk was called exactly that. It is a topic OpenTable is trying to make happen. We are about 100 engineers on three continents which is a lot of teams working together.</p>

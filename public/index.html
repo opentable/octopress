@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>toptable Tech Blog</title>
-  <meta name="author" content="toptable">
+  <title>OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for new tools and methods &hellip;">
+  <meta name="description" content="For the last couple months I&rsquo;ve been working remotely with our search team at OpenTable. Let me share our remote working setup and some &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,13 +18,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://tech.toptable.co.uk/">
+  <link rel="canonical" href="http://tech.opentable.co.uk/">
   <link href="/favicon.ico" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <link href="/atom.xml" rel="alternate" title="toptable Tech Blog" type="application/atom+xml">
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
   <script type="text/javascript" src="http://use.typekit.com/syx2vfn.js"></script>
   <script type="text/javascript">try { Typekit.load(); } catch (e) { }</script>
 
@@ -50,9 +50,9 @@
 
 <body   >
   <header role="banner"><hgroup>
-  <h1><a href="/">toptable Tech Blog</a></h1>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
   
-    <h2>The technology blog for toptable and OpenTable.</h2>
+    <h2>The technology blog for OpenTable UK.</h2>
   
 </hgroup>
 
@@ -64,7 +64,7 @@
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:tech.toptable.co.uk" />
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -81,6 +81,225 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/29/remote-worker-notes-tools-and-setup/">Remote Worker Notes &ndash; Tools and Setup</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-29T10:56:49+01:00" pubdate data-updated="true">Apr 29<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>For the last couple months I&rsquo;ve been working remotely with our search team at OpenTable. Let me share our remote working setup and some rationale for our choices. I will shy away from judging how it&rsquo;s all worked out and leave that for subsequent blog posts.</p>
+
+<h2>The deal</h2>
+
+<p>I started as an on-site engineer and subsequently became a remote worker and my challenge was to make remote working as similar to on-site working as possible. Thus it is natural that <strong>I work the same working hours</strong> as my colleagues in the office (despite the time difference) and I take <strong>public holidays</strong> at the same time that there are bank holidays in UK (even though in Poland they are different).</p>
+
+<p>We also decided that every two months I will <strong>visit the office for a week</strong> as well as arranging visits to coincide with other office guests (like contractors, overseas colleagues and so on). All this is to try to keep me as close to the team as possible and disrupt the normal work-flow as little as possible.</p>
+
+<h2>The workplace setup</h2>
+
+<p>Once home in Poland I had to carefully consider my options for a workplace. I tried three obvious possibilities:</p>
+
+<ul>
+<li>Dining room in my own one bedroom flat</li>
+<li>Co-working space</li>
+<li>Private room in my parents&#8217; house</li>
+</ul>
+
+
+<p>The <strong>dining room</strong> worked pretty well, for a time&hellip;  I would &lsquo;arrive&rsquo; really early in the office (just after taking a shower), and then be &lsquo;home&rsquo; straight after the laptop lid was closed. My wife kindly respected that I am focused at work and distracted me only to share lunch (or to kick me out of house to bring the lunch in).</p>
+
+<p>A couple of things made it only a short-term solution &ndash; the first being my back complaining about working on a chair that&rsquo;s nice for a dinner, but awful for working on computer. Then I realised that I really miss a second monitor and separate keyboard &ndash; I guess anybody who coded in the middle of summer on a laptop knows the pain of a hot computer under your fingers.  Finally, my child was born, and that was it &ndash; a crying child in the same room when you are trying to pair with somebody is a deal-breaker.</p>
+
+<p>In the meantime I evaluated a local <strong>co-working space</strong>. The problem was that it was quiet, <em>really quiet</em>, up to the point that I was embarrassed to pair with somebody remotely. The way we work fluctuates over time; there are weeks when I do stuff alone and in silence, there are weeks when I spend whole days on conversations or pairing. I just cannot be too quiet. For that matter I tried also a coffee shop, but it failed me for exactly the same reasons as the dining room table.</p>
+
+<p><strong>My little own office is currently the winner</strong> and the only way it could be better is if behind the closed doors there was my house, not my parents&#8217; one. But even this one is pretty good &ndash; I have access to an always full fridge and a decent coffee machine. I can bring my family with me and it is not awkward.</p>
+
+<p>Finally, I can share a lunch with whoever is at home. With a decent chair and desk I cannot complain about anything. Actually, I found that even after work if we stay for a coffee or dinner I am tempted to pop in into the office and look at our dashboards or chat room.</p>
+
+<h2>The tools setup</h2>
+
+<p>To facilitate continuous communication <em>you first need a good attitude, and then good tools</em>. With the attitude two things matter the most:</p>
+
+<ul>
+<li>A quick response</li>
+<li>Patience</li>
+</ul>
+
+
+<p>By nature all remote communication channels are asynchronous, which is hugely different to face-to-face communication. It is much easier this way for an important question to go unnoticed by you. Conversely it is easy to get annoyed that somebody is not responding, when in fact they may just be talking to the person at the desk next to them.</p>
+
+<p>Our primary tool is <strong>Google Hangout</strong>. It works quite well for a team, being nice for stand-ups, though it fails miserably as a constant communication tool. There are two reasons for that; the first is that its messages often get lost and the second is it makes our MacBook radiators spin like crazy when open for too long. <em>Unfortunately we had to rule out an online window to the office after a couple of days trying</em>.</p>
+
+<p>We also extensively use <a href="http://www.hipchat.com"><strong>HipChat</strong></a>, and that brought one of best breakthroughs in our communication patterns. It has a few features which make it great as a team collaboration tool:</p>
+
+<ol>
+<li>You get messages whether you pay attention or not</li>
+<li>You can interrupt other people by mentioning them</li>
+<li>It makes sharing links and images really easy</li>
+<li>When you type you can collaborate with multiple persons at the same time</li>
+</ol>
+
+
+<p>I also mentioned that pairing is a big part of our daily work. I have to admit that I haven&rsquo;t yet found a tool that would make the experience seamless. There is always a bit of delay on the line, or shortcuts not working, or problems of mismatch between screen resolutions that would never appear when pairing on the same machine.</p>
+
+<p>On the other hand when you have a keyboard just under your fingers it is much easier to swap sides and while discussing actually write code constructs. For this we use combination of <strong>Hangout</strong> screen share feature (for quick debug help) and <strong>RDP</strong>.</p>
+
+<p>One last tool that I like to use quite extensively is <strong>Google Drive</strong> as a shared whiteboard. It has proved to be especially useful for retrospectives or architecture discussion. The nice thing about the Drive draw tool is that it forces you to use shapes, lines and text. Those three primitives allow for an unlimited number of possible drawings. Being vector means you can easily move stuff around (nothing will fall on the floor), you never run out of space and you have an immediate and lasting backup of your board. I also found that a distributed retrospective facilitates a more equal participation of those attending.</p>
+
+<p>The best feature of the most of those tools is that they allow to <strong>easily save and store the outcomes of your conversations.</strong> Hangouts can be recorded, HipChat naturally creates history of chats and Google Drive&rsquo;s drawings become a persistent track of team discussions.</p>
+
+<h2>Get Involved</h2>
+
+<p>If you have a different setup or tools that help with having a distributed team member, or you want to share your experiences be sure to tweet us <a href="http://www.twitter.com/OpenTableTechUK">@OpenTableTechUK</a> or me personally <a href="http://www.twitter.com/mbazydlo">@mbazydlo</a>.​</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/28/effective-prioritisation/">Effective prioritisation</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-28T14:51:51+01:00" pubdate data-updated="true">Apr 28<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Prioritisation is a huge part of modern life.</p>
+
+<p>No.</p>
+
+<p>Prioritisation is an ESSENTIAL part of modern life.</p>
+
+<p>I&rsquo;m not talking solely about Agile here either. Yes we plan stories, yes we prioritise them to get them into the backlog but I&rsquo;m aiming at a higher level. Life lessons that are useful to all of us.</p>
+
+<p>How do we know what to do next? Perhaps you lean on your gut feeling to order your to-do list. Maybe it is real-time cost and budget implications that influence your priorities or does it come down to who shouts loudest?</p>
+
+<h2>Why is prioritisation important?</h2>
+
+<p>The experts would have us believe we are living through the Digital Age, also know as the Computer Age. Increasingly this has been more accurately redefined as the Information Age.</p>
+
+<p>The society we live in today truly bombardes us with information. Whether it be TV, mobile, emails, blog posts, status updates, tweets, likes and check-in&rsquo;s we are rarely unconnected to modern day life and have a vast amount of data and information at our disposal.</p>
+
+<p>This flood of information leads to a problem: we often confuse the importance of everyday tasks and activities.</p>
+
+<p>For instance how many times have we said &ldquo;I don&rsquo;t have time to read&rdquo; or &ldquo;I&rsquo;d love to be able to go to the gym more&rdquo;. Perhaps a more honest way to say this is &ldquo;reading is not a high priority for me&rdquo; or &ldquo;I prioritise other activities higher than going to the gym&rdquo;.</p>
+
+<p>The decision not to spend time reading or working-out in the gym means you are spending time on other activities you consider more important. Consciously or unconsciously, we prioritise our life. The key is to prioritise effectively.</p>
+
+<h2>The Focus Quadrant</h2>
+
+<p>I&rsquo;ve been introduced to a framework that helped me to grab this idea of effective prioritisation and certainly opened my eyes to some of the mistakes I made previously.</p>
+
+<p>Stephen Covey, a sadly deceased educator, author and businessman, designed a matrix called The Focus Quadrant that categorises activities and helps us deal with the struggle of prioritisation by clearly outlining the conflicts involved.</p>
+
+<p><img src="http://www.chowamigo.co.uk/images/focus.jpg" alt="image" /></p>
+
+<table style="font-size: 80%;margin-bottom:20px;">
+    <tr>
+        <th style="padding:3px;"></th>
+        <th style="padding:3px;"><b>Description</b></th>
+        <th style="padding:3px;"><b>Examples</b></th>
+    </tr>
+<tr style="background-color: #E5E5E5">
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">A. Important/Urgent</td>
+    <td style="padding:3px;vertical-align:top;">Tasks that are necessary usually deadline driven or time sensitive. This usually this means panic and problems.</td>
+    <td style="padding:3px;vertical-align:top;">Fixing the server crash, firefighting a site outage, entering expenses before a deadline</td>
+</tr>
+<tr>
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">B. Important/Not urgent</td>
+    <td style="padding:3px;vertical-align:top;">Activities in direct alignment to your goals. Typically these tasks involve planning ahead. Prevention rather than cure.</td>
+    <td style="padding:3px;vertical-align:top;">Relationship building, researching your next API, learning a new coding language, taking time out to exercise</td>
+</tr>
+<tr style="background-color: #E5E5E5">
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">C. Not important/Urgent</td>
+    <td style="padding:3px;vertical-align:top;">Activities that seem important but in reality are not. It&#8217;s thought these tasks will make you popular as you are responding to requests for your time.</td>
+    <td style="padding:3px;vertical-align:top;">Going to a meeting, answering the phone, replying instantly on IMs or email</td>
+</tr>
+<tr>
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">D. Not important/Not urgent</td>
+    <td style="padding:3px;vertical-align:top;">While it would seem pleasant enough to live here permentantly, in reality these activities are time wasters that should be eliminated as much as possible.</td>
+    <td style="padding:3px;vertical-align:top;">Playing video games, surfing the net, getting a tea or coffee, flicking through the magazine on your desk</td>
+</tr>
+</table>
+
+
+<h2>How does this help?</h2>
+
+<p>Covey&rsquo;s point is that if we have a long list of items and activities and we are struggling to prioritise them, spending 20 minutes writing the list down and assigning each task A, B, C or D can help clarify importance.</p>
+
+<p>For me the interesting part is that we should not be spending too much time in A. This goes against our natural reaction that A is good &ndash; probably the fault of our education system. In fact category A is considered beneficial only in the short term. We are not overly productive even if we spend a lot of time on A category tasks. We really want to shift our attention to more longer term plans.</p>
+
+<p>Category B on the other hand is considered the sweet spot. This is where we are doing our best work. It is where we will be ticking off a lot of our important long term goals. Yes we all have different goals but the majority of the goals we want to achieve fit into B &ndash; non urgent and important.</p>
+
+<p>For category C there is a great saying &lsquo;The quadrant of deception&rsquo;. These are tasks we THINK are urgent but in reality they are not. Considered to be a distraction, get used to politely saying no to any activities in the C category. We should look to regain control of our time and not be forced to respond when it suits others.</p>
+
+<p>Finally category D is the worst place to spend your time. It&rsquo;s okay to roam across each of these four quadrants but if we identify we are spending too much time in quadrant D we need to step back, reassess and pick up a task more aligned to our goals &ndash; ideally something from category B.</p>
+
+<h2>Money => mouth</h2>
+
+<p>While this is useful in theory, we of course need to be realistic. You should factor in time for impromptu interruptions &ndash; saying no to every meeting isn&rsquo;t possible and this isn&rsquo;t an excuse to push back difficult tasks. However, the next time your to-do list gets unmanageable, take time out to clarify your priorities.</p>
+
+<p>Now my current my to-do list looks like this&hellip;</p>
+
+<ol>
+<li>Investigate a blip in our API performance <strong><code>(A)</code></strong></li>
+<li>Scope out our next API <strong><code>(B)</code></strong></li>
+<li>Improve the way our current API deploys to production <strong><code>(B)</code></strong></li>
+<li>Send out a team update to interested parties <strong><code>(C)</code></strong></li>
+<li>Go and grab a cup of tea :) <strong><code>(D)</code></strong></li>
+</ol>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -129,7 +348,7 @@
 
 <p>Well, on a recent project, we found one such way: <em><em>we decided to delete all of the unit and integration tests</em></em>.</p>
 
-<p><em>What?! Are we quite mad?</em> You may be thinking&hellip; Well, it took me a little time to get used to this idea as well, but read on and you&rsquo;ll see that it was actually the most sane thing we could possibly do.</p>
+<p><em>What?! Are we quite mad?</em> You may be thinking&hellip; Well, it took me a little time to get used to this idea as well, but read on and you&rsquo;ll see that it was actually the most sane thing we could have possibly done  .</p>
 
 <h2>Survival of the testedest</h2>
 
@@ -139,11 +358,11 @@
 
 <p><em>Meanwhile&hellip;</em></p>
 
-<p>We realised that some of the things that would be important to our consumers were still not covered by our tests. Things like actual HTTP responses, serialisation, and the like. These are things that don&rsquo;t always need to be tested explicitly, but, since this was a third-party-developer-facing system, we really wanted to be sure that the interface worked exactly as we wanted, HTTP headers, character encoding, date formatting, the lot.</p>
+<p>We realised that some of the things that would be important to our consumers were still not covered by our tests. Things like actual HTTP responses, serialisation, and the like. These are things that don&rsquo;t always need to be tested explicitly, but since this was a third-party-developer-facing system, we really wanted to be sure that the interface worked exactly as we wanted, HTTP headers, character encoding, date formatting, the lot.</p>
 
 <p>So, playing the role of our consumers, we engineered high-level acceptance tests, behaving byte-for-byte as we expected our customers to do.</p>
 
-<p>Now, with the triple-action protection of three layers of tests, we felt our project was the most minty-fresh piece of haute engineering we had ever layed keyboards on.</p>
+<p>Now, with the triple-action protection of three layers of tests, we felt our project was the most minty-fresh piece of haute engineering we had ever laid keyboards on.</p>
 
 <p>We were wrong.</p>
 
@@ -155,7 +374,7 @@
 
 <p>Our early adopters were great, giving us a lot of helpful feedback and helping us shape the API into a genuinely usable v1. However, responding to this change required a greater degree of flexibility in the code than we had required up to this point. Our triple-chocolate-crunch of pithy tests was starting to really slow us down, and rot our teeth. The main reason for this: duplication.</p>
 
-<p>We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can&rsquo;t test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic for that call. Code which was already covered by unit tests, and often integration tests as well. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith a very heavy boulder&mdash;and had a hoarde of features we still wanted to smash, who were freely bounding over the mountain tops, and out of reach.</p>
+<p>We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can&rsquo;t test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic for that call. Code which was already covered by unit tests, and often integration tests as well. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith and a very heavy boulder&mdash;and had a hoarde of features we still wanted to smash, who were freely bounding over the mountain tops, and out of reach.</p>
 
 <p>It was time to cut ourselves free.</p>
 
@@ -169,7 +388,7 @@
 
 <p>Take a deep breath. <em>RIP!</em> Aah, there, done.</p>
 
-<p>There was a little bleeding, some gaps in our acceptance tests that had to be filled, some complex set-up logic from the integration tests that had to be ported to work with the acceptance tests. A few day&rsquo;s worth of cleanup and patching in the background, and&hellip; tentatively&hellip; we were done.</p>
+<p>There was a little bleeding, some gaps in our acceptance tests that had to be filled, some complex set-up logic from the integration tests that had to be ported to work with the acceptance tests. A few days&#8217; worth of cleanup and patching in the background, and&hellip; tentatively&hellip; we were done.</p>
 
 <p>For me at least, this was a bold move. But it shouldn&rsquo;t have seemed so, we knew all of our endpoints were acceptance-tested, including every supported API call. My primary worry was how we were going to nail down the exact cause of bugs with no code-level testing. This turned out to be nowhere near as bad as I expected.</p>
 
@@ -229,7 +448,7 @@
   </header>
 
 
-  <div class="entry-content"><p>As part of one of our recent <a href="http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
+  <div class="entry-content"><p>As part of one of our recent <a href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
 
 <p>This should be a very straightforward task to complete because this is one of the core resources that Puppet manages &ndash; the upgrading of packages. With that in mind, putting <code>package { ‘puppet’: ensure =&gt; $version }</code> in one of our base profiles would be all that was needed but alas it was not. In this blog I want to take you through the history, the bugs, the platforms and the edge-cases that make performing an in-place upgrade of Puppet a more complex task that it ought to be.</p>
 
@@ -899,7 +1118,7 @@ end
 
 <h2>The why</h2>
 
-<p>A couple of weeks after joining the company I decided, as part of my <a href="http://tech.toptable.co.uk/blog/2014/02/06/20-percent-time/">innovation time</a>, to rebuild the core of a .NET WebApi project in node.js in order to have a working prototype that could do exactly the same job as the original one, and could help me to observe how the two applications could react with similar volumes of traffic. After managing to make the two apis run on two clean VMs with the same configuration, I wrote a little node.js script to start performing some requests and test the response times. After seeing the results I thought that something was going wrong:</p>
+<p>A couple of weeks after joining the company I decided, as part of my <a href="http://tech.opentable.co.uk/blog/2014/02/06/20-percent-time/">innovation time</a>, to rebuild the core of a .NET WebApi project in node.js in order to have a working prototype that could do exactly the same job as the original one, and could help me to observe how the two applications could react with similar volumes of traffic. After managing to make the two apis run on two clean VMs with the same configuration, I wrote a little node.js script to start performing some requests and test the response times. After seeing the results I thought that something was going wrong:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1150,119 +1369,6 @@ end
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/12/programme-management/">Programme Management, making Agile scale</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-12T10:16:00+00:00" pubdate data-updated="true">Feb 12<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>Popular topic at conferences</h2>
-
-<p>A lot of us were lucky enough to attend NDC London this year, we even sponsored one of the food stalls. I often see one or more real themes coming from talks at conferences. At NDC London I saw three talks around scaling Agile. Indeed Dan North&rsquo;s (<a href="https://twitter.com/tastapod">@tastapod</a>) talk was called exactly that. It is a topic OpenTable is trying to make happen. We are about 100 engineers on three continents which is a lot of teams working together.</p>
-
-<p>I truly believe that the only way to make an individual team successful in an Agile environment is to have ownership of an area, a system or similar. That enables fast feedback, quick decision making and also a sense of pride and responsibility for what people are working on.</p>
-
-<p>However, when you have a big project, you can&rsquo;t give it to just one team. You need many teams working together. You can split it up and get teams to work on the parts of the project affecting the code they own. This will though mean certain parts of the project go faster than others, and if teams are autonomous, who is really responsible for bringing all those pieces together? Also, imagine you are the project owner and need to have a rough handle on when things can actually be delivered, who is going to give you that? None of the individual teams know, everyone is Agile and cool and so everyone hates estimates.</p>
-
-<p>The point made by three speakers at NDC London, <a href="https://twitter.com/tastapod">Dan North</a>, <a href="https://twitter.com/jezhumble">Jez Humble</a> and <a href="https://twitter.com/gojkoadzic">Gojko Adzic</a> came down to the need for the coordination piece across the teams. One thing Dan North (more or less) said is <em>&ldquo;if your team is really fast and all the others are slow, the project is slow and your team haven&rsquo;t achieved their goal&rdquo;</em>. That was not the exact words he used but the sentiment came across.</p>
-
-<p>Indeed we have some big projects at OpenTable and as we have properly embraced Agile in many ways, we still had some pain points in this exact area. We were getting to the same conclusions but since these talks we have had some more solid programme management and in the third cross-team meeting as a result, things starting taking shape. It really is an important piece of the jigsaw.</p>
-
-<p>I would also recommend a <a href="http://www.youtube.com/watch?v=ILP1pJAuT9c&amp;list=PLBMFXMTB7U74NdDghygvBaDcp67owVUUF&amp;feature=c4-overview-vl">DevDay talk</a> from Dariusz Dziuk on this and how Spotify make things scale. Slightly different content but a similar theme.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/10/the-adoption-of-configuration-management/">The adoption of Configuration Management</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-10T13:46:00+00:00" pubdate data-updated="true">Feb 10<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around nine months ago we started to really try and get these teams working together. We introduced a configuration management tool, <a href="http://puppetlabs.com/puppet/what-is-puppet">Puppet</a>, into our ecosystem.</p>
-
-<p>Configuration management is one of the steps of continuous delivery that developers often forget. They feel that systems are magically created for them to deploy their application to. I used to believe this. When I was focused on developing software, I never gave any thought as to the work our operations team had to do to keep the train on the track. So give some respect to your operations teams! We created a repository and started to experiment by configuring some of our applications using Puppet.</p>
-
-<p>This was a major step for both sets of teams. The developers started being in charge of the configuration of their application. This meant that their application would guarantee to be configured the same in our CI environment as it was in production. We, as developers, would be more confident of our applications working as expected.</p>
-
-<p>To contribute to the project, as an engineer, you need to:</p>
-
-<ul>
-<li>fork the project</li>
-<li>make the changes you require</li>
-<li>test the changes in a Vagrant environment (already created with a Windows and Linux system)</li>
-<li>send a PR (pull request)</li>
-</ul>
-
-
-<p>We have just merged our #847 pull request. The stats of the repository look as follows:</p>
-
-<p><img class="center" src="/images/posts/puppet-adoption.png"></p>
-
-<p>Our puppet repository has had contributions from over 40% of our engineering / operations teams. We use Puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage 548 nodes (a combination of internal and production) via Puppet.</p>
-
-<p>Using a project called <a href="www.fullybaked.co.uk/articles/getting-gource-running-on-osx">Gource</a>, one of our engineering leads, <a href="http://twitter.com/ryantomlinson">Ryan Tomlinson</a>, created a video of the repository vizualization. It&rsquo;s just over two minutes long and shows the activity the repository has taken.</p>
-
-<div class="embed-video-container"><iframe src="http://player.vimeo.com/video/86201508 "></iframe></div>
-
-
-<p>Each branch in the tree relates to a directory inside our repository. Green zaps are additions, orange are updates and red deletions. The important thing to take from the video is the evolution of the repository, the amount of changes and the number of people pushing those changes.</p>
-
-<p>I&rsquo;m very happy with our configuration management adoption. We are by no means at a point where everyone does it, but we are working towards that. I would like our contributors to rise to over 75% of our engineering / operations team by the end of 2014. Let&rsquo;s see how that goes&hellip;</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1278,6 +1384,14 @@ end
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/29/remote-worker-notes-tools-and-setup/">Remote Worker Notes &ndash; Tools and Setup</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/28/effective-prioritisation/">Effective prioritisation</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/04/16/look-ma-no-unit-tests/">Look ma, no unit tests!</a>
       </li>
     
@@ -1289,18 +1403,10 @@ end
         <a href="/blog/2014/04/04/testing-puppet-with-beaker/">Testing Puppet with Beaker</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday - our commitment to the Puppet Forge</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/02/internationalisation-in-a-restful-world/">Internationalisation in a RESTful world</a>
-      </li>
-    
   </ul>
 </section>
 <section>
-	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/toptabletech"  data-widget-id="351711375858466817">Tweets by @toptabletech</a>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
 	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 </section>
 <section>
@@ -1341,7 +1447,7 @@ end
 
     </div>
   </div>
-  <footer role="contentinfo"><p>Copyright &copy; 2014 - toptable</p></footer>
+  <footer role="contentinfo"><p>Copyright &copy; 2014 - OpenTable</p></footer>
   
 
 

@@ -30,7 +30,7 @@ Although the core scripts that shipped with Hubot are helpful…
 
 {% img center /images/posts/hubot_beer_me.png %}
 
-…we started to focus on commands that would be most useful to how we work at [toptable](http://www.toptable.co.uk/) and the tools and technologies that we employ. Specifically we got together and decided the following would be a useful starting point:
+…we started to focus on commands that would be most useful to how we work at [OpenTable](http://www.opentable.co.uk/) and the tools and technologies that we employ. Specifically we got together and decided the following would be a useful starting point:
 
 * Triggering TeamCity builds to ship to production
 * Displaying the status of a JIRA ticket, adding comments and changing their status

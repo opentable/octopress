@@ -1,24 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/atom.xml" rel="self"/>
-  <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-16T14:51:42+01:00</updated>
-  <id>http://tech.toptable.co.uk/</id>
+  <title><![CDATA[OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-05-02T15:56:30+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
   <author>
-    <name><![CDATA[toptable]]></name>
+    <name><![CDATA[OpenTable]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
+    <title type="html"><![CDATA[Remote Worker Notes &ndash; Tools and Setup]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup/"/>
+    <updated>2014-04-29T10:56:49+01:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup</id>
+    <content type="html"><![CDATA[<p>For the last couple months I&rsquo;ve been working remotely with our search team at OpenTable. Let me share our remote working setup and some rationale for our choices. I will shy away from judging how it&rsquo;s all worked out and leave that for subsequent blog posts.</p>
+
+<h2>The deal</h2>
+
+<p>I started as an on-site engineer and subsequently became a remote worker and my challenge was to make remote working as similar to on-site working as possible. Thus it is natural that <strong>I work the same working hours</strong> as my colleagues in the office (despite the time difference) and I take <strong>public holidays</strong> at the same time that there are bank holidays in UK (even though in Poland they are different).</p>
+
+<p>We also decided that every two months I will <strong>visit the office for a week</strong> as well as arranging visits to coincide with other office guests (like contractors, overseas colleagues and so on). All this is to try to keep me as close to the team as possible and disrupt the normal work-flow as little as possible.</p>
+
+<h2>The workplace setup</h2>
+
+<p>Once home in Poland I had to carefully consider my options for a workplace. I tried three obvious possibilities:</p>
+
+<ul>
+<li>Dining room in my own one bedroom flat</li>
+<li>Co-working space</li>
+<li>Private room in my parents&#8217; house</li>
+</ul>
+
+
+<p>The <strong>dining room</strong> worked pretty well, for a time&hellip;  I would &lsquo;arrive&rsquo; really early in the office (just after taking a shower), and then be &lsquo;home&rsquo; straight after the laptop lid was closed. My wife kindly respected that I am focused at work and distracted me only to share lunch (or to kick me out of house to bring the lunch in).</p>
+
+<p>A couple of things made it only a short-term solution &ndash; the first being my back complaining about working on a chair that&rsquo;s nice for a dinner, but awful for working on computer. Then I realised that I really miss a second monitor and separate keyboard &ndash; I guess anybody who coded in the middle of summer on a laptop knows the pain of a hot computer under your fingers.  Finally, my child was born, and that was it &ndash; a crying child in the same room when you are trying to pair with somebody is a deal-breaker.</p>
+
+<p>In the meantime I evaluated a local <strong>co-working space</strong>. The problem was that it was quiet, <em>really quiet</em>, up to the point that I was embarrassed to pair with somebody remotely. The way we work fluctuates over time; there are weeks when I do stuff alone and in silence, there are weeks when I spend whole days on conversations or pairing. I just cannot be too quiet. For that matter I tried also a coffee shop, but it failed me for exactly the same reasons as the dining room table.</p>
+
+<p><strong>My little own office is currently the winner</strong> and the only way it could be better is if behind the closed doors there was my house, not my parents&#8217; one. But even this one is pretty good &ndash; I have access to an always full fridge and a decent coffee machine. I can bring my family with me and it is not awkward.</p>
+
+<p>Finally, I can share a lunch with whoever is at home. With a decent chair and desk I cannot complain about anything. Actually, I found that even after work if we stay for a coffee or dinner I am tempted to pop in into the office and look at our dashboards or chat room.</p>
+
+<h2>The tools setup</h2>
+
+<p>To facilitate continuous communication <em>you first need a good attitude, and then good tools</em>. With the attitude two things matter the most:</p>
+
+<ul>
+<li>A quick response</li>
+<li>Patience</li>
+</ul>
+
+
+<p>By nature all remote communication channels are asynchronous, which is hugely different to face-to-face communication. It is much easier this way for an important question to go unnoticed by you. Conversely it is easy to get annoyed that somebody is not responding, when in fact they may just be talking to the person at the desk next to them.</p>
+
+<p>Our primary tool is <strong>Google Hangout</strong>. It works quite well for a team, being nice for stand-ups, though it fails miserably as a constant communication tool. There are two reasons for that; the first is that its messages often get lost and the second is it makes our MacBook radiators spin like crazy when open for too long. <em>Unfortunately we had to rule out an online window to the office after a couple of days trying</em>.</p>
+
+<p>We also extensively use <a href="http://www.hipchat.com"><strong>HipChat</strong></a>, and that brought one of best breakthroughs in our communication patterns. It has a few features which make it great as a team collaboration tool:</p>
+
+<ol>
+<li>You get messages whether you pay attention or not</li>
+<li>You can interrupt other people by mentioning them</li>
+<li>It makes sharing links and images really easy</li>
+<li>When you type you can collaborate with multiple persons at the same time</li>
+</ol>
+
+
+<p>I also mentioned that pairing is a big part of our daily work. I have to admit that I haven&rsquo;t yet found a tool that would make the experience seamless. There is always a bit of delay on the line, or shortcuts not working, or problems of mismatch between screen resolutions that would never appear when pairing on the same machine.</p>
+
+<p>On the other hand when you have a keyboard just under your fingers it is much easier to swap sides and while discussing actually write code constructs. For this we use combination of <strong>Hangout</strong> screen share feature (for quick debug help) and <strong>RDP</strong>.</p>
+
+<p>One last tool that I like to use quite extensively is <strong>Google Drive</strong> as a shared whiteboard. It has proved to be especially useful for retrospectives or architecture discussion. The nice thing about the Drive draw tool is that it forces you to use shapes, lines and text. Those three primitives allow for an unlimited number of possible drawings. Being vector means you can easily move stuff around (nothing will fall on the floor), you never run out of space and you have an immediate and lasting backup of your board. I also found that a distributed retrospective facilitates a more equal participation of those attending.</p>
+
+<p>The best feature of the most of those tools is that they allow to <strong>easily save and store the outcomes of your conversations.</strong> Hangouts can be recorded, HipChat naturally creates history of chats and Google Drive&rsquo;s drawings become a persistent track of team discussions.</p>
+
+<h2>Get Involved</h2>
+
+<p>If you have a different setup or tools that help with having a distributed team member, or you want to share your experiences be sure to tweet us <a href="http://www.twitter.com/OpenTableTechUK">@OpenTableTechUK</a> or me personally <a href="http://www.twitter.com/mbazydlo">@mbazydlo</a>.​</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Effective prioritisation]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/28/effective-prioritisation/"/>
+    <updated>2014-04-28T14:51:51+01:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/04/28/effective-prioritisation</id>
+    <content type="html"><![CDATA[<p>Prioritisation is a huge part of modern life.</p>
+
+<p>No.</p>
+
+<p>Prioritisation is an ESSENTIAL part of modern life.</p>
+
+<p>I&rsquo;m not talking solely about Agile here either. Yes we plan stories, yes we prioritise them to get them into the backlog but I&rsquo;m aiming at a higher level. Life lessons that are useful to all of us.</p>
+
+<p>How do we know what to do next? Perhaps you lean on your gut feeling to order your to-do list. Maybe it is real-time cost and budget implications that influence your priorities or does it come down to who shouts loudest?</p>
+
+<h2>Why is prioritisation important?</h2>
+
+<p>The experts would have us believe we are living through the Digital Age, also know as the Computer Age. Increasingly this has been more accurately redefined as the Information Age.</p>
+
+<p>The society we live in today truly bombardes us with information. Whether it be TV, mobile, emails, blog posts, status updates, tweets, likes and check-in&rsquo;s we are rarely unconnected to modern day life and have a vast amount of data and information at our disposal.</p>
+
+<p>This flood of information leads to a problem: we often confuse the importance of everyday tasks and activities.</p>
+
+<p>For instance how many times have we said &ldquo;I don&rsquo;t have time to read&rdquo; or &ldquo;I&rsquo;d love to be able to go to the gym more&rdquo;. Perhaps a more honest way to say this is &ldquo;reading is not a high priority for me&rdquo; or &ldquo;I prioritise other activities higher than going to the gym&rdquo;.</p>
+
+<p>The decision not to spend time reading or working-out in the gym means you are spending time on other activities you consider more important. Consciously or unconsciously, we prioritise our life. The key is to prioritise effectively.</p>
+
+<h2>The Focus Quadrant</h2>
+
+<p>I&rsquo;ve been introduced to a framework that helped me to grab this idea of effective prioritisation and certainly opened my eyes to some of the mistakes I made previously.</p>
+
+<p>Stephen Covey, a sadly deceased educator, author and businessman, designed a matrix called The Focus Quadrant that categorises activities and helps us deal with the struggle of prioritisation by clearly outlining the conflicts involved.</p>
+
+<p><img src="http://www.chowamigo.co.uk/images/focus.jpg" alt="image" /></p>
+
+<table style="font-size: 80%;margin-bottom:20px;">
+    <tr>
+        <th style="padding:3px;"></th>
+        <th style="padding:3px;"><b>Description</b></th>
+        <th style="padding:3px;"><b>Examples</b></th>
+    </tr>
+<tr style="background-color: #E5E5E5">
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">A. Important/Urgent</td>
+    <td style="padding:3px;vertical-align:top;">Tasks that are necessary usually deadline driven or time sensitive. This usually this means panic and problems.</td>
+    <td style="padding:3px;vertical-align:top;">Fixing the server crash, firefighting a site outage, entering expenses before a deadline</td>
+</tr>
+<tr>
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">B. Important/Not urgent</td>
+    <td style="padding:3px;vertical-align:top;">Activities in direct alignment to your goals. Typically these tasks involve planning ahead. Prevention rather than cure.</td>
+    <td style="padding:3px;vertical-align:top;">Relationship building, researching your next API, learning a new coding language, taking time out to exercise</td>
+</tr>
+<tr style="background-color: #E5E5E5">
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">C. Not important/Urgent</td>
+    <td style="padding:3px;vertical-align:top;">Activities that seem important but in reality are not. It&#8217;s thought these tasks will make you popular as you are responding to requests for your time.</td>
+    <td style="padding:3px;vertical-align:top;">Going to a meeting, answering the phone, replying instantly on IMs or email</td>
+</tr>
+<tr>
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">D. Not important/Not urgent</td>
+    <td style="padding:3px;vertical-align:top;">While it would seem pleasant enough to live here permentantly, in reality these activities are time wasters that should be eliminated as much as possible.</td>
+    <td style="padding:3px;vertical-align:top;">Playing video games, surfing the net, getting a tea or coffee, flicking through the magazine on your desk</td>
+</tr>
+</table>
+
+
+<h2>How does this help?</h2>
+
+<p>Covey&rsquo;s point is that if we have a long list of items and activities and we are struggling to prioritise them, spending 20 minutes writing the list down and assigning each task A, B, C or D can help clarify importance.</p>
+
+<p>For me the interesting part is that we should not be spending too much time in A. This goes against our natural reaction that A is good &ndash; probably the fault of our education system. In fact category A is considered beneficial only in the short term. We are not overly productive even if we spend a lot of time on A category tasks. We really want to shift our attention to more longer term plans.</p>
+
+<p>Category B on the other hand is considered the sweet spot. This is where we are doing our best work. It is where we will be ticking off a lot of our important long term goals. Yes we all have different goals but the majority of the goals we want to achieve fit into B &ndash; non urgent and important.</p>
+
+<p>For category C there is a great saying &lsquo;The quadrant of deception&rsquo;. These are tasks we THINK are urgent but in reality they are not. Considered to be a distraction, get used to politely saying no to any activities in the C category. We should look to regain control of our time and not be forced to respond when it suits others.</p>
+
+<p>Finally category D is the worst place to spend your time. It&rsquo;s okay to roam across each of these four quadrants but if we identify we are spending too much time in quadrant D we need to step back, reassess and pick up a task more aligned to our goals &ndash; ideally something from category B.</p>
+
+<h2>Money => mouth</h2>
+
+<p>While this is useful in theory, we of course need to be realistic. You should factor in time for impromptu interruptions &ndash; saying no to every meeting isn&rsquo;t possible and this isn&rsquo;t an excuse to push back difficult tasks. However, the next time your to-do list gets unmanageable, take time out to clarify your priorities.</p>
+
+<p>Now my current my to-do list looks like this&hellip;</p>
+
+<ol>
+<li>Investigate a blip in our API performance <strong><code>(A)</code></strong></li>
+<li>Scope out our next API <strong><code>(B)</code></strong></li>
+<li>Improve the way our current API deploys to production <strong><code>(B)</code></strong></li>
+<li>Send out a team update to interested parties <strong><code>(C)</code></strong></li>
+<li>Go and grab a cup of tea :) <strong><code>(D)</code></strong></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Look ma, no unit tests!]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/04/16/look-ma-no-unit-tests/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests/"/>
     <updated>2014-04-16T17:00:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/04/16/look-ma-no-unit-tests</id>
-    <content type="html"><![CDATA[<p>At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for <a href="http://tech.toptable.co.uk/blog/2014/02/28/api-benchmark/">new</a> <a href="http://tech.toptable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">tools</a> <a href="http://tech.toptable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/">and</a> <a href="http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/">methods</a> that allow us, the developers, to respond quickly and accurately to changing requirements and environments.</p>
+    <id>http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests</id>
+    <content type="html"><![CDATA[<p>At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for <a href="http://tech.opentable.co.uk/blog/2014/02/28/api-benchmark/">new</a> <a href="http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">tools</a> <a href="http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/">and</a> <a href="http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/">methods</a> that allow us, the developers, to respond quickly and accurately to changing requirements and environments.</p>
 
 <p>There are a number of practices that we already make use of, helping us to be the most effective team I&rsquo;ve ever worked in:</p>
 
@@ -27,7 +192,7 @@
 <li>We use continuous delivery to ship code to production within minutes.</li>
 <li>We have a high degree of high-quality test coverage.</li>
 <li>We are getting better and better at monitoring All The Things.</li>
-<li><a href="http://tech.toptable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">We use ChatOps</a>, so communication is central to our work, and keeps remote workers/teams in the loop.</li>
+<li><a href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">We use ChatOps</a>, so communication is central to our work, and keeps remote workers/teams in the loop.</li>
 </ul>
 
 
@@ -37,7 +202,7 @@
 
 <p>Well, on a recent project, we found one such way: <em><em>we decided to delete all of the unit and integration tests</em></em>.</p>
 
-<p><em>What?! Are we quite mad?</em> You may be thinking&hellip; Well, it took me a little time to get used to this idea as well, but read on and you&rsquo;ll see that it was actually the most sane thing we could possibly do.</p>
+<p><em>What?! Are we quite mad?</em> You may be thinking&hellip; Well, it took me a little time to get used to this idea as well, but read on and you&rsquo;ll see that it was actually the most sane thing we could have possibly done  .</p>
 
 <h2>Survival of the testedest</h2>
 
@@ -47,11 +212,11 @@
 
 <p><em>Meanwhile&hellip;</em></p>
 
-<p>We realised that some of the things that would be important to our consumers were still not covered by our tests. Things like actual HTTP responses, serialisation, and the like. These are things that don&rsquo;t always need to be tested explicitly, but, since this was a third-party-developer-facing system, we really wanted to be sure that the interface worked exactly as we wanted, HTTP headers, character encoding, date formatting, the lot.</p>
+<p>We realised that some of the things that would be important to our consumers were still not covered by our tests. Things like actual HTTP responses, serialisation, and the like. These are things that don&rsquo;t always need to be tested explicitly, but since this was a third-party-developer-facing system, we really wanted to be sure that the interface worked exactly as we wanted, HTTP headers, character encoding, date formatting, the lot.</p>
 
 <p>So, playing the role of our consumers, we engineered high-level acceptance tests, behaving byte-for-byte as we expected our customers to do.</p>
 
-<p>Now, with the triple-action protection of three layers of tests, we felt our project was the most minty-fresh piece of haute engineering we had ever layed keyboards on.</p>
+<p>Now, with the triple-action protection of three layers of tests, we felt our project was the most minty-fresh piece of haute engineering we had ever laid keyboards on.</p>
 
 <p>We were wrong.</p>
 
@@ -63,7 +228,7 @@
 
 <p>Our early adopters were great, giving us a lot of helpful feedback and helping us shape the API into a genuinely usable v1. However, responding to this change required a greater degree of flexibility in the code than we had required up to this point. Our triple-chocolate-crunch of pithy tests was starting to really slow us down, and rot our teeth. The main reason for this: duplication.</p>
 
-<p>We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can&rsquo;t test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic for that call. Code which was already covered by unit tests, and often integration tests as well. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith a very heavy boulder&mdash;and had a hoarde of features we still wanted to smash, who were freely bounding over the mountain tops, and out of reach.</p>
+<p>We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can&rsquo;t test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic for that call. Code which was already covered by unit tests, and often integration tests as well. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith and a very heavy boulder&mdash;and had a hoarde of features we still wanted to smash, who were freely bounding over the mountain tops, and out of reach.</p>
 
 <p>It was time to cut ourselves free.</p>
 
@@ -77,7 +242,7 @@
 
 <p>Take a deep breath. <em>RIP!</em> Aah, there, done.</p>
 
-<p>There was a little bleeding, some gaps in our acceptance tests that had to be filled, some complex set-up logic from the integration tests that had to be ported to work with the acceptance tests. A few day&rsquo;s worth of cleanup and patching in the background, and&hellip; tentatively&hellip; we were done.</p>
+<p>There was a little bleeding, some gaps in our acceptance tests that had to be filled, some complex set-up logic from the integration tests that had to be ported to work with the acceptance tests. A few days&#8217; worth of cleanup and patching in the background, and&hellip; tentatively&hellip; we were done.</p>
 
 <p>For me at least, this was a bold move. But it shouldn&rsquo;t have seemed so, we knew all of our endpoints were acceptance-tested, including every supported API call. My primary worry was how we were going to nail down the exact cause of bugs with no code-level testing. This turned out to be nowhere near as bad as I expected.</p>
 
@@ -107,10 +272,10 @@
   
   <entry>
     <title type="html"><![CDATA[Upgrading Puppet with Puppet]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/"/>
     <updated>2014-04-07T13:23:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet</id>
-    <content type="html"><![CDATA[<p>As part of one of our recent <a href="http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
+    <id>http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet</id>
+    <content type="html"><![CDATA[<p>As part of one of our recent <a href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
 
 <p>This should be a very straightforward task to complete because this is one of the core resources that Puppet manages &ndash; the upgrading of packages. With that in mind, putting <code>package { ‘puppet’: ensure =&gt; $version }</code> in one of our base profiles would be all that was needed but alas it was not. In this blog I want to take you through the history, the bugs, the platforms and the edge-cases that make performing an in-place upgrade of Puppet a more complex task that it ought to be.</p>
 
@@ -167,9 +332,9 @@
   
   <entry>
     <title type="html"><![CDATA[Testing Puppet with Beaker]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/"/>
     <updated>2014-04-04T17:30:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/04/04/testing-puppet-with-beaker</id>
+    <id>http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker</id>
     <content type="html"><![CDATA[<p>One afternoon I got asked to write a new Puppet module to manage local users on our Linux boxes. Not a contrived example but a real-world need as we begin to move our infrastructure from Windows to Linux. Managing users is one of those tasks that is at the core of the Puppet ecosystem and I thought this would be pretty easy as I had done this sort of thing many times before. What added to the complexity was that we needed to support Ubuntu, Centos and FreeBSD machines that we had in our stack and we wanted to make it something that was open source and on the Forge &ndash; so lots of testing was required.</p>
 
 <p>This was not the first module that I had written for the Forge but it was the first that I had written since PuppetLabs had introduced their new acceptance testing framework <a href="https://github.com/puppetlabs/beaker">Beaker</a> and so I wanted to spend some time getting the module working with this new tool.</p>
@@ -316,9 +481,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[ForgeFriday - our commitment to the Puppet Forge]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/"/>
     <updated>2014-04-04T15:30:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge</id>
+    <id>http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge</id>
     <content type="html"><![CDATA[<p>Those of you that read this blog on a regular basis will be aware that here at OpenTable we take our commitment to Open Source very seriously. As part of the infrastructure team at OpenTable we are begining a process of being open-first. That means that everything we write will be open-sourced unless it contains a significant amount of internal information but we will architect to limit this.</p>
 
 <p>As part of that commitment we are trying to release all our Puppet configuration. The key to maintaining any good habit is to do little and often and with that in mind we wanted to let you know about ForgeFriday.</p>
@@ -341,9 +506,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Internationalisation in a RESTful world]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/04/02/internationalisation-in-a-restful-world/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/02/internationalisation-in-a-restful-world/"/>
     <updated>2014-04-02T14:11:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/04/02/internationalisation-in-a-restful-world</id>
+    <id>http://tech.opentable.co.uk/blog/2014/04/02/internationalisation-in-a-restful-world</id>
     <content type="html"><![CDATA[<p>I18n is often a painful afterthought when serving content from a http-api. It can be taken for granted and tacked on using nasty query string values. But thankfully HTTP provides us with a solid gold opportunity. If you can look past the mire of content negotiation you can see the nuggets that lie inside.</p>
 
 <p>The accept-language header is used by most browsers and allows websites to serve content in a language that the user can (hopefully) understand. When we expose content from an api (in most of our use cases, at least), this content eventually ends up in front of a human (in some shape or form). Having our service-service communication serve localised resources can be invaluable because it frees the clients from having to think about i18n of the resources being served from our api.</p>
@@ -496,10 +661,10 @@ end
   
   <entry>
     <title type="html"><![CDATA[When to performance test in production]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/03/20/when-to-performance-test-in-production/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/03/20/when-to-performance-test-in-production/"/>
     <updated>2014-03-20T09:56:00+00:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/03/20/when-to-performance-test-in-production</id>
-    <content type="html"><![CDATA[<p>In <a href="http://tech.toptable.co.uk/blog/2014/03/19/performance-testing-our-search-api/">my last post</a> about performance testing I wrote about how we decided to do it in production as the ultimate test of success. Performance testing in production is enough to make some operations guys have a panic attack and a few odd looks were dished my way when I raised it on behalf of the team.</p>
+    <id>http://tech.opentable.co.uk/blog/2014/03/20/when-to-performance-test-in-production</id>
+    <content type="html"><![CDATA[<p>In <a href="http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api/">my last post</a> about performance testing I wrote about how we decided to do it in production as the ultimate test of success. Performance testing in production is enough to make some operations guys have a panic attack and a few odd looks were dished my way when I raised it on behalf of the team.</p>
 
 <h2>Why not have a dedicated environment?</h2>
 
@@ -531,9 +696,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Performance testing our Search API]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/03/19/performance-testing-our-search-api/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api/"/>
     <updated>2014-03-19T15:53:00+00:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/03/19/performance-testing-our-search-api</id>
+    <id>http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api</id>
     <content type="html"><![CDATA[<p>It was midnight on the Friday before Christmas, my seven-week old child was tucked up asleep and I was pretty chilled. All was calm and it was time for bed. Two minutes later I had a phone call, followed by a series of Nagios email alerts, and a need to put my work hat on quickly. The search API was having trouble; as the manager of the team who developed it, I was not looking forward to this. We were having a real slowdown at one of our busiest times of the year &ndash; this was going to be fun.</p>
 
 <p>Once the dust settled and we were back up and running we realised we needed to do a better job of performance testing and actually solve any performance issues. We <em>had</em> done some performance testing but clearly not the right kind.</p>
@@ -611,14 +776,14 @@ end
   
   <entry>
     <title type="html"><![CDATA[Benchmarking APIs - why it’s important, and how]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/02/28/api-benchmark/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/02/28/api-benchmark/"/>
     <updated>2014-02-28T09:00:00+00:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/02/28/api-benchmark</id>
+    <id>http://tech.opentable.co.uk/blog/2014/02/28/api-benchmark</id>
     <content type="html"><![CDATA[<p>Since I joined OpenTable I’ve been experimenting with performance monitoring, specifically on web services. One of the projects my team is responsible for is a REST API that provides UI elements for HTML5 applications, shaped as HTML snippets and static resources. Our consumers are websites deployed in multiple parts of the world, so our service needs to be fast and reliable.</p>
 
 <h2>The why</h2>
 
-<p>A couple of weeks after joining the company I decided, as part of my <a href="http://tech.toptable.co.uk/blog/2014/02/06/20-percent-time/">innovation time</a>, to rebuild the core of a .NET WebApi project in node.js in order to have a working prototype that could do exactly the same job as the original one, and could help me to observe how the two applications could react with similar volumes of traffic. After managing to make the two apis run on two clean VMs with the same configuration, I wrote a little node.js script to start performing some requests and test the response times. After seeing the results I thought that something was going wrong:</p>
+<p>A couple of weeks after joining the company I decided, as part of my <a href="http://tech.opentable.co.uk/blog/2014/02/06/20-percent-time/">innovation time</a>, to rebuild the core of a .NET WebApi project in node.js in order to have a working prototype that could do exactly the same job as the original one, and could help me to observe how the two applications could react with similar volumes of traffic. After managing to make the two apis run on two clean VMs with the same configuration, I wrote a little node.js script to start performing some requests and test the response times. After seeing the results I thought that something was going wrong:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -669,7 +834,7 @@ end
 
 <p>In case of RESTful services, it is possible to make series of requests to test response times, find peaks and classify errors; it is possible to perform concurrent calls to see how many parallel requests your service can handle (when deployed in single boxes, or when load balanced and globalised); and every time grunt runs everything is saved and plotted to readable and shareable graphs, so the knowledge can be shared between people that belong to different backgrounds.</p>
 
-<p><img class="center" src="http://tech.toptable.co.uk/images/posts/api_benchmark.png"></p>
+<p><img class="center" src="http://tech.opentable.co.uk/images/posts/api_benchmark.png"></p>
 
 <p>A lot of other features are still under development, including support for SOAP services and historical analysis (compare results from previous benchmarks and create historical graphs to represent the evolution of your software).</p>
 
@@ -867,9 +1032,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Programme Management, making Agile scale]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/02/12/programme-management/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/02/12/programme-management/"/>
     <updated>2014-02-12T10:16:00+00:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/02/12/programme-management</id>
+    <id>http://tech.opentable.co.uk/blog/2014/02/12/programme-management</id>
     <content type="html"><![CDATA[<h2>Popular topic at conferences</h2>
 
 <p>A lot of us were lucky enough to attend NDC London this year, we even sponsored one of the food stalls. I often see one or more real themes coming from talks at conferences. At NDC London I saw three talks around scaling Agile. Indeed Dan North&rsquo;s (<a href="https://twitter.com/tastapod">@tastapod</a>) talk was called exactly that. It is a topic OpenTable is trying to make happen. We are about 100 engineers on three continents which is a lot of teams working together.</p>
@@ -888,9 +1053,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[The adoption of Configuration Management]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/"/>
     <updated>2014-02-10T13:46:00+00:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management</id>
+    <id>http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management</id>
     <content type="html"><![CDATA[<p>In years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around nine months ago we started to really try and get these teams working together. We introduced a configuration management tool, <a href="http://puppetlabs.com/puppet/what-is-puppet">Puppet</a>, into our ecosystem.</p>
 
 <p>Configuration management is one of the steps of continuous delivery that developers often forget. They feel that systems are magically created for them to deploy their application to. I used to believe this. When I was focused on developing software, I never gave any thought as to the work our operations team had to do to keep the train on the track. So give some respect to your operations teams! We created a repository and started to experiment by configuring some of our applications using Puppet.</p>
@@ -909,7 +1074,7 @@ end
 
 <p>We have just merged our #847 pull request. The stats of the repository look as follows:</p>
 
-<p><img class="center" src="http://tech.toptable.co.uk/images/posts/puppet-adoption.png"></p>
+<p><img class="center" src="http://tech.opentable.co.uk/images/posts/puppet-adoption.png"></p>
 
 <p>Our puppet repository has had contributions from over 40% of our engineering / operations teams. We use Puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage 548 nodes (a combination of internal and production) via Puppet.</p>
 
@@ -926,9 +1091,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[20% time: Why, as a manager, you should love your engineers to be doing it]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/02/06/20-percent-time/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/02/06/20-percent-time/"/>
     <updated>2014-02-06T17:12:00+00:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/02/06/20-percent-time</id>
+    <id>http://tech.opentable.co.uk/blog/2014/02/06/20-percent-time</id>
     <content type="html"><![CDATA[<p>We allow all our UK based developers to have some time to explore new technologies, try out prototypes and clean-up things that escape the day-to-day process. Two days out of ten, seems a lot doesn&rsquo;t it?</p>
 
 <h2>How we started</h2>
@@ -963,9 +1128,9 @@ end
   
   <entry>
     <title type="html"><![CDATA[Coaching style over substance]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/02/03/coaching-style-over-substance/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/02/03/coaching-style-over-substance/"/>
     <updated>2014-02-03T11:12:00+00:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/02/03/coaching-style-over-substance</id>
+    <id>http://tech.opentable.co.uk/blog/2014/02/03/coaching-style-over-substance</id>
     <content type="html"><![CDATA[<p>Have you ever been lucky enough to mentor someone who really got it? Maybe you&rsquo;ve had the opposite experience and the session ended up being a failure for both of you?</p>
 
 <p>We are fortunate enough to be in an industry that gives us the chance to coach others and have a direct influence on the learning of individuals around us. But how do we know when we&rsquo;re doing it right, or more importantly what can we do when it starts to go wrong?</p>
@@ -1076,10 +1241,10 @@ What if we refactor with the MVP pattern first and see where the duplication lie
   
   <entry>
     <title type="html"><![CDATA[Beginning a journey to chatops with Hubot]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/"/>
     <updated>2013-11-22T09:34:00+00:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot</id>
-    <content type="html"><![CDATA[<p><img class="center" src="http://tech.toptable.co.uk/images/posts/hubot_pug_me.png"></p>
+    <id>http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot</id>
+    <content type="html"><![CDATA[<p><img class="center" src="http://tech.opentable.co.uk/images/posts/hubot_pug_me.png"></p>
 
 <p>As a part of our 30% time a few of our team, <a href="https://twitter.com/ajroyle">@ajroyle</a>, <a href="https://twitter.com/stack72">@stack72</a> and I (<a href="https://twitter.com/ryantomlinson">@ryantomlinson</a>) decided to get together and look at <a href="http://hubot.github.com/">Hubot</a> with <a href="https://www.hipchat.com/">Hipchat</a> integration. There are several weird and wonderful scripts that ship with Hubot (see above) but the core concept of driving tooling via chat is one that we see value in.</p>
 
@@ -1101,9 +1266,9 @@ What if we refactor with the MVP pattern first and see where the duplication lie
 
 <p>Although the core scripts that shipped with Hubot are helpful…</p>
 
-<p><img class="center" src="http://tech.toptable.co.uk/images/posts/hubot_beer_me.png"></p>
+<p><img class="center" src="http://tech.opentable.co.uk/images/posts/hubot_beer_me.png"></p>
 
-<p>…we started to focus on commands that would be most useful to how we work at <a href="http://www.toptable.co.uk/">toptable</a> and the tools and technologies that we employ. Specifically we got together and decided the following would be a useful starting point:</p>
+<p>…we started to focus on commands that would be most useful to how we work at <a href="http://www.opentable.co.uk/">OpenTable</a> and the tools and technologies that we employ. Specifically we got together and decided the following would be a useful starting point:</p>
 
 <ul>
 <li>Triggering TeamCity builds to ship to production</li>
@@ -1116,11 +1281,11 @@ What if we refactor with the MVP pattern first and see where the duplication lie
 
 <p>Within no time we had some useful scripts written:</p>
 
-<p><img class="center" src="http://tech.toptable.co.uk/images/posts/hubot_tube_status.png"></p>
+<p><img class="center" src="http://tech.opentable.co.uk/images/posts/hubot_tube_status.png"></p>
 
-<p><img class="center" src="http://tech.toptable.co.uk/images/posts/hubot_jira.png"></p>
+<p><img class="center" src="http://tech.opentable.co.uk/images/posts/hubot_jira.png"></p>
 
-<p><img class="center" src="http://tech.toptable.co.uk/images/posts/hubot_teamcity.png"></p>
+<p><img class="center" src="http://tech.opentable.co.uk/images/posts/hubot_teamcity.png"></p>
 
 <p>Immediately as we were developing these scripts we realised the potential of what else we could automate into Hubot and we will continue to do so. Some of which are:</p>
 
@@ -1149,9 +1314,9 @@ What if we refactor with the MVP pattern first and see where the duplication lie
   
   <entry>
     <title type="html"><![CDATA[Linking to your app in Windows 8]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8/"/>
     <updated>2013-10-21T17:36:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8</id>
+    <id>http://tech.opentable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8</id>
     <content type="html"><![CDATA[<p>In an effort to raise the visibility of our excellent Windows 8 app we have recently connected <a href="http://www.opentable.com">www.opentable.com</a> to the Windows Store.  This was simply a case of adding two lines of meta data to our site. Or it should have been &ndash; there were several gotchas along the way that are worth sharing.</p>
 
 <h2>The code</h2>
@@ -1162,7 +1327,7 @@ What if we refactor with the MVP pattern first and see where the duplication lie
 &lt;meta name="msApplication-PackageFamilyName" content="OpenTable.OpenTable_r44en0zefym0a"/&gt;
 </code></pre>
 
-<p><img class="right" src="http://tech.toptable.co.uk/images/posts/get-app-for-this-site.png"></p>
+<p><img class="right" src="http://tech.opentable.co.uk/images/posts/get-app-for-this-site.png"></p>
 
 <p>This will enable the <strong>&ldquo;Get app for this site&rdquo;</strong> link when you are viewing your page in the full-screen Metro version of Internet Explorer (i.e. launched from the start screen); the desktop version of IE doesn&rsquo;t have this capability.</p>
 
@@ -1172,7 +1337,7 @@ What if we refactor with the MVP pattern first and see where the duplication lie
 
 <p>There are at least two ways of finding the values. If you have your application code and Visual Studio 2012 (or later) then the values can be found in the <strong>package.appxmanifest</strong> file &ndash; open this in VS and it automatically launches the manifest designer view.  Select the Packaging tab and the &ldquo;Package name&rdquo; is the <em>ID</em>, and the <em>Package family name</em> is at the bottom of this screen.</p>
 
-<p><img class="center" src="http://tech.toptable.co.uk/images/posts/vs-screenshot.png"></p>
+<p><img class="center" src="http://tech.opentable.co.uk/images/posts/vs-screenshot.png"></p>
 
 <p>If you don&rsquo;t have the local code with Visual Studio you can still find out these values by other means.</p>
 
@@ -1208,9 +1373,9 @@ What if we refactor with the MVP pattern first and see where the duplication lie
   
   <entry>
     <title type="html"><![CDATA[Resolving domains to areas in ASP.NET MVC]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc/"/>
     <updated>2013-09-25T19:28:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc</id>
+    <id>http://tech.opentable.co.uk/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc</id>
     <content type="html"><![CDATA[<p>When building a previous project, I created an ASP.NET MVC application that would allow subdomains to resolve to different areas of the project and thus show different views. I wanted to be able to extend this functionality. I wanted to allow different domains to point to different areas. This would allow me to deploy the application just once and then have different headers on the web server rather than regional variances. Whilst on a flight to San Francisco, I was able to hack together some code that allows just that. The details of that hackiness are below.</p>
 
 <p>I started with a simple ASP.NET MVC application. I then created an area. The default area registration looks as follows:</p>
@@ -1350,9 +1515,9 @@ Notice that is has a parameter for constraints. All I need to do is to build the
   
   <entry>
     <title type="html"><![CDATA[Quick look at RethinkDB]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb/"/>
     <updated>2013-09-23T16:16:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb</id>
+    <id>http://tech.opentable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb</id>
     <content type="html"><![CDATA[<p>Someone in the office mentioned <a href="http://www.rethinkdb.com">RethinkDb</a> and I was impressed by the rhetoric on the site, so I decided to spend a couple of hours spiking one of our existing nodejs apps with RethinkDb. The app currently uses MongoDb so inevitably I&rsquo;m comparing the two.</p>
 
 <h1>Things I liked:</h1>
@@ -1417,9 +1582,9 @@ The management interface is very good, incredibly friendly, and has guided acces
   
   <entry>
     <title type="html"><![CDATA[Counting in Elastic Search]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/09/11/counting-in-elastic-search/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/09/11/counting-in-elastic-search/"/>
     <updated>2013-09-11T15:48:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/09/11/counting-in-elastic-search</id>
+    <id>http://tech.opentable.co.uk/blog/2013/09/11/counting-in-elastic-search</id>
     <content type="html"><![CDATA[<blockquote><p>Counting is the religion of this generation it is its hope and its salvation.
 Gertrude Stein</p></blockquote>
 
@@ -1647,10 +1812,10 @@ Gertrude Stein</p></blockquote>
   
   <entry>
     <title type="html"><![CDATA[Grunt + Vagrant = Acceptance Test Heaven]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/"/>
     <updated>2013-08-16T15:32:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven</id>
-    <content type="html"><![CDATA[<p>My continued love affair with Grunt reached a new high the other day, when I combined <a href="http://www.vagrantup.com">Vagrant</a> with my <a href="http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">Grunt deployment tasks</a> and test runners.</p>
+    <id>http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven</id>
+    <content type="html"><![CDATA[<p>My continued love affair with Grunt reached a new high the other day, when I combined <a href="http://www.vagrantup.com">Vagrant</a> with my <a href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">Grunt deployment tasks</a> and test runners.</p>
 
 <p>I&rsquo;m not going to bang on about how great Vagrant is, because better people than me have already soliloquised at length on that subject. Let&rsquo;s just take it as writ that <strong>Vagrant is awesome</strong>.</p>
 
@@ -1723,7 +1888,7 @@ grunt.registerTask('vagrant-destroy', function(){
 });
 </code></pre>
 
-<p>So now that we&rsquo;ve got our machine provisioned and booted, we can use Grunt to <a href="http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">deploy our code and start our service</a>.</p>
+<p>So now that we&rsquo;ve got our machine provisioned and booted, we can use Grunt to <a href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">deploy our code and start our service</a>.</p>
 
 <p>Assuming that we&rsquo;ve got all that going on, we can move on to the next step, getting Grunt to deploy the code to the Vagrant box.</p>
 
@@ -1803,513 +1968,6 @@ grunt.registerTask('acceptance', [
 <p>What&rsquo;s that I hear you whine? &ldquo;<em>My application depends on shared data, I can&rsquo;t use an empty database</em>&rdquo;. Not true. If you need it, set it up or mock it out. The acceptance tests should set-up and tear-down all their own data, if you rely on shared data sources for acceptance tests then you&rsquo;re going to have a painful time. Script it once and it&rsquo;ll forever be your friend. It&rsquo;s time to enter the dynamic era, no more false failures on your CI build because a shared datasource is missing and/or has been changed.</p>
 
 <p>What&rsquo;s more you can now run <code>grunt acceptance</code> from anywhere and <strong><em>know</em></strong> that it&rsquo;ll be the same. No more environment pains!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Grunt your deployments too]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/"/>
-    <updated>2013-08-08T15:27:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too</id>
-    <content type="html"><![CDATA[<p>We&rsquo;ve been using <a href="http://www.gruntjs.com">Grunt</a> as a build tool for our nodejs apps, and it&rsquo;s brilliant. It lints, it configures, it minifies, it tests and it packages.</p>
-
-<p>As we move towards getting our first node app into production, we were looking at ways to deploy it. First we thought of <a href="http://www.capistranorb.com">Capistrano</a>.</p>
-
-<p><strong><em>Capistrano</em></strong> is a fully featured deployment framework written in ruby and levering rake style tasks. It&rsquo;s extremely powerful and very robust, plus there is a <a href="https://github.com/loopj/capistrano-node-deploy">gem for node deployments</a>. Alas, it was not to be. After half a day of tail chasing and hoop jumping, it occurred to me that there must be an easier way. Capistrano was encouraging me to make my project fit their template, rather than allowing me to configure the deployment to match my project. When I dug down into the Capistrano source, I found that it was just using ssh and sftp to run remote commands and copy files. But we can simplify this process.</p>
-
-<p><strong><em>Grunt</em></strong> has been great so far, so I started looking at deploying directly through grunt. We would be deploying to Ubuntu server boxes, so the only tools necessary are ssh and sftp.</p>
-
-<p>There are Grunt modules for nearly <a href="https://npmjs.org/search?q=grunt">everything</a> (linting, minifying, testing, waiting, packaging, shell-exec&#8217;ing, tagging, etc.), and rather predictably, sshing (with sftp).</p>
-
-<p><a href="https://github.com/andrewrjones/grunt-ssh">Grunt-ssh</a> provides tasks for executing remote ssh commands, and for copying files using ssh. Let&rsquo;s dive into some code.</p>
-
-<p><strong><em>SSH commands</em></strong></p>
-
-<p>This is going to go over some old ground (available on the Grunt-ssh <a href="https://github.com/andrewrjones/grunt-ssh">readme</a>), but we can build up the commands pretty quick.</p>
-
-<p>This is the basic config for executing ssh commands from your Gruntfile:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>module.exports = function(grunt) {
-</span><span class='line'>      grunt.initConfig({
-</span><span class='line'>      sshexec: {
-</span><span class='line'>      uptime: {
-</span><span class='line'>        command: "uptime",
-</span><span class='line'>        options: {
-</span><span class='line'>          host: "127.0.0.1",
-</span><span class='line'>          port: 22
-</span><span class='line'>          username: "myuser",
-</span><span class='line'>          password: "mypass"
-</span><span class='line'>        }
-</span><span class='line'>      }
-</span><span class='line'>    }  
-</span><span class='line'>  });
-</span><span class='line'>
-</span><span class='line'>  // Load the plugin that provides the "sshexec" task.
-</span><span class='line'>  grunt.loadNpmTasks('grunt-ssh');
-</span><span class='line'>
-</span><span class='line'>  // Default task.
-</span><span class='line'>  grunt.registerTask('default', ['sshexec:uptime']);
-</span><span class='line'>
-</span><span class='line'>};</span></code></pre></td></tr></table></div></figure>
-
-
-<p>We&rsquo;ve registered a command, which we can invoke with:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>grunt sshexec:uptime</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The Grunt-ssh module also provides the ability to specify multiple host configurations (shared between commands), and to select one at runtime:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>grunt.initConfig({
-</span><span class='line'>    sshconfig: {
-</span><span class='line'>      qa: {
-</span><span class='line'>        host: "my.qa.server",
-</span><span class='line'>        port: 22,
-</span><span class='line'>        username: "user", 
-</span><span class='line'>        password: "password"
-</span><span class='line'>      },
-</span><span class='line'>      staging: {
-</span><span class='line'>        host: "my.staging.server",
-</span><span class='line'>        port: 22,
-</span><span class='line'>        username: "user",
-</span><span class='line'>        password: "password"
-</span><span class='line'>      }    
-</span><span class='line'>    },
-</span><span class='line'>    sshexec: {
-</span><span class='line'>      uptime: {
-</span><span class='line'>        command: "uptime"
-</span><span class='line'>      }
-</span><span class='line'>    }  
-</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So when we invoke the grunt task, we can specify a config:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>grunt sshexec:uptime --config qa</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Or we can set it programmatically (inside the Gruntfile)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>grunt.option('config', 'qa');</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong><em>SFTP Tasks</em></strong></p>
-
-<p>Grunt-ssh allows you to upload files via S<a href="FTP:">FTP:</a></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>grunt.initConfig({
-</span><span class='line'>    sshconfig: {
-</span><span class='line'>      qa: {
-</span><span class='line'>        host: "my.qa.server",
-</span><span class='line'>        port: 22,
-</span><span class='line'>        username: "user", 
-</span><span class='line'>        password: "password",
-</span><span class='line'>        path: "/path/on/server"
-</span><span class='line'>      },
-</span><span class='line'>      staging: {
-</span><span class='line'>        host: "my.staging.server",
-</span><span class='line'>        port: 22,
-</span><span class='line'>        username: "user",
-</span><span class='line'>        password: "password",
-</span><span class='line'>        path: "/path/on/server"
-</span><span class='line'>      }    
-</span><span class='line'>    },
-</span><span class='line'>    sshexec: {
-</span><span class='line'>      uptime: {
-</span><span class='line'>        command: "uptime"
-</span><span class='line'>      }
-</span><span class='line'>    }
-</span><span class='line'>    sftp: {
-</span><span class='line'>      deploy: {
-</span><span class='line'>        files: {
-</span><span class='line'>          "./": "package/**"
-</span><span class='line'>        },
-</span><span class='line'>        options: {
-</span><span class='line'>          srcBasePath: "package/",
-</span><span class='line'>          createDirectories: true
-</span><span class='line'>        }
-</span><span class='line'>      }
-</span><span class='line'>    }  
-</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
-
-
-<p>There are a couple of options here, so let&rsquo;s break it down:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>files: {
-</span><span class='line'>  "./": "package/**"
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This will copy all files from the &ldquo;package/&rdquo; folder locally. If you want to specify only certain types of files, you can use grunt&rsquo;s standard <a href="https://github.com/gruntjs/grunt/wiki/grunt.file#globbing-patterns">file globbing</a>.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>srcBasePath: "package/"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Optionally strip off an initial part of the path (without it, files would upload to &ldquo;/path/on/server/package/&rdquo;).</p>
-
-<p><strong><em>Putting it all together</em></strong>
-We&rsquo;ve got all the component parts, now lets put it together (plus a few other cool bits).</p>
-
-<p><em>Note: at the time of writing, there is a bug in Grunt-ssh where the sftp task does not use the shared sshconfig, so if you want the fixed code, use <a href="https://github.com/andyroyle/grunt-ssh">my fork</a> (there is a pull request outstanding)</em></p>
-
-<p>This snippet assumes that:</p>
-
-<ul>
-<li>You can connect to your deployment server using ssh</li>
-<li>You are deploying to /var/www/myapp</li>
-<li>You are using <a href="https://github.com/nodejitsu/forever">forever</a> to run your app</li>
-<li>Your application files are copied to ./package/</li>
-</ul>
-
-
-<p>(but, since we&rsquo;re just using bash commands, this is easily configurable)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>var dirname = (new Date()).toISOString();
-</span><span class='line'>
-</span><span class='line'>module.exports = function(grunt){
-</span><span class='line'>  grunt.initConfig({
-</span><span class='line'>    // our shared sshconfig
-</span><span class='line'>    sshconfig: {
-</span><span class='line'>      qa: {
-</span><span class='line'>        host: "my.qa.server",
-</span><span class='line'>        port: 22,
-</span><span class='line'>        username: "user",
-</span><span class='line'>        password: "password",
-</span><span class='line'>        path: "/path/on/server"
-</span><span class='line'>      },
-</span><span class='line'>      staging: {
-</span><span class='line'>        host: "my.staging.server",
-</span><span class='line'>        port: 22,
-</span><span class='line'>        username: "user",
-</span><span class='line'>        password: "password",
-</span><span class='line'>        path: "/path/on/server"
-</span><span class='line'>      },
-</span><span class='line'>      production: {
-</span><span class='line'>        host: "&lt;%= grunt.option('server') %&gt;",
-</span><span class='line'>        port: 22,
-</span><span class='line'>        username: "&lt;%= grunt.option('username') %&gt;",
-</span><span class='line'>        password: "&lt;%= grunt.option('password') %&gt;",
-</span><span class='line'>        path: "/path/on/server"
-</span><span class='line'>      }
-</span><span class='line'>    },
-</span><span class='line'>    // define our ssh commands
-</span><span class='line'>    sshexec: {
-</span><span class='line'>      start: {
-</span><span class='line'>        command: "cd /var/www/myapp/current && forever start -o /var/www/myapp/current/logs/forever.out -e /var/www/myapp/current/logs/forever.err --append app.js"
-</span><span class='line'>      },
-</span><span class='line'>      stop: {
-</span><span class='line'>        command: "forever stop app.js",
-</span><span class='line'>        options: {
-</span><span class='line'>          ignoreErrors: true
-</span><span class='line'>       }
-</span><span class='line'>      },
-</span><span class='line'>      'make-release-dir': {
-</span><span class='line'>        command: "mkdir -m 777 -p /var/www/myapp/releases/" + dirname + "/logs"
-</span><span class='line'>      },
-</span><span class='line'>      'update-symlinks': {
-</span><span class='line'>        command: "rm -rf /var/www/myapp/current && ln -s /var/www/myapp/releases/" + dirname + " /var/www/myapp/current"
-</span><span class='line'>      },
-</span><span class='line'>      'npm-update': {
-</span><span class='line'>        command: "cd /var/www/myapp/current && npm update"
-</span><span class='line'>      },
-</span><span class='line'>      'set-config': {
-</span><span class='line'>        command: "mv -f /var/www/myapp/current/config/&lt;%= grunt.option('config') %&gt;.yml /var/www/myapp/current/config/default.yml"
-</span><span class='line'>      }
-</span><span class='line'>    },
-</span><span class='line'>    // our sftp file copy config
-</span><span class='line'>    sftp: {
-</span><span class='line'>      deploy: {
-</span><span class='line'>        files: {
-</span><span class='line'>          "./": "package/**"
-</span><span class='line'>        },
-</span><span class='line'>        options: {
-</span><span class='line'>          srcBasePath: "package/",
-</span><span class='line'>          createDirectories: true
-</span><span class='line'>        }
-</span><span class='line'>      }
-</span><span class='line'>    }
-</span><span class='line'>  });
-</span><span class='line'>
-</span><span class='line'>  grunt.loadNpmTasks('grunt-ssh');
-</span><span class='line'>  grunt.registerTask('deploy', [
-</span><span class='line'>    'sshexec:stop',
-</span><span class='line'>    'sshexec:make-release-dir',
-</span><span class='line'>    'sshexec:update-symlinks',
-</span><span class='line'>    'sftp:deploy',
-</span><span class='line'>    'sshexec:npm-update',
-</span><span class='line'>    'sshexec:set-config',
-</span><span class='line'>    'sshexec:start'
-</span><span class='line'>  ]);
-</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
-
-
-<p>It should all make sense, the sshexec is just running remote ssh commands (making directories, starting and stopping using forever etc). Let&rsquo;s just re-iterate what this is doing:</p>
-
-<ol>
-<li><code>sshexec:stop</code>: stops the app (assumes you&rsquo;re using forever)</li>
-<li><code>sshexec:make-release-dir</code>: this will create the folder /var/www/myapp/releases/[current-date-time]</li>
-<li><code>sshexec:update-symlinks</code>: this will create a symlink from /var/www/myapp/current to the release folder we just created (this means that rolling back is just a case of changing the symlink back).</li>
-<li><code>sftp:deploy</code>: copy the files into place</li>
-<li><code>sshexec:npm-update</code>: installs any missing node modules</li>
-<li><code>sshexec:set-config</code>: copy the environment configuration into place</li>
-<li><code>sshexec:start</code>: start the application using forever, pointing the logs to /var/www/myapp/current/logs/</li>
-</ol>
-
-
-<p><strong><em>Deploying with one command</em></strong></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>grunt deploy --config qa</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Also, if you noticed the <em>production</em> config I specified in that snippet, you&rsquo;ll see that I didn&rsquo;t include any host, username or password configs. The <code>grunt.option('value')</code> allows us to access the command line switches, which means we don&rsquo;t have to keep any sensitive passwords in source control; we can specify them on the command line.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>grunt deploy --config production --server my.production.server --username user --password password</span></code></pre></td></tr></table></div></figure>
-
-
-<p>There are lots of other solutions to the problem of credentials, but this is by far the simplest. It&rsquo;s worth remembering the Grunt-ssh uses the ssh2 module, so by default it will look to <code>~/.ssh/</code> for keys when connecting without a password.</p>
-
-<p><strong>But wait, there&rsquo;s more</strong></p>
-
-<p>Basically any task you can think of is scriptable using grunt (and some combination of tools). Extra things that we&rsquo;ve added to our deployment process include:</p>
-
-<ul>
-<li>Removing the application server from the load-balancer before deploying (and pushing it back when the deployment is complete).</li>
-<li>Making a http request to check the health of the service before going live.</li>
-<li>Rollback from a single command</li>
-</ul>
-
-
-<p><strong>Oink, Oink &hellip;..</strong></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[MapReduce in MongoDB]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/08/07/mapreduce-in-mongodb/"/>
-    <updated>2013-08-07T10:40:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/08/07/mapreduce-in-mongodb</id>
-    <content type="html"><![CDATA[<p>One of the first things I took on when joining toptable was building a new endpoint in our reviews API to aggregate and summarise restaurant review data. Thankfully, at the time, all the data I needed was cached in memory so building the response object was a simple set of linq queries over the cached reviews.</p>
-
-<h2>The problem</h2>
-
-<p>Over time the number of reviews grow, and grow, and grow!  In fact it is inevitable that, in time, it will reach a point where caching all this data in memory would be madness.  One option to mitigate this would be to limit the cache to a fixed date range but this won&rsquo;t work in this instance because the summary logic supports custom date ranges.  Another option would be to pull the data from the persistence store each and every time it&rsquo;s required however this would seriously impact load on the infrastructure and degrade performance of the API.</p>
-
-<p>We like to be proactive at toptable, so during innovation time (yes! we get time to innovate on our development) I looked at finding an alternate solution that would meet the requirements of the logic and wouldn&rsquo;t drastically increase load or degrade performance.</p>
-
-<h2>The solution</h2>
-
-<p>MongoDB supports <a href="http://en.wikipedia.org/wiki/MapReduce">MapReduce</a> which allows processing large volumes of data (Map), running arbitrary logic to summarise (Reduce) and producing some results.  In MongoDB the MapReduce functionality uses JavaScript functions to perform the map and reduce steps and the syntax is relatively simple to understand:&ndash;</p>
-
-<pre><code>db.largeDataset.mapReduce(mapFunction, 
-                          reduceFunction, 
-                          { out: "summary" }
-</code></pre>
-
-<p>In the above example the largeDataset collection is mapped using the predefined mapFunction, the results are passed to the reduceFunction and the reduced data is finally stored in the summary collection. On top of this you can specify queries as well as a finalize function to &ldquo;tweak&rdquo; the reduce results.</p>
-
-<p>Because map, reduce &amp; finalize are functions that only operate on their inputs the workload can be parallelized although the final results would be stored in one location.</p>
-
-<h4>Map</h4>
-
-<p>The key purpose of the map function is to take the complex documents and produce a structure conducive to summarising whilst at the same time defining the granularity of the results using grouping.</p>
-
-<p>For example if you wanted to get the number of reviews by restaurant then you&rsquo;d group by the restaurant&rsquo;s unique identifier meaning that the reduce function would produce a single result for each restaurant:&ndash;</p>
-
-<pre><code>var mapFunction = function() {
-                    emit(this.RestaurantId, 1);
-                  };
-</code></pre>
-
-<p>This function, called on each review, maps the review to the value 1 and groups by the RestaurantId.  The value 1 was chosen because, as you will see in the continuation of this example below, it&rsquo;s the easiest way to calculate the count of reviews per restaurant.</p>
-
-<h4>Reduce</h4>
-
-<p>The key purpose of the reduce function is to take a batch of mapped values for a given group and return a single result.  All values emited from the map function are passed to the reduce function although since the batch size is decided by MongoDB there may be multiple calls to reduce.  In fact given a sufficiently large source dataset the reduce function will be passed results from previous reduce function calls as well.  For example if there were 250 mapped results in a group and batches of 100 were reduced by each call then four calls would be needed, three to reduce the initial 250 results and a final call to reduce these results into the final value for the group.</p>
-
-<p>To continue the example from above:&ndash;</p>
-
-<pre><code>var reduceFunction = function(group, values) {
-                       return Array.sum(values);
-                     };
-</code></pre>
-
-<p>The results from this function would be stored in the collection defined in the mapReduce call with an <em>id and value.  The </em>id property is populated with the group id and the value property will contain the final reduce result for that group.</p>
-
-<h2>Getting Started in C#</h2>
-
-<p>The following are a list of projects/resources to look at if you want to implement Mongo MapReduce in your scenario with emphasis on C#:&ndash;</p>
-
-<ul>
-<li><a href="http://docs.mongodb.org/manual/tutorial/map-reduce-examples">Mongo Map-Reduce Examples</a> is a useful primer document.</li>
-<li><a href="http://cookbook.mongodb.org">Mongo Cookbook</a> has a number of &ldquo;real world&rdquo; examples of MapReduce</li>
-<li><a href="http://docs.mongodb.org/ecosystem/drivers/csharp">Mongo C# driver</a> has some logic to perform MapReduce however it is only a thin layer over the underlying syntax and uses JavaScript functions passed as strings.</li>
-<li><a href="http://github.com/craiggwilson/fluent-mongo/wiki/Map-Reduce">Fluent-Mongo</a> provides a linq syntax over simple map reduce functions.  Interestingly it can perform multiple calculations on a set of data although at present it doesn&rsquo;t support more complex logic.</li>
-<li><a href="http://twitter.com/odetocode">K.Scott Allen</a> has written two articles on MapReduce, <a href="http://odetocode.com/blogs/scott/archive/2012/03/19/a-simple-mapreduce-with-mongodb-and-c.aspx">A Simple MapReduce&hellip;</a> and <a href="http://odetocode.com/blogs/scott/archive/2012/03/29/a-simpler-mapreduce-with-mongodb-and-c.aspx">A Simpler MapReduce&hellip;</a></li>
-</ul>
-
 ]]></content>
   </entry>
   

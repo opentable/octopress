@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Work smarter | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/work-smarter/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-05-02T15:56:30+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
+  <author>
+    <name><![CDATA[OpenTable]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Remote Worker Notes &ndash; Tools and Setup]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup/"/>
+    <updated>2014-04-29T10:56:49+01:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup</id>
+    <content type="html"><![CDATA[<p>For the last couple months I&rsquo;ve been working remotely with our search team at OpenTable. Let me share our remote working setup and some rationale for our choices. I will shy away from judging how it&rsquo;s all worked out and leave that for subsequent blog posts.</p>
+
+<h2>The deal</h2>
+
+<p>I started as an on-site engineer and subsequently became a remote worker and my challenge was to make remote working as similar to on-site working as possible. Thus it is natural that <strong>I work the same working hours</strong> as my colleagues in the office (despite the time difference) and I take <strong>public holidays</strong> at the same time that there are bank holidays in UK (even though in Poland they are different).</p>
+
+<p>We also decided that every two months I will <strong>visit the office for a week</strong> as well as arranging visits to coincide with other office guests (like contractors, overseas colleagues and so on). All this is to try to keep me as close to the team as possible and disrupt the normal work-flow as little as possible.</p>
+
+<h2>The workplace setup</h2>
+
+<p>Once home in Poland I had to carefully consider my options for a workplace. I tried three obvious possibilities:</p>
+
+<ul>
+<li>Dining room in my own one bedroom flat</li>
+<li>Co-working space</li>
+<li>Private room in my parents' house</li>
+</ul>
+
+
+<p>The <strong>dining room</strong> worked pretty well, for a time&hellip;  I would &lsquo;arrive&rsquo; really early in the office (just after taking a shower), and then be &lsquo;home&rsquo; straight after the laptop lid was closed. My wife kindly respected that I am focused at work and distracted me only to share lunch (or to kick me out of house to bring the lunch in).</p>
+
+<p>A couple of things made it only a short-term solution &ndash; the first being my back complaining about working on a chair that&rsquo;s nice for a dinner, but awful for working on computer. Then I realised that I really miss a second monitor and separate keyboard &ndash; I guess anybody who coded in the middle of summer on a laptop knows the pain of a hot computer under your fingers.  Finally, my child was born, and that was it &ndash; a crying child in the same room when you are trying to pair with somebody is a deal-breaker.</p>
+
+<p>In the meantime I evaluated a local <strong>co-working space</strong>. The problem was that it was quiet, <em>really quiet</em>, up to the point that I was embarrassed to pair with somebody remotely. The way we work fluctuates over time; there are weeks when I do stuff alone and in silence, there are weeks when I spend whole days on conversations or pairing. I just cannot be too quiet. For that matter I tried also a coffee shop, but it failed me for exactly the same reasons as the dining room table.</p>
+
+<p><strong>My little own office is currently the winner</strong> and the only way it could be better is if behind the closed doors there was my house, not my parents' one. But even this one is pretty good &ndash; I have access to an always full fridge and a decent coffee machine. I can bring my family with me and it is not awkward.</p>
+
+<p>Finally, I can share a lunch with whoever is at home. With a decent chair and desk I cannot complain about anything. Actually, I found that even after work if we stay for a coffee or dinner I am tempted to pop in into the office and look at our dashboards or chat room.</p>
+
+<h2>The tools setup</h2>
+
+<p>To facilitate continuous communication <em>you first need a good attitude, and then good tools</em>. With the attitude two things matter the most:</p>
+
+<ul>
+<li>A quick response</li>
+<li>Patience</li>
+</ul>
+
+
+<p>By nature all remote communication channels are asynchronous, which is hugely different to face-to-face communication. It is much easier this way for an important question to go unnoticed by you. Conversely it is easy to get annoyed that somebody is not responding, when in fact they may just be talking to the person at the desk next to them.</p>
+
+<p>Our primary tool is <strong>Google Hangout</strong>. It works quite well for a team, being nice for stand-ups, though it fails miserably as a constant communication tool. There are two reasons for that; the first is that its messages often get lost and the second is it makes our MacBook radiators spin like crazy when open for too long. <em>Unfortunately we had to rule out an online window to the office after a couple of days trying</em>.</p>
+
+<p>We also extensively use <a href="http://www.hipchat.com"><strong>HipChat</strong></a>, and that brought one of best breakthroughs in our communication patterns. It has a few features which make it great as a team collaboration tool:</p>
+
+<ol>
+<li>You get messages whether you pay attention or not</li>
+<li>You can interrupt other people by mentioning them</li>
+<li>It makes sharing links and images really easy</li>
+<li>When you type you can collaborate with multiple persons at the same time</li>
+</ol>
+
+
+<p>I also mentioned that pairing is a big part of our daily work. I have to admit that I haven&rsquo;t yet found a tool that would make the experience seamless. There is always a bit of delay on the line, or shortcuts not working, or problems of mismatch between screen resolutions that would never appear when pairing on the same machine.</p>
+
+<p>On the other hand when you have a keyboard just under your fingers it is much easier to swap sides and while discussing actually write code constructs. For this we use combination of <strong>Hangout</strong> screen share feature (for quick debug help) and <strong>RDP</strong>.</p>
+
+<p>One last tool that I like to use quite extensively is <strong>Google Drive</strong> as a shared whiteboard. It has proved to be especially useful for retrospectives or architecture discussion. The nice thing about the Drive draw tool is that it forces you to use shapes, lines and text. Those three primitives allow for an unlimited number of possible drawings. Being vector means you can easily move stuff around (nothing will fall on the floor), you never run out of space and you have an immediate and lasting backup of your board. I also found that a distributed retrospective facilitates a more equal participation of those attending.</p>
+
+<p>The best feature of the most of those tools is that they allow to <strong>easily save and store the outcomes of your conversations.</strong> Hangouts can be recorded, HipChat naturally creates history of chats and Google Drive&rsquo;s drawings become a persistent track of team discussions.</p>
+
+<h2>Get Involved</h2>
+
+<p>If you have a different setup or tools that help with having a distributed team member, or you want to share your experiences be sure to tweet us <a href="http://www.twitter.com/OpenTableTechUK">@OpenTableTechUK</a> or me personally <a href="http://www.twitter.com/mbazydlo">@mbazydlo</a>.​</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Effective prioritisation]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/28/effective-prioritisation/"/>
+    <updated>2014-04-28T14:51:51+01:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/04/28/effective-prioritisation</id>
+    <content type="html"><![CDATA[<p>Prioritisation is a huge part of modern life.</p>
+
+<p>No.</p>
+
+<p>Prioritisation is an ESSENTIAL part of modern life.</p>
+
+<p>I&rsquo;m not talking solely about Agile here either. Yes we plan stories, yes we prioritise them to get them into the backlog but I&rsquo;m aiming at a higher level. Life lessons that are useful to all of us.</p>
+
+<p>How do we know what to do next? Perhaps you lean on your gut feeling to order your to-do list. Maybe it is real-time cost and budget implications that influence your priorities or does it come down to who shouts loudest?</p>
+
+<h2>Why is prioritisation important?</h2>
+
+<p>The experts would have us believe we are living through the Digital Age, also know as the Computer Age. Increasingly this has been more accurately redefined as the Information Age.</p>
+
+<p>The society we live in today truly bombardes us with information. Whether it be TV, mobile, emails, blog posts, status updates, tweets, likes and check-in&rsquo;s we are rarely unconnected to modern day life and have a vast amount of data and information at our disposal.</p>
+
+<p>This flood of information leads to a problem: we often confuse the importance of everyday tasks and activities.</p>
+
+<p>For instance how many times have we said &ldquo;I don&rsquo;t have time to read&rdquo; or &ldquo;I&rsquo;d love to be able to go to the gym more&rdquo;. Perhaps a more honest way to say this is &ldquo;reading is not a high priority for me&rdquo; or &ldquo;I prioritise other activities higher than going to the gym&rdquo;.</p>
+
+<p>The decision not to spend time reading or working-out in the gym means you are spending time on other activities you consider more important. Consciously or unconsciously, we prioritise our life. The key is to prioritise effectively.</p>
+
+<h2>The Focus Quadrant</h2>
+
+<p>I&rsquo;ve been introduced to a framework that helped me to grab this idea of effective prioritisation and certainly opened my eyes to some of the mistakes I made previously.</p>
+
+<p>Stephen Covey, a sadly deceased educator, author and businessman, designed a matrix called The Focus Quadrant that categorises activities and helps us deal with the struggle of prioritisation by clearly outlining the conflicts involved.</p>
+
+<p><img src="http://www.chowamigo.co.uk/images/focus.jpg" alt="image" /></p>
+
+<table style="font-size: 80%;margin-bottom:20px;">
+    <tr>
+        <th style="padding:3px;"></th>
+        <th style="padding:3px;"><b>Description</b></th>
+        <th style="padding:3px;"><b>Examples</b></th>
+    </tr>
+<tr style="background-color: #E5E5E5">
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">A. Important/Urgent</td>
+    <td style="padding:3px;vertical-align:top;">Tasks that are necessary usually deadline driven or time sensitive. This usually this means panic and problems.</td>
+    <td style="padding:3px;vertical-align:top;">Fixing the server crash, firefighting a site outage, entering expenses before a deadline</td>
+</tr>
+<tr>
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">B. Important/Not urgent</td>
+    <td style="padding:3px;vertical-align:top;">Activities in direct alignment to your goals. Typically these tasks involve planning ahead. Prevention rather than cure.</td>
+    <td style="padding:3px;vertical-align:top;">Relationship building, researching your next API, learning a new coding language, taking time out to exercise</td>
+</tr>
+<tr style="background-color: #E5E5E5">
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">C. Not important/Urgent</td>
+    <td style="padding:3px;vertical-align:top;">Activities that seem important but in reality are not. It's thought these tasks will make you popular as you are responding to requests for your time.</td>
+    <td style="padding:3px;vertical-align:top;">Going to a meeting, answering the phone, replying instantly on IMs or email</td>
+</tr>
+<tr>
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">D. Not important/Not urgent</td>
+    <td style="padding:3px;vertical-align:top;">While it would seem pleasant enough to live here permentantly, in reality these activities are time wasters that should be eliminated as much as possible.</td>
+    <td style="padding:3px;vertical-align:top;">Playing video games, surfing the net, getting a tea or coffee, flicking through the magazine on your desk</td>
+</tr>
+</table>
+
+
+<h2>How does this help?</h2>
+
+<p>Covey&rsquo;s point is that if we have a long list of items and activities and we are struggling to prioritise them, spending 20 minutes writing the list down and assigning each task A, B, C or D can help clarify importance.</p>
+
+<p>For me the interesting part is that we should not be spending too much time in A. This goes against our natural reaction that A is good &ndash; probably the fault of our education system. In fact category A is considered beneficial only in the short term. We are not overly productive even if we spend a lot of time on A category tasks. We really want to shift our attention to more longer term plans.</p>
+
+<p>Category B on the other hand is considered the sweet spot. This is where we are doing our best work. It is where we will be ticking off a lot of our important long term goals. Yes we all have different goals but the majority of the goals we want to achieve fit into B &ndash; non urgent and important.</p>
+
+<p>For category C there is a great saying &lsquo;The quadrant of deception&rsquo;. These are tasks we THINK are urgent but in reality they are not. Considered to be a distraction, get used to politely saying no to any activities in the C category. We should look to regain control of our time and not be forced to respond when it suits others.</p>
+
+<p>Finally category D is the worst place to spend your time. It&rsquo;s okay to roam across each of these four quadrants but if we identify we are spending too much time in quadrant D we need to step back, reassess and pick up a task more aligned to our goals &ndash; ideally something from category B.</p>
+
+<h2>Money => mouth</h2>
+
+<p>While this is useful in theory, we of course need to be realistic. You should factor in time for impromptu interruptions &ndash; saying no to every meeting isn&rsquo;t possible and this isn&rsquo;t an excuse to push back difficult tasks. However, the next time your to-do list gets unmanageable, take time out to clarify your priorities.</p>
+
+<p>Now my current my to-do list looks like this&hellip;</p>
+
+<ol>
+<li>Investigate a blip in our API performance <strong><code>(A)</code></strong></li>
+<li>Scope out our next API <strong><code>(B)</code></strong></li>
+<li>Improve the way our current API deploys to production <strong><code>(B)</code></strong></li>
+<li>Send out a team update to interested parties <strong><code>(C)</code></strong></li>
+<li>Go and grab a cup of tea :) <strong><code>(D)</code></strong></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+</feed>

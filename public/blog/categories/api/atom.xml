@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: api | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/api/atom.xml" rel="self"/>
-  <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-16T14:51:42+01:00</updated>
-  <id>http://tech.toptable.co.uk/</id>
+  <title><![CDATA[Category: API | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/api/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-05-02T15:56:30+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
   <author>
-    <name><![CDATA[toptable]]></name>
+    <name><![CDATA[OpenTable]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Internationalisation in a RESTful world]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/04/02/internationalisation-in-a-restful-world/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/02/internationalisation-in-a-restful-world/"/>
     <updated>2014-04-02T14:11:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/04/02/internationalisation-in-a-restful-world</id>
+    <id>http://tech.opentable.co.uk/blog/2014/04/02/internationalisation-in-a-restful-world</id>
     <content type="html"><![CDATA[<p>I18n is often a painful afterthought when serving content from a http-api. It can be taken for granted and tacked on using nasty query string values. But thankfully HTTP provides us with a solid gold opportunity. If you can look past the mire of content negotiation you can see the nuggets that lie inside.</p>
 
 <p>The accept-language header is used by most browsers and allows websites to serve content in a language that the user can (hopefully) understand. When we expose content from an api (in most of our use cases, at least), this content eventually ends up in front of a human (in some shape or form). Having our service-service communication serve localised resources can be invaluable because it frees the clients from having to think about i18n of the resources being served from our api.</p>
@@ -140,6 +140,290 @@ Vary: Accept-Language
 </code></p>
 
 <p>This instructs the cache that the response will vary with the value of Accept-Language, so when this changes it should be cached as a separate resource. Vary headers <strong>should</strong> be applied by the client to the request, however the server can apply them to the response if necessary.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Performance testing our Search API]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api/"/>
+    <updated>2014-03-19T15:53:00+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api</id>
+    <content type="html"><![CDATA[<p>It was midnight on the Friday before Christmas, my seven-week old child was tucked up asleep and I was pretty chilled. All was calm and it was time for bed. Two minutes later I had a phone call, followed by a series of Nagios email alerts, and a need to put my work hat on quickly. The search API was having trouble; as the manager of the team who developed it, I was not looking forward to this. We were having a real slowdown at one of our busiest times of the year &ndash; this was going to be fun.</p>
+
+<p>Once the dust settled and we were back up and running we realised we needed to do a better job of performance testing and actually solve any performance issues. We <em>had</em> done some performance testing but clearly not the right kind.</p>
+
+<h2>What had gone wrong?</h2>
+
+<p>We were indexing our data too frequently, and under load it started to take a long time. We created a race condition where multiple indexing operations started happening. As each operation assumed the previous one had either failed or finished a vicious circle occurred making the situation worse and worse.</p>
+
+<p>The simple fix was just to index the data less often or not at all if another operation was running, however we wanted to get to the bottom of why we slowed down under load which exposed this race condition, improve that speed and understand what is the maximum load the system can take.</p>
+
+<h2>Getting a benchmark</h2>
+
+<p>In order to know if we were actually making improvements we needed to be able to recreate load and see the impact. In order to do this and truly appreciate how it was going we needed to use our live environment &ndash; the only environment I felt we could truly understand. My next post will explain why we felt this was the best environment for the job.</p>
+
+<p>With search and availability it is actually quite hard to use response times as a benchmark and the name of this exercise was really to cope with greater load. Response times are still nice to improve though so we were tracking them, but not using them as our main benchmark.</p>
+
+<h2>Some perspective on our problem domain</h2>
+
+<p>We do not have a large index, in the tens of thousands of restaurants rather than millions of tweets for example. We have to merge in table availability (the fantastic thing about the OpenTable system) to the more static restaurant information. We also have large page sizes, needing to get up to 2,500 results out of one Elastic Search request. This proved to be relevant.</p>
+
+<p>We also have an autocomplete search endpoint served out of the same infrastructure. That was not heavy in terms of resource usage but we still noted it slowed down when peak load was happening.</p>
+
+<h2>Initial ideas to investigate</h2>
+
+<p>We brainstormed a few things to investigate and assess as potential performance improvements. As we were still relatively new to Elastic Search (ES), a lot of these were related to the configuration of ES itself.</p>
+
+<ul>
+<li>Improved sharding strategy (we were using the default)</li>
+<li>Check we were <a href="http://elasticsearch-users.115913.n3.nabble.com/Elasticsearch-Filter-And-Query-td4027675.html">filtering before querying</a></li>
+<li>Check the <a href="http://elasticsearch-users.115913.n3.nabble.com/Performance-of-term-query-with-sorting-td4032901.html">sorting was efficient</a></li>
+<li><a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-optimize.html">Optimise the index</a> as part of the indexing process</li>
+<li><a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-optimize.html">Slow log</a> checking</li>
+<li>Check how we were using the <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-source-field.html">source</a> in the index</li>
+<li>Warm-up the index after it is built</li>
+<li>Gzip between API boxes and ES</li>
+<li>Check connection pool is a singleton, internal detail</li>
+<li>Delete old indexes more rigorously (we have a new index each release)</li>
+<li>Check <a href="http://grokbase.com/t/gg/elasticsearch/13bezebw1p/garbage-collector-issues">garbage collection</a> on ES boxes</li>
+<li>Check <a href="https://groups.google.com/forum/#!topic/logstash-users/gfTTbRABk1M">swappiness</a> settings on ES boxes</li>
+<li>Split different search types to different hardware</li>
+</ul>
+
+
+<h2>Now, we learned, we were a bit stupid.</h2>
+
+<p>Once we worked through a few things, our main findings showed that we had made some rookie errors.</p>
+
+<p>We had a sharding policy that is great for large indexes but we only needed one shard replicated on each ES server in the cluster. Changing that helped reduce the load across servers as each server could do our queries entirely.</p>
+
+<p>Through Elastic HQ (<a href="http://www.elastichq.org/">the useful plugin to ES</a>) we got the rather crude red boxes for various metrics on the diagnostics page. The two that stood out were high Garbage Collection and disk swaps. The main thing causing this was that we were using OpenJDK instead of the Oracle JVM. If you are using OpenJDK, change it now! The swappiness setting was less impactful but resolved some of the issues caused by the frequent writing to disk.</p>
+
+<p>Now we increased scale well, until we moved our bottleneck from our Elastic Search cluster to our API boxes.</p>
+
+<h2>And some things are limits of the technology</h2>
+
+<p>Now the API boxes were the problem we realised that basically serialisation and deserialisation is the bottleneck. The number of boxes can be scaled out (more servers) or serialisation removed. Also your programming language can be the limiting factor here. So we are now looking around at the best language as an option for speeding things up.</p>
+
+<h2>So what now</h2>
+
+<p>We have tweaked the ES set-up and scaled out our API servers and our benchmark improved (the amount of traffic can we serve). We have a roadmap for how to take more and more traffic but the response time is probably as fast as we can go if we keep the same methodology. As a result we are actually looking at using Elastic Search a lot less than we originally planned. We need to take serialisation out of the game where possible, using in-memory filtering seems a candidate again.</p>
+
+<h2>That&rsquo;s it for Elastic Search?</h2>
+
+<p>Not at all, we love it. We are definitely still going to use for autocomplete, free-text search and also other indexing we want to do with future feature plans we have.</p>
+
+<p>It was our fault we made some stupid errors with it, but our architecture and technology decisions just prevent us using it for our one, currently most important, use case, right now.</p>
+
+<p>Also solving serialisation issues creatively might mean we can use ES again.</p>
+
+<h2>Summary</h2>
+
+<p>Get performance testing into your deployment pipeline, consider testing in production and expect the worst. The worst being that you might have got something stupid wrong and it is only exposed when you really don&rsquo;t want it to be.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Benchmarking APIs - why it’s important, and how]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/02/28/api-benchmark/"/>
+    <updated>2014-02-28T09:00:00+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/02/28/api-benchmark</id>
+    <content type="html"><![CDATA[<p>Since I joined OpenTable I’ve been experimenting with performance monitoring, specifically on web services. One of the projects my team is responsible for is a REST API that provides UI elements for HTML5 applications, shaped as HTML snippets and static resources. Our consumers are websites deployed in multiple parts of the world, so our service needs to be fast and reliable.</p>
+
+<h2>The why</h2>
+
+<p>A couple of weeks after joining the company I decided, as part of my <a href="http://tech.opentable.co.uk/blog/2014/02/06/20-percent-time/">innovation time</a>, to rebuild the core of a .NET WebApi project in node.js in order to have a working prototype that could do exactly the same job as the original one, and could help me to observe how the two applications could react with similar volumes of traffic. After managing to make the two apis run on two clean VMs with the same configuration, I wrote a little node.js script to start performing some requests and test the response times. After seeing the results I thought that something was going wrong:</p>
+
+<p>```sh
+.NET/route1 x 9.16 ops/sec ±12.71% (17 runs sampled)</p>
+
+<h1>nodeJS/route1 x 106 ops/sec ±1.19% (180 runs sampled)</h1>
+
+<p>Fastest is nodeJS/route1</p>
+
+<p>.NET/route2 x 10.70 ops/sec ±8.54% (19 runs sampled)</p>
+
+<h1>nodeJS/route2 x 118 ops/sec ±1.22% (175 runs sampled)</h1>
+
+<p>Fastest is nodeJS/route2</p>
+
+<p>======================================
+Fastest Service is nodeJS
+```</p>
+
+<p>After trying to microbenchmark different layers of the software, I found the problem. On the .NET side I was reading a file synchronously, for every request; the file system’s library used with the node.js app, instead, was automatically caching the reads as default. After setting up a basic caching mechanism in the .NET app and running my script again the node.js API was only 1.4 times faster. After finding and solving that issue I thought how badly the application could have handled concurrency when deployed in production, even if it was heavily unit tested, the specs were well defined, and it was built using all the best techniques we all love.</p>
+
+<p>As developers we rely on technologies that, with a minimum effort, can guarantee some pretty decent results in terms of performance. Modern web frameworks handle concurrency and thread management without requiring much plumbing code. Sophisticated and relatively cheap cloud services help us monitor our applications, providing dashboards, reports and alerting systems. Deploying on the cloud we can run our services and even auto-scale them depending on how much power we need. Even with these tools we must still own the responsibility of writing good quality code, testing it properly, and deploying as fast as possible in order to optimise the delivery process of our products.</p>
+
+<p>But what about performance? I mean, what about the relationship between the code we write every day, and the way we impact overall performance? Are we sure that we are not deploying to production something that is degrading our services’ performance?</p>
+
+<h2>The how</h2>
+
+<p>Talking about the ‘why’ could be relatively easy, but the ‘how’ is a controversial topic. In my experience there are three important steps to any dish. First, we need the right tools to manipulate the ingredients. I tried many different tools but I couldn&rsquo;t find a good fit for all my benchmarking requirements. It always makes sense to start with something to get you going but after a while it is important to find what’s the best for you, your team, and your project.</p>
+
+<p>Then, you start cooking: personally, the number of things I’ve learned by just starting to benchmark some services is incredible. Nevertheless, as with every time we talk about metrics, it is key to know what is important about the data we are analysing, recognise the false positives/negatives and be aware of vanity metrics that could emphasize something irrelevant, or, more importantly, hide something significant.</p>
+
+<p>The last step is simple: react and persist. If you discover something relevant, you can do something to improve the quality of your software.  With the right tools you can write some benchmark tests to target different layers of your software and execute them each and every time you contribute to that repository.  Doing this helps you keep your system performance under control which is really valuable.</p>
+
+<h2>The how, for me</h2>
+
+<p>When I found that little bug in the application (and it wasn’t actually a bug in the way we usually define them, as it wasn’t breaking any test or any software’s feature), I decided to spend some time to make my benchmark script better, in order to support different HTTP verbs, HTTPS, and a few things I needed to test all the routes of the API in a easy way. The goal was to wrap my little script as a <a href="http://www.gruntjs.com">grunt.js</a> module, (we use Teamcity as a CI platform and we already use grunt to run various tasks during our release process). I wanted to run this benchmarks externally to avoid interfering with the performance of the application, and to have a configuration-based simple-to-use tool.</p>
+
+<p>So after some refactoring I started working on <a href="https://github.com/matteofigus/api-benchmark">api-benchmark</a> and its grunt wrapper <a href="https://github.com/matteofigus/grunt-api-benchmark">grunt-api-benchmark</a>, in order to make performance testing part of our continuous delivery process. A couple of days later my team was using it to run benchmark tests on our pre-prod environments against our APIs, running some hundreds of requests on each route every time we made a single commit to Github. What I managed to do was to break the build if response times were not good enough (stopping the production deployment), and producing a tiny report with some graphs, in order to have something useful to observe and eventually collect. Now, a couple of months later, a lot of functionality has been added and other teams are using it with success.</p>
+
+<p>In case of RESTful services, it is possible to make series of requests to test response times, find peaks and classify errors; it is possible to perform concurrent calls to see how many parallel requests your service can handle (when deployed in single boxes, or when load balanced and globalised); and every time grunt runs everything is saved and plotted to readable and shareable graphs, so the knowledge can be shared between people that belong to different backgrounds.</p>
+
+<p><img class="center" src="/images/posts/api_benchmark.png"></p>
+
+<p>A lot of other features are still under development, including support for SOAP services and historical analysis (compare results from previous benchmarks and create historical graphs to represent the evolution of your software).</p>
+
+<h2>How it works &amp; how to use it</h2>
+
+<p>The way it works is simple. A configuration file contains the list of all the routes of the API. For each route it is possible to set different parameters such as headers, methods, expected status code, and expected response times. Other options that can be set such as the minimum number of samples, the maximum time for collecting the results, the number of concurrent requests, etc. It should be something like:</p>
+
+<p>```json
+{
+  &ldquo;service&rdquo;: {</p>
+
+<pre><code>"My api": "http://localhost:3007/api/"
+</code></pre>
+
+<p>  },
+  &ldquo;endpoints&rdquo;: {</p>
+
+<pre><code>"simpleRoute": "v1/getJson",
+"postRoute": {
+  "route": "v1/postJson",
+  "method": "post",
+  "data": {
+    "test": true,
+    "someData": "someStrings"
+  },
+  "expectedStatusCode": 200
+},
+"deleteRoute": {
+  "route": "v1/deleteMe?test=true",
+  "method": "delete",
+  "maxMean": 0.06,
+  "maxSingleMean": 0.003
+}
+</code></pre>
+
+<p>  },
+  &ldquo;options&rdquo;: {</p>
+
+<pre><code>"minSamples": 1000,
+"runMode": "parallel",
+"maxConcurrentRequests": 20,
+"debug": true,
+"stopOnError": false
+</code></pre>
+
+<p>  }
+}
+```</p>
+
+<p>Then it is possible to include the script in a project that is written in any language and runs on any platform. The only requirement is to <a href="http://www.nodejs.org">install node.js</a> on that machine. If the project doesn’t have a package.json file in the root of your project, it’s as easy as doing:</p>
+
+<p><code>sh
+$ npm init
+</code></p>
+
+<p>Once this is complete, include and install grunt-api-benchmark as a dependency (if you are not on Windows, you may want to sudo it depending on how you’ve installed node.js):</p>
+
+<p><code>sh
+$ npm install grunt-api-benchmark --save-dev
+</code></p>
+
+<p>The last thing to do is to create a task inside your Gruntfile.js. Create one if you already don’t have one, and then add the ‘api_benchmark’ task in order to have something like this:</p>
+
+<p>```js
+module.exports = function(grunt) {</p>
+
+<p>  grunt.initConfig({</p>
+
+<pre><code>pkg: grunt.file.readJSON('package.json'),
+api_benchmark: {
+  myApi: {
+    options: {
+      output: 'output_folder'
+    },
+    files: {
+      'report.html': 'config.json',
+      'export.json': 'config.json'
+    }
+  }
+}
+</code></pre>
+
+<p>  });</p>
+
+<p>  grunt.loadNpmTasks(&lsquo;grunt-api-benchmark&rsquo;);
+  grunt.registerTask(&lsquo;benchmark&rsquo;, [&lsquo;api_benchmark&rsquo;]);
+};
+```</p>
+
+<p>Where “generated” is the output folder, “config.json” is your configuration file, and “report.html” (or “export.json”) is the output’s filename. To run it just:</p>
+
+<p><code>sh
+$ grunt benchmark
+</code></p>
+
+<p>If you use TravisCI, TeamCity, or any other CI platform, all you’ll have to do is to make it run after being sure the dependencies are resolved:</p>
+
+<p><code>sh
+$ npm install
+</code></p>
+
+<h2>Let’s benchmark &ndash; some lessons learned</h2>
+
+<p>I think this is the most important part of the whole process, however I don’t think there are any general rules that are applicable for every context. I believe that after testing and stressing your system you will find out what matters to you and to your business. Nevertheless, I want to share some of the lessons I’ve learned.</p>
+
+<p>First, set-up everything correctly.</p>
+
+<ul>
+<li>Benchmarks need to run always on the same machine, same agent, and same configuration to be reliable and comparable.</li>
+<li>The network should be tested to be sure there aren’t any particular limits that would affect the benchmarks. It should be tested each time before running any benchmarks and could include things like bandwidth, host name correctness, and OS limitations.</li>
+<li>Don’t run the tests from the same machine that hosts the application. Run it from the outside, and if you deploy in different regions, keep that in mind when you look at the results.</li>
+</ul>
+
+
+<p>When you benchmark, remember that stress and performance are two different things.</p>
+
+<ul>
+<li>You should test both to learn about performance but also your limits, in order to have an idea on how to scale your application or how to fix it when necessary.</li>
+<li>10 seconds is not enough. 1 minute is nice, 5 is better.</li>
+<li>One route is not enough. Testing all the routes allow us to see the difference between different response lengths.</li>
+<li>Sometimes your application needs a warm-up, especially if you test it after a deployment. Set up a script to do that or set a proper time-out to be sure you are retrieving some valuable numbers back.</li>
+<li>Don&rsquo;t benchmark the live production environment. Your results are affected by too many variables. If possible, set-up a staging environment with exactly the same configuration to run benchmarks.</li>
+</ul>
+
+
+<p>If necessary, adapt your API to be more testable through some very basic design patterns.</p>
+
+<ul>
+<li>Performance could depend on synchronous calls to third-party APIs or databases. Ideally routes should have an optional parameter to mock external dependencies so we should test that as well.</li>
+<li>Ensure that changes to data or the operating environment are not persisted after the benchmarks complete. This is important to ensure no side effects on subsequent runs and will allow you to  benchmark production boxes if needed (after the deployment and obviously before directing any traffic to them).</li>
+</ul>
+
+
+<p>Last but not least, let’s analyse the data</p>
+
+<ul>
+<li>Averages are not enough, peaks are important, investigate them.</li>
+<li>When something unexpected happens, try to reproduce it in order to fix it.</li>
+<li>If wildly different numbers come up every time you run the tests, your API is depending on too many unpredictable events. Try to fix it. Try to run benchmarks locally and microbenchmark your software until you find the element that is causing the unpredictability. Then, fix it or find a way to mock it if you have no other option.</li>
+<li>Numbers should be readable and shareable by everyone. Find a tool that dashboards your results and easily allow you to share that data.</li>
+</ul>
+
+
+<h2>‘benchmarking’ != ‘monitoring’;</h2>
+
+<p>Benchmarking doesn’t equal and doesn’t replace monitoring. Once you start having an extensive knowledge about your system’s performance, you can find useful and easy to establish correlations between your benchmarks and your monitoring metrics. Depending on the scale of your system, it could be something very important.</p>
+
+<h2>Conclusions</h2>
+
+<p>I believe that taking care of performance is our responsibility, as developers. We can and should do more, and I hope this subject will gain more interest. In the meanwhile, if <a href="https://github.com/matteofigus/api-benchmark">api-benchmark</a> sounds interesting for you and you are interested in trying it or contributing (it is totally open-source), don’t hesitate to <a href="http://www.twitter.com/matteofigus">get in touch with me</a>.</p>
 ]]></content>
   </entry>
   

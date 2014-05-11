@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: .Net | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/dot-net/atom.xml" rel="self"/>
-  <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-16T14:51:42+01:00</updated>
-  <id>http://tech.toptable.co.uk/</id>
+  <title><![CDATA[Category: .Net | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/dot-net/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-05-02T15:56:30+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
   <author>
-    <name><![CDATA[toptable]]></name>
+    <name><![CDATA[OpenTable]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[nLocalGeoCoder]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/06/07/nlocalgeocoder/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/06/07/nlocalgeocoder/"/>
     <updated>2013-06-07T11:59:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/06/07/nlocalgeocoder</id>
+    <id>http://tech.opentable.co.uk/blog/2013/06/07/nlocalgeocoder</id>
     <content type="html"><![CDATA[<h2>History</h2>
 
 <p>With OpenTable having engineering teams spread across multiple offices it&rsquo;s important for us to maintain open email dialogue about new products us or our teams have created, new tools we&rsquo;ve discovered or problem solving approaches that have helped us achieve our goals.  Recently in one of these emails Aish introduced the team to a new open source ruby implementation of reverse geocode lookup for latitude and longitude he&rsquo;d written called <a href="https://github.com/aishfenton/local-geocoder">local-geocoder</a>.  With an interest in understanding how this worked, to learn a bit of ruby, to make this project accessible to .net developers and just to see how long it would take I decided to port it to C# and .net.</p>

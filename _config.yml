@@ -3,7 +3,7 @@
 # ----------------------- #
 
 url: http://tech.opentable.co.uk
-title: OpenTable UK Tech Blog
+title: OpenTable Tech UK Blog
 subtitle: The technology blog for OpenTable UK.
 author: OpenTable
 simple_search: http://google.com/search
@@ -97,7 +97,7 @@ github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
-twitter_user: toptabletech
+twitter_user: opentabletechuk
 twitter_tweet_button: true
 
 # Google +1

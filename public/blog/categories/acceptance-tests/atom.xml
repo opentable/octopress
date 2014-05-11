@@ -1,23 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Acceptance tests | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/acceptance-tests/atom.xml" rel="self"/>
-  <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-16T14:51:42+01:00</updated>
-  <id>http://tech.toptable.co.uk/</id>
+  <title><![CDATA[Category: Acceptance tests | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/acceptance-tests/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-05-02T15:56:30+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
   <author>
-    <name><![CDATA[toptable]]></name>
+    <name><![CDATA[OpenTable]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
+    <title type="html"><![CDATA[Look ma, no unit tests!]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests/"/>
+    <updated>2014-04-16T17:00:00+01:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests</id>
+    <content type="html"><![CDATA[<p>At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for <a href="/blog/2014/02/28/api-benchmark/">new</a> <a href="/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">tools</a> <a href="/blog/2014/04/07/upgrading-puppet-with-puppet/">and</a> <a href="/blog/2014/02/10/the-adoption-of-configuration-management/">methods</a> that allow us, the developers, to respond quickly and accurately to changing requirements and environments.</p>
+
+<p>There are a number of practices that we already make use of, helping us to be the most effective team I&rsquo;ve ever worked in:</p>
+
+<ul>
+<li>We operate in small teams who each own <em>most</em> of their own vertical.</li>
+<li>We use continuous delivery to ship code to production within minutes.</li>
+<li>We have a high degree of high-quality test coverage.</li>
+<li>We are getting better and better at monitoring All The Things.</li>
+<li><a href="/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">We use ChatOps</a>, so communication is central to our work, and keeps remote workers/teams in the loop.</li>
+</ul>
+
+
+<p>All of the above are truly empowering for the dev team, and are conducive to an amazingly stress-free working environment. However, these practices only address the infrastructure, culture, and ceremony surrounding our work. What if there was something else? Something about the way we write the code itself, that could increase our velocity yet further, without compromising our integrity&hellip;</p>
+
+<blockquote><p>There are a number of practices that we already make use of, helping us to be the most effective team I&rsquo;ve ever worked in&hellip; What if there was something else?</p></blockquote>
+
+<p>Well, on a recent project, we found one such way: <em><em>we decided to delete all of the unit and integration tests</em></em>.</p>
+
+<p><em>What?! Are we quite mad?</em> You may be thinking&hellip; Well, it took me a little time to get used to this idea as well, but read on and you&rsquo;ll see that it was actually the most sane thing we could have possibly done  .</p>
+
+<h2>Survival of the testedest</h2>
+
+<p>In the beginning, the project had 100% unit test coverage, there were no external dependencies, and the world was Good.</p>
+
+<p>Soon afterwards, a tall shadow appeared in the glorious unit-tested sunset. External dependencies had arrived. Like good little developers we added integration tests. It hurt, our codebase grew, we had occasional false-failures, but we were travelling the path well trodden. We had evaded the First Menace, and surrounded ourselves with heavy armour, we were safe. Things seemed to be Good.</p>
+
+<p><em>Meanwhile&hellip;</em></p>
+
+<p>We realised that some of the things that would be important to our consumers were still not covered by our tests. Things like actual HTTP responses, serialisation, and the like. These are things that don&rsquo;t always need to be tested explicitly, but since this was a third-party-developer-facing system, we really wanted to be sure that the interface worked exactly as we wanted, HTTP headers, character encoding, date formatting, the lot.</p>
+
+<p>So, playing the role of our consumers, we engineered high-level acceptance tests, behaving byte-for-byte as we expected our customers to do.</p>
+
+<p>Now, with the triple-action protection of three layers of tests, we felt our project was the most minty-fresh piece of haute engineering we had ever laid keyboards on.</p>
+
+<p>We were wrong.</p>
+
+<h2>Tests, tests, tests, duplication.</h2>
+
+<p>Up to this point, we had operated in a near-vacuum. That was fine, we had been working quickly to implement a sub-set of an existing and well-used API, so we knew which were the most important features that needed porting. We continued, largely happy with our creation, for some time.</p>
+
+<p><em>Then, gazing up from the receding tide of the third trimester were the hungry eyes of the Second Menace. Our users were upon us!</em></p>
+
+<p>Our early adopters were great, giving us a lot of helpful feedback and helping us shape the API into a genuinely usable v1. However, responding to this change required a greater degree of flexibility in the code than we had required up to this point. Our triple-chocolate-crunch of pithy tests was starting to really slow us down, and rot our teeth. The main reason for this: duplication.</p>
+
+<p>We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can&rsquo;t test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic for that call. Code which was already covered by unit tests, and often integration tests as well. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith and a very heavy boulder&mdash;and had a hoarde of features we still wanted to smash, who were freely bounding over the mountain tops, and out of reach.</p>
+
+<p>It was time to cut ourselves free.</p>
+
+<h2>Ripping off the plaster</h2>
+
+<p>The idea that we might not need all these layers of tests was first mooted by fellow OpenTable engineer Arnold Zokas. My initial reaction was one of slight incredulity. Delete all those tests that we&rsquo;ve so carefully caressed and cajoled into a thing of beauty?! Strip off the armour?! I wasn&rsquo;t immediately convinced. However, the pain of implementing new features was starting to burn, so I was interested.</p>
+
+<blockquote><p>I wasn&rsquo;t immediately convinced.</p></blockquote>
+
+<p>We talked about it&mdash;what was necessary about the unit tests? What was their real worth? We had to test many of those things from the outside-in anyway, with the acceptance tests, so why test them twice? The logic started to stack up. I was convinced this was the right thing to do.</p>
+
+<p>Take a deep breath. <em>RIP!</em> Aah, there, done.</p>
+
+<p>There was a little bleeding, some gaps in our acceptance tests that had to be filled, some complex set-up logic from the integration tests that had to be ported to work with the acceptance tests. A few days' worth of cleanup and patching in the background, and&hellip; tentatively&hellip; we were done.</p>
+
+<p>For me at least, this was a bold move. But it shouldn&rsquo;t have seemed so, we knew all of our endpoints were acceptance-tested, including every supported API call. My primary worry was how we were going to nail down the exact cause of bugs with no code-level testing. This turned out to be nowhere near as bad as I expected.</p>
+
+<blockquote><p>We knew all of our endpoints were acceptance-tested, including every supported API call.</p></blockquote>
+
+<h2>What just happened?</h2>
+
+<p>I like to visualise this as if we were building <a href="http://en.wikipedia.org/wiki/Gateway_Arch">a giant arch</a>. At first, you build a temporary structure with scaffolding (the unit and integration tests). As time goes on you construct a hardened permanent structure (the software). On top of the software, you layer your <a href="http://en.wikipedia.org/wiki/Structural_health_monitoring">structural integrity monitors</a> (acceptance tests). Eventually, there is no need for the scaffolding any more; the structure is self-supporting, and future modifications can rely on this&mdash;time to punch out the middle!</p>
+
+<p><em>Of course, there are other considerations, like logging, monitoring, and providing sandbox data, which all contributed to making this feasable&mdash;but that&rsquo;s for another post.</em></p>
+
+<h2>Was it worth it?</h2>
+
+<p>Unequivocally, yes. Since making this decision, we have been unhindered by our tests, and they are back to being a much loved part of the project. We have had no problems that would have been caught by unit tests, and we can still do TDD with our acceptance tests. In addition, I think removing the crutch of unit tests may have improved our discipline somewhat: <em>it keeps us thinking in the context of the end-user at all times, so we never spend time working on a feature that isn&rsquo;t directly useful to our consumers.</em></p>
+
+<blockquote><p>It keeps us thinking in the context of the end-user at all times, so we never spend time working on a feature that isn&rsquo;t directly useful to our consumers.</p></blockquote>
+
+<h2>YMWMCV</h2>
+
+<p>Of course, every project is unique (just like every other project), so <em>your mileage will most certainly vary.</em> We were working on a stateless facade over a small but crucial subset of the business&mdash;making reservations. For relatively small, stateless projects, this approach has worked brilliantly. However, when things do go wrong at development time, they could be at any layer in the stack, and you often need to attach a debugger to find out what happened. This is less than ideal, but in our case was a very cost-effective compromise.</p>
+
+<p>The upshot, for me at least, is that you shouldn&rsquo;t be afraid to shirk convention when the project demands it. By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster <em>without</em> breaking stuff.</p>
+
+<blockquote><p>By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster <em>without</em> breaking stuff.</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Testing Puppet with Beaker]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/"/>
+    <link href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/"/>
     <updated>2014-04-04T17:30:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2014/04/04/testing-puppet-with-beaker</id>
+    <id>http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker</id>
     <content type="html"><![CDATA[<p>One afternoon I got asked to write a new Puppet module to manage local users on our Linux boxes. Not a contrived example but a real-world need as we begin to move our infrastructure from Windows to Linux. Managing users is one of those tasks that is at the core of the Puppet ecosystem and I thought this would be pretty easy as I had done this sort of thing many times before. What added to the complexity was that we needed to support Ubuntu, Centos and FreeBSD machines that we had in our stack and we wanted to make it something that was open source and on the Forge &ndash; so lots of testing was required.</p>
 
 <p>This was not the first module that I had written for the Forge but it was the first that I had written since PuppetLabs had introduced their new acceptance testing framework <a href="https://github.com/puppetlabs/beaker">Beaker</a> and so I wanted to spend some time getting the module working with this new tool.</p>
@@ -164,10 +256,10 @@ end
   
   <entry>
     <title type="html"><![CDATA[Grunt + Vagrant = Acceptance Test Heaven]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/"/>
     <updated>2013-08-16T15:32:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven</id>
-    <content type="html"><![CDATA[<p>My continued love affair with Grunt reached a new high the other day, when I combined <a href="http://www.vagrantup.com">Vagrant</a> with my <a href="http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">Grunt deployment tasks</a> and test runners.</p>
+    <id>http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven</id>
+    <content type="html"><![CDATA[<p>My continued love affair with Grunt reached a new high the other day, when I combined <a href="http://www.vagrantup.com">Vagrant</a> with my <a href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">Grunt deployment tasks</a> and test runners.</p>
 
 <p>I&rsquo;m not going to bang on about how great Vagrant is, because better people than me have already soliloquised at length on that subject. Let&rsquo;s just take it as writ that <strong>Vagrant is awesome</strong>.</p>
 
@@ -240,7 +332,7 @@ grunt.registerTask('vagrant-destroy', function(){
 });
 </code></pre>
 
-<p>So now that we&rsquo;ve got our machine provisioned and booted, we can use Grunt to <a href="http://tech.toptable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">deploy our code and start our service</a>.</p>
+<p>So now that we&rsquo;ve got our machine provisioned and booted, we can use Grunt to <a href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">deploy our code and start our service</a>.</p>
 
 <p>Assuming that we&rsquo;ve got all that going on, we can move on to the next step, getting Grunt to deploy the code to the Vagrant box.</p>
 
@@ -325,9 +417,9 @@ grunt.registerTask('acceptance', [
   
   <entry>
     <title type="html"><![CDATA[Getting Started With SpecRun]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/06/07/getting-started-with-specrun/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/06/07/getting-started-with-specrun/"/>
     <updated>2013-06-07T11:33:00+01:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/06/07/getting-started-with-specrun</id>
+    <id>http://tech.opentable.co.uk/blog/2013/06/07/getting-started-with-specrun</id>
     <content type="html"><![CDATA[<h2>First some background</h2>
 
 <p>We recently switched from writing automated acceptance from Cucumber to SpecFlow&hellip; this is no slight on Cucumber it&rsquo;s just that we had a lot of C# developers who wanted to get closer to writing acceptance tests. Worth adding that SpecFlow has also come a long way as a .Net port of Cucumber and is pretty much like for like now.</p>

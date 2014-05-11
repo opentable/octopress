@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Hipchat | toptable Tech Blog]]></title>
-  <link href="http://tech.toptable.co.uk/blog/categories/hipchat/atom.xml" rel="self"/>
-  <link href="http://tech.toptable.co.uk/"/>
-  <updated>2014-04-16T14:51:42+01:00</updated>
-  <id>http://tech.toptable.co.uk/</id>
+  <title><![CDATA[Category: Hipchat | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/hipchat/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-05-02T15:56:30+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
   <author>
-    <name><![CDATA[toptable]]></name>
+    <name><![CDATA[OpenTable]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Beginning a journey to chatops with Hubot]]></title>
-    <link href="http://tech.toptable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/"/>
+    <link href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/"/>
     <updated>2013-11-22T09:34:00+00:00</updated>
-    <id>http://tech.toptable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot</id>
+    <id>http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot</id>
     <content type="html"><![CDATA[<p><img class="center" src="/images/posts/hubot_pug_me.png"></p>
 
 <p>As a part of our 30% time a few of our team, <a href="https://twitter.com/ajroyle">@ajroyle</a>, <a href="https://twitter.com/stack72">@stack72</a> and I (<a href="https://twitter.com/ryantomlinson">@ryantomlinson</a>) decided to get together and look at <a href="http://hubot.github.com/">Hubot</a> with <a href="https://www.hipchat.com/">Hipchat</a> integration. There are several weird and wonderful scripts that ship with Hubot (see above) but the core concept of driving tooling via chat is one that we see value in.</p>
@@ -42,7 +42,7 @@
 
 <p><img class="center" src="/images/posts/hubot_beer_me.png"></p>
 
-<p>…we started to focus on commands that would be most useful to how we work at <a href="http://www.toptable.co.uk/">toptable</a> and the tools and technologies that we employ. Specifically we got together and decided the following would be a useful starting point:</p>
+<p>…we started to focus on commands that would be most useful to how we work at <a href="http://www.opentable.co.uk/">OpenTable</a> and the tools and technologies that we employ. Specifically we got together and decided the following would be a useful starting point:</p>
 
 <ul>
 <li>Triggering TeamCity builds to ship to production</li>

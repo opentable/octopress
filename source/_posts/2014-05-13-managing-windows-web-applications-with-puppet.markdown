@@ -14,7 +14,7 @@ As part of our move towards a configuration management tool, we really wanted to
 This would of course set up a website called 'DemoSite' running on port 80 on the local machine. The cmdlets that come with PowerShell make this pretty easy. This is great if it is a one-off job to set up a site. We run our websites from a number of webservers, therefore, it would be silly to have to RDP into each webserver and run a script on it. This is why tools like Puppet, Chef, Ansible etc. exist. We needed a configuration management tool to do this work for us. It has a number of benefits:
 
 * Orchestration
-* Idepotency
+* Idempotency
 * Makes sure that each server is configured in 'exactly' the same way as no human intervention is needed
 * Developers can help the operations team by creating the scripts needed. This is great for collaboration between teams
 

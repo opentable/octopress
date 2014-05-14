@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Configuration Management | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/configuration-management/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-05-14T08:05:49-05:00</updated>
+  <updated>2014-05-14T08:07:32-05:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -28,7 +28,7 @@ New-WebSite -Name "DemoSite" -Port 80 -IP * -PhysicalPath "c:\inetpub\wwwroot" -
 
 <ul>
 <li>Orchestration</li>
-<li>Idepotency</li>
+<li>Idempotency</li>
 <li>Makes sure that each server is configured in &lsquo;exactly&rsquo; the same way as no human intervention is needed</li>
 <li>Developers can help the operations team by creating the scripts needed. This is great for collaboration between teams</li>
 </ul>

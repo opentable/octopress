@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Open souce | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/open-souce/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-05-02T15:56:30+01:00</updated>
+  <updated>2014-05-14T08:05:49-05:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[ForgeFriday - our commitment to the Puppet Forge]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/"/>
-    <updated>2014-04-04T15:30:00+01:00</updated>
+    <updated>2014-04-04T15:30:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge</id>
     <content type="html"><![CDATA[<p>Those of you that read this blog on a regular basis will be aware that here at OpenTable we take our commitment to Open Source very seriously. As part of the infrastructure team at OpenTable we are begining a process of being open-first. That means that everything we write will be open-sourced unless it contains a significant amount of internal information but we will architect to limit this.</p>
 

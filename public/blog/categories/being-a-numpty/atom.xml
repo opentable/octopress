@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Being a numpty | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/being-a-numpty/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-05-02T15:56:30+01:00</updated>
+  <updated>2014-05-14T08:05:49-05:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Performance testing our Search API]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api/"/>
-    <updated>2014-03-19T15:53:00+00:00</updated>
+    <updated>2014-03-19T15:53:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api</id>
     <content type="html"><![CDATA[<p>It was midnight on the Friday before Christmas, my seven-week old child was tucked up asleep and I was pretty chilled. All was calm and it was time for bed. Two minutes later I had a phone call, followed by a series of Nagios email alerts, and a need to put my work hat on quickly. The search API was having trouble; as the manager of the team who developed it, I was not looking forward to this. We were having a real slowdown at one of our busiest times of the year &ndash; this was going to be fun.</p>
 

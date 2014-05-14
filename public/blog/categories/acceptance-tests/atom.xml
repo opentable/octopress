@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Acceptance tests | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/acceptance-tests/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-05-02T15:56:30+01:00</updated>
+  <updated>2014-05-14T08:05:49-05:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Look ma, no unit tests!]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests/"/>
-    <updated>2014-04-16T17:00:00+01:00</updated>
+    <updated>2014-04-16T17:00:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests</id>
     <content type="html"><![CDATA[<p>At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for <a href="/blog/2014/02/28/api-benchmark/">new</a> <a href="/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">tools</a> <a href="/blog/2014/04/07/upgrading-puppet-with-puppet/">and</a> <a href="/blog/2014/02/10/the-adoption-of-configuration-management/">methods</a> that allow us, the developers, to respond quickly and accurately to changing requirements and environments.</p>
 
@@ -108,7 +108,7 @@
   <entry>
     <title type="html"><![CDATA[Testing Puppet with Beaker]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/"/>
-    <updated>2014-04-04T17:30:00+01:00</updated>
+    <updated>2014-04-04T17:30:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker</id>
     <content type="html"><![CDATA[<p>One afternoon I got asked to write a new Puppet module to manage local users on our Linux boxes. Not a contrived example but a real-world need as we begin to move our infrastructure from Windows to Linux. Managing users is one of those tasks that is at the core of the Puppet ecosystem and I thought this would be pretty easy as I had done this sort of thing many times before. What added to the complexity was that we needed to support Ubuntu, Centos and FreeBSD machines that we had in our stack and we wanted to make it something that was open source and on the Forge &ndash; so lots of testing was required.</p>
 
@@ -257,7 +257,7 @@ end
   <entry>
     <title type="html"><![CDATA[Grunt + Vagrant = Acceptance Test Heaven]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/"/>
-    <updated>2013-08-16T15:32:00+01:00</updated>
+    <updated>2013-08-16T15:32:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven</id>
     <content type="html"><![CDATA[<p>My continued love affair with Grunt reached a new high the other day, when I combined <a href="http://www.vagrantup.com">Vagrant</a> with my <a href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">Grunt deployment tasks</a> and test runners.</p>
 
@@ -418,7 +418,7 @@ grunt.registerTask('acceptance', [
   <entry>
     <title type="html"><![CDATA[Getting Started With SpecRun]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/06/07/getting-started-with-specrun/"/>
-    <updated>2013-06-07T11:33:00+01:00</updated>
+    <updated>2013-06-07T11:33:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/06/07/getting-started-with-specrun</id>
     <content type="html"><![CDATA[<h2>First some background</h2>
 

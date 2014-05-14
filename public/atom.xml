@@ -4,7 +4,7 @@
   <title><![CDATA[OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-05-02T15:56:30+01:00</updated>
+  <updated>2014-05-14T08:05:49-05:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -14,9 +14,111 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Managing Windows Web Applications with Puppet]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet/"/>
+    <updated>2014-05-13T09:25:16-05:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet</id>
+    <content type="html"><![CDATA[<p>As part of our move towards a configuration management tool, we really wanted to start automating as much of our infrastructure as possible. This included our application configuration stack. IIS management is pretty easy with PowerShell. It would look something like this</p>
+
+<pre><code>Import-Module WebAdministration
+New-WebSite -Name "DemoSite" -Port 80 -IP * -PhysicalPath "c:\inetpub\wwwroot" -ApplicationPool "MyAppPool"
+</code></pre>
+
+<p>This would of course set up a website called &lsquo;DemoSite&rsquo; running on port 80 on the local machine. The cmdlets that come with PowerShell make this pretty easy. This is great if it is a one-off job to set up a site. We run our websites from a number of webservers, therefore, it would be silly to have to RDP into each webserver and run a script on it. This is why tools like Puppet, Chef, Ansible etc. exist. We needed a configuration management tool to do this work for us. It has a number of benefits:</p>
+
+<ul>
+<li>Orchestration</li>
+<li>Idepotency</li>
+<li>Makes sure that each server is configured in &lsquo;exactly&rsquo; the same way as no human intervention is needed</li>
+<li>Developers can help the operations team by creating the scripts needed. This is great for collaboration between teams</li>
+</ul>
+
+
+<p>On investigating how we would do this with Puppet, we noticed that there were not many other people managing their site in this way. Therefore, we would have to turn our PowerShell scripts into Puppet modules to manage our system.</p>
+
+<p>We have since created a Puppet module to manage IIS. To manage IIS with Puppet, we can now write the following code:</p>
+
+<pre><code>iis::manage_site { 'DemoSite:
+   site_path     =&gt; 'c:\inetpub\wwwroot',
+   port          =&gt; '80',
+   ip_address    =&gt; '*',
+   app_pool      =&gt; 'MyAppPool'
+}
+</code></pre>
+
+<p>This would produce <strong>exactly</strong> the same results as the code from above. But it has 1 difference. There are checks in the code behind this module that will mean the code will only execute when it is needed, i.e. when the site_path isn&rsquo;t correct or the app_pool isn&rsquo;t correct. This is idempotency. The script can be run again and again and again&hellip;.</p>
+
+<p>To create an application binding, we used to do this in PowerShell:</p>
+
+<pre><code>Import-Module WebAdministration
+New-WebBinding -Name 'DemoSite' -Port '8080' -IPAddress '*'
+</code></pre>
+
+<p>This would set up an extra binding on port 8080 for the site, DemoSite. We replaced this code with our puppet equivalent:</p>
+
+<pre><code>iis::manage_binding { 'DemoSite-8080':
+  site_name   =&gt; 'DemoSite',
+  protocol    =&gt; 'http',
+  port        =&gt; '8080',
+  ip_address  =&gt; '*',
+}
+</code></pre>
+
+<p>To create a virtual application, we would write the PowerShell:</p>
+
+<pre><code>Import-Module WebAdministration
+New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub\wwwroot\MyVirtualApp' -ApplicationPool 'MyAppPool'
+</code></pre>
+
+<p>This will create a VirtualApp folder on the DemoSite, use the same application pool and then set the path of the folder. I can do the same thing in Puppet as follows:</p>
+
+<pre><code>iis::manage_virtual_application {'VirtualApp':
+  site_name   =&gt; 'DemoSite',
+  site_path   =&gt; 'C:\inetpub\wwwroot\MyVirtualApplication',
+  app_pool    =&gt; 'MyAppPool'
+ }  
+</code></pre>
+
+<p>We can therefore, chain a manifest together that does all this for us in 1 go. It would look as follows:</p>
+
+<pre><code>class mywebsite {
+  iis::manage_app_pool {'MyAppPool':
+    enable_32_bit           =&gt; true,
+    managed_runtime_version =&gt; 'v4.0',
+  } -&gt;
+
+  iis::manage_site {'DemoSite':
+    site_path   =&gt; 'C:\inetpub\wwwroot',
+    port        =&gt; '80',
+    ip_address  =&gt; '*',
+    app_pool    =&gt; 'MyAppPool'
+  } -&gt;
+
+  iis::manage_virtual_application {'VirtualApp':
+    site_name  =&gt; 'DemoSite',
+    site_path  =&gt; 'C:\inetpub\wwwroot\MyVirtualApp',
+    app_pool   =&gt; 'MyAppPool'
+  } -&gt; 
+
+  iis::manage_binding {'DemoSite-8080':
+    site_name  =&gt; 'DemoSite',
+    protocol   =&gt; 'http',
+    port       =&gt; '8080',
+    ip_address =&gt; '*'
+  }
+}
+</code></pre>
+
+<p>The module does more than just these tasks and I could give more and more examples of what we wrote, but you can find more about our IIS module on the <a href="http://github.com/opentable/puppet-iis">github repo</a>. If you want to use the module, then you can install it using the Puppet Module tool via the <a href="http://forge.puppetlabs.com/opentable/iis">Puppet forge</a>.</p>
+
+<p>We love to hear feedback on things that the module should support. We like Pull Requests even more :)</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Remote Worker Notes &ndash; Tools and Setup]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup/"/>
-    <updated>2014-04-29T10:56:49+01:00</updated>
+    <updated>2014-04-29T04:56:49-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup</id>
     <content type="html"><![CDATA[<p>For the last couple months I&rsquo;ve been working remotely with our search team at OpenTable. Let me share our remote working setup and some rationale for our choices. I will shy away from judging how it&rsquo;s all worked out and leave that for subsequent blog posts.</p>
 
@@ -88,7 +190,7 @@
   <entry>
     <title type="html"><![CDATA[Effective prioritisation]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/28/effective-prioritisation/"/>
-    <updated>2014-04-28T14:51:51+01:00</updated>
+    <updated>2014-04-28T08:51:51-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/28/effective-prioritisation</id>
     <content type="html"><![CDATA[<p>Prioritisation is a huge part of modern life.</p>
 
@@ -181,7 +283,7 @@
   <entry>
     <title type="html"><![CDATA[Look ma, no unit tests!]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests/"/>
-    <updated>2014-04-16T17:00:00+01:00</updated>
+    <updated>2014-04-16T17:00:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests</id>
     <content type="html"><![CDATA[<p>At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for <a href="http://tech.opentable.co.uk/blog/2014/02/28/api-benchmark/">new</a> <a href="http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">tools</a> <a href="http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/">and</a> <a href="http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/">methods</a> that allow us, the developers, to respond quickly and accurately to changing requirements and environments.</p>
 
@@ -273,7 +375,7 @@
   <entry>
     <title type="html"><![CDATA[Upgrading Puppet with Puppet]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/"/>
-    <updated>2014-04-07T13:23:00+01:00</updated>
+    <updated>2014-04-07T13:23:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet</id>
     <content type="html"><![CDATA[<p>As part of one of our recent <a href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
 
@@ -333,7 +435,7 @@
   <entry>
     <title type="html"><![CDATA[Testing Puppet with Beaker]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/"/>
-    <updated>2014-04-04T17:30:00+01:00</updated>
+    <updated>2014-04-04T17:30:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker</id>
     <content type="html"><![CDATA[<p>One afternoon I got asked to write a new Puppet module to manage local users on our Linux boxes. Not a contrived example but a real-world need as we begin to move our infrastructure from Windows to Linux. Managing users is one of those tasks that is at the core of the Puppet ecosystem and I thought this would be pretty easy as I had done this sort of thing many times before. What added to the complexity was that we needed to support Ubuntu, Centos and FreeBSD machines that we had in our stack and we wanted to make it something that was open source and on the Forge &ndash; so lots of testing was required.</p>
 
@@ -482,7 +584,7 @@ end
   <entry>
     <title type="html"><![CDATA[ForgeFriday - our commitment to the Puppet Forge]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/"/>
-    <updated>2014-04-04T15:30:00+01:00</updated>
+    <updated>2014-04-04T15:30:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge</id>
     <content type="html"><![CDATA[<p>Those of you that read this blog on a regular basis will be aware that here at OpenTable we take our commitment to Open Source very seriously. As part of the infrastructure team at OpenTable we are begining a process of being open-first. That means that everything we write will be open-sourced unless it contains a significant amount of internal information but we will architect to limit this.</p>
 
@@ -507,7 +609,7 @@ end
   <entry>
     <title type="html"><![CDATA[Internationalisation in a RESTful world]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/02/internationalisation-in-a-restful-world/"/>
-    <updated>2014-04-02T14:11:00+01:00</updated>
+    <updated>2014-04-02T14:11:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/02/internationalisation-in-a-restful-world</id>
     <content type="html"><![CDATA[<p>I18n is often a painful afterthought when serving content from a http-api. It can be taken for granted and tacked on using nasty query string values. But thankfully HTTP provides us with a solid gold opportunity. If you can look past the mire of content negotiation you can see the nuggets that lie inside.</p>
 
@@ -662,7 +764,7 @@ end
   <entry>
     <title type="html"><![CDATA[When to performance test in production]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/03/20/when-to-performance-test-in-production/"/>
-    <updated>2014-03-20T09:56:00+00:00</updated>
+    <updated>2014-03-20T09:56:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/03/20/when-to-performance-test-in-production</id>
     <content type="html"><![CDATA[<p>In <a href="http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api/">my last post</a> about performance testing I wrote about how we decided to do it in production as the ultimate test of success. Performance testing in production is enough to make some operations guys have a panic attack and a few odd looks were dished my way when I raised it on behalf of the team.</p>
 
@@ -697,7 +799,7 @@ end
   <entry>
     <title type="html"><![CDATA[Performance testing our Search API]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api/"/>
-    <updated>2014-03-19T15:53:00+00:00</updated>
+    <updated>2014-03-19T15:53:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api</id>
     <content type="html"><![CDATA[<p>It was midnight on the Friday before Christmas, my seven-week old child was tucked up asleep and I was pretty chilled. All was calm and it was time for bed. Two minutes later I had a phone call, followed by a series of Nagios email alerts, and a need to put my work hat on quickly. The search API was having trouble; as the manager of the team who developed it, I was not looking forward to this. We were having a real slowdown at one of our busiest times of the year &ndash; this was going to be fun.</p>
 
@@ -777,7 +879,7 @@ end
   <entry>
     <title type="html"><![CDATA[Benchmarking APIs - why it’s important, and how]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/02/28/api-benchmark/"/>
-    <updated>2014-02-28T09:00:00+00:00</updated>
+    <updated>2014-02-28T09:00:00-06:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/02/28/api-benchmark</id>
     <content type="html"><![CDATA[<p>Since I joined OpenTable I’ve been experimenting with performance monitoring, specifically on web services. One of the projects my team is responsible for is a REST API that provides UI elements for HTML5 applications, shaped as HTML snippets and static resources. Our consumers are websites deployed in multiple parts of the world, so our service needs to be fast and reliable.</p>
 
@@ -1033,7 +1135,7 @@ end
   <entry>
     <title type="html"><![CDATA[Programme Management, making Agile scale]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/02/12/programme-management/"/>
-    <updated>2014-02-12T10:16:00+00:00</updated>
+    <updated>2014-02-12T10:16:00-06:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/02/12/programme-management</id>
     <content type="html"><![CDATA[<h2>Popular topic at conferences</h2>
 
@@ -1054,7 +1156,7 @@ end
   <entry>
     <title type="html"><![CDATA[The adoption of Configuration Management]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/"/>
-    <updated>2014-02-10T13:46:00+00:00</updated>
+    <updated>2014-02-10T13:46:00-06:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management</id>
     <content type="html"><![CDATA[<p>In years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around nine months ago we started to really try and get these teams working together. We introduced a configuration management tool, <a href="http://puppetlabs.com/puppet/what-is-puppet">Puppet</a>, into our ecosystem.</p>
 
@@ -1092,7 +1194,7 @@ end
   <entry>
     <title type="html"><![CDATA[20% time: Why, as a manager, you should love your engineers to be doing it]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/02/06/20-percent-time/"/>
-    <updated>2014-02-06T17:12:00+00:00</updated>
+    <updated>2014-02-06T17:12:00-06:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/02/06/20-percent-time</id>
     <content type="html"><![CDATA[<p>We allow all our UK based developers to have some time to explore new technologies, try out prototypes and clean-up things that escape the day-to-day process. Two days out of ten, seems a lot doesn&rsquo;t it?</p>
 
@@ -1129,7 +1231,7 @@ end
   <entry>
     <title type="html"><![CDATA[Coaching style over substance]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/02/03/coaching-style-over-substance/"/>
-    <updated>2014-02-03T11:12:00+00:00</updated>
+    <updated>2014-02-03T11:12:00-06:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/02/03/coaching-style-over-substance</id>
     <content type="html"><![CDATA[<p>Have you ever been lucky enough to mentor someone who really got it? Maybe you&rsquo;ve had the opposite experience and the session ended up being a failure for both of you?</p>
 
@@ -1242,7 +1344,7 @@ What if we refactor with the MVP pattern first and see where the duplication lie
   <entry>
     <title type="html"><![CDATA[Beginning a journey to chatops with Hubot]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/"/>
-    <updated>2013-11-22T09:34:00+00:00</updated>
+    <updated>2013-11-22T09:34:00-06:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot</id>
     <content type="html"><![CDATA[<p><img class="center" src="http://tech.opentable.co.uk/images/posts/hubot_pug_me.png"></p>
 
@@ -1315,7 +1417,7 @@ What if we refactor with the MVP pattern first and see where the duplication lie
   <entry>
     <title type="html"><![CDATA[Linking to your app in Windows 8]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8/"/>
-    <updated>2013-10-21T17:36:00+01:00</updated>
+    <updated>2013-10-21T17:36:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8</id>
     <content type="html"><![CDATA[<p>In an effort to raise the visibility of our excellent Windows 8 app we have recently connected <a href="http://www.opentable.com">www.opentable.com</a> to the Windows Store.  This was simply a case of adding two lines of meta data to our site. Or it should have been &ndash; there were several gotchas along the way that are worth sharing.</p>
 
@@ -1374,7 +1476,7 @@ What if we refactor with the MVP pattern first and see where the duplication lie
   <entry>
     <title type="html"><![CDATA[Resolving domains to areas in ASP.NET MVC]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc/"/>
-    <updated>2013-09-25T19:28:00+01:00</updated>
+    <updated>2013-09-25T19:28:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc</id>
     <content type="html"><![CDATA[<p>When building a previous project, I created an ASP.NET MVC application that would allow subdomains to resolve to different areas of the project and thus show different views. I wanted to be able to extend this functionality. I wanted to allow different domains to point to different areas. This would allow me to deploy the application just once and then have different headers on the web server rather than regional variances. Whilst on a flight to San Francisco, I was able to hack together some code that allows just that. The details of that hackiness are below.</p>
 
@@ -1516,7 +1618,7 @@ Notice that is has a parameter for constraints. All I need to do is to build the
   <entry>
     <title type="html"><![CDATA[Quick look at RethinkDB]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb/"/>
-    <updated>2013-09-23T16:16:00+01:00</updated>
+    <updated>2013-09-23T16:16:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb</id>
     <content type="html"><![CDATA[<p>Someone in the office mentioned <a href="http://www.rethinkdb.com">RethinkDb</a> and I was impressed by the rhetoric on the site, so I decided to spend a couple of hours spiking one of our existing nodejs apps with RethinkDb. The app currently uses MongoDb so inevitably I&rsquo;m comparing the two.</p>
 
@@ -1583,7 +1685,7 @@ The management interface is very good, incredibly friendly, and has guided acces
   <entry>
     <title type="html"><![CDATA[Counting in Elastic Search]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/09/11/counting-in-elastic-search/"/>
-    <updated>2013-09-11T15:48:00+01:00</updated>
+    <updated>2013-09-11T15:48:00-05:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/09/11/counting-in-elastic-search</id>
     <content type="html"><![CDATA[<blockquote><p>Counting is the religion of this generation it is its hope and its salvation.
 Gertrude Stein</p></blockquote>
@@ -1807,167 +1909,6 @@ Gertrude Stein</p></blockquote>
 <h3>Acknowledgement</h3>
 
 <p>This blog post benefited thanks to invaluable comments from my team (Andrew Metcalfe, Michael Wallett and Tom Harvey), <a href="https://github.com/Yegoroff/PlainElastic.Net">PlainElastic.Net</a> author (Yegoroff) and <a href="https://github.com/pbazydlo">my brother</a>.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Grunt + Vagrant = Acceptance Test Heaven]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/"/>
-    <updated>2013-08-16T15:32:00+01:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven</id>
-    <content type="html"><![CDATA[<p>My continued love affair with Grunt reached a new high the other day, when I combined <a href="http://www.vagrantup.com">Vagrant</a> with my <a href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">Grunt deployment tasks</a> and test runners.</p>
-
-<p>I&rsquo;m not going to bang on about how great Vagrant is, because better people than me have already soliloquised at length on that subject. Let&rsquo;s just take it as writ that <strong>Vagrant is awesome</strong>.</p>
-
-<p>The objective is simple, we want to have a virtualised environment to run our acceptance tests against, that we can create and provision on demand, to ensure that our acceptance tests only deal with functional-correctness, not data- or environment-correctness.</p>
-
-<p>I created a set of Grunt tasks which were able to do the following:</p>
-
-<ul>
-<li>Spin up an provision a Vagrant instance</li>
-<li>Deploy the project code</li>
-<li>Start the server</li>
-<li>Run the acceptance tests</li>
-<li>Tear it all down</li>
-</ul>
-
-
-<p>All from a single command: <code>grunt acceptance</code></p>
-
-<p>The price of this magic? About ten lines of Bash script, a six line Vagrantfile and some Grunt glue.</p>
-
-<h2>Diving in</h2>
-
-<p>Assuming you&rsquo;ve got Vagrant installed, you can create a Vagrantfile in the root of your project, which looks like this:</p>
-
-<pre><code>Vagrant.configure("2") do |config|
-    config.vm.box = "Ubuntu precise 64 VMWare"
-    config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
-    config.vm.network :forwarded_port, guest: 3000, host: 3000
-    config.vm.provision :shell, :path =&gt; "setup/bootstrap.sh"
-end
-</code></pre>
-
-<p>Notice the last line &lsquo;config.vm.provision&rsquo;, this tells Vagrant that there is a shell script at setup/bootstrap.sh which is going to provision your vm. You can provision the box with Puppet, Chef or a variety of other tools, but for the purposes of this simple testing machine, I&rsquo;m happy to use a shell script.</p>
-
-<p>Let&rsquo;s have a look at the bootstrap file:</p>
-
-<pre><code>apt-get update -y -q
-apt-get install build-essential mongodb -y -q
-
-cp /vagrant/tests/acceptance-tests/mongodb.conf /etc/mongodb.conf
-service mongodb restart
-
-wget --quiet http://nodejs.org/dist/v0.10.15/node-v0.10.15-linux-x64.tar.gz
-
-tar -zxf node-v0.10.15-linux-x64.tar.gz
-
-mv node-v0.10.15-linux-x64/ /opt/node/
-ln -s /opt/node/bin/node /usr/bin/node
-ln -s /opt/node/bin/npm /usr/bin/npm
-</code></pre>
-
-<p>After booting the VM, Vagrant will run this script, which will can do anything you need it to. All the commands run as root, so there&rsquo;s very little restriction as to what you can achieve.</p>
-
-<p>We&rsquo;re installing Node.js (downloading the binaries manually because the version of Node in the Ubuntu repository is really old), and MongoDB (which our app depends on).</p>
-
-<p>Note this line: <code>cp /vagrant/tests/acceptance-tests/mongodb.conf /etc/mongodb.conf</code> which installs a custom config for MongoDB.</p>
-
-<p>By default, Vagrant will mount a share in /vagrant to the current directory (i.e. the directory on the host machine from which you executed <code>vagrant up</code>), you can map additional folders by adding <code>config.vm.synced_folder "path/on/host", "/path/on/guest"</code> to your Vagrantfile.</p>
-
-<p>Now that we&rsquo;ve got our Vagrant config sorted, we can hook this into Grunt, using a bit of glue code.</p>
-
-<pre><code>var shell = require('shelljs');
-
-grunt.registerTask('vagrant-up', function(){
-    shell.exec('vagrant up');
-});
-
-grunt.registerTask('vagrant-destroy', function(){
-    shell.exec('vagrant destroy -f');
-});
-</code></pre>
-
-<p>So now that we&rsquo;ve got our machine provisioned and booted, we can use Grunt to <a href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">deploy our code and start our service</a>.</p>
-
-<p>Assuming that we&rsquo;ve got all that going on, we can move on to the next step, getting Grunt to deploy the code to the Vagrant box.</p>
-
-<p>What I&rsquo;m going to do here is hook the deployment step into the &lsquo;vagrant-up&rsquo; task.</p>
-
-<pre><code>grunt.registerTask('vagrant-up', function(){
-    shell.exec('vagrant up');
-    grunt.option('config', 'vagrant');
-    grunt.task.run('deploy');
-});
-</code></pre>
-
-<p>The reason for this is so that <code>grunt vagrant-up</code> will spin me up a provisioned box <em>and</em> install the code.</p>
-
-<p>You&rsquo;ll notice that I set the &lsquo;config&rsquo; option inside the task, this option is required by the deploy task. I could specify it on the command line, but this is just friendlier and makes for a cleaner syntax of the command.</p>
-
-<p>Now, when we run <code>grunt acceptance</code>, it&rsquo;ll do the following:</p>
-
-<ul>
-<li>Spin up the Vagrant box</li>
-<li>Deploy the code</li>
-<li>Tear it down again</li>
-</ul>
-
-
-<p>The only step remaining is to run our acceptance tests. For our app, we&rsquo;re using mocha, you can use anything so long as you&rsquo;ve got a Grunt task to drop in.</p>
-
-<pre><code>var shell = require('shelljs');
-
-grunt.initConfig({
-    ...
-    mochaTest: {
-        options: {
-            reporter: 'spec'
-        },
-        AcceptanceTests:{
-            src: ['tests/acceptance-tests/**/*.js']
-        }
-    }
-});
-
-grunt.registerTask('deploy', [
-    'sshexec:stop',
-    'sshexec:make-release-dir',
-    'sshexec:update-symlinks',
-    'sftp:deploy',
-    'sshexec:npm-update',
-    'sshexec:set-config',
-    'sshexec:start'
-]);
-
-grunt.registerTask('vagrant-up', function(){
-    shell.exec('vagrant up');
-    grunt.option('config', 'vagrant');
-    grunt.task.run('deploy');
-});
-
-grunt.registerTask('vagrant-test', [ 'mochaTest:AcceptanceTests' ]);
-
-grunt.registerTask('vagrant-destroy', function(){
-    shell.exec('vagrant destroy -f');
-});
-
-grunt.registerTask('acceptance', [
-    'vagrant-up',
-    'vagrant-test',
-    'vagrant-destroy'
-]);
-</code></pre>
-
-<p>Ta-Da! Wasn&rsquo;t that painless?</p>
-
-<p>The key part here is that everything is now in source control. So whenever someone checks out the project, it takes precisely <strong><em>one</em></strong> command to get the project going. No more time wasted configuring your dev machine to be able to run this, or that.</p>
-
-<p>The machine is brand-new every time, with its own spangly MongoDB instance ready for use.</p>
-
-<p>What&rsquo;s that I hear you whine? &ldquo;<em>My application depends on shared data, I can&rsquo;t use an empty database</em>&rdquo;. Not true. If you need it, set it up or mock it out. The acceptance tests should set-up and tear-down all their own data, if you rely on shared data sources for acceptance tests then you&rsquo;re going to have a painful time. Script it once and it&rsquo;ll forever be your friend. It&rsquo;s time to enter the dynamic era, no more false failures on your CI build because a shared datasource is missing and/or has been changed.</p>
-
-<p>What&rsquo;s more you can now run <code>grunt acceptance</code> from anywhere and <strong><em>know</em></strong> that it&rsquo;ll be the same. No more environment pains!</p>
 ]]></content>
   </entry>
   

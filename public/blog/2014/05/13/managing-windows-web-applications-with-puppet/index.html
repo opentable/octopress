@@ -1,0 +1,358 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Managing Windows Web Applications with Puppet - OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
+
+  
+  <meta name="description" content="As part of our move towards a configuration management tool, we really wanted to start automating as much of our infrastructure as possible. This &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet/">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
+  <script type="text/javascript" src="http://use.typekit.com/syx2vfn.js"></script>
+  <script type="text/javascript">try { Typekit.load(); } catch (e) { }</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
+  
+    <h2>The technology blog for OpenTable UK.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/authors">Authors</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Managing Windows Web Applications with Puppet</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Paul Stack</span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-13T09:25:16-05:00" pubdate data-updated="true">May 13<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>As part of our move towards a configuration management tool, we really wanted to start automating as much of our infrastructure as possible. This included our application configuration stack. IIS management is pretty easy with PowerShell. It would look something like this</p>
+
+<pre><code>Import-Module WebAdministration
+New-WebSite -Name "DemoSite" -Port 80 -IP * -PhysicalPath "c:\inetpub\wwwroot" -ApplicationPool "MyAppPool"
+</code></pre>
+
+<p>This would of course set up a website called &lsquo;DemoSite&rsquo; running on port 80 on the local machine. The cmdlets that come with PowerShell make this pretty easy. This is great if it is a one-off job to set up a site. We run our websites from a number of webservers, therefore, it would be silly to have to RDP into each webserver and run a script on it. This is why tools like Puppet, Chef, Ansible etc. exist. We needed a configuration management tool to do this work for us. It has a number of benefits:</p>
+
+<ul>
+<li>Orchestration</li>
+<li>Idepotency</li>
+<li>Makes sure that each server is configured in &lsquo;exactly&rsquo; the same way as no human intervention is needed</li>
+<li>Developers can help the operations team by creating the scripts needed. This is great for collaboration between teams</li>
+</ul>
+
+
+<p>On investigating how we would do this with Puppet, we noticed that there were not many other people managing their site in this way. Therefore, we would have to turn our PowerShell scripts into Puppet modules to manage our system.</p>
+
+<p>We have since created a Puppet module to manage IIS. To manage IIS with Puppet, we can now write the following code:</p>
+
+<pre><code>iis::manage_site { 'DemoSite:
+   site_path     =&gt; 'c:\inetpub\wwwroot',
+   port          =&gt; '80',
+   ip_address    =&gt; '*',
+   app_pool      =&gt; 'MyAppPool'
+}
+</code></pre>
+
+<p>This would produce <strong>exactly</strong> the same results as the code from above. But it has 1 difference. There are checks in the code behind this module that will mean the code will only execute when it is needed, i.e. when the site_path isn&rsquo;t correct or the app_pool isn&rsquo;t correct. This is idempotency. The script can be run again and again and again&hellip;.</p>
+
+<p>To create an application binding, we used to do this in PowerShell:</p>
+
+<pre><code>Import-Module WebAdministration
+New-WebBinding -Name 'DemoSite' -Port '8080' -IPAddress '*'
+</code></pre>
+
+<p>This would set up an extra binding on port 8080 for the site, DemoSite. We replaced this code with our puppet equivalent:</p>
+
+<pre><code>iis::manage_binding { 'DemoSite-8080':
+  site_name   =&gt; 'DemoSite',
+  protocol    =&gt; 'http',
+  port        =&gt; '8080',
+  ip_address  =&gt; '*',
+}
+</code></pre>
+
+<p>To create a virtual application, we would write the PowerShell:</p>
+
+<pre><code>Import-Module WebAdministration
+New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub\wwwroot\MyVirtualApp' -ApplicationPool 'MyAppPool'
+</code></pre>
+
+<p>This will create a VirtualApp folder on the DemoSite, use the same application pool and then set the path of the folder. I can do the same thing in Puppet as follows:</p>
+
+<pre><code>iis::manage_virtual_application {'VirtualApp':
+  site_name   =&gt; 'DemoSite',
+  site_path   =&gt; 'C:\inetpub\wwwroot\MyVirtualApplication',
+  app_pool    =&gt; 'MyAppPool'
+ }  
+</code></pre>
+
+<p>We can therefore, chain a manifest together that does all this for us in 1 go. It would look as follows:</p>
+
+<pre><code>class mywebsite {
+  iis::manage_app_pool {'MyAppPool':
+    enable_32_bit           =&gt; true,
+    managed_runtime_version =&gt; 'v4.0',
+  } -&gt;
+
+  iis::manage_site {'DemoSite':
+    site_path   =&gt; 'C:\inetpub\wwwroot',
+    port        =&gt; '80',
+    ip_address  =&gt; '*',
+    app_pool    =&gt; 'MyAppPool'
+  } -&gt;
+
+  iis::manage_virtual_application {'VirtualApp':
+    site_name  =&gt; 'DemoSite',
+    site_path  =&gt; 'C:\inetpub\wwwroot\MyVirtualApp',
+    app_pool   =&gt; 'MyAppPool'
+  } -&gt; 
+
+  iis::manage_binding {'DemoSite-8080':
+    site_name  =&gt; 'DemoSite',
+    protocol   =&gt; 'http',
+    port       =&gt; '8080',
+    ip_address =&gt; '*'
+  }
+}
+</code></pre>
+
+<p>The module does more than just these tasks and I could give more and more examples of what we wrote, but you can find more about our IIS module on the <a href="http://github.com/opentable/puppet-iis">github repo</a>. If you want to use the module, then you can install it using the Puppet Module tool via the <a href="http://forge.puppetlabs.com/opentable/iis">Puppet forge</a>.</p>
+
+<p>We love to hear feedback on things that the module should support. We like Pull Requests even more :)</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Paul Stack</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-13T09:25:16-05:00" pubdate data-updated="true">May 13<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/configuration-management/'>Configuration Management</a>, <a class='category' href='/blog/categories/devops/'>DevOps</a>, <a class='category' href='/blog/categories/iis/'>IIS</a>, <a class='category' href='/blog/categories/powershell/'>PowerShell</a>, <a class='category' href='/blog/categories/puppet/'>Puppet</a>, <a class='category' href='/blog/categories/windows/'>Windows</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet/" data-via="opentabletechuk" data-counturl="http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/04/29/remote-worker-notes-tools-and-setup/" title="Previous Post: Remote Worker Notes &ndash; Tools and Setup">&laquo; Remote Worker Notes &ndash; Tools and Setup</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/05/13/managing-windows-web-applications-with-puppet/">Managing Windows Web Applications with Puppet</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/29/remote-worker-notes-tools-and-setup/">Remote Worker Notes &ndash; Tools and Setup</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/28/effective-prioritisation/">Effective prioritisation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/16/look-ma-no-unit-tests/">Look ma, no unit tests!</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/07/upgrading-puppet-with-puppet/">Upgrading Puppet with Puppet</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2014 - OpenTable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

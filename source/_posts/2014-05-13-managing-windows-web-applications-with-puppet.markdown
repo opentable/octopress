@@ -20,7 +20,7 @@ This would of course set up a website called 'DemoSite' running on port 80 on th
 
 On investigating how we would do this with Puppet, we noticed that there were not many other people managing their site in this way. Therefore, we would have to turn our PowerShell scripts into Puppet modules to manage our system. 
 
-We have since created a Puppet module to manage IIS module. To manage IIS with Puppet, we can now write the following code:
+We have since created a Puppet module to manage IIS. To manage IIS with Puppet, we can now write the following code:
 
     iis::manage_site { 'DemoSite:
        site_path     => 'c:\inetpub\wwwroot',

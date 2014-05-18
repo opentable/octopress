@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Hubot | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/hubot/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-05-14T08:07:32-05:00</updated>
+  <updated>2014-05-18T20:13:55+01:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -14,9 +14,69 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Continuous Delivery: Automating Deployment Visibility]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/05/14/continuous-delivery-automating-deployment-visibility/"/>
+    <updated>2014-05-14T19:08:13+01:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/05/14/continuous-delivery-automating-deployment-visibility</id>
+    <content type="html"><![CDATA[<p>In our continued effort to drive towards a service oriented architecture each of our teams are continuously improving their deployment processes. At Opentable we operate and see value in small team sizes, typically between 3 and 5 members per team. Each team has ownership for a particular part of the system. This works really well and gives teams a sense of autonomy and ownership. As with all organizations though it&rsquo;s important that we&rsquo;re not siloed and that there is visibility between teams. Recently our team has focussed on automating as much as possible, putting as much into chat as we can and improving our logging/metrics.</p>
+
+<p>The image below shows at a high level what our teams current continuous delivery pipeline looks like and this post will attempt to summarise some recent changes that have allowed us to automate visibility.</p>
+
+<p><img src="/images/posts/release-pipeline.png" width="900" height="350" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+
+<h2>Kicking off a deployment</h2>
+
+<p>I wrote previously that we started <a href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">using chatops</a> to increase visibility operationally. Hubot is central to this and we wrote a small script to kick off deployments within <a href="https://www.hipchat.com/">Hipchat</a></p>
+
+<p><img src="/images/posts/hubot-deploy-restaurant.png" width="350" height="350" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+
+<p>We have two seperate environments which requires us to have 2 TeamCity instances to separate production and non-production deployments. Artifacts from our non-production instance are stored in <a href="http://www.jfrog.com/home/v_artifactory_opensource_overview">Artifactory</a> and our production deployment makes an API call to non-production TeamCity to ask for the last successfully pinned build. Pinning a build only occurs when we&rsquo;re happy that the build is ready to be shipped (passing unit and acceptance tests). The above Hubot command will pin the non-production build, given that the build succeeded, and add a build to the queue in production.</p>
+
+<p>To configure Hubot to do this we wrote a command to setup aliases providing the build id of the build to pin (non-production) and the build id of the build to kick off (production).</p>
+
+<p><img src="/images/posts/hubot-deploy-alias.png" width="350" height="350" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+
+<h2>Deployment visibility</h2>
+
+<p>Our production deployments must be auditable and it&rsquo;s important that we know what went out with each release and keep a log of this for our Risk Management team. We do this by creating a ticket in <a href="https://www.atlassian.com/software/jira">JIRA</a>, internally known as a CCB, and this gives us a central store of all deployments by all teams.</p>
+
+<p>In the past these tickets were manually created for each release. We soon realised that this was something we could automate. To do so we created a new &ldquo;deployment-info&rdquo; endpoint for our service. This simply contains the SHA of the last commit released along with a time stamp. The first step of our production deploy is to query this endpoint and then using the Github API to get all the commits since that last SHA. These commits are then logged to JIRA to create a CCB ticket using the JIRA API. Each of these steps are automated from TeamCity using grunt tasks to which we open sourced:</p>
+
+<ul>
+<li><a href="https://github.com/opentable/grunt-ccb">https://github.com/opentable/grunt-ccb</a></li>
+<li><a href="https://github.com/opentable/grunt-github-manifest">https://github.com/opentable/grunt-github-manifest</a></li>
+<li><a href="https://github.com/opentable/grunt-package-github">https://github.com/opentable/grunt-package-github</a></li>
+</ul>
+
+
+<h2>Build Notifications to Kibana</h2>
+
+<p>Once we have a CCB we fire a start and end event from TeamCity containing the build number to Redis which is then piped into <a href="http://logstash.net/">Logstash</a>. An event is sent before and after deploying the code to all nodes. This is hugely beneficial because it allows us to plot releases against our graphs in <a href="http://www.elasticsearch.org/overview/kibana/">Kibana</a>. Kibana recently added a new feature called Markers. Essentially these are tags that display at the bottom of a graph.</p>
+
+<p><img src="/images/posts/kibana-tags.png" width="350" height="350" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+
+<p>We open sourced this grunt module too &ndash; <a href="https://github.com/opentable/grunt-deployment-logger">https://github.com/opentable/grunt-deployment-logger</a></p>
+
+<p>This has already proved incredibly useful for the team and has allowed us to visually correlate issues or changes in KPI&rsquo;s to releases. The following image shows how these look over several graphs.</p>
+
+<p><img src="/images/posts/kibana-dashboard.png" width="900" height="900" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+
+<h2>Hipchat build complete notification</h2>
+
+<p><img src="/images/posts/hubot-notification.png" width="350" height="200" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+
+<p>Once the build pipeline has completed we send a notification to our teams room in Hipchat (as a final step in TeamCity) to inform the team that the release has completed. It&rsquo;s great to see a deployment start and end in chat. Having a central log of key operations in our team means that we don&rsquo;t have to go and find information when it&rsquo;s baked into chat.</p>
+
+<h2>Conclusion</h2>
+
+<p>We&rsquo;ve come along way with improving our pipeline and automating visibility. Our team is made up of 4 members; 3 in the office and 1 remote. The ultimate goal is to improve speed of deployment and visibility of events not just within the team but for everyone who is interested. Equally we want to continue to open source by default, allowing us to share our process with teams inside and outside of our organization. We can release code anywhere in the world and the process is completely centralised in chat. We want to continue to move fast and fix faster.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Beginning a journey to chatops with Hubot]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/"/>
-    <updated>2013-11-22T09:34:00-06:00</updated>
+    <updated>2013-11-22T09:34:00+00:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot</id>
     <content type="html"><![CDATA[<p><img class="center" src="/images/posts/hubot_pug_me.png"></p>
 

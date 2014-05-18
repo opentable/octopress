@@ -4,7 +4,7 @@
   <title><![CDATA[Category: PowerShell | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/powershell/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-05-14T08:07:32-05:00</updated>
+  <updated>2014-05-18T20:13:55+01:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Managing Windows Web Applications with Puppet]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet/"/>
-    <updated>2014-05-13T09:25:16-05:00</updated>
+    <updated>2014-05-13T15:25:16+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet</id>
     <content type="html"><![CDATA[<p>As part of our move towards a configuration management tool, we really wanted to start automating as much of our infrastructure as possible. This included our application configuration stack. IIS management is pretty easy with PowerShell. It would look something like this</p>
 
@@ -118,7 +118,7 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
   <entry>
     <title type="html"><![CDATA[Managing Windows Certificates with PowerShell]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell/"/>
-    <updated>2013-07-08T18:51:00-05:00</updated>
+    <updated>2013-07-08T18:51:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell</id>
     <content type="html"><![CDATA[<p>Managing certificates on Windows is <em>really</em> painful. There is no easy way to do it. The general way to install a certificate to a Windows Server 2008 machine is as follows:</p>
 
@@ -161,7 +161,7 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
   <entry>
     <title type="html"><![CDATA[Windows Feature Management with PowerShell]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/"/>
-    <updated>2013-06-14T20:31:00-05:00</updated>
+    <updated>2013-06-14T20:31:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell</id>
     <content type="html"><![CDATA[<p>In late 2012, our development team started to move towards our systems being much more automated. Long gone are the days of developers creating runbooks in Word and giving them to our operations team to use to set up our production servers.</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Agile | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/agile/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-05-14T08:07:32-05:00</updated>
+  <updated>2014-05-18T20:13:55+01:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Remote Worker Notes &ndash; Tools and Setup]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup/"/>
-    <updated>2014-04-29T04:56:49-05:00</updated>
+    <updated>2014-04-29T10:56:49+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup</id>
     <content type="html"><![CDATA[<p>For the last couple months I&rsquo;ve been working remotely with our search team at OpenTable. Let me share our remote working setup and some rationale for our choices. I will shy away from judging how it&rsquo;s all worked out and leave that for subsequent blog posts.</p>
 
@@ -88,7 +88,7 @@
   <entry>
     <title type="html"><![CDATA[Programme Management, making Agile scale]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/02/12/programme-management/"/>
-    <updated>2014-02-12T10:16:00-06:00</updated>
+    <updated>2014-02-12T10:16:00+00:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/02/12/programme-management</id>
     <content type="html"><![CDATA[<h2>Popular topic at conferences</h2>
 

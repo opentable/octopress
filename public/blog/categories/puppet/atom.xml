@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Puppet | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/puppet/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-05-14T08:07:32-05:00</updated>
+  <updated>2014-05-18T20:13:55+01:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Managing Windows Web Applications with Puppet]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet/"/>
-    <updated>2014-05-13T09:25:16-05:00</updated>
+    <updated>2014-05-13T15:25:16+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet</id>
     <content type="html"><![CDATA[<p>As part of our move towards a configuration management tool, we really wanted to start automating as much of our infrastructure as possible. This included our application configuration stack. IIS management is pretty easy with PowerShell. It would look something like this</p>
 
@@ -118,7 +118,7 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
   <entry>
     <title type="html"><![CDATA[Upgrading Puppet with Puppet]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/"/>
-    <updated>2014-04-07T13:23:00-05:00</updated>
+    <updated>2014-04-07T13:23:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet</id>
     <content type="html"><![CDATA[<p>As part of one of our recent <a href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
 
@@ -178,7 +178,7 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
   <entry>
     <title type="html"><![CDATA[Testing Puppet with Beaker]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/"/>
-    <updated>2014-04-04T17:30:00-05:00</updated>
+    <updated>2014-04-04T17:30:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker</id>
     <content type="html"><![CDATA[<p>One afternoon I got asked to write a new Puppet module to manage local users on our Linux boxes. Not a contrived example but a real-world need as we begin to move our infrastructure from Windows to Linux. Managing users is one of those tasks that is at the core of the Puppet ecosystem and I thought this would be pretty easy as I had done this sort of thing many times before. What added to the complexity was that we needed to support Ubuntu, Centos and FreeBSD machines that we had in our stack and we wanted to make it something that was open source and on the Forge &ndash; so lots of testing was required.</p>
 
@@ -327,7 +327,7 @@ end
   <entry>
     <title type="html"><![CDATA[ForgeFriday - our commitment to the Puppet Forge]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/"/>
-    <updated>2014-04-04T15:30:00-05:00</updated>
+    <updated>2014-04-04T15:30:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge</id>
     <content type="html"><![CDATA[<p>Those of you that read this blog on a regular basis will be aware that here at OpenTable we take our commitment to Open Source very seriously. As part of the infrastructure team at OpenTable we are begining a process of being open-first. That means that everything we write will be open-sourced unless it contains a significant amount of internal information but we will architect to limit this.</p>
 
@@ -352,7 +352,7 @@ end
   <entry>
     <title type="html"><![CDATA[The adoption of Configuration Management]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/"/>
-    <updated>2014-02-10T13:46:00-06:00</updated>
+    <updated>2014-02-10T13:46:00+00:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management</id>
     <content type="html"><![CDATA[<p>In years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around nine months ago we started to really try and get these teams working together. We introduced a configuration management tool, <a href="http://puppetlabs.com/puppet/what-is-puppet">Puppet</a>, into our ecosystem.</p>
 

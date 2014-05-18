@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
+
+  
+  <meta name="description" content="First some background We recently switched from writing automated acceptance from Cucumber to SpecFlow&hellip; this is no slight on Cucumber it&rsquo &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.opentable.co.uk/blog/page/4/">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
+  <script type="text/javascript" src="http://use.typekit.com/syx2vfn.js"></script>
+  <script type="text/javascript">try { Typekit.load(); } catch (e) { }</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
+  
+    <h2>The technology blog for OpenTable UK.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/authors">Authors</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/06/07/getting-started-with-specrun/">Getting Started With SpecRun</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-07T11:33:00+01:00" pubdate data-updated="true">Jun 7<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>First some background</h2>
+
+<p>We recently switched from writing automated acceptance from Cucumber to SpecFlow&hellip; this is no slight on Cucumber it&rsquo;s just that we had a lot of C# developers who wanted to get closer to writing acceptance tests. Worth adding that SpecFlow has also come a long way as a .Net port of Cucumber and is pretty much like for like now.</p>
+
+<h2>Why should I bother with SpecRun?</h2>
+
+<p>Initially we ran our entire unit, integration and acceptance tests via nUnit. Pretty much industry standard but we felt nUnit wasn&rsquo;t really a good tool to run acceptance tests &ndash; yes it&rsquo;ll do the job but we were looking for better performance, quicker failure feedback and more comprehensive reporting. If you want details on SpecRun vs. nUnit Gasper has a <a href="http://gasparnagy.com/2011/09/specrun-because-integration-tests-are-not-unit-tests/">great blog post</a>.</p>
+
+<p><salespitch>SpecRun itself is free to use although there is a random delay when running acceptance locally, setting up SpecRun on a CI environment is totally free and does not include the same delay. Definitely worth trying out and you can purchase a licence later if you like what it offers.</salespitch></p>
+
+<h2>Installing SpecRun</h2>
+
+<p>If you are already using SpecFlow with nUnit the migration to SpecRun is really simple &ndash; <a href="http://www.youtube.com/watch?v=c2ge90BWeI0">this video</a> shows you how to setup the test runner but I found myself having to watch it too many times. This post is an attempt at recording the steps should we roll out SpecRun for another project.</p>
+
+<p>I&rsquo;m assuming you&rsquo;re running Visual Studio and are familiar with Nuget packages. I&rsquo;ll break it down so I don&rsquo;t miss anything:</p>
+
+<ol>
+<li>In VS, select your Acceptance test project and get the Nuget package down for SpecRun: <code>install-package SpecRun</code>.</li>
+<li>You&rsquo;ll notice Nuget automatically adds configuration to your app.config so it&rsquo;s safe to remove the nUnit provider setting (this is to enable you to pick and choose your test runner but we prefer to only use SpecRun).</li>
+<li>Open the Default.srprofile file and we normally delete any commented settings here.</li>
+<li>Still inside Default.srprofile add the properties for projectName and projectId. The projectName is what you see in VS the projectId can be found by opening the acceptance .proj file and taking the projectGuid.</li>
+<li>Setup the execution properties &ndash; this really depends on what you want to get out of running the tool &ndash; what retry count you want, whether to run on multiple threads, etc. Here are the values we normally use:</li>
+</ol>
+
+
+<p><code>&lt;Execution retryFor="None" stopAfterFailures="100" testThreadCount="1" testSchedulingMode="Sequential" apartmentState="STA"/&gt;</code></p>
+
+<ol>
+<li>We did tweak the SpecRun .cmd file used to run acceptance via command line &ndash; <a href="https://dl.dropboxusercontent.com/u/8835075/runacceptance.cmd">copy this file</a> to your project root, you may need to tweak some names and paths.</li>
+</ol>
+
+
+<p>Once you&rsquo;ve gone through those steps you should be able to browse to your project root, type <strong>runacceptance.cmd tag_to_run</strong> and it&rsquo;ll run your acceptance tests tagged <strong>@tag_to_run</strong>  (NOTE: you don&rsquo;t need to specify the @ symbol).</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/3/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/05/14/continuous-delivery-automating-deployment-visibility/">Continuous Delivery: Automating Deployment Visibility</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/13/managing-windows-web-applications-with-puppet/">Managing Windows Web Applications with Puppet</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/29/remote-worker-notes-tools-and-setup/">Remote Worker Notes &ndash; Tools and Setup</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/28/effective-prioritisation/">Effective prioritisation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/16/look-ma-no-unit-tests/">Look ma, no unit tests!</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2014 - OpenTable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

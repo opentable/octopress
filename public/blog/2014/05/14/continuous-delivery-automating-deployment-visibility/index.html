@@ -1,0 +1,316 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Continuous Delivery: Automating Deployment Visibility - OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
+
+  
+  <meta name="description" content="In our continued effort to drive towards a service oriented architecture each of our teams are continuously improving their deployment processes. At &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.opentable.co.uk/blog/2014/05/14/continuous-delivery-automating-deployment-visibility/">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
+  <script type="text/javascript" src="http://use.typekit.com/syx2vfn.js"></script>
+  <script type="text/javascript">try { Typekit.load(); } catch (e) { }</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
+  
+    <h2>The technology blog for OpenTable UK.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/authors">Authors</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Continuous Delivery: Automating Deployment Visibility</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Ryan Tomlinson</span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-14T19:08:13+01:00" pubdate data-updated="true">May 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>In our continued effort to drive towards a service oriented architecture each of our teams are continuously improving their deployment processes. At Opentable we operate and see value in small team sizes, typically between 3 and 5 members per team. Each team has ownership for a particular part of the system. This works really well and gives teams a sense of autonomy and ownership. As with all organizations though it&rsquo;s important that we&rsquo;re not siloed and that there is visibility between teams. Recently our team has focussed on automating as much as possible, putting as much into chat as we can and improving our logging/metrics.</p>
+
+<p>The image below shows at a high level what our teams current continuous delivery pipeline looks like and this post will attempt to summarise some recent changes that have allowed us to automate visibility.</p>
+
+<p><img src="/images/posts/release-pipeline.png" width="900" height="350" title="image" alt="images"></p>
+
+<h2>Kicking off a deployment</h2>
+
+<p>I wrote previously that we started <a href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">using chatops</a> to increase visibility operationally. Hubot is central to this and we wrote a small script to kick off deployments within <a href="https://www.hipchat.com/">Hipchat</a></p>
+
+<p><img src="/images/posts/hubot-deploy-restaurant.png" width="350" height="350" title="image" alt="images"></p>
+
+<p>We have two seperate environments which requires us to have 2 TeamCity instances to separate production and non-production deployments. Artifacts from our non-production instance are stored in <a href="http://www.jfrog.com/home/v_artifactory_opensource_overview">Artifactory</a> and our production deployment makes an API call to non-production TeamCity to ask for the last successfully pinned build. Pinning a build only occurs when we&rsquo;re happy that the build is ready to be shipped (passing unit and acceptance tests). The above Hubot command will pin the non-production build, given that the build succeeded, and add a build to the queue in production.</p>
+
+<p>To configure Hubot to do this we wrote a command to setup aliases providing the build id of the build to pin (non-production) and the build id of the build to kick off (production).</p>
+
+<p><img src="/images/posts/hubot-deploy-alias.png" width="350" height="350" title="image" alt="images"></p>
+
+<h2>Deployment visibility</h2>
+
+<p>Our production deployments must be auditable and it&rsquo;s important that we know what went out with each release and keep a log of this for our Risk Management team. We do this by creating a ticket in <a href="https://www.atlassian.com/software/jira">JIRA</a>, internally known as a CCB, and this gives us a central store of all deployments by all teams.</p>
+
+<p>In the past these tickets were manually created for each release. We soon realised that this was something we could automate. To do so we created a new &ldquo;deployment-info&rdquo; endpoint for our service. This simply contains the SHA of the last commit released along with a time stamp. The first step of our production deploy is to query this endpoint and then using the Github API to get all the commits since that last SHA. These commits are then logged to JIRA to create a CCB ticket using the JIRA API. Each of these steps are automated from TeamCity using grunt tasks to which we open sourced:</p>
+
+<ul>
+<li><a href="https://github.com/opentable/grunt-ccb">https://github.com/opentable/grunt-ccb</a></li>
+<li><a href="https://github.com/opentable/grunt-github-manifest">https://github.com/opentable/grunt-github-manifest</a></li>
+<li><a href="https://github.com/opentable/grunt-package-github">https://github.com/opentable/grunt-package-github</a></li>
+</ul>
+
+
+<h2>Build Notifications to Kibana</h2>
+
+<p>Once we have a CCB we fire a start and end event from TeamCity containing the build number to Redis which is then piped into <a href="http://logstash.net/">Logstash</a>. An event is sent before and after deploying the code to all nodes. This is hugely beneficial because it allows us to plot releases against our graphs in <a href="http://www.elasticsearch.org/overview/kibana/">Kibana</a>. Kibana recently added a new feature called Markers. Essentially these are tags that display at the bottom of a graph.</p>
+
+<p><img src="/images/posts/kibana-tags.png" width="350" height="350" title="image" alt="images"></p>
+
+<p>We open sourced this grunt module too &ndash; <a href="https://github.com/opentable/grunt-deployment-logger">https://github.com/opentable/grunt-deployment-logger</a></p>
+
+<p>This has already proved incredibly useful for the team and has allowed us to visually correlate issues or changes in KPI&rsquo;s to releases. The following image shows how these look over several graphs.</p>
+
+<p><img src="/images/posts/kibana-dashboard.png" width="900" height="900" title="image" alt="images"></p>
+
+<h2>Hipchat build complete notification</h2>
+
+<p><img src="/images/posts/hubot-notification.png" width="350" height="200" title="image" alt="images"></p>
+
+<p>Once the build pipeline has completed we send a notification to our teams room in Hipchat (as a final step in TeamCity) to inform the team that the release has completed. It&rsquo;s great to see a deployment start and end in chat. Having a central log of key operations in our team means that we don&rsquo;t have to go and find information when it&rsquo;s baked into chat.</p>
+
+<h2>Conclusion</h2>
+
+<p>We&rsquo;ve come along way with improving our pipeline and automating visibility. Our team is made up of 4 members; 3 in the office and 1 remote. The ultimate goal is to improve speed of deployment and visibility of events not just within the team but for everyone who is interested. Equally we want to continue to open source by default, allowing us to share our process with teams inside and outside of our organization. We can release code anywhere in the world and the process is completely centralised in chat. We want to continue to move fast and fix faster.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Ryan Tomlinson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-14T19:08:13+01:00" pubdate data-updated="true">May 14<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/chatops/'>Chatops</a>, <a class='category' href='/blog/categories/continuous-delivery/'>Continuous Delivery</a>, <a class='category' href='/blog/categories/hipchat/'>Hipchat</a>, <a class='category' href='/blog/categories/hubot/'>Hubot</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.opentable.co.uk/blog/2014/05/14/continuous-delivery-automating-deployment-visibility/" data-via="opentabletechuk" data-counturl="http://tech.opentable.co.uk/blog/2014/05/14/continuous-delivery-automating-deployment-visibility/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/05/13/managing-windows-web-applications-with-puppet/" title="Previous Post: Managing Windows Web Applications with Puppet">&laquo; Managing Windows Web Applications with Puppet</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/05/14/continuous-delivery-automating-deployment-visibility/">Continuous Delivery: Automating Deployment Visibility</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/13/managing-windows-web-applications-with-puppet/">Managing Windows Web Applications with Puppet</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/29/remote-worker-notes-tools-and-setup/">Remote Worker Notes &ndash; Tools and Setup</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/28/effective-prioritisation/">Effective prioritisation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/16/look-ma-no-unit-tests/">Look ma, no unit tests!</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2014 - OpenTable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

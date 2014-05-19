@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Testing | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/testing/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-05-14T08:07:32-05:00</updated>
+  <updated>2014-05-19T17:18:28+01:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Look ma, no unit tests!]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests/"/>
-    <updated>2014-04-16T17:00:00-05:00</updated>
+    <updated>2014-04-16T17:00:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests</id>
     <content type="html"><![CDATA[<p>At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for <a href="/blog/2014/02/28/api-benchmark/">new</a> <a href="/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">tools</a> <a href="/blog/2014/04/07/upgrading-puppet-with-puppet/">and</a> <a href="/blog/2014/02/10/the-adoption-of-configuration-management/">methods</a> that allow us, the developers, to respond quickly and accurately to changing requirements and environments.</p>
 
@@ -108,7 +108,7 @@
   <entry>
     <title type="html"><![CDATA[One Gun - Many Enemies]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/07/24/one-gun-many-enemies/"/>
-    <updated>2013-07-24T14:32:00-05:00</updated>
+    <updated>2013-07-24T14:32:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/07/24/one-gun-many-enemies</id>
     <content type="html"><![CDATA[<p>I spent some time, re-investigating Javascript. After a few months of intensive TDD and SOLID training at OpenTable I was curious how those principles apply in a slightly different environment. Guess what, they do not differ that much&hellip; I planned to write about all this sometime in the future after gaining more experience from real battles ahead, however <a href="http://watirmelon.com/2013/02/09/why-i-dont-like-Jasmine/">Watirmelon post</a> invited me to attack this subject immediately.</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-05-14T08:07:32-05:00</updated>
+  <updated>2014-05-19T17:18:28+01:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -14,9 +14,69 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Continuous Delivery: Automating Deployment Visibility]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/05/19/continuous-delivery-automating-deployment-visibility/"/>
+    <updated>2014-05-19T17:17:40+01:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/05/19/continuous-delivery-automating-deployment-visibility</id>
+    <content type="html"><![CDATA[<p>In our continued effort to drive towards a service oriented architecture each of our teams are continuously improving their deployment processes. Recently our team has focussed on automating as much as possible, putting as much into chat as we can and improving our logging/metrics.</p>
+
+<p>The image below shows at a high level what our teams current deployment pipeline looks like and this post will attempt to summarise some recent changes that have allowed us to automate visibility.</p>
+
+<p><img src="http://tech.opentable.co.uk/images/posts/release-pipeline.png" width="900" height="350" title="image" alt="images"></p>
+
+<h2>Kicking off a deployment</h2>
+
+<p>I wrote previously that we started <a href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">using chatops</a> to increase visibility operationally. Hubot is central to this and we wrote a small script to kick off deployments within <a href="https://www.hipchat.com/">Hipchat</a></p>
+
+<p><img src="http://tech.opentable.co.uk/images/posts/hubot-deploy-restaurant.png" width="350" height="350" title="image" alt="images"></p>
+
+<p>We have two TeamCity instances. The first is used as a build and deployment system to our pre-production servers. The second is used as a deployment system to our production servers. Artifacts from our non-production instance are stored in <a href="http://www.jfrog.com/home/v_artifactory_opensource_overview">Artifactory</a> and our production deployment makes an API call to non-production TeamCity to ask for the last successfully pinned build. Pinning a build only occurs when we&rsquo;re happy that the build is ready to be shipped (passing unit and acceptance tests). The above Hubot command will pin the non-production build, given that the build succeeded, and add a build to the queue in production.</p>
+
+<p>To configure Hubot to do this we wrote a command to setup aliases providing the build id of the build to pin (non-production) and the build id of the build to kick off (production).</p>
+
+<p><img src="http://tech.opentable.co.uk/images/posts/hubot-deploy-alias.png" width="350" height="350" title="image" alt="images"></p>
+
+<h2>Deployment visibility</h2>
+
+<p>Our production deployments must be auditable and it&rsquo;s important that we know what went out with each release and keep a log of this for our Risk Management team. We do this by creating a ticket in <a href="https://www.atlassian.com/software/jira">JIRA</a>, internally known as a CCB, and this gives us a central store of all deployments by all teams.</p>
+
+<p>In the past these tickets were manually created for each release. We soon realised that this was something we could automate. To do so we created a new &ldquo;deployment-info&rdquo; endpoint for our service. This simply contains the SHA of the last commit released along with a time stamp. The first step of our production deploy is to query this endpoint and then using the Github API to get all the commits since that last SHA. These commits are then logged to JIRA to create a CCB ticket using the JIRA API. Each of these steps are automated from TeamCity using grunt tasks. You can find information of the grunt tasks on github as follows:</p>
+
+<ul>
+<li><a href="https://github.com/opentable/grunt-ccb">https://github.com/opentable/grunt-ccb</a></li>
+<li><a href="https://github.com/opentable/grunt-github-manifest">https://github.com/opentable/grunt-github-manifest</a></li>
+<li><a href="https://github.com/opentable/grunt-package-github">https://github.com/opentable/grunt-package-github</a></li>
+</ul>
+
+
+<h2>Build Notifications to Kibana</h2>
+
+<p>Once we have a CCB we fire a start and end event from TeamCity containing the build number to Redis which is then piped into <a href="http://logstash.net/">Logstash</a>. An event is sent before and after deploying the code to all nodes. This is hugely beneficial because it allows us to plot releases against our graphs in <a href="http://www.elasticsearch.org/overview/kibana/">Kibana</a>. Kibana recently added a new feature called Markers. Essentially these are tags that display at the bottom of a graph.</p>
+
+<p><img src="http://tech.opentable.co.uk/images/posts/kibana-tags.png" width="350" height="350" title="image" alt="images"></p>
+
+<p>You can find information on this Markers module on github &ndash; <a href="https://github.com/opentable/grunt-deployment-logger">https://github.com/opentable/grunt-deployment-logger</a></p>
+
+<p>This has already proved incredibly useful for the team and has allowed us to visually correlate issues or changes in key metrics (response times/requests per second) to releases. The following image shows how these look over several graphs.</p>
+
+<p><img src="http://tech.opentable.co.uk/images/posts/kibana-dashboard.png" width="900" height="900" title="image" alt="images"></p>
+
+<h2>Hipchat build complete notification</h2>
+
+<p><img src="http://tech.opentable.co.uk/images/posts/hubot-notification.png" width="350" height="200" title="image" alt="images"></p>
+
+<p>Once our deployment pipeline has completed we send a notification to our teams room in Hipchat (as a final step in TeamCity) to inform the team that the release has completed. It&rsquo;s great to see a deployment start and end in chat. Having a central log of key operations in our team means that we don&rsquo;t have to go and find information when it&rsquo;s baked into chat.</p>
+
+<h2>Conclusion</h2>
+
+<p>We&rsquo;ve come along way with improving our pipeline and automating visibility. Our team is made up of 4 members; 3 in the office and 1 remote. The ultimate goal is to improve speed of deployment and visibility of events not just within the team but for everyone who is interested. Equally we want to continue to open source by as much as possible, allowing us to share our process with teams inside and outside of our organization. We can release code anywhere in the world and the process is completely centralised in chat. We want to continue to move fast and fix faster.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Managing Windows Web Applications with Puppet]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet/"/>
-    <updated>2014-05-13T09:25:16-05:00</updated>
+    <updated>2014-05-13T15:25:16+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet</id>
     <content type="html"><![CDATA[<p>As part of our move towards a configuration management tool, we really wanted to start automating as much of our infrastructure as possible. This included our application configuration stack. IIS management is pretty easy with PowerShell. It would look something like this</p>
 
@@ -118,7 +178,7 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
   <entry>
     <title type="html"><![CDATA[Remote Worker Notes &ndash; Tools and Setup]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup/"/>
-    <updated>2014-04-29T04:56:49-05:00</updated>
+    <updated>2014-04-29T10:56:49+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup</id>
     <content type="html"><![CDATA[<p>For the last couple months I&rsquo;ve been working remotely with our search team at OpenTable. Let me share our remote working setup and some rationale for our choices. I will shy away from judging how it&rsquo;s all worked out and leave that for subsequent blog posts.</p>
 
@@ -190,7 +250,7 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
   <entry>
     <title type="html"><![CDATA[Effective prioritisation]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/28/effective-prioritisation/"/>
-    <updated>2014-04-28T08:51:51-05:00</updated>
+    <updated>2014-04-28T14:51:51+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/28/effective-prioritisation</id>
     <content type="html"><![CDATA[<p>Prioritisation is a huge part of modern life.</p>
 
@@ -283,7 +343,7 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
   <entry>
     <title type="html"><![CDATA[Look ma, no unit tests!]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests/"/>
-    <updated>2014-04-16T17:00:00-05:00</updated>
+    <updated>2014-04-16T17:00:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests</id>
     <content type="html"><![CDATA[<p>At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for <a href="http://tech.opentable.co.uk/blog/2014/02/28/api-benchmark/">new</a> <a href="http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">tools</a> <a href="http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/">and</a> <a href="http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/">methods</a> that allow us, the developers, to respond quickly and accurately to changing requirements and environments.</p>
 
@@ -375,7 +435,7 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
   <entry>
     <title type="html"><![CDATA[Upgrading Puppet with Puppet]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/"/>
-    <updated>2014-04-07T13:23:00-05:00</updated>
+    <updated>2014-04-07T13:23:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet</id>
     <content type="html"><![CDATA[<p>As part of one of our recent <a href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
 
@@ -435,7 +495,7 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
   <entry>
     <title type="html"><![CDATA[Testing Puppet with Beaker]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/"/>
-    <updated>2014-04-04T17:30:00-05:00</updated>
+    <updated>2014-04-04T17:30:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker</id>
     <content type="html"><![CDATA[<p>One afternoon I got asked to write a new Puppet module to manage local users on our Linux boxes. Not a contrived example but a real-world need as we begin to move our infrastructure from Windows to Linux. Managing users is one of those tasks that is at the core of the Puppet ecosystem and I thought this would be pretty easy as I had done this sort of thing many times before. What added to the complexity was that we needed to support Ubuntu, Centos and FreeBSD machines that we had in our stack and we wanted to make it something that was open source and on the Forge &ndash; so lots of testing was required.</p>
 
@@ -584,7 +644,7 @@ end
   <entry>
     <title type="html"><![CDATA[ForgeFriday - our commitment to the Puppet Forge]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/"/>
-    <updated>2014-04-04T15:30:00-05:00</updated>
+    <updated>2014-04-04T15:30:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge</id>
     <content type="html"><![CDATA[<p>Those of you that read this blog on a regular basis will be aware that here at OpenTable we take our commitment to Open Source very seriously. As part of the infrastructure team at OpenTable we are begining a process of being open-first. That means that everything we write will be open-sourced unless it contains a significant amount of internal information but we will architect to limit this.</p>
 
@@ -609,7 +669,7 @@ end
   <entry>
     <title type="html"><![CDATA[Internationalisation in a RESTful world]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/02/internationalisation-in-a-restful-world/"/>
-    <updated>2014-04-02T14:11:00-05:00</updated>
+    <updated>2014-04-02T14:11:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/02/internationalisation-in-a-restful-world</id>
     <content type="html"><![CDATA[<p>I18n is often a painful afterthought when serving content from a http-api. It can be taken for granted and tacked on using nasty query string values. But thankfully HTTP provides us with a solid gold opportunity. If you can look past the mire of content negotiation you can see the nuggets that lie inside.</p>
 
@@ -764,7 +824,7 @@ end
   <entry>
     <title type="html"><![CDATA[When to performance test in production]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/03/20/when-to-performance-test-in-production/"/>
-    <updated>2014-03-20T09:56:00-05:00</updated>
+    <updated>2014-03-20T09:56:00+00:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/03/20/when-to-performance-test-in-production</id>
     <content type="html"><![CDATA[<p>In <a href="http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api/">my last post</a> about performance testing I wrote about how we decided to do it in production as the ultimate test of success. Performance testing in production is enough to make some operations guys have a panic attack and a few odd looks were dished my way when I raised it on behalf of the team.</p>
 
@@ -799,7 +859,7 @@ end
   <entry>
     <title type="html"><![CDATA[Performance testing our Search API]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api/"/>
-    <updated>2014-03-19T15:53:00-05:00</updated>
+    <updated>2014-03-19T15:53:00+00:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api</id>
     <content type="html"><![CDATA[<p>It was midnight on the Friday before Christmas, my seven-week old child was tucked up asleep and I was pretty chilled. All was calm and it was time for bed. Two minutes later I had a phone call, followed by a series of Nagios email alerts, and a need to put my work hat on quickly. The search API was having trouble; as the manager of the team who developed it, I was not looking forward to this. We were having a real slowdown at one of our busiest times of the year &ndash; this was going to be fun.</p>
 
@@ -879,7 +939,7 @@ end
   <entry>
     <title type="html"><![CDATA[Benchmarking APIs - why it’s important, and how]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/02/28/api-benchmark/"/>
-    <updated>2014-02-28T09:00:00-06:00</updated>
+    <updated>2014-02-28T09:00:00+00:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/02/28/api-benchmark</id>
     <content type="html"><![CDATA[<p>Since I joined OpenTable I’ve been experimenting with performance monitoring, specifically on web services. One of the projects my team is responsible for is a REST API that provides UI elements for HTML5 applications, shaped as HTML snippets and static resources. Our consumers are websites deployed in multiple parts of the world, so our service needs to be fast and reliable.</p>
 
@@ -1135,7 +1195,7 @@ end
   <entry>
     <title type="html"><![CDATA[Programme Management, making Agile scale]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/02/12/programme-management/"/>
-    <updated>2014-02-12T10:16:00-06:00</updated>
+    <updated>2014-02-12T10:16:00+00:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/02/12/programme-management</id>
     <content type="html"><![CDATA[<h2>Popular topic at conferences</h2>
 
@@ -1156,7 +1216,7 @@ end
   <entry>
     <title type="html"><![CDATA[The adoption of Configuration Management]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/"/>
-    <updated>2014-02-10T13:46:00-06:00</updated>
+    <updated>2014-02-10T13:46:00+00:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management</id>
     <content type="html"><![CDATA[<p>In years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around nine months ago we started to really try and get these teams working together. We introduced a configuration management tool, <a href="http://puppetlabs.com/puppet/what-is-puppet">Puppet</a>, into our ecosystem.</p>
 
@@ -1194,7 +1254,7 @@ end
   <entry>
     <title type="html"><![CDATA[20% time: Why, as a manager, you should love your engineers to be doing it]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/02/06/20-percent-time/"/>
-    <updated>2014-02-06T17:12:00-06:00</updated>
+    <updated>2014-02-06T17:12:00+00:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/02/06/20-percent-time</id>
     <content type="html"><![CDATA[<p>We allow all our UK based developers to have some time to explore new technologies, try out prototypes and clean-up things that escape the day-to-day process. Two days out of ten, seems a lot doesn&rsquo;t it?</p>
 
@@ -1231,7 +1291,7 @@ end
   <entry>
     <title type="html"><![CDATA[Coaching style over substance]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/02/03/coaching-style-over-substance/"/>
-    <updated>2014-02-03T11:12:00-06:00</updated>
+    <updated>2014-02-03T11:12:00+00:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/02/03/coaching-style-over-substance</id>
     <content type="html"><![CDATA[<p>Have you ever been lucky enough to mentor someone who really got it? Maybe you&rsquo;ve had the opposite experience and the session ended up being a failure for both of you?</p>
 
@@ -1344,7 +1404,7 @@ What if we refactor with the MVP pattern first and see where the duplication lie
   <entry>
     <title type="html"><![CDATA[Beginning a journey to chatops with Hubot]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/"/>
-    <updated>2013-11-22T09:34:00-06:00</updated>
+    <updated>2013-11-22T09:34:00+00:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot</id>
     <content type="html"><![CDATA[<p><img class="center" src="http://tech.opentable.co.uk/images/posts/hubot_pug_me.png"></p>
 
@@ -1417,7 +1477,7 @@ What if we refactor with the MVP pattern first and see where the duplication lie
   <entry>
     <title type="html"><![CDATA[Linking to your app in Windows 8]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8/"/>
-    <updated>2013-10-21T17:36:00-05:00</updated>
+    <updated>2013-10-21T17:36:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8</id>
     <content type="html"><![CDATA[<p>In an effort to raise the visibility of our excellent Windows 8 app we have recently connected <a href="http://www.opentable.com">www.opentable.com</a> to the Windows Store.  This was simply a case of adding two lines of meta data to our site. Or it should have been &ndash; there were several gotchas along the way that are worth sharing.</p>
 
@@ -1476,7 +1536,7 @@ What if we refactor with the MVP pattern first and see where the duplication lie
   <entry>
     <title type="html"><![CDATA[Resolving domains to areas in ASP.NET MVC]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc/"/>
-    <updated>2013-09-25T19:28:00-05:00</updated>
+    <updated>2013-09-25T19:28:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc</id>
     <content type="html"><![CDATA[<p>When building a previous project, I created an ASP.NET MVC application that would allow subdomains to resolve to different areas of the project and thus show different views. I wanted to be able to extend this functionality. I wanted to allow different domains to point to different areas. This would allow me to deploy the application just once and then have different headers on the web server rather than regional variances. Whilst on a flight to San Francisco, I was able to hack together some code that allows just that. The details of that hackiness are below.</p>
 
@@ -1618,7 +1678,7 @@ Notice that is has a parameter for constraints. All I need to do is to build the
   <entry>
     <title type="html"><![CDATA[Quick look at RethinkDB]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb/"/>
-    <updated>2013-09-23T16:16:00-05:00</updated>
+    <updated>2013-09-23T16:16:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb</id>
     <content type="html"><![CDATA[<p>Someone in the office mentioned <a href="http://www.rethinkdb.com">RethinkDb</a> and I was impressed by the rhetoric on the site, so I decided to spend a couple of hours spiking one of our existing nodejs apps with RethinkDb. The app currently uses MongoDb so inevitably I&rsquo;m comparing the two.</p>
 
@@ -1679,236 +1739,6 @@ The management interface is very good, incredibly friendly, and has guided acces
 <h1>Conclusion</h1>
 
 <p>RethinkDb is a good looking database. It&rsquo;s feature-full and dead simple to use. Would I use it in production? Not yet. The performance issues are still a sticking point for me, but I have no doubt that once these are fixed RethinkDb will be a big contender.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Counting in Elastic Search]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2013/09/11/counting-in-elastic-search/"/>
-    <updated>2013-09-11T15:48:00-05:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2013/09/11/counting-in-elastic-search</id>
-    <content type="html"><![CDATA[<blockquote><p>Counting is the religion of this generation it is its hope and its salvation.
-Gertrude Stein</p></blockquote>
-
-<p>In our NeverEnding quest to provide better experience to the users we utilise user behaviour logs to influence future results. One particular case is restaurant popularity, which is indicated by many factors, for example how often it is searched and viewed.</p>
-
-<p>In this blog post we will look into multiple ways of counting documents in Elastic Search which is crucial for this kind of activity. All examples here are provided using Elastic Search HTTP interface and code examples implemented with <a href="https://github.com/Yegoroff/PlainElastic.Net">PlainElastic.NET</a> are <a href="https://gist.github.com/gondar/6320578">available here</a></p>
-
-<p>Before we make a deep dive into Elastic Search Counting options let&rsquo;s define our expectations:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>So that I can order restaurants by those that are most searched
-</span><span class='line'>As a potential diner
-</span><span class='line'>I want the most searched statistics from the logs to be part of the search database</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Okay, that&rsquo;s not exactly how our story was defined but as we don&rsquo;t want to discuss the whole search infrastructure here, let&rsquo;s assume this is sufficient.</p>
-
-<p>Because we are eager engineers, we will quickly build some mock data against which to test our assumptions. Our restaurant name search logs look something like this:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>{
-</span><span class='line'>  "RestaurantId" : 2,
-</span><span class='line'>  "RestaurantName" : "Restaurant Brian",
-</span><span class='line'>  "DateTime" : "2013-08-16T15:13:47.4833748+01:00"
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So we will populate our mock database with appropriate commands and check that all is in place:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>curl http://localhost:9200/store/item/ -XPOST -d '{"RestaurantId":2,"RestaurantName":"Restaurant Brian","DateTime":"2013-08-16T15:13:47.4833748+01:00"}'
-</span><span class='line'>curl http://localhost:9200/store/item/ -XPOST -d '{"RestaurantId":1,"RestaurantName":"Restaurant Cecil","DateTime":"2013-08-16T15:13:47.4833748+01:00"}'
-</span><span class='line'>curl http://localhost:9200/store/item/ -XPOST -d '{"RestaurantId":1,"RestaurantName":"Restaurant Cecil","DateTime":"2013-08-16T15:13:47.4833748+01:00"}'
-</span><span class='line'>curl http://localhost:9200/store/item/_search?q=*\&pretty</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Our expected output is a count of documents for each restaurant. For example:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>{
-</span><span class='line'>  "Restaurant Brian" : 1
-</span><span class='line'>  "Restaurant Cecil" : 2
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>There are three ways this can be achieved in Elastic Search; using count API (which seems like the most obvious way), a search with type set to count, or using facets to generate counts of all objects grouped by given property. Let&rsquo;s compare them:</p>
-
-<h3>Count API</h3>
-
-<p>(<a href="http://www.elasticsearch.org/guide/reference/api/count/">See documentation here</a>)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>curl -XPOST http://localhost:9200/store/item/_count -d '{
-</span><span class='line'>  "field": {
-</span><span class='line'>      "RestaurantName": {
-</span><span class='line'>          "query": "Restaurant Cecil",
-</span><span class='line'>          "default_operator": "AND"
-</span><span class='line'>      }
-</span><span class='line'>  }
-</span><span class='line'>}'
-</span><span class='line'>{
-</span><span class='line'>  "count":2,
-</span><span class='line'>  "_shards":{"total":5,"successful":5,"failed":0}
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Count is nice little feature which solves our problem. However, if we need count for multiple restaurants we need to execute similar queries multiple times, which may hugely influence both performance of our query and usage of our ElasticSeach cluster.</p>
-
-<h3>Search</h3>
-
-<p>(<a href="http://www.elasticsearch.org/guide/reference/api/search/search-type/">See documentation here</a>)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>curl -XPOST http://localhost:9200/store/item/_search?search_type=count -d ' {
-</span><span class='line'>  "query": {
-</span><span class='line'>      "field": {
-</span><span class='line'>          "RestaurantName": {
-</span><span class='line'>              "query": "Restaurant Cecil",
-</span><span class='line'>              "default_operator": "AND"
-</span><span class='line'>          }
-</span><span class='line'>      }
-</span><span class='line'>  }
-</span><span class='line'>}'
-</span><span class='line'>{
-</span><span class='line'>  "took":5,"timed_out":false,"_shards":{"total":5,"successful":5,"failed":0},
-</span><span class='line'>  "hits": {
-</span><span class='line'>      "total": 2,
-</span><span class='line'>      "max_score": 0.0,
-</span><span class='line'>      "hits":[]
-</span><span class='line'>  }
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Using search type set to count is the same as executing a search request with size set to zero, but it&rsquo;s internally optimised for performance. The nice thing about search is that we can use multi_search interface to execute many count queries at once.</p>
-
-<p>On the other hand, the query still will be executed multiple times, so it is only feasible if we want to get popularity for a small subset of all the restaurants we have.</p>
-
-<p>Comparing two previous requests highlights that the query language is slightly different. The DSL for <em>count API</em> is basically the same as for the <em>search API</em>, but you are immediately inside the &lsquo;query&rsquo; part. That inconsistency on the ElasticSearch side is only a minor inconvenience.</p>
-
-<h3>Facets</h3>
-
-<p>(<a href="http://www.elasticsearch.org/guide/reference/api/search/facets/">See documentation here</a>)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>curl -XPOST http://localhost:9200/store/item/_search?search_type=count -d '
-</span><span class='line'>{
-</span><span class='line'>  "query": {
-</span><span class='line'>      "match_all": {
-</span><span class='line'>           
-</span><span class='line'>      }
-</span><span class='line'>  },
-</span><span class='line'>  "facets": {
-</span><span class='line'>      "ItemsPerCategoryCount": {
-</span><span class='line'>          "terms": {
-</span><span class='line'>              "field": "RestaurantId",
-</span><span class='line'>              "size": 100
-</span><span class='line'>          }
-</span><span class='line'>      }
-</span><span class='line'>  }
-</span><span class='line'>}'
-</span><span class='line'>{
-</span><span class='line'>  "took":1,"timed_out":false,"_shards":{"total":5,"successful":5,"failed":0},"hits":{"total":132,"max_score":0.0,"hits":[]},
-</span><span class='line'>  "facets": {
-</span><span class='line'>      "ItemsPerCategoryCount": {
-</span><span class='line'>          "_type": "terms",
-</span><span class='line'>          "missing":0,
-</span><span class='line'>          "total":3,
-</span><span class='line'>          "other":0,
-</span><span class='line'>          "terms": [
-</span><span class='line'>              {"term": 2, "count": 1},
-</span><span class='line'>              {"term": 1, "count":2}
-</span><span class='line'>          ]
-</span><span class='line'>      }
-</span><span class='line'>  }
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Facets is a means to obtain grouping by a given field together with count in a group. It is designed to ease creation of filters which are often naturally part of search results interface.</p>
-
-<p>This is nice feature which grabs for us all counts grouped by given field. That&rsquo;s more then we need if we only care for a count of single type, but it&rsquo;s invaluable if you want to have counts for all terms in a field. Also note that we are using search type count again, but facets work equally well for all types of searches including those which actually return results.</p>
-
-<p>In the example above we used &lsquo;RestaurantId&rsquo; field instead of restaurant name, as this field is not analysed. If we used restaurant name it would give us facets for each term e.g. [{&ldquo;term&rdquo;: &ldquo;Restaurant&rdquo;, &ldquo;count&rdquo;: 3}, {&ldquo;term&rdquo;:&ldquo;Cecil&rdquo;, &ldquo;count&rdquo;:2},{&ldquo;term&rdquo;:&ldquo;Brian&rdquo;, &ldquo;count&rdquo;:1}], which is not what we exactly want.</p>
-
-<h3>Conclusion</h3>
-
-<p>It&rsquo;s hard to discuss which one is better. Count API is slightly faster then Search of type count. On the other hand search is more flexible, and its queries are consistent with normal search queries. Facets is a different beast altogether as it always grabs all the results. Still, it&rsquo;s fun that ElasticSearch is elastic in this aspect giving us variety of approaches.</p>
-
-<p>We are really curious about your experiences in ElasticSearch. If you have any questions, proposals or comments feel free to <a href="mailto:mbazydlo@opentable.com">email me</a>.</p>
-
-<h3>Acknowledgement</h3>
-
-<p>This blog post benefited thanks to invaluable comments from my team (Andrew Metcalfe, Michael Wallett and Tom Harvey), <a href="https://github.com/Yegoroff/PlainElastic.Net">PlainElastic.Net</a> author (Yegoroff) and <a href="https://github.com/pbazydlo">my brother</a>.</p>
 ]]></content>
   </entry>
   

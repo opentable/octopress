@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Grunt | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/grunt/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-05-14T08:07:32-05:00</updated>
+  <updated>2014-05-19T17:18:28+01:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Grunt + Vagrant = Acceptance Test Heaven]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/"/>
-    <updated>2013-08-16T15:32:00-05:00</updated>
+    <updated>2013-08-16T15:32:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven</id>
     <content type="html"><![CDATA[<p>My continued love affair with Grunt reached a new high the other day, when I combined <a href="http://www.vagrantup.com">Vagrant</a> with my <a href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">Grunt deployment tasks</a> and test runners.</p>
 
@@ -177,7 +177,7 @@ grunt.registerTask('acceptance', [
   <entry>
     <title type="html"><![CDATA[Grunt your deployments too]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/"/>
-    <updated>2013-08-08T15:27:00-05:00</updated>
+    <updated>2013-08-08T15:27:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too</id>
     <content type="html"><![CDATA[<p>We&rsquo;ve been using <a href="http://www.gruntjs.com">Grunt</a> as a build tool for our nodejs apps, and it&rsquo;s brilliant. It lints, it configures, it minifies, it tests and it packages.</p>
 

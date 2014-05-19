@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Performance | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/performance/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-05-14T08:07:32-05:00</updated>
+  <updated>2014-05-19T17:18:28+01:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[When to performance test in production]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/03/20/when-to-performance-test-in-production/"/>
-    <updated>2014-03-20T09:56:00-05:00</updated>
+    <updated>2014-03-20T09:56:00+00:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/03/20/when-to-performance-test-in-production</id>
     <content type="html"><![CDATA[<p>In <a href="/blog/2014/03/19/performance-testing-our-search-api/">my last post</a> about performance testing I wrote about how we decided to do it in production as the ultimate test of success. Performance testing in production is enough to make some operations guys have a panic attack and a few odd looks were dished my way when I raised it on behalf of the team.</p>
 
@@ -51,7 +51,7 @@
   <entry>
     <title type="html"><![CDATA[Performance testing our Search API]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api/"/>
-    <updated>2014-03-19T15:53:00-05:00</updated>
+    <updated>2014-03-19T15:53:00+00:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api</id>
     <content type="html"><![CDATA[<p>It was midnight on the Friday before Christmas, my seven-week old child was tucked up asleep and I was pretty chilled. All was calm and it was time for bed. Two minutes later I had a phone call, followed by a series of Nagios email alerts, and a need to put my work hat on quickly. The search API was having trouble; as the manager of the team who developed it, I was not looking forward to this. We were having a real slowdown at one of our busiest times of the year &ndash; this was going to be fun.</p>
 
@@ -131,7 +131,7 @@
   <entry>
     <title type="html"><![CDATA[Benchmarking APIs - why it’s important, and how]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/02/28/api-benchmark/"/>
-    <updated>2014-02-28T09:00:00-06:00</updated>
+    <updated>2014-02-28T09:00:00+00:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/02/28/api-benchmark</id>
     <content type="html"><![CDATA[<p>Since I joined OpenTable I’ve been experimenting with performance monitoring, specifically on web services. One of the projects my team is responsible for is a REST API that provides UI elements for HTML5 applications, shaped as HTML snippets and static resources. Our consumers are websites deployed in multiple parts of the world, so our service needs to be fast and reliable.</p>
 

@@ -6,7 +6,7 @@ comments: true
 author: pstack
 categories: [Configuration Management, DevOps, PowerShell, Puppet, Windows, WindowsFeature]
 ---
-Back in June 2013, I wrote about [Windows Feature Management with PowerShell](). We have since released a Puppet module that will do this for us. We originally wrote PowerShell:
+Back in June 2013, I wrote about [Windows Feature Management with PowerShell](http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/). We have since released a Puppet module that will do this for us. We originally wrote PowerShell:
 
     Import-Module ServerManager
     Add-WindowsFeature Web-Asp-Net
@@ -15,7 +15,7 @@ The Puppet module now wraps this code as follows:
 
     windowsfeature { 'Web-Asp-Net': }
 
-The declaration windowsfeature is a specific Puppet type called a [define](). In developer terms, this is the equivalent of a helper method that can be reused. We can also make sure that Windows Features are *not* installed on the server as follows:
+The declaration windowsfeature is a specific Puppet type called a [define](http://docs.puppetlabs.com/learning/definedtypes.html). In developer terms, this is the equivalent of a helper method that can be reused. We can also make sure that Windows Features are *not* installed on the server as follows:
 
     windowsfeature { 'Telnet-Server': 
       ensure => absent 

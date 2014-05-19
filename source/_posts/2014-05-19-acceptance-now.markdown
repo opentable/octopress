@@ -8,10 +8,11 @@ categories: [Testing, Engineering, Acceptance tests, Innovation]
 ---
 When is acceptance-only testing a good idea, and how can its problems be overcome?
 
-In a recent post, I espoused some of the benefits my team enjoyed by reducing our test-base to a single layer of acceptance tests, with no separate unit or integration tests. It caused [some minor controversy], which was not to be unexpected. At the time, I knew I had left out some details for brevity's sake. In this post—spurred on by some interesting [questions] and [commentary]—I'd like to offer a more constructive view on the subject, and dig a little deeper into the nitty gritty of how we made it work.
+In [a recent post], I espoused some of the benefits my team enjoyed by reducing our test-base to a single layer of acceptance tests, with no separate unit or integration tests. It caused [some minor controversy], which was not to be unexpected. At the time, I knew I had left out some details for brevity's sake. In this post—spurred on by some interesting [questions] and [commentary]—I'd like to offer a more constructive view on the subject, and dig a little deeper into the nitty gritty of how we made it work.
 
 I'll also point out some other hidden benefits of moving to acceptance-only testing, and suggest synergistic practices that can help decide if this is the right approach for your project.
 
+[a recent post]:/blog/2014/04/16/look-ma-no-unit-tests
 [some minor controversy]:http://www.reddit.com/r/programming/comments/237fr1/look_ma_no_unit_tests/
 [questions]:https://twitter.com/NathanGloyn/status/456756552092098561
 [commentary]:http://www.reddit.com/r/programming/comments/237fr1/look_ma_no_unit_tests/cgujuv7

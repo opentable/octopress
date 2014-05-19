@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Configuration Management | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/configuration-management/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-05-19T17:18:28+01:00</updated>
+  <updated>2014-05-19T17:44:49+01:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -12,6 +12,46 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Managing Windows Features with Puppet]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/05/15/managing-windows-features-with-puppet/"/>
+    <updated>2014-05-15T16:12:38+01:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/05/15/managing-windows-features-with-puppet</id>
+    <content type="html"><![CDATA[<p>Back in June 2013, I wrote about <a href="http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/">Windows Feature Management with PowerShell</a>. We have since released a Puppet module that will do this for us. We originally wrote PowerShell:</p>
+
+<pre><code>Import-Module ServerManager
+Add-WindowsFeature Web-Asp-Net
+</code></pre>
+
+<p>The Puppet module now wraps this code as follows:</p>
+
+<pre><code>windowsfeature { 'Web-Asp-Net': }
+</code></pre>
+
+<p>The declaration windowsfeature is a specific Puppet type called a <a href="http://docs.puppetlabs.com/learning/definedtypes.html">define</a>. In developer terms, this is the equivalent of a helper method that can be reused. We can also make sure that Windows Features are <em>not</em> installed on the server as follows:</p>
+
+<pre><code>windowsfeature { 'Telnet-Server': 
+  ensure =&gt; absent 
+}
+</code></pre>
+
+<p>In the backing code for the module, we do a check before we install / uninstall any windows features. This means that we will only make the changes we really need to. This ensures idempotency of the script. By using this class, we can build up a list of what features a server should have enabled / installed on it. As example manifest would look as follows:</p>
+
+<pre><code>class my_windows_features {
+  windowsfeature { 'Web-Asp-Net': }
+  windowsfeature { 'Web-Net-Ext': }
+  windowsfeature { 'Web-ISAPI-Ext': }
+  windowsfeature { 'Web-ISAPI-Filter': }
+  windowsfeature { 'Web-Mgmt-Tools': }
+  windowsfeature { 'Web-Mgmt-Console': }
+  windowsfeature { 'Telnet-Server': ensure =&gt; absent }
+}
+</code></pre>
+
+<p>The server will have it&rsquo;s shipping list of Windows Features checked every 30 minutes by Puppet. We are sure that any changes encountered during that time will be applied as expected.  You can find more about our WindowsFeature module on the <a href="http://github.com/opentable/puppet-windowsfeature">github repo</a>. If you want to use the module, then you can install it using the Puppet Module tool via the <a href="http://forge.puppetlabs.com/opentable/windowsfeature">Puppet Forge</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Managing Windows Web Applications with Puppet]]></title>

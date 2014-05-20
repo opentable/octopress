@@ -1,24 +1,118 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Engineering | OpenTable Tech UK Blog]]></title>
-  <link href="http://tech.opentable.co.uk/blog/categories/engineering/atom.xml" rel="self"/>
-  <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-05-20T15:42:15+01:00</updated>
-  <id>http://tech.opentable.co.uk/</id>
-  <author>
-    <name><![CDATA[OpenTable]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Acceptance Now - OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
 
   
-  <entry>
-    <title type="html"><![CDATA[Acceptance Now]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2014/05/20/acceptance-now/"/>
-    <updated>2014-05-20T15:00:00+01:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2014/05/20/acceptance-now</id>
-    <content type="html"><![CDATA[<p><em>When is acceptance-only testing a good idea, and how can its problems be overcome?</em></p>
+  <meta name="description" content="When is acceptance-only testing a good idea, and how can its problems be overcome? In a recent post, I espoused some of the benefits my team enjoyed &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.opentable.co.uk/blog/2014/05/20/acceptance-now/">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
+  <script type="text/javascript" src="http://use.typekit.com/syx2vfn.js"></script>
+  <script type="text/javascript">try { Typekit.load(); } catch (e) { }</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
+  
+    <h2>The technology blog for OpenTable UK.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/authors">Authors</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Acceptance Now</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Sam Salisbury</span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-20T15:00:00+01:00" pubdate data-updated="true">May 20<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><em>When is acceptance-only testing a good idea, and how can its problems be overcome?</em></p>
 
 <p>In <a href="/blog/2014/04/16/look-ma-no-unit-tests">a recent post</a>, I espoused some of the benefits my team enjoyed by reducing our test-base to a single layer of acceptance tests, with no separate unit or integration tests. It caused <a href="http://www.reddit.com/r/programming/comments/237fr1/look_ma_no_unit_tests/">some minor controversy</a>, which was not to be unexpected. At the time, I knew I had left out some details for brevity&rsquo;s sake. In this post—spurred on by some interesting <a href="https://twitter.com/NathanGloyn/status/456756552092098561">questions</a> and <a href="http://www.reddit.com/r/programming/comments/237fr1/look_ma_no_unit_tests/cgujuv7">commentary</a>—I&rsquo;d like to offer a more constructive view on the subject, and dig a little deeper into the nitty gritty of how we made it work.</p>
 
@@ -70,33 +164,52 @@ In our project, we took on the overhead of providing mock &ldquo;sandbox&rdquo; 
 
 <p>The way we initially achieved this in our acceptance tests was by using the <code>TestFixtureSetup</code> attribute from NUnit to invoke the application, and run it to a point where it had generated an interesting result. Then, each &lsquo;test&rsquo; is in fact a single assertion on the state of the world at that point. Like this:</p>
 
-<p>```csharp
-[TestFixture]
-public class my_acceptance_tests
-{</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="na">[TestFixture]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">my_acceptance_tests</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="na">    [TestFixtureSetUp]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">void</span> <span class="nf">do_stuff</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">_result</span> <span class="p">=</span> <span class="n">InvokeTheApplicationsWithSomeGivenParams</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="na">    [Test]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">void</span> <span class="nf">it_is_cool</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">Assert</span><span class="p">.</span><span class="n">That</span><span class="p">(</span><span class="n">_result</span><span class="p">.</span><span class="n">Coolness</span><span class="p">,</span> <span class="n">Is</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="m">1337</span><span class="p">));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="na">    [Test]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">void</span> <span class="nf">it_has_2_bananas</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">Assert</span><span class="p">.</span><span class="n">That</span><span class="p">(</span><span class="n">_result</span><span class="p">.</span><span class="n">Bananas</span><span class="p">,</span> <span class="n">Is</span><span class="p">.</span><span class="n">EqualTo</span><span class="p">(</span><span class="m">2</span><span class="p">));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">.</span>
+</span><span class='line'>    <span class="p">.</span>
+</span><span class='line'>    <span class="p">.</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>[TestFixtureSetUp]
-public void do_stuff()
-{
-    _result = InvokeTheApplicationsWithSomeGivenParams();
-}
-[Test]
-public void it_is_cool()
-{
-    Assert.That(_result.Coolness, Is.GreaterThan(1337));
-}
-[Test]
-public void it_has_2_bananas()
-{
-    Assert.That(_result.Bananas, Is.EqualTo(2));
-}
-.
-.
-.
-</code></pre>
-
-<p>}
-```</p>
 
 <p>We eventually refined this to use constructors to set up the initial state, and did some other not-necessarily-normal things to coax our acceptance tests into a reasonably elegant suite. More on this in an upcoming post on sandbox data.</p>
 
@@ -157,101 +270,153 @@ public void it_has_2_bananas()
 <p>I hope this article has been a little more useful than the previous one. I have tried to explain more specifically what we actually did, from end-to-end, and how we overcame problems along the way. However, I&rsquo;ve really only scratched the surface. I will hopefully get the chance flesh out some of the ideas here in the coming months. In the mean time, there are plenty of <a href="http://www.shino.de/2012/07/02/atdd-by-example/">books</a> and <a href="http://jonkruger.com/blog/2012/02/20/when-acceptance-tests-are-better-than-unit-tests/">blog posts</a> on the subject of acceptance testing. In addition, Martin Fowler has writen <a href="http://martinfowler.com/articles/microservices.html">a great primer on microservices</a> that&rsquo;s really got me thinking about their utility alongside acceptance-only testing and sandbox data.</p>
 
 <p>Thanks for reading :)</p>
-]]></content>
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <entry>
-    <title type="html"><![CDATA[Look ma, no unit tests!]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests/"/>
-    <updated>2014-04-16T17:00:00+01:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests</id>
-    <content type="html"><![CDATA[<p><em><strong>UPDATE:</strong> I&rsquo;ve written a <a href="/blog/2014/05/19/acceptance-now">follow-up to this post</a> with a bit more detail into how we made acceptance-only testing work in practice.</em></p>
 
-<p>At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for <a href="/blog/2014/02/28/api-benchmark/">new</a> <a href="/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">tools</a> <a href="/blog/2014/04/07/upgrading-puppet-with-puppet/">and</a> <a href="/blog/2014/02/10/the-adoption-of-configuration-management/">methods</a> that allow us, the developers, to respond quickly and accurately to changing requirements and environments.</p>
+<span class="byline author vcard">Posted by <span class="fn">Sam Salisbury</span></span>
 
-<p>There are a number of practices that we already make use of, helping us to be the most effective team I&rsquo;ve ever worked in:</p>
-
-<ul>
-<li>We operate in small teams who each own <em>most</em> of their own vertical.</li>
-<li>We use continuous delivery to ship code to production within minutes.</li>
-<li>We have a high degree of high-quality test coverage.</li>
-<li>We are getting better and better at monitoring All The Things.</li>
-<li><a href="/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">We use ChatOps</a>, so communication is central to our work, and keeps remote workers/teams in the loop.</li>
-</ul>
+      
 
 
-<p>All of the above are truly empowering for the dev team, and are conducive to an amazingly stress-free working environment. However, these practices only address the infrastructure, culture, and ceremony surrounding our work. What if there was something else? Something about the way we write the code itself, that could increase our velocity yet further, without compromising our integrity&hellip;</p>
 
-<blockquote><p>There are a number of practices that we already make use of, helping us to be the most effective team I&rsquo;ve ever worked in&hellip; What if there was something else?</p></blockquote>
 
-<p>Well, on a recent project, we found one such way: <em><em>we decided to delete all of the unit and integration tests</em></em>.</p>
 
-<p><em>What?! Are we quite mad?</em> You may be thinking&hellip; Well, it took me a little time to get used to this idea as well, but read on and you&rsquo;ll see that it was actually the most sane thing we could have possibly done  .</p>
 
-<h2>Survival of the testedest</h2>
 
-<p>In the beginning, the project had 100% unit test coverage, there were no external dependencies, and the world was Good.</p>
 
-<p>Soon afterwards, a tall shadow appeared in the glorious unit-tested sunset. External dependencies had arrived. Like good little developers we added integration tests. It hurt, our codebase grew, we had occasional false-failures, but we were travelling the path well trodden. We had evaded the First Menace, and surrounded ourselves with heavy armour, we were safe. Things seemed to be Good.</p>
-
-<p><em>Meanwhile&hellip;</em></p>
-
-<p>We realised that some of the things that would be important to our consumers were still not covered by our tests. Things like actual HTTP responses, serialisation, and the like. These are things that don&rsquo;t always need to be tested explicitly, but since this was a third-party-developer-facing system, we really wanted to be sure that the interface worked exactly as we wanted, HTTP headers, character encoding, date formatting, the lot.</p>
-
-<p>So, playing the role of our consumers, we engineered high-level acceptance tests, behaving byte-for-byte as we expected our customers to do.</p>
-
-<p>Now, with the triple-action protection of three layers of tests, we felt our project was the most minty-fresh piece of haute engineering we had ever laid keyboards on.</p>
-
-<p>We were wrong.</p>
-
-<h2>Tests, tests, tests, duplication.</h2>
-
-<p>Up to this point, we had operated in a near-vacuum. That was fine, we had been working quickly to implement a sub-set of an existing and well-used API, so we knew which were the most important features that needed porting. We continued, largely happy with our creation, for some time.</p>
-
-<p><em>Then, gazing up from the receding tide of the third trimester were the hungry eyes of the Second Menace. Our users were upon us!</em></p>
-
-<p>Our early adopters were great, giving us a lot of helpful feedback and helping us shape the API into a genuinely usable v1. However, responding to this change required a greater degree of flexibility in the code than we had required up to this point. Our triple-chocolate-crunch of pithy tests was starting to really slow us down, and rot our teeth. The main reason for this: duplication.</p>
-
-<p>We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can&rsquo;t test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic for that call. Code which was already covered by unit tests, and often integration tests as well. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith and a very heavy boulder&mdash;and had a hoarde of features we still wanted to smash, who were freely bounding over the mountain tops, and out of reach.</p>
-
-<p>It was time to cut ourselves free.</p>
-
-<h2>Ripping off the plaster</h2>
-
-<p>The idea that we might not need all these layers of tests was first mooted by fellow OpenTable engineer Arnold Zokas. My initial reaction was one of slight incredulity. Delete all those tests that we&rsquo;ve so carefully caressed and cajoled into a thing of beauty?! Strip off the armour?! I wasn&rsquo;t immediately convinced. However, the pain of implementing new features was starting to burn, so I was interested.</p>
-
-<blockquote><p>I wasn&rsquo;t immediately convinced.</p></blockquote>
-
-<p>We talked about it&mdash;what was necessary about the unit tests? What was their real worth? We had to test many of those things from the outside-in anyway, with the acceptance tests, so why test them twice? The logic started to stack up. I was convinced this was the right thing to do.</p>
-
-<p>Take a deep breath. <em>RIP!</em> Aah, there, done.</p>
-
-<p>There was a little bleeding, some gaps in our acceptance tests that had to be filled, some complex set-up logic from the integration tests that had to be ported to work with the acceptance tests. A few days' worth of cleanup and patching in the background, and&hellip; tentatively&hellip; we were done.</p>
-
-<p>For me at least, this was a bold move. But it shouldn&rsquo;t have seemed so, we knew all of our endpoints were acceptance-tested, including every supported API call. My primary worry was how we were going to nail down the exact cause of bugs with no code-level testing. This turned out to be nowhere near as bad as I expected.</p>
-
-<blockquote><p>We knew all of our endpoints were acceptance-tested, including every supported API call.</p></blockquote>
-
-<h2>What just happened?</h2>
-
-<p>I like to visualise this as if we were building <a href="http://en.wikipedia.org/wiki/Gateway_Arch">a giant arch</a>. At first, you build a temporary structure with scaffolding (the unit and integration tests). As time goes on you construct a hardened permanent structure (the software). On top of the software, you layer your <a href="http://en.wikipedia.org/wiki/Structural_health_monitoring">structural integrity monitors</a> (acceptance tests). Eventually, there is no need for the scaffolding any more; the structure is self-supporting, and future modifications can rely on this&mdash;time to punch out the middle!</p>
-
-<p><em>Of course, there are other considerations, like logging, monitoring, and providing sandbox data, which all contributed to making this feasable&mdash;but that&rsquo;s for another post.</em></p>
-
-<h2>Was it worth it?</h2>
-
-<p>Unequivocally, yes. Since making this decision, we have been unhindered by our tests, and they are back to being a much loved part of the project. We have had no problems that would have been caught by unit tests, and we can still do TDD with our acceptance tests. In addition, I think removing the crutch of unit tests may have improved our discipline somewhat: <em>it keeps us thinking in the context of the end-user at all times, so we never spend time working on a feature that isn&rsquo;t directly useful to our consumers.</em></p>
-
-<blockquote><p>It keeps us thinking in the context of the end-user at all times, so we never spend time working on a feature that isn&rsquo;t directly useful to our consumers.</p></blockquote>
-
-<h2>YMWMCV</h2>
-
-<p>Of course, every project is unique (just like every other project), so <em>your mileage will most certainly vary.</em> We were working on a stateless facade over a small but crucial subset of the business&mdash;making reservations. For relatively small, stateless projects, this approach has worked brilliantly. However, when things do go wrong at development time, they could be at any layer in the stack, and you often need to attach a debugger to find out what happened. This is less than ideal, but in our case was a very cost-effective compromise.</p>
-
-<p>The upshot, for me at least, is that you shouldn&rsquo;t be afraid to shirk convention when the project demands it. By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster <em>without</em> breaking stuff.</p>
-
-<blockquote><p>By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster <em>without</em> breaking stuff.</p></blockquote>
-]]></content>
-  </entry>
   
-</feed>
+
+
+<time datetime="2014-05-20T15:00:00+01:00" pubdate data-updated="true">May 20<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/acceptance-tests/'>Acceptance tests</a>, <a class='category' href='/blog/categories/engineering/'>Engineering</a>, <a class='category' href='/blog/categories/innovation/'>Innovation</a>, <a class='category' href='/blog/categories/testing/'>Testing</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.opentable.co.uk/blog/2014/05/20/acceptance-now/" data-via="opentabletechuk" data-counturl="http://tech.opentable.co.uk/blog/2014/05/20/acceptance-now/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/05/19/continuous-delivery-automating-deployment-visibility/" title="Previous Post: Continuous Delivery: Automating Deployment Visibility">&laquo; Continuous Delivery: Automating Deployment Visibility</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/05/20/acceptance-now/">Acceptance Now</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/19/continuous-delivery-automating-deployment-visibility/">Continuous Delivery: Automating Deployment Visibility</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/15/managing-windows-features-with-puppet/">Managing Windows Features with Puppet</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/13/managing-windows-web-applications-with-puppet/">Managing Windows Web Applications with Puppet</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/29/remote-worker-notes-tools-and-setup/">Remote Worker Notes &ndash; Tools and Setup</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2014 - OpenTable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

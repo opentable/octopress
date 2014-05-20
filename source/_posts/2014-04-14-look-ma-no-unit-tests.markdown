@@ -7,7 +7,7 @@ author: ssalisbury
 categories: [Testing, Engineering, Acceptance tests, Innovation]
 ---
 
-**UPDATE:** I've written a [follow-up to this post](/blog/2014/05/19/acceptance-now) with a bit more detail into how we made acceptance-only testing work in practice.
+_**UPDATE:** I've written a [follow-up to this post](/blog/2014/05/19/acceptance-now) with a bit more detail into how we made acceptance-only testing work in practice._
 
 At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for [new](/blog/2014/02/28/api-benchmark/) [tools](/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/) [and](/blog/2014/04/07/upgrading-puppet-with-puppet/) [methods](/blog/2014/02/10/the-adoption-of-configuration-management/) that allow us, the developers, to respond quickly and accurately to changing requirements and environments.
 

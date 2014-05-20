@@ -6,7 +6,7 @@ comments: true
 author: ssalisbury
 categories: [Testing, Engineering, Acceptance tests, Innovation]
 ---
-When is acceptance-only testing a good idea, and how can its problems be overcome?
+_When is acceptance-only testing a good idea, and how can its problems be overcome?_
 
 In [a recent post], I espoused some of the benefits my team enjoyed by reducing our test-base to a single layer of acceptance tests, with no separate unit or integration tests. It caused [some minor controversy], which was not to be unexpected. At the time, I knew I had left out some details for brevity's sake. In this post—spurred on by some interesting [questions] and [commentary]—I'd like to offer a more constructive view on the subject, and dig a little deeper into the nitty gritty of how we made it work.
 
@@ -29,7 +29,7 @@ Why, then, is it sometimes a good idea to forgo unit- in favour of acceptance-te
 As we will see, the first issue, performance, can be mitigated. The second, granularity, is more difficult to overcome. But sometimes _that might be okay._
 
 [find the seams]:https://www.youtube.com/watch?v=wEhu57pih5w
-[IoC]:http://martinfowler.com/articles/injection.html
+[dependency injection]:http://martinfowler.com/articles/injection.html
 [SRP]:http://en.wikipedia.org/wiki/Single_responsibility_principle
 [SOLID]:http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod
 [Test-first unit testing]:http://en.wikipedia.org/wiki/Test-driven_development
@@ -54,41 +54,50 @@ _Sandbox data is hard to implement. A lot of the effort that would have gone int
 
 _Snip!_ I went into too much detail on sandbox data here, saving that for a future post.
 
+[deleted all the unit tests]:/blog/2014/04/16/look-ma-no-unit-tests
+[an interface]:http://en.wikipedia.org/wiki/Interface_(computer_science)#Software_interfaces_in_object-oriented_languages
+
+
 ### Performance: Loosen isolation
 Isolation between test runs is really important. If the order you run tests in can ever alter the results, then you have shared state, and you can no longer trust that your tests are testing the same thing each time they are run.
 
-Usually, in unit testing, we rely on the test runner to respect directives in code that enforce isolation in this way. In NUnit with C# we use attributes for set-up and tear-down, for example. We usually throw away the entire object graph before each test. _Sometimes before each assertion._ For acceptance testing, where spinning up your test subject tends to take longer, it can be helpful to bend the rules somewhat.
+Usually, in unit testing, we rely on the test runner to respect directives in code that enforce isolation in this way. In NUnit with C# we use attributes for [set-up] and [tear-down], for example. We usually throw away the entire object graph before each test. _Sometimes before each assertion._ For acceptance testing, where spinning up your test subject tends to take longer, it can be helpful to bend the rules somewhat.
 
-In an ideal world, each test run would begin on a new, freshly installed OS, thus eliminating any possibility of differing test results due to environmental issues—the system clock and network state notwithstanding. For unit testing we rarely if ever take this extremist approach. More usual is to rely on the test runner to enforce "similar enough" initial conditions each time a test is run. _(Commonly the test runner discards the test fixture object after each use, and executes set-up and tear-down methods to reset any external state, relying on the developer to write this code correctly.)_
+[set-up]:http://www.nunit.org/index.php?p=setup&r=2.2.10
+[tear-down]:http://www.nunit.org/index.php?p=teardown&r=2.2.10
 
-In acceptance testing it can be very beneficial for performance to loosen this one step further and re-use the same application instance (process) between test runs. Sandboxed data, especially if it is stateless, can help enormously to avoid the pitfalls of shared state. When running your acceptance tests against real data, where shared state is a real concern, you may discover interesting bugs that would otherwise have gone unnoticed if you were using only unit tests. _(Upon the discovery of issues with real data, you must implement the same failing condition in your sandbox data so that you don't accidentally introduce regressions later.)_
+In an ideal world, each test run would begin on a new, freshly installed OS, thus eliminating any possibility of differing test results due to environmental issues—the system clock and network state notwithstanding. For unit testing we rarely if ever take this extremist approach. More usual is to rely on the test runner to enforce "similar enough" initial conditions each time a test is run–commonly relying on the developer to write this set-up and tear-down code correctly.
+
+In acceptance testing it can be very beneficial for performance to loosen this one step further and re-use the same application instance (process) between test runs. Sandboxed data, especially if it is immutable, can help enormously to avoid the pitfalls of shared state. When running your acceptance tests against real data, where shared state is a real concern, you may discover interesting bugs that would otherwise have gone unnoticed if you were using only unit tests. **Upon the discovery of issues with real data, you must implement the same failing condition in your sandbox data so that you don't accidentally introduce regressions later.**
 
 The way we initially achieved this in our acceptance tests was by using the `TestFixtureSetup` attribute from NUnit to invoke the application, and run it to a point where it had generated an interesting result. Then, each 'test' is in fact a single assertion on the state of the world at that point. Like this:
-`
-    [TestFixture]
-    public class my_acceptance_tests
+
+```csharp
+[TestFixture]
+public class my_acceptance_tests
+{
+    [TestFixtureSetUp]
+    public void do_stuff()
     {
-        [TestFixtureSetUp]
-        public void do_stuff()
-        {
-            _result = InvokeTheApplicationsWithSomeGivenParams();
-        }
-        [Test]
-        public void it_is_cool()
-        {
-            Assert.That(_result.Coolness, Is.GreaterThan(1337));
-        }
-        [Test]
-        public void it_has_2_bananas()
-        {
-            Assert.That(_result.Bananas, Is.EqualTo(2));
-        }
-        .
-        .
-        .
+        _result = InvokeTheApplicationsWithSomeGivenParams();
     }
- `
- We eventually refined this to use constructors to set up the initial state, and did some other not-necessarily-normal things to coax our acceptance tests into a reasonably elegant suite. More on this in an upcoming post on sandbox data.
+    [Test]
+    public void it_is_cool()
+    {
+        Assert.That(_result.Coolness, Is.GreaterThan(1337));
+    }
+    [Test]
+    public void it_has_2_bananas()
+    {
+        Assert.That(_result.Bananas, Is.EqualTo(2));
+    }
+    .
+    .
+    .
+}
+```
+
+We eventually refined this to use constructors to set up the initial state, and did some other not-necessarily-normal things to coax our acceptance tests into a reasonably elegant suite. More on this in an upcoming post on sandbox data.
  
 ## Granularity
 Granularity, in this case, refers to the level of detail revealed by a failing test. When a _unit_ test fails, if it's written correctly, you should immediately know which method in which class went wrong. Often, the call stack in the exception message will tell you exactly which line of code was at fault. You can immediately jump to the offending code.
@@ -96,7 +105,7 @@ Granularity, in this case, refers to the level of detail revealed by a failing t
 With acceptance tests, when something goes wrong, it could be anywhere in your program. Any of the tens, hundreds, thousands, or even millions of lines of code in your program could be at fault. This is clearly less than ideal, however there are ways to mitigate the pain:
 
 ### Minimise Code, Maximise Seams
-Clearly, the fewer lines of code in your app, the easier it will be to hunt down obscure test failures. However some problems are too big to be solved with few lines of code. What then to do? One answer, which I am beginning to explore in a new project, may be to write many small programs, each of which solves only a small part of the problem domain. This approach is known as [microservices], and certainly has its own complexities in threading together many small pieces at OS or network level. However, a microservices architecture also has benefits tangential to its affinity with acceptance-only testing. I'm planning a blog post on this subject soon, once I've run the course with my current project.
+Clearly, the fewer lines of code in your app, the easier it will be to hunt down obscure test failures. However some problems are too big to be solved with few lines of code. What then to do? One answer, which we are beginning to explore in a new project, may be to write many small programs, each of which solves only a small part of the problem domain. This approach is known as [microservices], and certainly has its own complexities in threading together many small pieces at OS or network level. However, a microservices architecture has additional potential benefits tangential to its affinity with acceptance-only testing. I'm planning a blog post on this subject soon, once we have more data.
 
 [microservices]:http://martinfowler.com/articles/microservices.html
 
@@ -122,7 +131,7 @@ When an acceptance-level test passes, you can be confident that a whole user jou
 Of course, you will fix it, or else be unable to confidently release your software–but surely, at times, you will be fixing something that does not matter, or is no longer relevant to your consumers. Unit tests in this way can encourage code rot, making it very difficult to unpick dependencies that are no longer needed. With acceptance tests, you only need to unpick the dependencies in your application, not also in the tests.
 
 ## Synergy
-Much of this is new to me, and certainly isn't without controversey. However, the problems with acceptance-only testing, and specifically the solutions to those problems, indicate certain synergistic practices that may improve its viability:
+Much of this is new to me, and certainly isn't without contention. However, the problems with acceptance-only testing, and specifically the solutions to those problems, indicate certain synergistic practices that may improve its viability:
 
 ### Thin Layers
 The project we first tried moving to acceptance-only testing on was a very thin layer–a facade over a collection of internal services. It had minimal business logic, and thus few potential execution paths. This certainly allowed us to keep the number of acceptance tests lower than might be expected for a large, complex application, that might branch off into numerous modes of operation. Of course one should probably try to minimise the [cyclomatic complexity] of a code-base anyway, for one's own sanity.
@@ -133,7 +142,7 @@ The project we first tried moving to acceptance-only testing on was a very thin 
 If your system maintains a lot of state, acceptance testing can be much harder. This is because you will likely have to set-up much of that state for each test, increasing both developer effort and execution time. Both of which are bad. However, my new favourite thing, sandbox data, may well be your friend in this case.
 
 ### Microservices
-We have only just begun experimenting with microservices ourselves, however I think it stands to reason that if each application is small overall, then the number of test cases for each will be small as well. This means the whole suite will run faster, and give you more granular feedback. I differentiate microservices from 'thin layers' in that a microservice may well do data access, input parsing, validation, HTTP handling, and a bit of business logic–but over a very narrow domain–i.e. a thin vertical. A thin layer, on the other hand will perform only one kind of function–e.g. HTTP handling–but across multiple functions of the system. If thin layers are the lines of latitude, then microservices can be sections of the lines of longitude.
+We have only just begun experimenting with microservices ourselves, however I think it stands to reason that if each application is small overall, then the number of test cases for each will be small as well. This means the whole suite will run faster, and give you more granular feedback. I differentiate microservices from 'thin layers' in that a microservice may well do data access, input parsing, validation, HTTP handling, and a bit of business logic–but over a very narrow domain–i.e. a thin vertical. A thin layer, on the other hand will perform only one kind of function–e.g. HTTP handling–but across multiple facets of the system. If thin layers are the lines of latitude, then microservices can be sections of the lines of longitude.
 
 ## Too Short; Read Also
 I hope this article has been a little more useful than the previous one. I have tried to explain more specifically what we actually did, from end-to-end, and how we overcame problems along the way. However, I've really only scratched the surface. I will hopefully get the chance flesh out some of the ideas here in the coming months. In the mean time, there are plenty of [books] and [blog posts] on the subject of acceptance testing. In addition, here is a great primer on microservices that's really got me thinking about their utility alongside acceptance-only testing and sandbox data: [http://martinfowler.com/articles/microservices.html](http://martinfowler.com/articles/microservices.html)

@@ -38,15 +38,17 @@ As we will see, the first issue, performance, can be mitigated. The second, gran
 [run every time you hit "Save"]:http://misko.hevery.com/2009/05/07/configure-your-ide-to-run-your-tests-automatically/
 
 ## Performance
-In most cases I have seen, acceptance tests are _really_ slow. In some cases, there might be nothing you can do, but usually there is. Front-end automation suites using Selenium are temporally incorrigible, but they can be parallelised. Complex transactional pieces might be irreducible, but they can be helped with mock data. No matter which box your code is in, there is probably an escape route. Following are some of the techniques we used to overcome performance bottlenecks in our acceptance test suite...
- 
-### Performance: Sandbox Data
+In most cases I have seen, acceptance tests are _really_ slow. In some cases, there might be nothing you can do, but usually there is. Front-end automation suites using [Selenium] are temporally incorrigible, but they can be parallelised. Complex transactional pieces might be irreducible, but they can be helped with mock data. No matter which box your code is in, there is probably an escape route. Following are some of the techniques we used to overcome performance bottlenecks in our acceptance test suite...
+
+[Selenium]:http://docs.seleniumhq.org/
+
+### Sandbox Data
 _This is probably a topic that deserves its own post, but I'll try to give a high-level treatment here._
 In our project, we took on the overhead of providing mock "sandbox" data. For our consumers this was a required feature anyway, so implementing it began early in the project, well before we [deleted all the unit tests]. It turned out this was an important enabler in moving to acceptance-only, since it allowed us to run tests much faster by _sometimes_ circumventing data access.
 
 Since this project was written in C# using strict TDD, our data layer already had [an interface] for each data source. In the _unit_ tests this allowed us to easily stub out the data. We reused the same interfaces to build up our sandbox, with dependency injection at runtime to choose between real and mock data. (I like to call this a 'pseudoseam' in that it allows us to isolate data access at runtime, just like an ordinary seam allows you to isolate classes and methods in test.)
 
-_Sandbox data is hard to implement. A lot of the effort that would have gone into unit tests and their manitenance was instead pumped into writing good, wholesome, fake data for the sandbox._ However, sandbox data, unlike unit tests, solves three problems at once:
+_Sandbox data is hard to implement. A lot of the effort that would have gone into unit tests and their maintenance was instead pumped into writing good, wholesome, fake data for the sandbox._ However, sandbox data, unlike unit tests, solves three problems at once:
 
 * It lets your _consumers_ test in a predictable way without making real transactions;
 * It enables you to record specific data conditions from The Real World™, increasing your understanding of that data;
@@ -58,7 +60,7 @@ _Snip!_ I went into too much detail on sandbox data here, saving that for a futu
 [an interface]:http://en.wikipedia.org/wiki/Interface_(computer_science)#Software_interfaces_in_object-oriented_languages
 
 
-### Performance: Loosen isolation
+### Loosen Isolation
 Isolation between test runs is really important. If the order you run tests in can ever alter the results, then you have shared state, and you can no longer trust that your tests are testing the same thing each time they are run.
 
 Usually, in unit testing, we rely on the test runner to respect directives in code that enforce isolation in this way. In NUnit with C# we use attributes for [set-up] and [tear-down], for example. We usually throw away the entire object graph before each test. _Sometimes before each assertion._ For acceptance testing, where spinning up your test subject tends to take longer, it can be helpful to bend the rules somewhat.
@@ -119,7 +121,7 @@ Sandbox data allows you to run your tests against very specific data conditions.
 I mentioned a few of the benefits of moving to acceptance-only testing in my last post. However, a few more have come to light since then which are worth mentioning.
 
 ### Acceptance Tests Are Language-Agnostic
-After writing v1 of our API, and acceptance-testing the living daylights out of it, we realised that we were still probably maintaining too much code, this time in the application itself. We decidede to port the whole thing to JavaScript using Node to see what it would be like.
+After writing v1 of our API, and acceptance-testing the living daylights out of it, we realised that we were still probably maintaining too much code, this time in the application itself. We decided to port the whole thing to JavaScript using Node to see what it would be like.
 
 It worked, and _we didn't have to touch a single test,_ even though those tests were written in C#, and the application was in JavaScript.
 
@@ -139,14 +141,15 @@ The project we first tried moving to acceptance-only testing on was a very thin 
 [cyclomatic complexity]:http://en.wikipedia.org/wiki/Cyclomatic_complexity
 
 ### Statelessness
-If your system maintains a lot of state, acceptance testing can be much harder. This is because you will likely have to set-up much of that state for each test, increasing both developer effort and execution time. Both of which are bad. However, my new favourite thing, sandbox data, may well be your friend in this case.
+If your system maintains a lot of state, acceptance testing can be much harder. This is because you will likely have to set-up much of that state for each test, increasing both developer effort and execution time. Both of which are bad. However, my new favourite thing, immutable sandbox data, may well be your friend in this case.
 
 ### Microservices
 We have only just begun experimenting with microservices ourselves, however I think it stands to reason that if each application is small overall, then the number of test cases for each will be small as well. This means the whole suite will run faster, and give you more granular feedback. I differentiate microservices from 'thin layers' in that a microservice may well do data access, input parsing, validation, HTTP handling, and a bit of business logic–but over a very narrow domain–i.e. a thin vertical. A thin layer, on the other hand will perform only one kind of function–e.g. HTTP handling–but across multiple facets of the system. If thin layers are the lines of latitude, then microservices can be sections of the lines of longitude.
 
 ## Too Short; Read Also
-I hope this article has been a little more useful than the previous one. I have tried to explain more specifically what we actually did, from end-to-end, and how we overcame problems along the way. However, I've really only scratched the surface. I will hopefully get the chance flesh out some of the ideas here in the coming months. In the mean time, there are plenty of [books] and [blog posts] on the subject of acceptance testing. In addition, here is a great primer on microservices that's really got me thinking about their utility alongside acceptance-only testing and sandbox data: [http://martinfowler.com/articles/microservices.html](http://martinfowler.com/articles/microservices.html)
+I hope this article has been a little more useful than the previous one. I have tried to explain more specifically what we actually did, from end-to-end, and how we overcame problems along the way. However, I've really only scratched the surface. I will hopefully get the chance flesh out some of the ideas here in the coming months. In the mean time, there are plenty of [books] and [blog posts] on the subject of acceptance testing. In addition, Martin Fowler has writen [a great primer on microservices] that's really got me thinking about their utility alongside acceptance-only testing and sandbox data.
 
+[a great primer on microservices]:http://martinfowler.com/articles/microservices.html
 [books]:http://www.shino.de/2012/07/02/atdd-by-example/
 [blog posts]:http://jonkruger.com/blog/2012/02/20/when-acceptance-tests-are-better-than-unit-tests/
 

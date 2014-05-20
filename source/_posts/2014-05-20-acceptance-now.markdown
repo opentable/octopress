@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Acceptance Now"
-date: 2014-05-19 16:26:50 +0100
+date: 2014-05-20 15:00:00 +0100
 comments: true
 author: ssalisbury
 categories: [Testing, Engineering, Acceptance tests, Innovation]

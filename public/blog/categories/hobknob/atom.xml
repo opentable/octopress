@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Hobknob | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/hobknob/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-09-04T21:29:24+01:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
+  <author>
+    <name><![CDATA[OpenTable]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Introducing Hobknob: Feature toggling with etcd]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/09/04/introducing-hobknob-feature-toggling-with-etcd/"/>
+    <updated>2014-09-04T20:09:52+01:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/09/04/introducing-hobknob-feature-toggling-with-etcd</id>
+    <content type="html"><![CDATA[<p>The ability to dynamically turn features on/off in software without the need to redeploy code is extremely beneficial. Whether you are trialing a new feature or using branch by abstraction to avoid creating feature branches, the use of feature toggles can aid continuous delivery and provide a mechanism to reduce mean time to resolution when an issue occurs.</p>
+
+<p>With a relatively large engineering department with multiple teams spread across the US and UK the need to manage feature toggles has evolved to the point whereby individual teams have developed their own implementations. Most of these are simple config files.</p>
+
+<p>We decided to unify this effort by providing a central place to store feature toggles, provide a dashboard to be able to turn these toggles on/off and provide language specific clients to integrate into our software components.</p>
+
+<p>The results of this was <a href="https://github.com/opentable/hobknob">Hobknob</a>.</p>
+
+<p>We made the decision to use <a href="https://github.com/coreos/etcd">etcd</a>. Etcd is &ldquo;a highly-available key value store for shared configuration&rdquo; (<a href="https://github.com/coreos/etcd#etcd">https://github.com/coreos/etcd#etcd</a>). It provides a HTTP API to store and retrieve data. This is what makes it perfect for a feature toggling solution used by multiple components. It means that we didn&rsquo;t have to write an intermediate API on top of a data store for consumers.</p>
+
+<p>So, for example, to store a feature toggle in etcd:</p>
+
+<p><code>
+curl -L http://127.0.0.1:4001/v2/keys/v1/toggles/restaurant-api/testtoggle -XPUT -d value="true"
+</code></p>
+
+<p>To retrieve a feature toggle:</p>
+
+<p><code>
+curl -L http://127.0.0.1:4001/v2/keys/v1/toggles/restaurant-api/testtoggle
+</code></p>
+
+<h2>The Hobknob Dashboard</h2>
+
+<p>Hobknob is a NodeJS/AngularJS app. If you want to play with Hobknob the simplest way to get started is to use Vagrant. If you don&rsquo;t have it installed then get it from <a href="http://www.vagrantup.com/">http://www.vagrantup.com/</a>.</p>
+
+<p><code>
+git clone https://github.com/opentable/hobknob
+cd hobknob
+vagrant up
+</code></p>
+
+<p>You should now be able to open the dashboard on <a href="http://127.0.0.1:3006">http://127.0.0.1:3006</a></p>
+
+<p><img src="https://github.com/opentable/hobknob/raw/master/screenshots/dashboard.png" alt="Hobknob dashboard" /></p>
+
+<p>All actions in the dashboard are audited. So when you create or update a toggle by turning it on/off an audit is written for that toggle. Clicking on a toggle in the dashboard takes you to the audit view:</p>
+
+<p><img src="https://github.com/opentable/hobknob/raw/master/screenshots/audit.png" alt="Hobknob audit" /></p>
+
+<h2>Authentication</h2>
+
+<p>By default Hobknob ships with authentication disabled. As a result all auditing will be recorded as &ldquo;Anonymous&rdquo;. Currently, we only support Google OAuth. To enable this follow the instructions <a href="https://github.com/opentable/hobknob">here</a></p>
+
+<h2>Session Storage</h2>
+
+<p>By default Hobknob ships using in-memory session storage. You don&rsquo;t want to use this when you have a load balanced infrastructure. Hobknob supports both redis and etcd itself as a session store. To use either of these simply npm install the relevent connect middleware (<a href="https://github.com/visionmedia/connect-redis">connect-redis</a> or <a href="https://github.com/opentable/connect-etcd">connect-etcd</a>). To learn more follow the instructions <a href="https://github.com/opentable/hobknob">here</a></p>
+
+<h2>The Hobknob Clients</h2>
+
+<ul>
+<li>Clients and Admin</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

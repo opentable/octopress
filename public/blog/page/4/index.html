@@ -9,7 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="Three OpenTable heroes took to Norway last week to attend NDC Oslo. For two of us it was our first major conference and for one, Paul Stack, he had &hellip;">
+  <meta name="description" content="Managing certificates on Windows is really painful. There is no easy way to do it. The general way to install a certificate to a Windows Server 2008 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +81,76 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/08/managing-windows-certificates-with-powershell/">Managing Windows Certificates with PowerShell</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-08T18:51:00+01:00" pubdate data-updated="true">Jul 8<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Managing certificates on Windows is <em>really</em> painful. There is no easy way to do it. The general way to install a certificate to a Windows Server 2008 machine is as follows:</p>
+
+<ul>
+<li>Open the Certificates snap-in for a user, computer, or service.</li>
+<li>In the console tree, click the logical store where you want to import the certificate.</li>
+<li>On the Action menu, point to All Tasks, and then click Import to start the Certificate Import Wizard.</li>
+<li>Type the file name containing the certificate to be imported.</li>
+<li>If you want to specify where the certificate is stored, select Place all certificates in the following store, click Browse, and choose the certificate store to use. OR</li>
+<li>If the certificate should be automatically placed in a certificate store based on the type of certificate, click Automatically select the certificate store based on the type of certificate.</li>
+</ul>
+
+
+<p>The first time I ran this process, I felt as though this was just wrong to not be able to automate. The goal of our team is to automate everything we are currently doing manually. PowerShell is a better option for this import process as it allows you to write code to do it. As we all know, code is better for a number of reasons, I won&rsquo;t go into the infrastructure as code argument in this post (but it is coming soon….). Using PowerShell, I can write a simple function as follows:</p>
+
+<pre><code>function Import-PfxCertificate($certName, $CertLocaton, $certRootStore, $certStore) {    
+     $pfx = new-object System.Security.Cryptography.X509Certificates.X509Certificate2    
+
+     $pfxPass = convertto-securestring $CertPassword -asplaintext -force
+
+     $certPath = $CertLocaton + "\" + $certName   
+     $pfx.import($certPath,$pfxPass,"Exportable,PersistKeySet")    
+
+     $store = new-object System.Security.Cryptography.X509Certificates.X509Store($certStore,$certRootStore)    
+     $store.open("MaxAllowed")    
+     $store.add($pfx)    
+     $store.close()    
+}
+</code></pre>
+
+<p>This makes certificate management easier. To manage certificates in this way, I just need to invoke a script similar to this:</p>
+
+<pre><code>.\import-certificate.ps1 -CertificateName "mycert.pfx" -CertLocation "c:\ssl\mycerts"
+</code></pre>
+
+<p>Much simpler! You can download a <a href="https://gist.github.com/opentable-devops/5951108">gist</a> of this script should you wish to use it. Please note that the license that this script is available under can be read from our <a href="https://github.com/opentable/licensing/blob/master/LICENSE">github repository</a>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -424,6 +494,10 @@ var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/09/04/introducing-hobknob-feature-toggling-with-etcd/">Introducing Hobknob: Feature toggling with etcd</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/08/08/what-can-i-do/">What can I do?</a>
       </li>
     
@@ -437,10 +511,6 @@ var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);
     
       <li class="post">
         <a href="/blog/2014/05/15/managing-windows-features-with-puppet/">Managing Windows Features with Puppet</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/05/13/managing-windows-web-applications-with-puppet/">Managing Windows Web Applications with Puppet</a>
       </li>
     
   </ul>

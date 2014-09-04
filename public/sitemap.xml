@@ -2,238 +2,244 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2013/06/07/getting-started-with-specrun/</loc>
-        <lastmod>2013-12-18T16:11:18+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2013/06/07/nlocalgeocoder/</loc>
-        <lastmod>2013-12-18T16:11:18+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/
         </loc>
-        <lastmod>2013-12-18T16:11:18+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2013/06/18/ndcoslo/</loc>
-        <lastmod>2014-04-25T15:20:07+01:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.opentable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell/
         </loc>
-        <lastmod>2013-12-18T16:11:18+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2013/07/24/one-gun-many-enemies/</loc>
-        <lastmod>2013-12-18T16:11:18+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.opentable.co.uk/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine/
         </loc>
-        <lastmod>2013-12-18T16:11:18+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2013/08/07/mapreduce-in-mongodb/</loc>
-        <lastmod>2014-04-25T15:20:23+01:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/</loc>
-        <lastmod>2013-12-18T16:11:18+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/
         </loc>
-        <lastmod>2014-04-25T15:20:35+01:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2013/09/11/counting-in-elastic-search/</loc>
-        <lastmod>2013-12-18T16:11:18+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2013/09/23/quick-look-at-rethinkdb/</loc>
-        <lastmod>2013-12-18T16:11:18+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.opentable.co.uk/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc/
         </loc>
-        <lastmod>2013-12-18T16:11:18+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8/</loc>
-        <lastmod>2013-12-18T16:11:18+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/
         </loc>
-        <lastmod>2014-04-25T15:20:48+01:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2014/02/03/coaching-style-over-substance/</loc>
-        <lastmod>2014-02-05T15:33:17+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2014/02/06/20-percent-time/</loc>
-        <lastmod>2014-02-10T10:17:54+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/
         </loc>
-        <lastmod>2014-02-25T14:34:55+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2014/02/12/programme-management/</loc>
-        <lastmod>2014-02-12T14:07:44+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2014/02/28/api-benchmark/</loc>
-        <lastmod>2014-04-25T15:20:57+01:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2014/03/19/performance-testing-our-search-api/</loc>
-        <lastmod>2014-03-19T15:54:44+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.opentable.co.uk/blog/2014/03/20/when-to-performance-test-in-production/
         </loc>
-        <lastmod>2014-03-20T12:55:52+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.opentable.co.uk/blog/2014/04/02/internationalisation-in-a-restful-world/
         </loc>
-        <lastmod>2014-04-16T15:34:13+01:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/
         </loc>
-        <lastmod>2014-04-07T13:30:42+01:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/</loc>
-        <lastmod>2014-04-07T13:22:32+01:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/</loc>
-        <lastmod>2014-04-25T15:21:07+01:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests/</loc>
-        <lastmod>2014-07-18T11:09:13+01:00</lastmod>
+        <lastmod>2014-09-04T19:48:44+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2014/04/28/effective-prioritisation/</loc>
-        <lastmod>2014-04-28T15:20:46+01:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup/
         </loc>
-        <lastmod>2014-05-02T15:56:29+01:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet/
         </loc>
-        <lastmod>2014-07-18T11:09:13+01:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.opentable.co.uk/blog/2014/05/15/managing-windows-features-with-puppet/
         </loc>
-        <lastmod>2014-07-18T11:09:13+01:00</lastmod>
+        <lastmod>2014-09-04T19:48:44+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://tech.opentable.co.uk/blog/2014/05/19/continuous-delivery-automating-deployment-visibility/
         </loc>
-        <lastmod>2014-07-18T11:09:13+01:00</lastmod>
+        <lastmod>2014-05-19T17:18:27+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2014/05/20/acceptance-now/</loc>
-        <lastmod>2014-07-18T11:09:13+01:00</lastmod>
+        <lastmod>2014-09-04T19:48:44+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/2014/08/08/what-can-i-do/</loc>
-        <lastmod>2014-08-08T13:59:35+01:00</lastmod>
+        <lastmod>2014-09-04T19:48:44+01:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://tech.opentable.co.uk/blog/2014/09/04/introducing-hobknob-feature-toggling-with-etcd/
+        </loc>
+        <lastmod>2014-09-04T21:29:24+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/about/</loc>
-        <lastmod>2014-08-08T14:02:34+01:00</lastmod>
+        <lastmod>2014-09-04T21:29:24+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/archives/</loc>
-        <lastmod>2014-08-08T13:59:35+01:00</lastmod>
+        <lastmod>2014-09-04T21:29:24+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/authors/ametcalfe.html</loc>
-        <lastmod>2014-02-12T12:39:40+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/authors/aroyle.html</loc>
-        <lastmod>2014-02-12T12:38:33+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/authors/</loc>
-        <lastmod>2014-08-08T13:59:35+01:00</lastmod>
+        <lastmod>2014-09-04T21:29:24+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/authors/</loc>
-        <lastmod>2014-04-16T15:32:40+01:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/authors/jcatterfeld.html</loc>
-        <lastmod>2014-02-12T12:35:30+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/authors/lbennett.html</loc>
-        <lastmod>2014-04-07T13:08:15+01:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/authors/mbarrett.html</loc>
-        <lastmod>2014-02-12T12:37:48+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/authors/mbazydlo.html</loc>
-        <lastmod>2014-02-12T12:38:12+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/authors/mfigus.html</loc>
-        <lastmod>2014-03-19T15:27:21+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/authors/pstack.html</loc>
-        <lastmod>2014-02-12T12:37:31+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/authors/rhopton.html</loc>
-        <lastmod>2014-02-12T12:39:18+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/authors/rtomlinson.html</loc>
-        <lastmod>2014-02-12T12:41:26+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/blog/authors/ssalisbury.html</loc>
-        <lastmod>2014-04-16T15:12:20+01:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/</loc>
-        <lastmod>2014-08-08T13:59:35+01:00</lastmod>
+        <lastmod>2014-09-04T21:29:24+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/join-us/</loc>
-        <lastmod>2013-12-18T16:11:18+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
     <url>
         <loc>http://tech.opentable.co.uk/robots.txt</loc>
-        <lastmod>2013-12-18T16:11:18+00:00</lastmod>
+        <lastmod>2014-05-18T19:59:28+01:00</lastmod>
     </url>
 </urlset>

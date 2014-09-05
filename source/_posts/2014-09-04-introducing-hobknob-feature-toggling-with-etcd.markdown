@@ -46,17 +46,22 @@ All actions in the dashboard are audited. So when you create or update a toggle 
 
 ![Hobknob audit](https://github.com/opentable/hobknob/raw/master/screenshots/audit.png)
 
-## Authentication
+### Authentication
 
 By default Hobknob ships with authentication disabled. As a result all auditing will be recorded as "Anonymous". Currently, we only support Google OAuth. To enable this follow the instructions [here](https://github.com/opentable/hobknob)
 
-## Session Storage
+### Session Storage
 
 By default Hobknob ships using in-memory session storage. You don't want to use this when you have a load balanced infrastructure. Hobknob supports both redis and etcd itself as a session store. To use either of these simply npm install the relevent connect middleware ([connect-redis](https://github.com/visionmedia/connect-redis) or [connect-etcd](https://github.com/opentable/connect-etcd)). To learn more follow the instructions [here](https://github.com/opentable/hobknob)
 
 ## The Hobknob Clients
 
+To aid adoption we created, and open sourced, several hobknob clients in multiple languages:
 
+- NodeJs (NPM) - [https://github.com/opentable/hobknob-client-nodejs](https://github.com/opentable/hobknob-client-nodejs)
+- .NET (Nuget) - [https://github.com/opentable/hobknob-client-net](https://github.com/opentable/hobknob-client-net)
+- Go - [https://github.com/opentable/hobknob-client-go](https://github.com/opentable/hobknob-client-go)
+- Java (Maven) - [https://github.com/opentable/hobknob-client-java](https://github.com/opentable/hobknob-client-java)
 
+The clients all store a configurable in-memory cache that is periodically updated on a polling interval. They are all read-only and updates only occur on the dashboard where they can be audited.
 
-- Clients and Admin

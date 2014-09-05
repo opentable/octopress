@@ -152,20 +152,27 @@
 
 <p><img src="https://github.com/opentable/hobknob/raw/master/screenshots/audit.png" alt="Hobknob audit" /></p>
 
-<h2>Authentication</h2>
+<h3>Authentication</h3>
 
 <p>By default Hobknob ships with authentication disabled. As a result all auditing will be recorded as &ldquo;Anonymous&rdquo;. Currently, we only support Google OAuth. To enable this follow the instructions <a href="https://github.com/opentable/hobknob">here</a></p>
 
-<h2>Session Storage</h2>
+<h3>Session Storage</h3>
 
 <p>By default Hobknob ships using in-memory session storage. You don&rsquo;t want to use this when you have a load balanced infrastructure. Hobknob supports both redis and etcd itself as a session store. To use either of these simply npm install the relevent connect middleware (<a href="https://github.com/visionmedia/connect-redis">connect-redis</a> or <a href="https://github.com/opentable/connect-etcd">connect-etcd</a>). To learn more follow the instructions <a href="https://github.com/opentable/hobknob">here</a></p>
 
 <h2>The Hobknob Clients</h2>
 
+<p>To aid adoption we created, and open sourced, several hobknob clients in multiple languages:</p>
+
 <ul>
-<li>Clients and Admin</li>
+<li>NodeJs (NPM) &ndash; <a href="https://github.com/opentable/hobknob-client-nodejs">https://github.com/opentable/hobknob-client-nodejs</a></li>
+<li>.NET (Nuget) &ndash; <a href="https://github.com/opentable/hobknob-client-net">https://github.com/opentable/hobknob-client-net</a></li>
+<li>Go &ndash; <a href="https://github.com/opentable/hobknob-client-go">https://github.com/opentable/hobknob-client-go</a></li>
+<li>Java (Maven) &ndash; <a href="https://github.com/opentable/hobknob-client-java">https://github.com/opentable/hobknob-client-java</a></li>
 </ul>
 
+
+<p>The clients all store a configurable in-memory cache that is periodically updated on a polling interval. They are all read-only and updates only occur on the dashboard where they can be audited.</p>
 </div>
   
   

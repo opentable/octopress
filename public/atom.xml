@@ -4,7 +4,7 @@
   <title><![CDATA[OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-08-08T14:02:35+01:00</updated>
+  <updated>2014-09-05T15:42:36+01:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -12,6 +12,121 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Introducing Hobknob: Feature toggling with etcd]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/09/04/introducing-hobknob-feature-toggling-with-etcd/"/>
+    <updated>2014-09-04T20:09:52+01:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/09/04/introducing-hobknob-feature-toggling-with-etcd</id>
+    <content type="html"><![CDATA[<p>The ability to dynamically turn features on/off in software without the need to redeploy code is extremely beneficial. Whether you are trialing a new feature or using branch by abstraction to avoid creating feature branches, the use of feature toggles can aid continuous delivery and provide a mechanism to reduce mean time to resolution when an issue occurs.</p>
+
+<p>With a relatively large engineering department with multiple teams spread across the US and UK the need to manage feature toggles has evolved to the point whereby individual teams have developed their own implementations. Most of these are simple config files.</p>
+
+<p>We decided to unify this effort by providing a central place to store feature toggles, provide a dashboard to be able to turn these toggles on/off and provide language specific clients to integrate into our software components.</p>
+
+<p>The results of this was <a href="https://github.com/opentable/hobknob">Hobknob</a>.</p>
+
+<h2>Why etcd?</h2>
+
+<p>We made the decision to use <a href="https://github.com/coreos/etcd">etcd</a>. Etcd is &ldquo;a highly-available key value store for shared configuration&rdquo; (<a href="https://github.com/coreos/etcd#etcd">https://github.com/coreos/etcd#etcd</a>). It provides a HTTP API to store and retrieve data. This is what makes it perfect for a feature toggling solution used by multiple components. It means that we didn&rsquo;t have to write an intermediate API on top of a data store for consumers.</p>
+
+<p>So, for example, to store a feature toggle in etcd:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>curl -L http://127.0.0.1:4001/v2/keys/v1/toggles/restaurant-api/testtoggle -XPUT -d value="true"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To retrieve a feature toggle:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>curl -L http://127.0.0.1:4001/v2/keys/v1/toggles/restaurant-api/testtoggle</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>The Hobknob Clients</h2>
+
+<p>To aid adoption we created, and open sourced, several hobknob clients in multiple languages:</p>
+
+<ul>
+<li>NodeJs (NPM) &ndash; <a href="https://github.com/opentable/hobknob-client-nodejs">https://github.com/opentable/hobknob-client-nodejs</a></li>
+<li>.NET (Nuget) &ndash; <a href="https://github.com/opentable/hobknob-client-net">https://github.com/opentable/hobknob-client-net</a></li>
+<li>Go &ndash; <a href="https://github.com/opentable/hobknob-client-go">https://github.com/opentable/hobknob-client-go</a></li>
+<li>Java (Maven) &ndash; <a href="https://github.com/opentable/hobknob-client-java">https://github.com/opentable/hobknob-client-java</a></li>
+</ul>
+
+
+<p>The clients all store a configurable in-memory cache that is periodically updated on a polling interval. They are all read-only and updates only occur on the dashboard where they can be audited.</p>
+
+<p>We decided to create a simple <a href="https://github.com/opentable/hobknob-demo">demo application</a> to show off how easy it is to use Hobknob in your applications. In order to try the demo you will need to start up Hobknob (see instructions below). The demo app uses the NodeJS client which is as simple as:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var client = new Client("hobknob-demo", {
+</span><span class='line'>  etcdHost: etcdHost,
+</span><span class='line'>  etcdPort: etcdPort,
+</span><span class='line'>  cacheIntervalMs: 5000
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the route definition it uses the client to request the toggle named <em>show-first-and-last-name-input</em> and passes the toggle value through to the view:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var result = hobknobClient.getOrDefault('show-first-and-last-name-input', true);
+</span><span class='line'>res.render('server', {
+</span><span class='line'>                  page: 'server',
+</span><span class='line'>              useTwoFieldNameInput: value
+</span><span class='line'>              });</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The view then uses the value to decide whether to display one or two textboxes on the page:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if useTwoFieldNameInput
+</span><span class='line'>  input.form-control.demo-input-small(type='text', placeholder='First name', name='firstname')
+</span><span class='line'>  input.form-control.demo-input-small(type='text', placeholder='Last name', name='lastname')
+</span><span class='line'>else
+</span><span class='line'>  input.form-control.demo-input-large(type='text', placeholder='Full name', name='fullname')</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>The Hobknob Dashboard</h2>
+
+<p>Hobknob is a NodeJS/AngularJS app. If you want to play with Hobknob the simplest way to get started is to use Vagrant. If you don&rsquo;t have it installed then get it from <a href="http://www.vagrantup.com/">http://www.vagrantup.com/</a>.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git clone https://github.com/opentable/hobknob
+</span><span class='line'>cd hobknob
+</span><span class='line'>vagrant up</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You should now be able to open the dashboard on <a href="http://127.0.0.1:3006">http://127.0.0.1:3006</a></p>
+
+<p><img src="https://github.com/opentable/hobknob/raw/master/screenshots/dashboard.png" alt="Hobknob dashboard" /></p>
+
+<p>All actions in the dashboard are audited. So when you create or update a toggle by turning it on/off an audit is written for that toggle. Clicking on a toggle in the dashboard takes you to the audit view:</p>
+
+<p><img src="https://github.com/opentable/hobknob/raw/master/screenshots/audit.png" alt="Hobknob audit" /></p>
+
+<h3>Authentication</h3>
+
+<p>By default Hobknob ships with authentication disabled. As a result all auditing will be recorded as &ldquo;Anonymous&rdquo;. Currently, we only support Google OAuth. To enable this follow the instructions <a href="https://github.com/opentable/hobknob/blob/master/README.md#configuring-authentication">here</a></p>
+
+<h3>Session Storage</h3>
+
+<p>By default Hobknob ships using in-memory session storage. You don&rsquo;t want to use this when you have a load balanced infrastructure. Hobknob supports both redis and etcd itself as a session store. To use either of these simply npm install the relevent connect middleware (<a href="https://github.com/visionmedia/connect-redis">connect-redis</a> or <a href="https://github.com/opentable/connect-etcd">connect-etcd</a>). To learn more follow the instructions <a href="https://github.com/opentable/hobknob/blob/master/README.md#configuring-session">here</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[What can I do?]]></title>
@@ -1648,79 +1763,6 @@ What if we refactor with the MVP pattern first and see where the duplication lie
 <p>Outlining and truly grasping these styles can really help push learning in your team further. Try reaching out to different learning styles and see how people respond.</p>
 
 <p>Maybe you are pairing on a tricky feature, struggling to get your point across. Perhaps you have a tough decision that you need to sell to your team. Let&rsquo;s say you are lucky enough to speak at a conference in front of hundreds of delegates &ndash; you could do a lot worse than to remember <strong>WHY?</strong>   <strong>WHAT?</strong> <strong>HOW? </strong> <strong>WHAT IF?</strong></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Beginning a journey to chatops with Hubot]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/"/>
-    <updated>2013-11-22T09:34:00+00:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot</id>
-    <content type="html"><![CDATA[<p><img class="center" src="http://tech.opentable.co.uk/images/posts/hubot_pug_me.png"></p>
-
-<p>As a part of our 30% time a few of our team, <a href="https://twitter.com/ajroyle">@ajroyle</a>, <a href="https://twitter.com/stack72">@stack72</a> and I (<a href="https://twitter.com/ryantomlinson">@ryantomlinson</a>) decided to get together and look at <a href="http://hubot.github.com/">Hubot</a> with <a href="https://www.hipchat.com/">Hipchat</a> integration. There are several weird and wonderful scripts that ship with Hubot (see above) but the core concept of driving tooling via chat is one that we see value in.</p>
-
-<h2>What is Chatops?</h2>
-
-<p><a href="https://speakerdeck.com/jnewland/chatops-at-github">Chatops</a> is a term coined by Github to describe their growing culture of “putting tools in the middle of the conversation”. But what does that exactly mean?</p>
-
-<p>To move fast and maintain stability it’s important to have a culture of automation, measurement and sharing (<a href="http://www.opscode.com/blog/2010/07/16/what-devops-means-to-me/">CAMS</a>). Tooling plays a key role in doing so and as your devops toolkit grows with the team there is an inherent learning and maintenance overhead. <a href="http://github.com/">Github</a> made a move to centralise the conversation by driving everything they do into chat. By building tools and executing commands in a chat room that can be automated by a bot, communication doesn’t become an afterthought to operational processes but is core to how you operate. If I want to deploy code, I type a command into chat. If I want to take a server offline, I type a command into chat. If I want to merge a git pull request into master, I type in a command into chat, and so on. Communication is baked in.</p>
-
-<h2>What is Hubot?</h2>
-
-<p>Hubot is a chat bot that sits in your chat room, listens for commands and executes them. It was written by Github in Coffeescript on Node.js and comes with a host of <a href="https://github.com/github/hubot-scripts/tree/master/src/scripts">prewritten scripts</a> to get started with. Hubot also comes with a range of adaptors that allow it to plug-in to chat servers such as Campfire, IRC and Hipchat. We chose the latter.</p>
-
-<h2>How do you get started?</h2>
-
-<p>I won’t re-write the readme because the getting started section <a href="https://github.com/github/hubot/tree/master/docs">here</a> says it all. Using the node package manager it’s so easy to get up and running with <a href="https://github.com/blog/968-say-hello-to-hubot">Hubot</a>. So many other people have documented this process that I won’t attempt to rewrite their <a href="http://net.tutsplus.com/tutorials/javascript-ajax/writing-hubot-plugins-with-coffeescript/">good</a> <a href="https://github.com/blog/968-say-hello-to-hubot">posts</a>.</p>
-
-<h2>How we want to use it and our first scripts</h2>
-
-<p>Although the core scripts that shipped with Hubot are helpful…</p>
-
-<p><img class="center" src="http://tech.opentable.co.uk/images/posts/hubot_beer_me.png"></p>
-
-<p>…we started to focus on commands that would be most useful to how we work at <a href="http://www.opentable.co.uk/">OpenTable</a> and the tools and technologies that we employ. Specifically we got together and decided the following would be a useful starting point:</p>
-
-<ul>
-<li>Triggering TeamCity builds to ship to production</li>
-<li>Displaying the status of a JIRA ticket, adding comments and changing their status</li>
-<li>Checking London Underground tube lines for delays via Transport for London API</li>
-<li>Querying the status of our APIs (internal and external)</li>
-<li>Query ElasticSearch node and health cluster</li>
-</ul>
-
-
-<p>Within no time we had some useful scripts written:</p>
-
-<p><img class="center" src="http://tech.opentable.co.uk/images/posts/hubot_tube_status.png"></p>
-
-<p><img class="center" src="http://tech.opentable.co.uk/images/posts/hubot_jira.png"></p>
-
-<p><img class="center" src="http://tech.opentable.co.uk/images/posts/hubot_teamcity.png"></p>
-
-<p>Immediately as we were developing these scripts we realised the potential of what else we could automate into Hubot and we will continue to do so. Some of which are:</p>
-
-<ul>
-<li>Github interaction</li>
-<li>AWS interaction to see host health</li>
-<li>Teamcity integration to trigger builds</li>
-<li>Nagios interaction to trigger status checks</li>
-<li>More JIRA integration to comment on tickets</li>
-<li>Kibana integration to create dashboard URLs</li>
-<li>AppDynamics interaction to query response times etc. (and more)</li>
-</ul>
-
-
-<p>Driving operations in chat has huge benefits for us. Collaboration, deployment and automation of common tasks can be done from anywhere, in the office (UK or US) or remotely for those that work from home. Hipchat has mobile support and their mobile apps are great. We hope it will improve on-call visibility, triaging of issues and resolving them without the need for VPN.</p>
-
-<h2>Resources</h2>
-
-<ul>
-<li>Chatops: Augmented reality for Ops (Video) by Mark Imbriaco &ndash; <a href="http://www.youtube.com/watch?v=pCVvYCjvoZI">http://www.youtube.com/watch?v=pCVvYCjvoZI</a></li>
-<li>ChatOps at Github by Jesse Newland &ndash; <a href="http://www.youtube.com/watch?v=NST3u-GjjFw">http://www.youtube.com/watch?v=NST3u-GjjFw</a></li>
-</ul>
-
 ]]></content>
   </entry>
   

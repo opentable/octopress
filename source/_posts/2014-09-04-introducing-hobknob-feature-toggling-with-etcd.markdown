@@ -54,12 +54,11 @@ var client = new Client("hobknob-demo", {
 In the route definition it uses the client to request the toggle named *show-first-and-last-name-input* and passes the toggle value through to the view:
 
 ```
-hobknobClient.getOrDefault('show-first-and-last-name-input', true, function(err, value){
-      res.render('server', {
-        page: 'server',
-        useTwoFieldNameInput: value
-      });
-    });
+var result = hobknobClient.getOrDefault('show-first-and-last-name-input', true);
+res.render('server', {
+       			page: 'server',
+        		useTwoFieldNameInput: value
+      		});
 ```
 
 The view then uses the value to decide whether to display one or two textboxes on the page:
@@ -92,11 +91,11 @@ All actions in the dashboard are audited. So when you create or update a toggle 
 
 ### Authentication
 
-By default Hobknob ships with authentication disabled. As a result all auditing will be recorded as "Anonymous". Currently, we only support Google OAuth. To enable this follow the instructions [here](https://github.com/opentable/hobknob)
+By default Hobknob ships with authentication disabled. As a result all auditing will be recorded as "Anonymous". Currently, we only support Google OAuth. To enable this follow the instructions [here](https://github.com/opentable/hobknob/blob/master/README.md#configuring-authentication)
 
 ### Session Storage
 
-By default Hobknob ships using in-memory session storage. You don't want to use this when you have a load balanced infrastructure. Hobknob supports both redis and etcd itself as a session store. To use either of these simply npm install the relevent connect middleware ([connect-redis](https://github.com/visionmedia/connect-redis) or [connect-etcd](https://github.com/opentable/connect-etcd)). To learn more follow the instructions [here](https://github.com/opentable/hobknob)
+By default Hobknob ships using in-memory session storage. You don't want to use this when you have a load balanced infrastructure. Hobknob supports both redis and etcd itself as a session store. To use either of these simply npm install the relevent connect middleware ([connect-redis](https://github.com/visionmedia/connect-redis) or [connect-etcd](https://github.com/opentable/connect-etcd)). To learn more follow the instructions [here](https://github.com/opentable/hobknob/blob/master/README.md#configuring-session)
 
 
 

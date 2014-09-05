@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Hobknob | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/hobknob/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-09-05T14:16:33+01:00</updated>
+  <updated>2014-09-05T15:42:36+01:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -69,13 +69,12 @@ var client = new Client("hobknob-demo", {
 <p>In the route definition it uses the client to request the toggle named <em>show-first-and-last-name-input</em> and passes the toggle value through to the view:</p>
 
 <p>```
-hobknobClient.getOrDefault(&lsquo;show-first-and-last-name-input&rsquo;, true, function(err, value){</p>
+var result = hobknobClient.getOrDefault(&lsquo;show-first-and-last-name-input&rsquo;, true);
+res.render(&lsquo;server&rsquo;, {</p>
 
-<pre><code>  res.render('server', {
-    page: 'server',
-    useTwoFieldNameInput: value
-  });
-});
+<pre><code>            page: 'server',
+            useTwoFieldNameInput: value
+        });
 </code></pre>
 
 <p>```</p>
@@ -110,11 +109,11 @@ vagrant up
 
 <h3>Authentication</h3>
 
-<p>By default Hobknob ships with authentication disabled. As a result all auditing will be recorded as &ldquo;Anonymous&rdquo;. Currently, we only support Google OAuth. To enable this follow the instructions <a href="https://github.com/opentable/hobknob">here</a></p>
+<p>By default Hobknob ships with authentication disabled. As a result all auditing will be recorded as &ldquo;Anonymous&rdquo;. Currently, we only support Google OAuth. To enable this follow the instructions <a href="https://github.com/opentable/hobknob/blob/master/README.md#configuring-authentication">here</a></p>
 
 <h3>Session Storage</h3>
 
-<p>By default Hobknob ships using in-memory session storage. You don&rsquo;t want to use this when you have a load balanced infrastructure. Hobknob supports both redis and etcd itself as a session store. To use either of these simply npm install the relevent connect middleware (<a href="https://github.com/visionmedia/connect-redis">connect-redis</a> or <a href="https://github.com/opentable/connect-etcd">connect-etcd</a>). To learn more follow the instructions <a href="https://github.com/opentable/hobknob">here</a></p>
+<p>By default Hobknob ships using in-memory session storage. You don&rsquo;t want to use this when you have a load balanced infrastructure. Hobknob supports both redis and etcd itself as a session store. To use either of these simply npm install the relevent connect middleware (<a href="https://github.com/visionmedia/connect-redis">connect-redis</a> or <a href="https://github.com/opentable/connect-etcd">connect-etcd</a>). To learn more follow the instructions <a href="https://github.com/opentable/hobknob/blob/master/README.md#configuring-session">here</a></p>
 ]]></content>
   </entry>
   

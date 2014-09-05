@@ -4,7 +4,7 @@
   <title><![CDATA[OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-09-05T14:16:33+01:00</updated>
+  <updated>2014-09-05T15:42:36+01:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -77,13 +77,11 @@
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>hobknobClient.getOrDefault('show-first-and-last-name-input', true, function(err, value){
-</span><span class='line'>      res.render('server', {
-</span><span class='line'>        page: 'server',
-</span><span class='line'>        useTwoFieldNameInput: value
-</span><span class='line'>      });
-</span><span class='line'>    });</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var result = hobknobClient.getOrDefault('show-first-and-last-name-input', true);
+</span><span class='line'>res.render('server', {
+</span><span class='line'>                  page: 'server',
+</span><span class='line'>              useTwoFieldNameInput: value
+</span><span class='line'>              });</span></code></pre></td></tr></table></div></figure>
 
 
 <p>The view then uses the value to decide whether to display one or two textboxes on the page:</p>
@@ -122,11 +120,11 @@
 
 <h3>Authentication</h3>
 
-<p>By default Hobknob ships with authentication disabled. As a result all auditing will be recorded as &ldquo;Anonymous&rdquo;. Currently, we only support Google OAuth. To enable this follow the instructions <a href="https://github.com/opentable/hobknob">here</a></p>
+<p>By default Hobknob ships with authentication disabled. As a result all auditing will be recorded as &ldquo;Anonymous&rdquo;. Currently, we only support Google OAuth. To enable this follow the instructions <a href="https://github.com/opentable/hobknob/blob/master/README.md#configuring-authentication">here</a></p>
 
 <h3>Session Storage</h3>
 
-<p>By default Hobknob ships using in-memory session storage. You don&rsquo;t want to use this when you have a load balanced infrastructure. Hobknob supports both redis and etcd itself as a session store. To use either of these simply npm install the relevent connect middleware (<a href="https://github.com/visionmedia/connect-redis">connect-redis</a> or <a href="https://github.com/opentable/connect-etcd">connect-etcd</a>). To learn more follow the instructions <a href="https://github.com/opentable/hobknob">here</a></p>
+<p>By default Hobknob ships using in-memory session storage. You don&rsquo;t want to use this when you have a load balanced infrastructure. Hobknob supports both redis and etcd itself as a session store. To use either of these simply npm install the relevent connect middleware (<a href="https://github.com/visionmedia/connect-redis">connect-redis</a> or <a href="https://github.com/opentable/connect-etcd">connect-etcd</a>). To learn more follow the instructions <a href="https://github.com/opentable/hobknob/blob/master/README.md#configuring-session">here</a></p>
 ]]></content>
   </entry>
   

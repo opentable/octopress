@@ -120,6 +120,8 @@
 
 <p>The results of this was <a href="https://github.com/opentable/hobknob">Hobknob</a>.</p>
 
+<h2>Why etcd?</h2>
+
 <p>We made the decision to use <a href="https://github.com/coreos/etcd">etcd</a>. Etcd is &ldquo;a highly-available key value store for shared configuration&rdquo; (<a href="https://github.com/coreos/etcd#etcd">https://github.com/coreos/etcd#etcd</a>). It provides a HTTP API to store and retrieve data. This is what makes it perfect for a feature toggling solution used by multiple components. It means that we didn&rsquo;t have to write an intermediate API on top of a data store for consumers.</p>
 
 <p>So, for example, to store a feature toggle in etcd:</p>
@@ -132,6 +134,64 @@
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>curl -L http://127.0.0.1:4001/v2/keys/v1/toggles/restaurant-api/testtoggle</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>The Hobknob Clients</h2>
+
+<p>To aid adoption we created, and open sourced, several hobknob clients in multiple languages:</p>
+
+<ul>
+<li>NodeJs (NPM) &ndash; <a href="https://github.com/opentable/hobknob-client-nodejs">https://github.com/opentable/hobknob-client-nodejs</a></li>
+<li>.NET (Nuget) &ndash; <a href="https://github.com/opentable/hobknob-client-net">https://github.com/opentable/hobknob-client-net</a></li>
+<li>Go &ndash; <a href="https://github.com/opentable/hobknob-client-go">https://github.com/opentable/hobknob-client-go</a></li>
+<li>Java (Maven) &ndash; <a href="https://github.com/opentable/hobknob-client-java">https://github.com/opentable/hobknob-client-java</a></li>
+</ul>
+
+
+<p>The clients all store a configurable in-memory cache that is periodically updated on a polling interval. They are all read-only and updates only occur on the dashboard where they can be audited.</p>
+
+<p>We decided to create a simple <a href="https://github.com/opentable/hobknob-demo">demo application</a> to show off how easy it is to use Hobknob in your applications. In order to try the demo you will need to start up Hobknob (see instructions below). The demo app uses the NodeJS client which is as simple as:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var client = new Client("hobknob-demo", {
+</span><span class='line'>  etcdHost: etcdHost,
+</span><span class='line'>  etcdPort: etcdPort,
+</span><span class='line'>  cacheIntervalMs: 5000
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the route definition it uses the client to request the toggle named <em>show-first-and-last-name-input</em> and passes the toggle value through to the view:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>hobknobClient.getOrDefault('show-first-and-last-name-input', true, function(err, value){
+</span><span class='line'>      res.render('server', {
+</span><span class='line'>        page: 'server',
+</span><span class='line'>        useTwoFieldNameInput: value
+</span><span class='line'>      });
+</span><span class='line'>    });</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The view then uses the value to decide whether to display one or two textboxes on the page:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if useTwoFieldNameInput
+</span><span class='line'>  input.form-control.demo-input-small(type='text', placeholder='First name', name='firstname')
+</span><span class='line'>  input.form-control.demo-input-small(type='text', placeholder='Last name', name='lastname')
+</span><span class='line'>else
+</span><span class='line'>  input.form-control.demo-input-large(type='text', placeholder='Full name', name='fullname')</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>The Hobknob Dashboard</h2>
@@ -161,20 +221,6 @@
 <h3>Session Storage</h3>
 
 <p>By default Hobknob ships using in-memory session storage. You don&rsquo;t want to use this when you have a load balanced infrastructure. Hobknob supports both redis and etcd itself as a session store. To use either of these simply npm install the relevent connect middleware (<a href="https://github.com/visionmedia/connect-redis">connect-redis</a> or <a href="https://github.com/opentable/connect-etcd">connect-etcd</a>). To learn more follow the instructions <a href="https://github.com/opentable/hobknob">here</a></p>
-
-<h2>The Hobknob Clients</h2>
-
-<p>To aid adoption we created, and open sourced, several hobknob clients in multiple languages:</p>
-
-<ul>
-<li>NodeJs (NPM) &ndash; <a href="https://github.com/opentable/hobknob-client-nodejs">https://github.com/opentable/hobknob-client-nodejs</a></li>
-<li>.NET (Nuget) &ndash; <a href="https://github.com/opentable/hobknob-client-net">https://github.com/opentable/hobknob-client-net</a></li>
-<li>Go &ndash; <a href="https://github.com/opentable/hobknob-client-go">https://github.com/opentable/hobknob-client-go</a></li>
-<li>Java (Maven) &ndash; <a href="https://github.com/opentable/hobknob-client-java">https://github.com/opentable/hobknob-client-java</a></li>
-</ul>
-
-
-<p>The clients all store a configurable in-memory cache that is periodically updated on a polling interval. They are all read-only and updates only occur on the dashboard where they can be audited.</p>
 </div>
 
 

@@ -14,6 +14,8 @@ We decided to unify this effort by providing a central place to store feature to
 
 The results of this was [Hobknob](https://github.com/opentable/hobknob).
 
+## Why etcd?
+
 We made the decision to use [etcd](https://github.com/coreos/etcd). Etcd is "a highly-available key value store for shared configuration" ([https://github.com/coreos/etcd#etcd](https://github.com/coreos/etcd#etcd)). It provides a HTTP API to store and retrieve data. This is what makes it perfect for a feature toggling solution used by multiple components. It means that we didn't have to write an intermediate API on top of a data store for consumers.
 
 So, for example, to store a feature toggle in etcd:
@@ -26,6 +28,48 @@ To retrieve a feature toggle:
 
 ```
 curl -L http://127.0.0.1:4001/v2/keys/v1/toggles/restaurant-api/testtoggle
+```
+
+## The Hobknob Clients
+
+To aid adoption we created, and open sourced, several hobknob clients in multiple languages:
+
+- NodeJs (NPM) - [https://github.com/opentable/hobknob-client-nodejs](https://github.com/opentable/hobknob-client-nodejs)
+- .NET (Nuget) - [https://github.com/opentable/hobknob-client-net](https://github.com/opentable/hobknob-client-net)
+- Go - [https://github.com/opentable/hobknob-client-go](https://github.com/opentable/hobknob-client-go)
+- Java (Maven) - [https://github.com/opentable/hobknob-client-java](https://github.com/opentable/hobknob-client-java)
+
+The clients all store a configurable in-memory cache that is periodically updated on a polling interval. They are all read-only and updates only occur on the dashboard where they can be audited.
+
+We decided to create a simple [demo application](https://github.com/opentable/hobknob-demo) to show off how easy it is to use Hobknob in your applications. In order to try the demo you will need to start up Hobknob (see instructions below). The demo app uses the NodeJS client which is as simple as:
+
+```
+var client = new Client("hobknob-demo", {
+  etcdHost: etcdHost,
+  etcdPort: etcdPort,
+  cacheIntervalMs: 5000
+});
+```
+
+In the route definition it uses the client to request the toggle named *show-first-and-last-name-input* and passes the toggle value through to the view:
+
+```
+hobknobClient.getOrDefault('show-first-and-last-name-input', true, function(err, value){
+      res.render('server', {
+        page: 'server',
+        useTwoFieldNameInput: value
+      });
+    });
+```
+
+The view then uses the value to decide whether to display one or two textboxes on the page:
+
+```
+if useTwoFieldNameInput
+  input.form-control.demo-input-small(type='text', placeholder='First name', name='firstname')
+  input.form-control.demo-input-small(type='text', placeholder='Last name', name='lastname')
+else
+  input.form-control.demo-input-large(type='text', placeholder='Full name', name='fullname')
 ```
 
 ## The Hobknob Dashboard
@@ -54,14 +98,5 @@ By default Hobknob ships with authentication disabled. As a result all auditing 
 
 By default Hobknob ships using in-memory session storage. You don't want to use this when you have a load balanced infrastructure. Hobknob supports both redis and etcd itself as a session store. To use either of these simply npm install the relevent connect middleware ([connect-redis](https://github.com/visionmedia/connect-redis) or [connect-etcd](https://github.com/opentable/connect-etcd)). To learn more follow the instructions [here](https://github.com/opentable/hobknob)
 
-## The Hobknob Clients
 
-To aid adoption we created, and open sourced, several hobknob clients in multiple languages:
-
-- NodeJs (NPM) - [https://github.com/opentable/hobknob-client-nodejs](https://github.com/opentable/hobknob-client-nodejs)
-- .NET (Nuget) - [https://github.com/opentable/hobknob-client-net](https://github.com/opentable/hobknob-client-net)
-- Go - [https://github.com/opentable/hobknob-client-go](https://github.com/opentable/hobknob-client-go)
-- Java (Maven) - [https://github.com/opentable/hobknob-client-java](https://github.com/opentable/hobknob-client-java)
-
-The clients all store a configurable in-memory cache that is periodically updated on a polling interval. They are all read-only and updates only occur on the dashboard where they can be audited.
 

@@ -3,6 +3,7 @@ layout: post
 title: "Testing Puppet with Beaker pt.3 - Testing Roles"
 date: 2014-09-01 13:09:05 +0100
 comments: true
+author: lbennett
 categories: [Puppet, Acceptance tests, Beaker, Vagrant]
 ---
 

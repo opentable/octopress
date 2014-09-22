@@ -3,6 +3,7 @@ layout: post
 title: "Testing Puppet with Beaker pt.2 - The windows story"
 date: 2014-09-01 09:43:10 +0100
 comments: true
+author: lbennett
 categories: [Puppet, Acceptance tests, Beaker, Vagrant, Windows]
 ---
 

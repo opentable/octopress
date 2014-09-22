@@ -9,7 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="As part of one of our recent ForgeFriday efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of &hellip;">
+  <meta name="description" content="UPDATE: I&rsquo;ve written a follow-up to this post with a bit more detail into how we made acceptance-only testing work in practice. At OpenTable we &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +81,127 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/16/look-ma-no-unit-tests/">Look ma, no unit tests!</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-16T17:00:00+01:00" pubdate data-updated="true">Apr 16<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><em><strong>UPDATE:</strong> I&rsquo;ve written a <a href="/blog/2014/05/19/acceptance-now">follow-up to this post</a> with a bit more detail into how we made acceptance-only testing work in practice.</em></p>
+
+<p>At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for <a href="/blog/2014/02/28/api-benchmark/">new</a> <a href="/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">tools</a> <a href="/blog/2014/04/07/upgrading-puppet-with-puppet/">and</a> <a href="/blog/2014/02/10/the-adoption-of-configuration-management/">methods</a> that allow us, the developers, to respond quickly and accurately to changing requirements and environments.</p>
+
+<p>There are a number of practices that we already make use of, helping us to be the most effective team I&rsquo;ve ever worked in:</p>
+
+<ul>
+<li>We operate in small teams who each own <em>most</em> of their own vertical.</li>
+<li>We use continuous delivery to ship code to production within minutes.</li>
+<li>We have a high degree of high-quality test coverage.</li>
+<li>We are getting better and better at monitoring All The Things.</li>
+<li><a href="/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">We use ChatOps</a>, so communication is central to our work, and keeps remote workers/teams in the loop.</li>
+</ul>
+
+
+<p>All of the above are truly empowering for the dev team, and are conducive to an amazingly stress-free working environment. However, these practices only address the infrastructure, culture, and ceremony surrounding our work. What if there was something else? Something about the way we write the code itself, that could increase our velocity yet further, without compromising our integrity&hellip;</p>
+
+<blockquote><p>There are a number of practices that we already make use of, helping us to be the most effective team I&rsquo;ve ever worked in&hellip; What if there was something else?</p></blockquote>
+
+<p>Well, on a recent project, we found one such way: <em><em>we decided to delete all of the unit and integration tests</em></em>.</p>
+
+<p><em>What?! Are we quite mad?</em> You may be thinking&hellip; Well, it took me a little time to get used to this idea as well, but read on and you&rsquo;ll see that it was actually the most sane thing we could have possibly done  .</p>
+
+<h2>Survival of the testedest</h2>
+
+<p>In the beginning, the project had 100% unit test coverage, there were no external dependencies, and the world was Good.</p>
+
+<p>Soon afterwards, a tall shadow appeared in the glorious unit-tested sunset. External dependencies had arrived. Like good little developers we added integration tests. It hurt, our codebase grew, we had occasional false-failures, but we were travelling the path well trodden. We had evaded the First Menace, and surrounded ourselves with heavy armour, we were safe. Things seemed to be Good.</p>
+
+<p><em>Meanwhile&hellip;</em></p>
+
+<p>We realised that some of the things that would be important to our consumers were still not covered by our tests. Things like actual HTTP responses, serialisation, and the like. These are things that don&rsquo;t always need to be tested explicitly, but since this was a third-party-developer-facing system, we really wanted to be sure that the interface worked exactly as we wanted, HTTP headers, character encoding, date formatting, the lot.</p>
+
+<p>So, playing the role of our consumers, we engineered high-level acceptance tests, behaving byte-for-byte as we expected our customers to do.</p>
+
+<p>Now, with the triple-action protection of three layers of tests, we felt our project was the most minty-fresh piece of haute engineering we had ever laid keyboards on.</p>
+
+<p>We were wrong.</p>
+
+<h2>Tests, tests, tests, duplication.</h2>
+
+<p>Up to this point, we had operated in a near-vacuum. That was fine, we had been working quickly to implement a sub-set of an existing and well-used API, so we knew which were the most important features that needed porting. We continued, largely happy with our creation, for some time.</p>
+
+<p><em>Then, gazing up from the receding tide of the third trimester were the hungry eyes of the Second Menace. Our users were upon us!</em></p>
+
+<p>Our early adopters were great, giving us a lot of helpful feedback and helping us shape the API into a genuinely usable v1. However, responding to this change required a greater degree of flexibility in the code than we had required up to this point. Our triple-chocolate-crunch of pithy tests was starting to really slow us down, and rot our teeth. The main reason for this: duplication.</p>
+
+<p>We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can&rsquo;t test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic for that call. Code which was already covered by unit tests, and often integration tests as well. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith and a very heavy boulder&mdash;and had a hoarde of features we still wanted to smash, who were freely bounding over the mountain tops, and out of reach.</p>
+
+<p>It was time to cut ourselves free.</p>
+
+<h2>Ripping off the plaster</h2>
+
+<p>The idea that we might not need all these layers of tests was first mooted by fellow OpenTable engineer Arnold Zokas. My initial reaction was one of slight incredulity. Delete all those tests that we&rsquo;ve so carefully caressed and cajoled into a thing of beauty?! Strip off the armour?! I wasn&rsquo;t immediately convinced. However, the pain of implementing new features was starting to burn, so I was interested.</p>
+
+<blockquote><p>I wasn&rsquo;t immediately convinced.</p></blockquote>
+
+<p>We talked about it&mdash;what was necessary about the unit tests? What was their real worth? We had to test many of those things from the outside-in anyway, with the acceptance tests, so why test them twice? The logic started to stack up. I was convinced this was the right thing to do.</p>
+
+<p>Take a deep breath. <em>RIP!</em> Aah, there, done.</p>
+
+<p>There was a little bleeding, some gaps in our acceptance tests that had to be filled, some complex set-up logic from the integration tests that had to be ported to work with the acceptance tests. A few days&#8217; worth of cleanup and patching in the background, and&hellip; tentatively&hellip; we were done.</p>
+
+<p>For me at least, this was a bold move. But it shouldn&rsquo;t have seemed so, we knew all of our endpoints were acceptance-tested, including every supported API call. My primary worry was how we were going to nail down the exact cause of bugs with no code-level testing. This turned out to be nowhere near as bad as I expected.</p>
+
+<blockquote><p>We knew all of our endpoints were acceptance-tested, including every supported API call.</p></blockquote>
+
+<h2>What just happened?</h2>
+
+<p>I like to visualise this as if we were building <a href="http://en.wikipedia.org/wiki/Gateway_Arch">a giant arch</a>. At first, you build a temporary structure with scaffolding (the unit and integration tests). As time goes on you construct a hardened permanent structure (the software). On top of the software, you layer your <a href="http://en.wikipedia.org/wiki/Structural_health_monitoring">structural integrity monitors</a> (acceptance tests). Eventually, there is no need for the scaffolding any more; the structure is self-supporting, and future modifications can rely on this&mdash;time to punch out the middle!</p>
+
+<p><em>Of course, there are other considerations, like logging, monitoring, and providing sandbox data, which all contributed to making this feasable&mdash;but that&rsquo;s for another post.</em></p>
+
+<h2>Was it worth it?</h2>
+
+<p>Unequivocally, yes. Since making this decision, we have been unhindered by our tests, and they are back to being a much loved part of the project. We have had no problems that would have been caught by unit tests, and we can still do TDD with our acceptance tests. In addition, I think removing the crutch of unit tests may have improved our discipline somewhat: <em>it keeps us thinking in the context of the end-user at all times, so we never spend time working on a feature that isn&rsquo;t directly useful to our consumers.</em></p>
+
+<blockquote><p>It keeps us thinking in the context of the end-user at all times, so we never spend time working on a feature that isn&rsquo;t directly useful to our consumers.</p></blockquote>
+
+<h2>YMWMCV</h2>
+
+<p>Of course, every project is unique (just like every other project), so <em>your mileage will most certainly vary.</em> We were working on a stateless facade over a small but crucial subset of the business&mdash;making reservations. For relatively small, stateless projects, this approach has worked brilliantly. However, when things do go wrong at development time, they could be at any layer in the stack, and you often need to attach a debugger to find out what happened. This is less than ideal, but in our case was a very cost-effective compromise.</p>
+
+<p>The upshot, for me at least, is that you shouldn&rsquo;t be afraid to shirk convention when the project demands it. By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster <em>without</em> breaking stuff.</p>
+
+<blockquote><p>By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster <em>without</em> breaking stuff.</p></blockquote>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1144,70 +1265,6 @@ end
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/06/20-percent-time/">20% time: Why, as a manager, you should love your engineers to be doing it</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-06T17:12:00+00:00" pubdate data-updated="true">Feb 6<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>We allow all our UK based developers to have some time to explore new technologies, try out prototypes and clean-up things that escape the day-to-day process. Two days out of ten, seems a lot doesn&rsquo;t it?</p>
-
-<h2>How we started</h2>
-
-<p>We started doing our 20% time when we had two week sprints with a release each sprint. We actually had three days of testing, small bug fixing and signing things off. We didn&rsquo;t like starting our new stories for the next sprint as our QAs got behind and never really caught up. We decided to use this time more for clean-up but also for prototyping or trying something out. We had read of other companies doing something similar so were excited to give it a go.</p>
-
-<p>One of the first times we did this we actually decided we wanted to automate all the testing of one of our systems, so that our QAs weren&rsquo;t bogged down for those three days. In our first 20% time, we got most of the team on board as it was painful watching, let alone doing manual testing and we wanted faster feedback on our changes.</p>
-
-<p>We got a lot of the system in a state we could test it. We basically wrote a lot of a page object model and a few features to talk to it. The next 20% time it needed cleaning up, the next we had a lot under test. With a bit of work the three day test cycle was down to about one day. This would never have happened if we were trying in normal sprint time. Major win number one and something no business owner had had to wrestle against other priorities.</p>
-
-<p>After this instance we have had numerous similar examples, albeit on a smaller scale, where each team has been able to try things out, with no consequence in the event of failure, and achieved great prototypes. Much of our new architecture has been tested out in these sessions, new technologies, new approaches, can people work together?</p>
-
-<h2>Failures, not so bad after all</h2>
-
-<p>Of course, we have had many failures, but maybe even that helps, we won&rsquo;t waste our proper sprint time. Some people ask me about rules when I talk about this. I think the key for me is that the engineers are truly given freedom to explore. If on the face of things something they are doing is completely away from what you are doing then it might seem a bit strange.</p>
-
-<p>But what if they are looking to try something new and would have left your company to do so? What if they think it might be a solution but don&rsquo;t know how to say? What if they can use it in nine months on an urgent project? All these things can and have happened.</p>
-
-<h2>Fear, as always, is detrimental</h2>
-
-<p>Another rule, <em>no fear</em>,  applies in many situations of course. But unlike hackathons where you feel the need to present at the end, presenting should be through excitement of the creator, not demand of the manager.</p>
-
-<h2>Better team as a result</h2>
-
-<p>I have seen our whole UK engineering group get a lot stronger through our use of 20% time. We have also been more attractive in interviews and gets very positive responses when discussing our job openings; so many developers just want an opportunity to learn and apply new skills and will leave a job to do so.</p>
-
-<p>I personally now have a child, attempting to try new skills and experiment at home is proving harder and harder. This 20% time becomes more important &ndash; as a team we are trying to really get to grips with the latest trends in the development community. I just don&rsquo;t have anywhere near as much time in the evenings now, it is a way to stop a divide coming between your team, the ones with spare time and the ones without.</p>
-
-<p>I recommend giving it some serious thought for your organisation.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -1229,7 +1286,11 @@ end
       </li>
     
       <li class="post">
-        <a href="/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-2-the-windows-story/">Testing Puppet with Beaker pt.2 - The windows story</a>
+        <a href="/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-3-testing-roles/">Testing Puppet with Beaker pt.3 - Testing Roles</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-2-the-windows-story/">Testing Puppet with Beaker pt.2 - The Windows story</a>
       </li>
     
       <li class="post">
@@ -1238,10 +1299,6 @@ end
     
       <li class="post">
         <a href="/blog/2014/05/20/acceptance-now/">Acceptance Now</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/05/19/continuous-delivery-automating-deployment-visibility/">Continuous Delivery: Automating Deployment Visibility</a>
       </li>
     
   </ul>

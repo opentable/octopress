@@ -16,6 +16,8 @@ footer: false
 
 [Matteo Figus]
 
+[Paul Harrington]
+
 [Richard Hopton]
 
 [Andy Metcalfe]
@@ -28,6 +30,7 @@ footer: false
 
 [Ryan Tomlinson]
 
+[Paul Harrington]:/blog/authors/pharrington.html
 [Mark Barrett]:/blog/authors/mbarrett.html
 [Richard Hopton]:/blog/authors/rhopton.html
 [Andy Metcalfe]:/blog/authors/ametcalfe.html

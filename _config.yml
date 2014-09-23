@@ -26,6 +26,8 @@ email:
 # ----------------------- #
 
 authors:
+    pharrington:
+        display_name: Paul Harrington
     mbarrett:
         display_name: Mark Barrett
     rhopton:

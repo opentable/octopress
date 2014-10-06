@@ -63,7 +63,7 @@ Some interesting patterns here that are still quite preverlant in the modules fo
 program will help here.
 
 
-#### Puppetlabs ModuleSync tool (Colleen Murphy [@cmurphy](https://twitter.com/cmurphy))
+#### Puppetlabs ModuleSync tool (Colleen Murphy [@pdx_krinkle](https://twitter.com/pdx_krinkle))
 A demonstration of the the tool [puppetlabs-modulesync](https://github.com/puppetlabs/modulesync) which aims to take out some of the pain of managing common
 static build files across a number of modules (e.g. a common Rakefile or .travis.yml which the same across almost all modules)
 

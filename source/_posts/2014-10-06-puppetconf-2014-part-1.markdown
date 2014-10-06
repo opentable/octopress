@@ -3,17 +3,18 @@ layout: post
 title: "PuppetConf 2014 - Part 1"
 date: 2014-10-06 11:47:57 +0100
 comments: true
+author: lbennett
 categories: puppet, puppetconf2014, conferences
 ---
 
 ![The start of PuppetConf 2014](/images/posts/puppetconf2014.jpg)
 
-It has been one week since our attendance at this years PuppetConf and we have just now caught up on all the great talk that were
-given and the projects demonstrated over the 3 day period. Here a our summary of the event (split into 3 parts), hopefully you will
+It has been one week since our attendance at this years PuppetConf and we have just now caught up on all the great talks that were
+given and the projects demonstrated over the 3 day period. Here's our summary of the event (split into 3 parts), hopefully you will
 find as much inspiration in the content as we have.
 
 ## Day 0 - Contributor Summit
-For the first time this years Puppet Contributor Summit was held the day prior to the conference itself and I think this was a great idea.
+For the first time, this years Puppet Contributor Summit was held the day prior to the conference itself and I think this was a great idea.
 Most of the Puppetlabs staff and many of the high profile community members were in town for PuppetConf anyway so it made sense. There was
 roughly 60-70 people in attendance both senior contributors and people new to the community so it was a great mix that led to some
 fantastic discussions.
@@ -21,7 +22,7 @@ fantastic discussions.
 The day itself had two tracks: a module track for forge modules and a core track for people contributing to puppet and factor.
 
 Those of you who have seen our [forge module page](http://forge.puppetlabs.com/opentable) will understand why we chose to stay in the module track.
-Although I heard there were many great discussions to be had account Puppet 4 in the core track.
+Although I heard there were many great discussions to be had with regards to Puppet 4 in the core track.
 
 Each track was split into three sections: a brief introduction from the track lead Ryan Coleman ([@ryanycoleman](https://twitter.com/ryanycoleman)),
 followed by some lighting talks and then several hours of hacking and open discussions.
@@ -123,10 +124,10 @@ I see this topic getting a lot more coverage in the future as more and more team
 
 
 #### Windows
-Led by myself, Drew and Travis Fields ([@tefields](https://twitter.com/tefields)) the two aims for this discussion were to gather input/feedback from people using
+Led by myself, Drewi Wilson and Travis Fields ([@tefields](https://twitter.com/tefields)) the two aims for this discussion were to gather input/feedback from people using
 the existing windows modules and to try and discover areas in the windows ecosystem that were not currently managed (either well or at all) by Puppet.
 
-We go some fantastic feedback we got regarding our OpenTable modules - thank you to everyone who was there any everyone else who reached out about that.
+We got some fantastic feedback we got regarding our OpenTable modules - thank you to everyone who was there any everyone else who reached out about that.
 
 We also managed to start to populate a list of things that need some work. You can contribute to that list
 [here](https://docs.google.com/document/d/1bwgTo4D7lL8REA1s-IIKlfMrvY434Xn0cyZ7b1X-TwQ)

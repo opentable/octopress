@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Puppet | OpenTable Tech UK Blog]]></title>
+  <title><![CDATA[Category: puppet, | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/puppet/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-09-23T15:52:46+01:00</updated>
+  <updated>2014-10-06T15:36:35+01:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -14,892 +14,165 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Testing Puppet with Beaker pt.3 - Testing Roles]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-3-testing-roles/"/>
-    <updated>2014-09-01T13:09:05+01:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-3-testing-roles</id>
-    <content type="html"><![CDATA[<p>In the first two parts of this blog series we have focusing on testing puppet <em>modules</em> with beaker. As an open source contributor there is always
-a large test matrix so this makes absolute sense. But what about the other large use-case for beaker &ndash; what about our day-to-day internal code base?
-Not all of this is modules, in fact a large portion of it is other puppet code &ndash; roles, profiles, facts, hiera data etc. All of this needs testing
-as well.</p>
-
-<p>In this blog post I will be showing how we have started using beaker to test our puppet roles and profiles for both Linux and Windows.</p>
-
-<h2>Master-vs-Masterless</h2>
-
-<p>Prior to this post all our beaker testing has been master-less i.e. using using puppet agent apply. This is perfectly adequate for most use cases when
-testing modules in isolation but doesn&rsquo;t always work when testing an internal code base (unless you are masterless there as well then please skip to the next section).</p>
-
-<p>At OpenTable we do use a central puppet master to compile our catalogs. So when testing our puppet roles we wanted to make sure that we were also testing
-with a master-agent configuration. It is worth mentioning here that if (like us) you are testing windows agents then you are going to need to test with master-agent
-approach due to the lack of a windows master.</p>
-
-<p>Testing the master-agent configuration means configuring multi-node sets in beaker. There are not many examples of this but the principle is very much
-the same as the single-node nodeset. Here is an example:</p>
-
-<pre><code>HOSTS:
-  ubuntu-server-12042-x64-master:
-    roles:
-      - master
-    platform: ubuntu-12.04-amd64
-    box: ubuntu-server-12042-x64-vbox4210-nocm
-    box_url: http://puppet-vagrant-boxes.puppetlabs.com/ubuntu-server-12042-x64-vbox4210-nocm.box
-    hypervisor: vagrant
-    ip: '10.255.33.135'
-  win-2008R2-std:
-    roles:
-      - default
-      - agent
-    platform: windows-server-amd64
-    box: opentable/win-2008r2-standard-amd64-nocm
-    box_version: = 1.0.0
-    box_check_update: false
-    hypervisor: vagrant
-    user: vagrant
-    ip: '10.255.33.129'
-    communicator: bitvise
-CONFIG:
-  log_level: verbose
-  type: git
-</code></pre>
-
-<p>In this example you will see that we are specifying different &lsquo;roles&rsquo; for each host in the nodeset. What a role is in in this context is a tag for that node that allows
-us to reference it directly later when running commands on the host. To avoid any further confusion, from this point onwards if I am referring to the role defined in the
-nodeset file I will call it the &lsquo;nodeset role&rsquo; otherwise I am referring the the puppet role provided in the manifest. There are a couple of build-in nodeset roles that
-Beaker already knows about: master, agent and default. The first two are pretty self explanatory but the last nodeset role &ndash; default &ndash; is the location where the tests
-themselves run. In you don&rsquo;t specify the &lsquo;default&rsquo; nodeset role on any of your host definitions then the tests will run on the first host that you specified in in the
-nodeset file (which in the case of the example above would be wrong).</p>
-
-<p>You may have a more complicated configuration that you wish to test and this allows you to specify arbitrary tags which can be very useful.</p>
-
-<p>We can now use these nodeset roles to configure our master and agent.</p>
-
-<p>In parts <a href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/">[1]</a> and <a href="http://tech.opentable.co.uk/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-2-the-windows-story">[2]</a> of this series we saw what a basic spec_acceptence file looks like. So let&rsquo;s start with that:</p>
-
-<pre><code>require 'beaker-rspec/spec_helper'
-require 'beaker-rspec/helpers/serverspec'
-require 'winrm'
-
-hosts.each do |host|
-
-  if host['platform'] =~ /windows/
-    include Serverspec::Helper::Windows
-    include Serverspec::Helper::WinRM
-  end
-
-  version = ENV['PUPPET_VERSION'] || '3.5.1'
-  install_puppet(:version =&gt; version)
-
-  if host['roles'].include?('master')
-
-    ... # Install a master
-
-  else
-
-    ... # Install an agent
-
-  end
-end
-
-RSpec.configure do |c|
-
-  c.before :suite do
-
-    hosts.each do |host|
-      c.host = host
-
-      if host['platform'] =~ /windows/
-        endpoint = "http://127.0.0.1:5985/wsman"
-        c.winrm = ::WinRM::WinRMWebService.new(endpoint, :ssl, :user =&gt; 'vagrant', :pass =&gt; 'vagrant', :basic_auth_only =&gt; true)
-        c.winrm.set_timeout 300
-      end
-    end
-  end
-end
-</code></pre>
+    <title type="html"><![CDATA[PuppetConf 2014 - Part 1]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/10/06/puppetconf-2014-part-1/"/>
+    <updated>2014-10-06T11:47:57+01:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/10/06/puppetconf-2014-part-1</id>
+    <content type="html"><![CDATA[<p><img src="/images/posts/puppetconf2014.jpg" alt="The start of PuppetConf 2014" /></p>
 
-<p>We can see here how we use the host[&lsquo;roles&rsquo;] in order to select the appropriate code-path for configurting each nodeset role. Now let&rsquo;s
-move onto how we configure each of those nodeset roles.</p>
+<p>It has been one week since our attendance at this years PuppetConf and we have just now caught up on all the great talks that were
+given and the projects demonstrated over the 3 day period. Here&rsquo;s our summary of the event (split into 3 parts), hopefully you will
+find as much inspiration in the content as we have.</p>
 
-<h2>Configuring the master</h2>
+<h2>Day 0 &ndash; Contributor Summit</h2>
 
-<p>There are a lot of things that go into building a puppetmaster:
- &ndash; puppetmaster packages
- &ndash; hiera backends
- &ndash; gems for addditional dependencies (eyaml + puppetdbquery)
- &ndash; downloading external modules</p>
+<p>For the first time, this years Puppet Contributor Summit was held the day prior to the conference itself and I think this was a great idea.
+Most of the Puppetlabs staff and many of the high profile community members were in town for PuppetConf anyway so it made sense. There was
+roughly 60-70 people in attendance both senior contributors and people new to the community so it was a great mix that led to some
+fantastic discussions.</p>
 
-<p>Now let&rsquo;s step through our new spec_acceptence file that supports this multi-node environment:</p>
+<p>The day itself had two tracks: a module track for forge modules and a core track for people contributing to puppet and factor.</p>
 
-<h3>Deploying the codebase</h3>
+<p>Those of you who have seen our <a href="http://forge.puppetlabs.com/opentable">forge module page</a> will understand why we chose to stay in the module track.
+Although I heard there were many great discussions to be had with regards to Puppet 4 in the core track.</p>
 
-<p>Stage one is getting our puppet codebase onto the master, which includes all the files, internal modules and anything else we need to get the master up and
-running. We do this like follows:</p>
+<p>Each track was split into three sections: a brief introduction from the track lead Ryan Coleman (<a href="https://twitter.com/ryanycoleman">@ryanycoleman</a>),
+followed by some lighting talks and then several hours of hacking and open discussions.</p>
 
-<pre><code>files = [ 'environments','facts','hiera','roles', 'profiles', 'keys', 'app_modules', 'auth.conf','autosign.conf',
-          'fileserver.conf', 'Gemfile','hiera.yaml','Puppetfile'
-        ]
+<h3>Lightning Talks:</h3>
 
-files.each do |file|
-  scp_to master, File.expand_path(File.join(File.dirname(__FILE__), '..', file)), "/etc/puppet/#{file}"
-end
+<p>Here is a quick overview of the lightening talks from the module track:</p>
 
-# scp dist modules folder (this excludes stuff like spec and test folders)
-dist_modules = Dir["#{dist_modules_root}/*/"].map { |a| File.basename(a) }
-dist_modules.each do |module_name|
-  dist_module_dir = "#{dist_modules_root}/#{module_name}"
-  copy_module_to(master, :source =&gt; dist_module_dir, :module_name =&gt; module_name)
-end
-</code></pre>
+<h4>Puppet Analytics (Spencer Krum <a href="https://twitter.com/nibalizer">@nibalizer</a>)</h4>
 
-<p>Here we are selecting all the files that we want and calling the scp_to method which will scp any file or directory to the host of choice, in this case our
-master.</p>
+<p>Spencer gave a quick demonstration of his latest project <a href="http://puppet-analytics.org/">puppet-analytics</a>. This problem that this tool was aiming to
+solve was that at the present time the are no good analytics for the forge modules. The number of downloads listed for each module is very inaccurate
+and can be easily inflated by (for example) an automated CI process. The point of this web app and it’s corresponding client
+<a href="https://github.com/nibalizer/puppet-analytics-client">puppet-analytics-client</a> was to be built into an existing tool chain and for end users to report
+which modules and versions they were using. It also has the added benefit that we could also get stats for teams using private forges.</p>
 
-<h3>The puppetmaster:</h3>
+<p>Ryan also commented that PuppetLabs has some metrics it uses for it’s own modules that can be found here:
+<a href="http://forge-module-metrics.herokuapp.com/">http://forge-module-metrics.herokuapp.com/</a></p>
 
-<pre><code>...
+<h4>Puppet Community (Daniele Sluijters <a href="https://twitter.com/daenney">@daenney</a>)</h4>
 
-on master, "apt-get install -y rubygems git"
-on master, "apt-get install -y puppet-common=#{version}-1puppetlabs1 puppetmaster-common=#{version}-1puppetlabs1 puppetmaster=#{version}-1puppetlabs1 "
-on master, "echo '*' &gt; /etc/puppet/autosign.conf"
+<p>Discussion of the shared namespace for community modules: <a href="http://puppet-community.github.io/">puppet-community</a>. This talk was about a community project
+to keep modules in a shared namespace so that everyone can work on them independent of company ownership. There are limitations right now with with
+regards to the forge e.g. no shared accounts and no easy migration path to move modules between namespaces but working with Ryan on that.</p>
 
-...
-</code></pre>
+<p>This is how the boxen project works and it seems to work pretty well.</p>
 
-<p>So we have already installed puppet at a previous stage in our script. At this point we are performing all the steps required to install the
-puppetmaster: git, rubygems (if on an older distro) and the puppetmaster packages. We also making sure that we auto-signing if configured to
-save us some pain later on. This step should really be configured as another beaker method that we can just call but for now it is still manual.
-It is at this point that we have first introduced the &ldquo;on master&rdquo; this does what you think it might, it executes the command you pass it onto
-the host with the nodeset role on &lsquo;master&rsquo;.</p>
+<h4>Beaker Testing Windows Environments (Liam Bennett <a href="https://twitter.com/liamjbennett">@liamjbennett</a>) &ndash; me!!</h4>
 
-<h3>Set the puppet.conf file:</h3>
+<p>My talk on hacking beaker to work better for testing windows environments.</p>
 
-<pre><code>...
+<p>Demos and PRs. Discussed more in some of our earlier posts: <a href="http://tech.opentable.co.uk/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-2-the-windows-story/">Testing Puppet with Beaker pt.2 &ndash; The Windows story</a>
+and <a href="http://tech.opentable.co.uk/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-3-testing-roles/">Testing Puppet with Beaker pt.3 &ndash; Testing Roles</a></p>
 
-config = {
-  'main' =&gt; {
-    'server'   =&gt; master_name,
-    'certname' =&gt; master_name,
-    'logdir'   =&gt; '/var/log/puppet',
-    'vardir'   =&gt; '/var/lib/puppet',
-    'ssldir'   =&gt; '/var/lib/puppet/ssl',
-    'rundir'   =&gt; '/var/run/puppet'
-  },
-  'agent' =&gt; {
-    'environment' =&gt; 'vagrant'
-  }
-}
-
-configure_puppet(master, config)
-
-...
-</code></pre>
-
-<p>Here we are configuring out puppet.conf file, making sure that it includes any customization we might need. This uses a configure_puppet method
-that we have added to beaker to allow us to do this customization and in this case it is taking the hash to modify the puppet.conf file on the master
-host.</p>
-
-<h3>Install the required ruby gems:</h3>
-
-<pre><code>...
+<h4>Module Anti-Patterns (Peter Souter <a href="https://twitter.com/petems">@petems</a>) &ndash; <a href="http://www.slideshare.net/petems/puppet-module-anti-patterns">Slides</a></h4>
 
-on master, "gem install bundler"
-on master, "gem install hiera-eyaml"
-on master, "cd /etc/puppet &amp;&amp; bundle install --without development"
+<p>Some interesting patterns here that are still quite preverlant in the modules found on the forge. Hopefully improved tooling and the new Puppet Approved
+program will help here.</p>
 
-...
-</code></pre>
-
-<p>The average production-ready puppetmaster also requires a number of gems to function such as hiera-eyaml, deep_merge any many others
-depending upon what backends and other custom puppet extensions you have implemented. Here we are installing all our dependencies from
-the Gemfile we have already put onto the host.</p>
-
-<h3>Installing modules:</h3>
-
-<pre><code>...
-
-on master, "cd /etc/puppet &amp;&amp; bundle exec librarian-puppet install"
-
-...
-</code></pre>
-
-<p>The last major step is installing any external modules you have. You may be using librarian-puppet or r10k to do this. In our case it
-is the former so we go ahead and make sure that our modules directory is full of all the modules we require.</p>
-
-<h3>Networking:</h3>
-
-<pre><code>...
+<h4>Puppetlabs ModuleSync tool (Colleen Murphy <a href="https://twitter.com/cmurphy">@cmurphy</a>)</h4>
 
-master_name = "#{master}.test.local"
-on master, "echo '10.255.33.135   #{master_name}' &gt;&gt; /etc/hosts"
-on master, "hostname #{master_name}"
-on master, "/etc/init.d/puppetmaster restart"
+<p>A demonstration of the the tool <a href="https://github.com/puppetlabs/modulesync">puppetlabs-modulesync</a> which aims to take out some of the pain of managing common
+static build files across a number of modules (e.g. a common Rakefile or .travis.yml which the same across almost all modules)</p>
 
-...
-</code></pre>
+<p>Having used this on a number of our modules now I can say that this in extremely useful and I don’t know how we managed without it. A key use case for us was
+adding support for puppet 3.7 into our test matrix of our travis.yml file. 1 line change &ndash; 1 command &ndash; 18 modules updated.</p>
 
-<p>This last step is a small hack that you will probably require if you are running on vagrant. It just configures the host file to make
-sure that it&rsquo;s hostname if configured correctly from certificate signing to work as expected. This might not be required in your
-environment and I would try it without first but it&rsquo;s worth noting anyway.</p>
+<h4>Strict Variables (Tomas Doran <a href="https://twitter.com/bobtfish">@bobtfish</a>)</h4>
 
-<h2>Configuring the agent</h2>
+<p>Tomas has one very good point to make here: enable <a href="https://docs.puppetlabs.com/references/latest/configuration.html#strictvariables">strict_variables</a>. Many
+languages have a strict option and Puppet’s makes sure to check for those unknown variable references. The latest version of the
+<a href="https://github.com/puppetlabs/puppetlabs_spec_helper">puppetlabs_spec_helper</a> supports adding this setting with an environment variable so that you can now
+add this into your testing matrix.</p>
 
-<p>So if you&rsquo;ve got to this point well done &ndash; most of the hard work is done. Configuring the agent(s) is pretty straightforward in comparison
-to a puppetmaster and some of the steps are similiar:</p>
+<p>We have enabled this on our open source modules and it did indeed surfice a few bugs so go and do it now.</p>
 
-<h3>Set the puppet.conf file:</h3>
+<h4>Puppet Documentation Linting (Peter Souter <a href="https://twitter.com/petems">@petems</a>)</h4>
 
-<pre><code>if host['roles'].include?('master')
-  ...
-else
-  agent = host
-  master = only_host_with_role(hosts, 'master')
-  agent_name = agent.to_s.downcase
-  master_fqdn = "#{master}.test.local"
-  agent_fqdn = "#{agent_name}.test.local"
+<p>While we have very good linking for our puppet manifests themselves thanks to the <a href="http://puppet-lint.com/">puppet-lint</a> project. We still do not have any
+coverage for our documentation of those manifests. That is where Peter’s <a href="https://github.com/petems/puppet-doc-lint">puppet-doc-lint</a> project comes in and aims
+to lint each of you manifests for correct rdoc documentation.</p>
 
-  if agent['platform'] =~ /windows/
-    config = {
-      'main' =&gt; {
-        'server'   =&gt; master_fqdn,
-        'certname' =&gt; agent_name,
-        'logdir'   =&gt; 'C:\\ProgramData\\PuppetLabs\\puppet\\var\\log',
-        'vardir'   =&gt; 'C:\\ProgramData\\PuppetLabs\\puppet\\var\\lib',
-        'ssldir'   =&gt; 'C:\\ProgramData\\PuppetLabs\\puppet\\var\\lib\\ssl',
-        'rundir'   =&gt; 'C:\\ProgramData\\PuppetLabs\\puppet\\var\\run'
-      },
-      'agent' =&gt; {
-        'environment' =&gt; 'vagrant'
-      }
-    }
-  else
-    config = {
-      'main' =&gt; {
-        'server'   =&gt; master_fqdn,
-        'certname' =&gt; agent_fqdn,
-        'logdir'   =&gt; '/var/log/puppet',
-        'vardir'   =&gt; '/var/lib/puppet',
-        'ssldir'   =&gt; '/var/lib/puppet/ssl',
-        'rundir'   =&gt; '/var/run/puppet'
-      },
-      'agent' =&gt; {
-        'environment' =&gt; 'vagrant'
-      }
-    }
-  end
-  ...
+<p>This only supports puppet 3.4.3 right now but it is a useful tool and demonstrations something functional in an area that is missing from the current crop of
+community tooling. This is going to become more useful as we want to have good documentation for Puppet Approved status.</p>
 
-  configure_puppet(agent, config)
-end
+<p>It is also worth noting that PuppetLabs themselves have been doing some work in this area with
+<a href="https://github.com/puppetlabs/puppetlabs-strings/">puppet-strings</a>. This projects works on puppet 3.6 + and support yard doc but is roughly the same idea.</p>
 
-...
-</code></pre>
+<h4>Quick Survey (Michael Stahnke <a href="https://twitter.com/stahnma">@stahnma</a>)</h4>
 
-<p>Again here we are again using the configure_puppet method, this time change the puppe.conf file on the agent.</p>
-
-<p>As you can see we are catering for both windows and linux hosts here. We are also making sure that the certname
-and server are defined properly and match what we set-up for the master so that auto-signing works correctly.</p>
-
-<h2>Testing the Role</h2>
-
-<p>At this point we have now does all our prerequisites and we can spin up two machines to test against &ndash; 1 master and
-1 agent. But when we are testing a role what is it that we actually want to test and why is this not covered in
-earlier less-expensive puppet-rspec unit tests?</p>
+<p>Michael here decided to use the opportunity of having everyone in the room to ask a few questions regarding the state of puppet use and the platforms it’s
+deployed on. Not too many surprises here: Debian (mostly ubuntu 12) and RedHat (mostly centos 6) dominate with a small grouping of other platforms like AIX and
+Solaris in toe. Some poor individuals still have ubuntu 8 and 10 in production but I won’t name name’s because we have all been in that position before. No
+mention of windows but then I did bring that up in my own talk so I think that was covered already.</p>
 
-<p>Well there are 3 key things that we wanted to test:
-1. Idempotence <br/> This is pretty straight forward to test. Beaker provides a method run_agent_on that will run the puppet agent on a
-  given host. This means we can test idempotency like this:</p>
+<h3>Hacking and Discussions</h3>
 
-<pre><code>   run_agent_on(agent, :catch_failures =&gt; true)
-   expect(run_agent_on(agent, :catch_failures =&gt; true).exit_code).to be_zero
-</code></pre>
-
-<ol>
-<li><p>Interaction of multiple modules and profiles <br/> This is the big motivator &ndash; we want to test that and make sure that the combinations
-of profiles that we are applying work together and do not either break the catalog or operate in a non-idempotent way. We are also gaining
-the ability to test that updates in modules (many of which are external from the puppet forge) do not break our roles in any way.</p></li>
-<li><p>Postivie/Negative testing &ndash; do we clean up after ourselves if we remove something. <br/> This is not something that is often considered
-very often, particularly in a world where machines are torn down and re-build so often but there still exists a use-case where this is not
-always possible and we want to make sure that our roles and manifests are not littering our machines unnecessarily.</p></li>
-</ol>
-
-
-<p>Below is a full example of one of our linux profiles:</p>
-
-<pre><code>require 'spec_helper_acceptance'
-
-describe 'linux_base_profile', :if =&gt; fact('osfamily').eql?('Debian') do
-  context 'linux base profile' do
-    it 'should should run successfully' do
-
-      agent = only_host_with_role(hosts, 'agent')
-      master = only_host_with_role(hosts, 'master')
-
-      pp = "node \"#{agent}\" { include profiles::linux::base }"
-      on master, "echo '#{pp}' &gt;&gt; /etc/puppet/manifests/site.pp"
+<p>The second part of the day was the hacking and discussions part. This was more un-conference style with variables tables put together to discuss various topics,
+try and resolves issues or hack on projects. There were four main areas that I noticed: module testing, windows, docker, forge improvements (apologies if I
+missed your topic/table).</p>
 
-      run_agent_on(agent, :catch_failures =&gt; true)
-      expect(run_agent_on(agent, :catch_failures =&gt; true).exit_code).to be_zero
-    end
+<h4>Module Testing</h4>
 
-    context 'installation of ops tools' do
+<p>This was probably the most common topic and several tables were set up around this idea but a huge range of things were discussed. Some people wanted to know
+about how to get up and running with beaker tests using vagrant+vagrant cloud, some wanted to discuss specific platform issues (windows, docker, solaris), other
+ wanted to discuss how best to scale out the tests once you have them.</p>
 
-      describe package('sysstat') do
-        it { should be_installed }
-      end
-
-      describe package('iotop') do
-        it { should be_installed }
-      end
+<p>There was some discussion based around the tools like puppet-doc-lint that were demonstrated during the lightning talks and it’s good to see these missing
+aspects of the testing tool chain getting some light.</p>
 
-      describe package('ngrep') do
-        it { should be_installed }
-      end
+<p>It’s nice to think that we have moved to this stage now where we have all the tools to support a full development tool chain for puppet and that most of the
+discussion was around improving and maturing what we have.</p>
 
-      describe package('lsof') do
-        it { should be_installed }
-      end
+<h4>Docker</h4>
 
-      describe package('unzip') do
-        it { should be_installed }
-      end
-    end
+<p>Docker is one of those tools that can be considered the latest hotness so it’s no surprise that it gained some interest here also. Many people wanted to see it
+in use and demonstrated and to discuss it’s use either from the point of view of being able to test with it or test against it.</p>
 
-    context 'managing puppet version' do
+<p>I see this topic getting a lot more coverage in the future as more and more teams move into this space.</p>
 
-      describe file('/etc/apt/sources.list.d/puppetlabs.list') do
-        it { should be_file }
-        it { should be_owned_by 'root' }
-        it { should be_mode 644 }
-      end
+<h4>Windows</h4>
 
-      describe package('puppet') do
-        it { should be_installed.by('apt').with_version('3.6.1-1puppetlabs1') }
-      end
-    end
+<p>Led by myself, Drewi Wilson and Travis Fields (<a href="https://twitter.com/tefields">@tefields</a>) the two aims for this discussion were to gather input/feedback from people using
+the existing windows modules and to try and discover areas in the windows ecosystem that were not currently managed (either well or at all) by Puppet.</p>
 
-    context 'manage sshd configuration' do
+<p>We got some fantastic feedback we got regarding our OpenTable modules &ndash; thank you to everyone who was there any everyone else who reached out about that.</p>
 
-      describe process("sshd") do
-        it { should be_running }
-      end
+<p>We also managed to start to populate a list of things that need some work. You can contribute to that list
+<a href="https://docs.google.com/document/d/1bwgTo4D7lL8REA1s-IIKlfMrvY434Xn0cyZ7b1X-TwQ">here</a></p>
 
-      describe port(22) do
-        it { should be_listening }
-      end
+<p>There was also some discussion of using MCollective on Windows. This has been a little painful in the past (I should blog about this in the future) but it will
+be getting a little more love going forward. Generally PuppetLabs is very aware of the orchestration space and will be looking into solving this problem with
+it’s tools going forward.</p>
 
-      describe file('/etc/ssh/sshd_config') do
-        its(:content) { should match /PermitRootLogin no/ }
-        its(:content) { should match /PasswordAuthentication yes/ }
-        its(:content) { should match /UseDNS no/ }
-      end
-    end
-  end
-end
-</code></pre>
+<h4>Forge Improvements</h4>
 
-<p>We have a lot of roles and profiles that we would like to test. As you might imagine this could get quite verbose and repetitive pretty quickly. We are currently building
-up <a href="https://www.relishapp.com/rspec/rspec-core/docs/example-groups/shared-context">shared_contexts</a> for each of our profiles which we can
-then wrap up into roles to easily reflect our roles/profiles structure in the main codebase.</p>
+<p>Given that this was the Module track it was obvious that at some point we would all want to discuss improvement that we would want to see in the puppet forge. Ryan
+led the table here and there was lots of be said by all.</p>
 
-<h2>Summary</h2>
-
-<p>We are just at the very beginning of this journey with Beaker. As well as testing all our modules we are looking to scale our to test the roles and profiles in our whole
-code base. These examples here are how we are doing it at the moment for our mixed-platform environment. We will continue to expand upon it and build it into our pipeline.
-At this moment we are looking to expand beyond vagrant and run these against AWS instances but perhaps that is for the next post &hellip;</p>
-
-<p>As usual for any questions or comments then please reach out to me on twitter <a href="https://twitter.com/liamjbennett">@liamjbennett</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Testing Puppet with Beaker pt.2 - The Windows story]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-2-the-windows-story/"/>
-    <updated>2014-09-01T09:43:10+01:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-2-the-windows-story</id>
-    <content type="html"><![CDATA[<p>In <a href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/">part one</a> we discussed our first steps into the world of acceptance testing our Puppet manifests.
-By using Beaker we able to test managing local users on our Linux boxes. This was a positive experience for us. It allowed us to get to grips with the basics of configuring
-Beaker to run tests and configuring our node sets to run those tests against. In this post, we will be discussing how we went about getting Beaker working with Windows.</p>
-
-<p>As many of your reading this will be aware, OpenTable currently has quite a large Windows infrastructure and we are using Puppet extensively to maintain that environment.
-We are also moving forward with releasing as many of our modules open source onto the <a href="https://forge.puppetlabs.com/opentable">Puppet Forge</a> as possible (11 out of 18 of which are Windows
-exclusive). What this means is that there was no way that we could ignore trying to use Beaker to test our manifests against Windows. We knew that we would have to support
-many different versions and editions of Windows out there in the community as well that the ones we have to support internally.</p>
-
-<p>This was going to be a challenge (configuration management with Windows usually is) but we were up for it.</p>
-
-<h2>The Preliminaries</h2>
-
-<h3>Serverspec</h3>
-
-<p>The first step was looking at Serverspec. Serverspec is a Ruby gem that provides extensions to RSpec that allow you to test the actual state of your servers, either locally
-or from the outside in via SSH. What we needed to know was did it support Windows? The answer was thankfully a resounding &ldquo;Yes!&rdquo;. All the <a href="http://serverspec.org/resource_types.html">resource types</a> that you might want to test including file, service and user are available and supported on Windows. There are also a couple of Windows specific ones such as iis_website, Windows_feature and Windows_registry_key. We even added our own to support <a href="https://github.com/serverspec/serverspec/pull/403/files">Windows_scheduled_task</a>. Interestingly Serverspec also supports WinRM as an alternative to SSH when you are testing from the outside-in but we will go back into that later. As long as your using Serverspec > 1.6 you will have all the Windows support you might need.</p>
-
-<h3>Packer</h3>
-
-<p>Step two was to build some Windows Vagrant boxes to test against. The documentation on the <a href="http://github.com/puppetlabs/beaker/wiki">wiki</a> was (at the time) a bit slim when it came
-to building test boxes but we knew we needed Cygwin so we went ahead and created the boxes that we needed. All our boxes are created with Packer <a href="http://github.com/opentable/packer-images">and are open sourced on GitHub</a>. They have also been <a href="http://vagrantcloud.com/opentable">published to Vagrant Cloud</a>
-so you can download pre-built images and get up and running quickly (version 1.x images contain the Cygwin installation).</p>
-
-<h3>Beaker</h3>
-
-<p>So far, so good. We hit a couple of issues in our initial test runs with Beaker: missing module_path, installation using the msi and 32-bit Windows support &ndash; but these were very
-small issues and we were happy to be able to contribute back some changes (<a href="https://github.com/puppetlabs/beaker/pull/234">234</a>,
-<a href="https://github.com/puppetlabs/beaker/pull/235">235</a>, <a href="https://github.com/puppetlabs/beaker/pull/236">236</a>). We were very happy and managed to get out first module tested,
-the <a href="http://github.com/opentable/puppet-puppetversion/">cross-platform module puppet-puppetversion</a> for doing Puppet upgrades.</p>
-
-<h2>The First Example</h2>
-
-<p>Let&rsquo;s take a more detailed look at those puppetversion tests, how we configured Beaker to run and how it changed for the Windows support. I am going to assume at this point that
-you already have some familiarity with Beaker; if not and this is your first steps into the testing tool then I would suggest going back and read <a href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/">part one</a> of this series which contains a little bit of background to this and some useful resources for getting started.</p>
-
-<p>The first thing that we needed to change for Windows was our <a href="https://raw.githubusercontent.com/opentable/puppet-puppetversion/master/spec/spec_helper_acceptance.rb">spec_accepentance.rb file</a>.</p>
-
-<p>Step one was to include the appropriate Serverspec helpers. What this does is let Serverspec know that we are executing on Windows so that underlying resources work correctly. We are also telling
-server spec here to communicate using WinRM.</p>
-
-<pre><code>require 'beaker-rspec/spec_helper'
-require 'beaker-rspec/helpers/serverspec'
-require 'winrm'
-
-hosts.each do |host|
-  case host['platform']
-    when /windows/
-      include Serverspec::Helper::Windows
-      include Serverspec::Helper::WinRM
-
-      version = ENV['PUPPET_VERSION'] || '3.4.3'
-
-      install_puppet(:version =&gt; version)
-
-  else
-    install_puppet
-  end
-end
-
-...
-</code></pre>
-
-<p>The next step is to configure WinRM so that it can connect properly. In our case this meant connecting to Vagrant boxes.</p>
-
-<pre><code>...
-
-RSpec.configure do |c|
-  ...
-  hosts.each do |host|
-    c.host = host
-
-    if host['platform'] =~ /windows/
-      endpoint = "http://127.0.0.1:5985/wsman"
-      c.winrm = ::WinRM::WinRMWebService.new(endpoint, :ssl, :user =&gt; 'vagrant', :pass =&gt; 'vagrant', :basic_auth_only =&gt; true)
-      c.winrm.set_timeout 300
-    end
-
-    ...
-  end
-end
-
-...
-</code></pre>
-
-<p>Now let&rsquo;s look at one of the tests themselves.</p>
-
-<p>The first part should look pretty familiar. We use the face(&lsquo;osfamily&rsquo;) helper in Beaker to make sure that the test itself is only ever executed for our Windows hosts. We are then running an apply_manifest two times in order to validate that the manifest is idempotent. The only different here is that we are specifying a custom Windows-specific module_path.</p>
-
-<pre><code>...
-require 'spec_helper_acceptance'
-
-describe 'puppetversion', :unless =&gt; UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
-  ...
-
-  context 'upgrade on windows', :if =&gt; fact('osfamily').eql?('windows') do
-
-  it 'should install the new version' do
-    pp = &lt;&lt;-PP
-      class { 'puppetversion':
-        version =&gt; '3.5.1',
-        time_delay =&gt; 1
-      }
-    PP
-
-    apply_manifest(pp, :modulepath =&gt; 'C:/ProgramData/PuppetLabs/puppet/etc/modules', :catch_failures =&gt; true)
-    expect(apply_manifest(pp, :modulepath =&gt; 'C:/ProgramData/PuppetLabs/puppet/etc/modules', :catch_failures =&gt; true).exit_code).to be_zero
-  end
-</code></pre>
-
-<p>The next part is where we actually perform the bulk of the tests. In the case of this module, we are testing
-that the scheduled task has run and that Puppet has been upgraded to the appropriate version. We are making use
-of the Windows_scheduled_task resource that we created earlier:</p>
-
-<pre><code>  describe Windows_scheduled_task('puppet upgrade task') do
-    it { should exist }
-  end
-
-  #This will fail if your laptop (and therefor the Vagrant vm) is not running on AC power
-  describe package('puppet') do
-    it {
-      sleep(240) #Wait for the task to execute
-      should be_installed.with_version('3.5.1')
-    }
-  end
-
-  describe Windows_scheduled_task('puppet upgrade task') do
-    it {
-      pp = &lt;&lt;-PP
-        class { 'puppetversion':
-          version =&gt; '3.5.1'
-        }
-      PP
-
-      apply_manifest(pp, :modulepath =&gt; 'C:/ProgramData/PuppetLabs/puppet/etc/modules', :catch_failures =&gt; true)
-
-      should_not exist
-    }
-  end
-end
-</code></pre>
-
-<p>The final part was to configure the nodeset file for the Windows box that we wanted to run our test against:</p>
-
-<pre><code>HOSTS:
-  windows-2008R2-serverstandard-x64:
-  roles:
-    - agent
-  platform: windows-server-amd64
-  box : opentable/win-2008r2-standard-amd64-nocm
-  box_url : opentable/win-2008r2-standard-amd64-nocm
-  hypervisor : vagrant
-  user: vagrant
-CONFIG:
-  log_level: verbose
-  type: git
-</code></pre>
-
-<p>This was working well for us so we continued on to our next module.</p>
-
-<p>The next module we chose to look at was <a href="http://github.com/opentable/puppet-Windowsfeature">puppet-Windowsfeature</a>.</p>
-
-<p>The test we have implemented in this moudle looks like this:</p>
-
-<pre><code>require 'spec_helper_acceptance'
-
-describe 'Windowsfeature' do
-  context 'windows feature should be installed' do
-    it 'should install .net 3.5 feature' do
-
-      pp = &lt;&lt;-PP
-        Windowsfeature { 'as-net-framework': }
-      PP
-
-      apply_manifest(pp, :catch_failures =&gt; true)
-      expect(apply_manifest(pp, :catch_failures =&gt; true).exit_code).to be_zero
-    end
-
-    describe Windows_feature('as-net-framework') do
-      it { should be_installed.by('powershell') }
-    end
-  end
-end
-</code></pre>
-
-<p>This module was a little more tricky. Why? Installing Windows features requires elevated permissions. What this meant is that when Beaker attempted to SSH into our Windows box and our Puppet module ran its underlying PowerShell we were faced with a harsh and non-descriptive <strong>&ldquo;Access is denied error&rdquo;</strong>.</p>
-
-<h2>SSH</h2>
-
-<p>Not all SSH daemons are created equal. To understand the &ldquo;Access is denied error&rdquo; we were seeing and why it happens you need to understand a little bit about how sshd on Cygwin works. You can read all about the details from the Cygwin forum archives (<a href="http://cygwin.com/ml/cygwin/2004-09/msg00087.html">[1]</a>, <a href="http://cygwin.com/ml/cygwin/2006-06/msg00862.html">[2]</a>, <a href="http://thread.gmane.org/gmane.os.cygwin/128472">[3]</a>, <a href="https://cygwin.com/cygwin-ug-net/ntsec.html#ntsec-nopasswd1">[4]</a>) but TLDR; is that you need to use a username and password rather than private key authentication in order to get reasonable admin permissions. Having said all that, and having read all the documentation about the issue above we were still facing the same problem so we had to look at alternative options.</p>
-
-<p>There are several paths you can go down and I want to tell you about them here to save you a similar yak shave:</p>
-
-<h3>OpenSSH for Windows</h3>
-
-<p>A thinner alternative than having to install the full Cygwin stack using OpenSSH for Windows is the same OpenSSH implementation. The issue here however is that it doesn’t contain some of the Unix binaries required for Beaker to function. You can work around this if you have Git for Windows installed on your machine by putting its bin directory on your path but overall this doesn’t really solve any of the issues we were facing. We get a lighter footprint on the machine but still the same error as before</p>
-
-<h3>Bitvise SSH Server</h3>
-
-<p><a href="http://www.bitvise.com/ssh-server-download">Bitvise SSH Server</a> is an alternative SSH implementation (of which there are many more listed on <a href="http://en.wikipedia.org/wiki/Comparison_of_SSH_servers">Wikipedia</a>). It resolves the permissions issue (it deals with the elevation internally) and has the benefit that it provides a proper command shell rather than a emulated bash shell. It also means we don’t have to have any binaries on there that we don’t need &ndash; a big plus. It would mean that we needed to make a few small changes to Beaker in order to replace some of the internal bash command with Windows alternatives but this was not a big task to do and is something we could contribute back.</p>
-
-<h3>WinRM</h3>
-
-<p>Could we do away with SSH altogether? It eliminates the problem we were facing and also means we don’t have to install anything on our Windows boxes &ndash; it’s all built in already. This would be an ideal solution but does all our tooling support it? I’ll discuss this in a little bit more detail later.</p>
-
-<h3>Not use Beaker at all</h3>
-
-<p>The nuclear option. If we couldn’t get anything to work we could not use Beaker at all, we could try and use Test Kitchen (with <a href="https://github.com/neillturner/kitchen-puppet">test-kitchen-puppet</a>) or some hand-rolled solution. Not the best idea, for us or the community but we though we might have to go down this path at one point. We even added <a href="https://github.com/liamjbennett/kitchen-puppet/tree/Windows_support">Windows support to test-kitchen-puppet</a> as part our diversion in this direction.</p>
-
-<h2>What worked in the end:</h2>
-
-<p>So we went down all these avenues and decided that the best option for us was to use Bitvise. It fixed the problem we were facing but it meant that we had some work ahead of us:
-1. We had to rebuild all our Windows images with Bitvise rather than Cygwin (<a href="https://vagrantcloud.com/opentable">vagrantcloud.com/opentable</a> &ndash; version 2.x images now have this)
-2. We had to make some changes to Beaker to support using a standard Windows command shell rather than a Unix shell:</p>
+<p>A couple of interesting documents emerged that you might be interested in:</p>
 
 <ul>
-<li> <a href="https://github.com/puppetlabs/beaker/pull/419">https://github.com/puppetlabs/beaker/pull/419</a> – configure_puppet method</li>
-<li> <a href="https://github.com/puppetlabs/beaker/pull/420">https://github.com/puppetlabs/beaker/pull/419</a> – host_entry method</li>
-<li> <a href="https://github.com/puppetlabs/beaker/pull/418">https://github.com/puppetlabs/beaker/pull/419</a> – Vagrant box_version</li>
-<li> <a href="https://github.com/puppetlabs/beaker/pull/424">https://github.com/puppetlabs/beaker/pull/419</a> – Bitvise SSH</li>
+<li><a href="https://docs.google.com/document/d/1N8U_8UnIGFHC1Q6aTyLgx1d6wvvjuyTT1EO-OYSIu3k">Suggestions for the Puppet Approved module criteria</a></li>
+<li><a href="https://docs.google.com/document/d/1gwoM8xHnWaRQ3Jqce0oursI_ts5BWnHEUVXRQuIh6Yk">Forge Improvements</a></li>
 </ul>
 
 
-<p>With it finally working we had something that looked like this:</p>
-
-<h2>Second Example</h2>
-
-<p>Well with all the changes we implemented there were actually very few changes that we needed to make to our actual tests code.</p>
-
-<p>No adjustments are needed for our spec_acceptance.rb file.</p>
-
-<p>No adjustments are required for our spec file (show above).</p>
-
-<p>The main change we made was in the nodeset file:</p>
-
-<pre><code>HOSTS:
-  win-2008R2-std:
-  roles:
-    - default
-    - agent
-  platform: Windows-server-amd64
-  box: opentable/win-2008r2-standard-amd64-nocm
-  hypervisor: vagrant
-  user: vagrant
-  ip: '10.255.33.129'
-  communicator: bitvise
-CONFIG:
-  log_level: verbose
-  type: git
-</code></pre>
-
-<p>The biggest change you will see here is the addition of the &lsquo;communicator&rsquo; option. What this does is to allows us to actively select to use either Cygwin or Bitvise. This means that in our case we want to use Bitvise SSH as this fixes the error we were seeing and it&rsquo;s the version of SSH now installed on your newer Vagrant boxes. Bitvise is the only supported option at the moment (in our Beaker fork) but it is likely that this will soon support WinRM as well.</p>
-
-<p>Things to note here:
-* The name of the Windows host defined in the node set must be the same as the name of the Windows hostname &ndash; if it is not then when Vagrant boots up it will change the hostname
-which will put Windows into a &ldquo;restart pending&rdquo; state.</p>
-
-<h2>The Future and WinRM</h2>
-
-<p>Most modern versions of Windows server have WinRM enabled by default but if you are using an older version or you are attempting to test a client then you will need to make sure
-that this is enabled on your boxes. This is still the direction that we would like to go long-term as it is the most Windows-friendly approach but there are few road blocks in
-the way of doing so right now:</p>
-
-<ol>
-<li><p>Packer doesn’t set support WinRM as a communication method. This is being actively worked on and you can follow the work here:</p>
-
-<ul>
-<li><a href="https://github.com/mitchellh/packer/issues/451">https://github.com/mitchellh/packer/issues/451</a></li>
-<li><a href="https://github.com/dylanmei/packer-communicator-winrm">https://github.com/dylanmei/packer-communicator-winrm</a></li>
-</ul>
-</li>
-<li><p>Beaker doesn’t yet support WinRM as a communication protocol. This is currently being discussed internally after we raised the idea. The work that we have completed for
-Bitvise support will go some way it allowing other providers, such as wirm going forward and therefore WinRM support should be coming in the near future.</p></li>
-</ol>
-
+<p>There was also some discussion of how best to pull stats out from the forge. Many people either scrape the API, use the API to take a dump of the whole of the forge
+but none of these approaches are best for either the user or for the forge site itself. PuppetLabs uses various approaches to this internally depending on the use
+case. Such use cases include: &ldquo;who is using my module?&rdquo; or &ldquo;who is using the bit of code?&rdquo;. There should be improvements to the forge to make answering these sorts
+of questions a little easier in the future.</p>
 
 <h2>Summary</h2>
 
-<p>Using Beaker to test modules for Windows has been a long and complicated journey. I have attempted to cover here all the problems that you might run into when trying to do this for yourselves and provide some good examples to get you going. You will soon see this being rolled out to all of the OpenTable open source modules shortly so you will have some complete working examples to reference. We will continue to work with PuppetLabs in improving Beaker (and its Windows support) in order to make this a easy process for everyone.</p>
+<p>The contributor summit was personally one of the most useful days of the conference. Being able to see the lastest tooling and discuss the latest problems is always
+very useful to module authors like ourselves. Hopefully you&rsquo;ll find this summary as useful as we do.</p>
 
-<p>For any questions or comments then please reach out to me on twitter <a href="https://twitter.com/liamjbennett">@liamjbennett</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Managing Windows Features with Puppet]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2014/05/15/managing-windows-features-with-puppet/"/>
-    <updated>2014-05-15T16:12:38+01:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2014/05/15/managing-windows-features-with-puppet</id>
-    <content type="html"><![CDATA[<p>Back in June 2013, I wrote about <a href="http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/">Windows Feature Management with PowerShell</a>. We have since released a Puppet module that will do this for us. We originally wrote PowerShell:</p>
-
-<pre><code>Import-Module ServerManager
-Add-WindowsFeature Web-Asp-Net
-</code></pre>
-
-<p>The Puppet module now wraps this code as follows:</p>
-
-<pre><code>windowsfeature { 'Web-Asp-Net': }
-</code></pre>
-
-<p>The declaration windowsfeature is a specific Puppet type called a <a href="http://docs.puppetlabs.com/learning/definedtypes.html">define</a>. In developer terms, this is the equivalent of a helper method that can be reused. We can also make sure that Windows Features are <em>not</em> installed on the server as follows:</p>
-
-<pre><code>windowsfeature { 'Telnet-Server': 
-  ensure =&gt; absent 
-}
-</code></pre>
-
-<p>In the backing code for the module, we do a check before we install / uninstall any windows features. This means that we will only make the changes we really need to. This ensures idempotency of the script. By using this class, we can build up a list of what features a server should have enabled / installed on it. As example manifest would look as follows:</p>
-
-<pre><code>class my_windows_features {
-  windowsfeature { 'Web-Asp-Net': }
-  windowsfeature { 'Web-Net-Ext': }
-  windowsfeature { 'Web-ISAPI-Ext': }
-  windowsfeature { 'Web-ISAPI-Filter': }
-  windowsfeature { 'Web-Mgmt-Tools': }
-  windowsfeature { 'Web-Mgmt-Console': }
-  windowsfeature { 'Telnet-Server': ensure =&gt; absent }
-}
-</code></pre>
-
-<p>The server will have it&rsquo;s shipping list of Windows Features checked every 30 minutes by Puppet. We are sure that any changes encountered during that time will be applied as expected.  You can find more about our WindowsFeature module on the <a href="http://github.com/opentable/puppet-windowsfeature">github repo</a>. If you want to use the module, then you can install it using the Puppet Module tool via the <a href="http://forge.puppetlabs.com/opentable/windowsfeature">Puppet Forge</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Managing Windows Web Applications with Puppet]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet/"/>
-    <updated>2014-05-13T15:25:16+01:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet</id>
-    <content type="html"><![CDATA[<p>As part of our move towards a configuration management tool, we really wanted to start automating as much of our infrastructure as possible. This included our application configuration stack. IIS management is pretty easy with PowerShell. It would look something like this</p>
-
-<pre><code>Import-Module WebAdministration
-New-WebSite -Name "DemoSite" -Port 80 -IP * -PhysicalPath "c:\inetpub\wwwroot" -ApplicationPool "MyAppPool"
-</code></pre>
-
-<p>This would of course set up a website called &lsquo;DemoSite&rsquo; running on port 80 on the local machine. The cmdlets that come with PowerShell make this pretty easy. This is great if it is a one-off job to set up a site. We run our websites from a number of webservers, therefore, it would be silly to have to RDP into each webserver and run a script on it. This is why tools like Puppet, Chef, Ansible etc. exist. We needed a configuration management tool to do this work for us. It has a number of benefits:</p>
-
-<ul>
-<li>Orchestration</li>
-<li>Idempotency</li>
-<li>Makes sure that each server is configured in &lsquo;exactly&rsquo; the same way as no human intervention is needed</li>
-<li>Developers can help the operations team by creating the scripts needed. This is great for collaboration between teams</li>
-</ul>
-
-
-<p>On investigating how we would do this with Puppet, we noticed that there were not many other people managing their site in this way. Therefore, we would have to turn our PowerShell scripts into Puppet modules to manage our system.</p>
-
-<p>We have since created a Puppet module to manage IIS. To manage IIS with Puppet, we can now write the following code:</p>
-
-<pre><code>iis::manage_site { 'DemoSite:
-   site_path     =&gt; 'c:\inetpub\wwwroot',
-   port          =&gt; '80',
-   ip_address    =&gt; '*',
-   app_pool      =&gt; 'MyAppPool'
-}
-</code></pre>
-
-<p>This would produce <strong>exactly</strong> the same results as the code from above. But it has 1 difference. There are checks in the code behind this module that will mean the code will only execute when it is needed, i.e. when the site_path isn&rsquo;t correct or the app_pool isn&rsquo;t correct. This is idempotency. The script can be run again and again and again&hellip;.</p>
-
-<p>To create an application binding, we used to do this in PowerShell:</p>
-
-<pre><code>Import-Module WebAdministration
-New-WebBinding -Name 'DemoSite' -Port '8080' -IPAddress '*'
-</code></pre>
-
-<p>This would set up an extra binding on port 8080 for the site, DemoSite. We replaced this code with our puppet equivalent:</p>
-
-<pre><code>iis::manage_binding { 'DemoSite-8080':
-  site_name   =&gt; 'DemoSite',
-  protocol    =&gt; 'http',
-  port        =&gt; '8080',
-  ip_address  =&gt; '*',
-}
-</code></pre>
-
-<p>To create a virtual application, we would write the PowerShell:</p>
-
-<pre><code>Import-Module WebAdministration
-New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub\wwwroot\MyVirtualApp' -ApplicationPool 'MyAppPool'
-</code></pre>
-
-<p>This will create a VirtualApp folder on the DemoSite, use the same application pool and then set the path of the folder. I can do the same thing in Puppet as follows:</p>
-
-<pre><code>iis::manage_virtual_application {'VirtualApp':
-  site_name   =&gt; 'DemoSite',
-  site_path   =&gt; 'C:\inetpub\wwwroot\MyVirtualApplication',
-  app_pool    =&gt; 'MyAppPool'
- }  
-</code></pre>
-
-<p>We can therefore, chain a manifest together that does all this for us in 1 go. It would look as follows:</p>
-
-<pre><code>class mywebsite {
-  iis::manage_app_pool {'MyAppPool':
-    enable_32_bit           =&gt; true,
-    managed_runtime_version =&gt; 'v4.0',
-  } -&gt;
-
-  iis::manage_site {'DemoSite':
-    site_path   =&gt; 'C:\inetpub\wwwroot',
-    port        =&gt; '80',
-    ip_address  =&gt; '*',
-    app_pool    =&gt; 'MyAppPool'
-  } -&gt;
-
-  iis::manage_virtual_application {'VirtualApp':
-    site_name  =&gt; 'DemoSite',
-    site_path  =&gt; 'C:\inetpub\wwwroot\MyVirtualApp',
-    app_pool   =&gt; 'MyAppPool'
-  } -&gt; 
-
-  iis::manage_binding {'DemoSite-8080':
-    site_name  =&gt; 'DemoSite',
-    protocol   =&gt; 'http',
-    port       =&gt; '8080',
-    ip_address =&gt; '*'
-  }
-}
-</code></pre>
-
-<p>The module does more than just these tasks and I could give more and more examples of what we wrote, but you can find more about our IIS module on the <a href="http://github.com/opentable/puppet-iis">github repo</a>. If you want to use the module, then you can install it using the Puppet Module tool via the <a href="http://forge.puppetlabs.com/opentable/iis">Puppet forge</a>.</p>
-
-<p>We love to hear feedback on things that the module should support. We like Pull Requests even more :)</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Upgrading Puppet with Puppet]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/"/>
-    <updated>2014-04-07T13:23:00+01:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet</id>
-    <content type="html"><![CDATA[<p>As part of one of our recent <a href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
-
-<p>This should be a very straightforward task to complete because this is one of the core resources that Puppet manages &ndash; the upgrading of packages. With that in mind, putting <code>package { ‘puppet’: ensure =&gt; $version }</code> in one of our base profiles would be all that was needed but alas it was not. In this blog I want to take you through the history, the bugs, the platforms and the edge-cases that make performing an in-place upgrade of Puppet a more complex task that it ought to be.</p>
-
-<h2>Debian</h2>
-
-<p>Like many, Ubuntu is our Debian derivative of choice for much of our newer production infrastructure. Debian, has the apt package management system and PuppetLabs provide the required deb packages as well as hosting their own apt repository to point our systems to. The main point of package management systems is that they take care of the dependency hell and the awkward upgrade paths all from within the confines of the package itself, and that is what happens with the PuppetLabs packages &ndash; great.</p>
-
-<p>The problem that we had in some of our systems was that they had been built without the PuppetLabs apt repository. This means that they picked up a slightly older version of the Puppet packages from the main Ubuntu distribution repositories and didn’t have access to the newer versions of the Puppet packages. Ok, so we solved that with the following code:</p>
-
-<pre><code>  exec { 'rm_duplicate_puppet_source':
-    path    =&gt; '/usr/local/bin:/bin:/usr/bin',
-    command =&gt; 'sed -i \'s:deb\ http\:\/\/apt.puppetlabs.com\/ precise main::\' /etc/apt/sources.list',
-    onlyif  =&gt; 'grep \'deb http://apt.puppetlabs.com/ precise main\' /etc/apt/sources.list',
-  }
-
-  apt::source { 'puppetlabs':
-    location    =&gt; 'http://apt.puppetlabs.com',
-    repos       =&gt; 'main dependencies',
-    key         =&gt; '4BD6EC30',
-    key_content =&gt; template('puppetversion/puppetlabs.gpg'),
-    require     =&gt; Exec['rm_duplicate_puppet_source']
-  }
-</code></pre>
-
-<p>We&rsquo;re making use of the <a href="http://forge.puppetlabs.com/puppetlabs/apt">puppetlabs/apt</a> module here. This removes the old reference and adding in the new apt source. Then we just add the package and ensure the version we’re upgrading. Perfect.</p>
-
-<h2>RedHat</h2>
-
-<p>Same problem different OS family &ndash; this time we had some older CentOS machines that needed fixing. Thankfully there is also a module <a href="http://forge.puppetlabs.com/stahnma/puppetlabs_yum">stahnma/puppetlabs_yum</a> for the yum repositories. Add that in, add the package resource and start upgrading. Phew! This seems like it’s getting easier.</p>
-
-<h2>Windows</h2>
-
-<p>Many of you will be following the work of OpenTable closely because of our work with Puppet on Windows. We have a pretty large Windows infrastructure, with a wide range of client and server versions deployed ranging from 2012 R2 all the way back to the historic times of 2003. Windows also has its own package format, the msi, and PuppetLabs also provides all versions of Puppet packaged as msi files.</p>
-
-<p>This is where it gets a little tricky. The big problem we had was that the Windows provider, prior to 3.4.0 was not versionable (<a href="http://projects.puppetlabs.com/issues/21133">issues/21133</a>) that means that <code>package { ‘puppet’: ensure =&gt; installed }</code> would work but <code>package { ‘puppet’: ensure =&gt; $version }</code> would not &ndash; the exact thing we were trying to do! The only way to resolve that problem is to uninstall and reinstall the package with the correct version.</p>
-
-<p>Now there are a lot of problems with the uninstall/reinstall approach. Firstly we had to script the process because Windows only allows one installer to run at any one time meaning that you had to wait for the uninstall to finish before that subsequent install takes place. Secondly we have to deal with Puppet runs and make sure that when the upgrade script runs that we wait for any active Puppet runs to complete before trying to uninstall Puppet. Next we have to trigger our script using a scheduled task.</p>
-
-<p>Our experience with scheduled tasks has been painful. We attempted using the <a href="http://docs.puppetlabs.com/references/latest/type.html#scheduledtask">scheduled_task</a> resource type but soon realised that this wasn’t going to work for us. The resource type is good if you want to create a task to run at a fixed point in time but there is no way to provide a relative time e.g. “in five mins from now”. Also on occasion the task would not run or would silently fail &ndash; this was almost certainly due to another Puppet issue we discovered (<a href="https://tickets.puppetlabs.com/browse/PUP-1368">PUP-1368</a>). Without being able to use the scheduled task resource we were again back in the land of Powershell using a script to create the scheduled task that would call our upgrade script.</p>
-
-<p>So if you&rsquo;re keeping up we now have something like this:</p>
-
-<p>Puppet &ndash;> calls script to create scheduled task &ndash;> scheduled task calls upgrade script &ndash;> upgrade script upgrade Puppet and triggers next Puppet run &ndash;> Puppet</p>
-
-<p>Nice little cycle there, but it works.</p>
-
-<p>One final issue worth mentioning is that for Windows 2003 servers you’ll need to actually have Powershell installed. Luckily, we also have a module for that <a href="http://forge.puppetlabs.com/dcharleston/powershell">dcharleston/powershell</a></p>
-
-<h2>Summary</h2>
-
-<p>Well we’ve discussed some of the pain points, and we’ve discussed them in detail with PuppetLabs themselves. The advice here is to upgrade to Puppet 3.4.3 as soon as you can as many of these issues are resolved in that version. For those of you not on that version yet then we have you covered with our puppetversion module.</p>
+<p>Next up Day 1 &ndash; PuppetConf proper..</p>
 ]]></content>
   </entry>
   

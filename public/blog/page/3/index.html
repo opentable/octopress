@@ -9,7 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="In years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around nine months ago we started &hellip;">
+  <meta name="description" content="Popular topic at conferences A lot of us were lucky enough to attend NDC London this year, we even sponsored one of the food stalls. I often see one &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +81,54 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/12/programme-management/">Programme Management, making Agile scale</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-12T10:16:00+00:00" pubdate data-updated="true">Feb 12<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Popular topic at conferences</h2>
+
+<p>A lot of us were lucky enough to attend NDC London this year, we even sponsored one of the food stalls. I often see one or more real themes coming from talks at conferences. At NDC London I saw three talks around scaling Agile. Indeed Dan North&rsquo;s (<a href="https://twitter.com/tastapod">@tastapod</a>) talk was called exactly that. It is a topic OpenTable is trying to make happen. We are about 100 engineers on three continents which is a lot of teams working together.</p>
+
+<p>I truly believe that the only way to make an individual team successful in an Agile environment is to have ownership of an area, a system or similar. That enables fast feedback, quick decision making and also a sense of pride and responsibility for what people are working on.</p>
+
+<p>However, when you have a big project, you can&rsquo;t give it to just one team. You need many teams working together. You can split it up and get teams to work on the parts of the project affecting the code they own. This will though mean certain parts of the project go faster than others, and if teams are autonomous, who is really responsible for bringing all those pieces together? Also, imagine you are the project owner and need to have a rough handle on when things can actually be delivered, who is going to give you that? None of the individual teams know, everyone is Agile and cool and so everyone hates estimates.</p>
+
+<p>The point made by three speakers at NDC London, <a href="https://twitter.com/tastapod">Dan North</a>, <a href="https://twitter.com/jezhumble">Jez Humble</a> and <a href="https://twitter.com/gojkoadzic">Gojko Adzic</a> came down to the need for the coordination piece across the teams. One thing Dan North (more or less) said is <em>&ldquo;if your team is really fast and all the others are slow, the project is slow and your team haven&rsquo;t achieved their goal&rdquo;</em>. That was not the exact words he used but the sentiment came across.</p>
+
+<p>Indeed we have some big projects at OpenTable and as we have properly embraced Agile in many ways, we still had some pain points in this exact area. We were getting to the same conclusions but since these talks we have had some more solid programme management and in the third cross-team meeting as a result, things starting taking shape. It really is an important piece of the jigsaw.</p>
+
+<p>I would also recommend a <a href="http://www.youtube.com/watch?v=ILP1pJAuT9c&amp;list=PLBMFXMTB7U74NdDghygvBaDcp67owVUUF&amp;feature=c4-overview-vl">DevDay talk</a> from Dariusz Dziuk on this and how Spotify make things scale. Slightly different content but a similar theme.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1245,473 +1293,6 @@ grunt.registerTask('acceptance', [
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/08/08/grunt-your-deployments-too/">Grunt your deployments too</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-08T15:27:00+01:00" pubdate data-updated="true">Aug 8<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>We&rsquo;ve been using <a href="http://www.gruntjs.com">Grunt</a> as a build tool for our nodejs apps, and it&rsquo;s brilliant. It lints, it configures, it minifies, it tests and it packages.</p>
-
-<p>As we move towards getting our first node app into production, we were looking at ways to deploy it. First we thought of <a href="http://www.capistranorb.com">Capistrano</a>.</p>
-
-<p><strong><em>Capistrano</em></strong> is a fully featured deployment framework written in ruby and levering rake style tasks. It&rsquo;s extremely powerful and very robust, plus there is a <a href="https://github.com/loopj/capistrano-node-deploy">gem for node deployments</a>. Alas, it was not to be. After half a day of tail chasing and hoop jumping, it occurred to me that there must be an easier way. Capistrano was encouraging me to make my project fit their template, rather than allowing me to configure the deployment to match my project. When I dug down into the Capistrano source, I found that it was just using ssh and sftp to run remote commands and copy files. But we can simplify this process.</p>
-
-<p><strong><em>Grunt</em></strong> has been great so far, so I started looking at deploying directly through grunt. We would be deploying to Ubuntu server boxes, so the only tools necessary are ssh and sftp.</p>
-
-<p>There are Grunt modules for nearly <a href="https://npmjs.org/search?q=grunt">everything</a> (linting, minifying, testing, waiting, packaging, shell-exec&#8217;ing, tagging, etc.), and rather predictably, sshing (with sftp).</p>
-
-<p><a href="https://github.com/andrewrjones/grunt-ssh">Grunt-ssh</a> provides tasks for executing remote ssh commands, and for copying files using ssh. Let&rsquo;s dive into some code.</p>
-
-<p><strong><em>SSH commands</em></strong></p>
-
-<p>This is going to go over some old ground (available on the Grunt-ssh <a href="https://github.com/andrewrjones/grunt-ssh">readme</a>), but we can build up the commands pretty quick.</p>
-
-<p>This is the basic config for executing ssh commands from your Gruntfile:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>module.exports = function(grunt) {
-</span><span class='line'>      grunt.initConfig({
-</span><span class='line'>      sshexec: {
-</span><span class='line'>      uptime: {
-</span><span class='line'>        command: "uptime",
-</span><span class='line'>        options: {
-</span><span class='line'>          host: "127.0.0.1",
-</span><span class='line'>          port: 22
-</span><span class='line'>          username: "myuser",
-</span><span class='line'>          password: "mypass"
-</span><span class='line'>        }
-</span><span class='line'>      }
-</span><span class='line'>    }  
-</span><span class='line'>  });
-</span><span class='line'>
-</span><span class='line'>  // Load the plugin that provides the "sshexec" task.
-</span><span class='line'>  grunt.loadNpmTasks('grunt-ssh');
-</span><span class='line'>
-</span><span class='line'>  // Default task.
-</span><span class='line'>  grunt.registerTask('default', ['sshexec:uptime']);
-</span><span class='line'>
-</span><span class='line'>};</span></code></pre></td></tr></table></div></figure>
-
-
-<p>We&rsquo;ve registered a command, which we can invoke with:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>grunt sshexec:uptime</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The Grunt-ssh module also provides the ability to specify multiple host configurations (shared between commands), and to select one at runtime:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>grunt.initConfig({
-</span><span class='line'>    sshconfig: {
-</span><span class='line'>      qa: {
-</span><span class='line'>        host: "my.qa.server",
-</span><span class='line'>        port: 22,
-</span><span class='line'>        username: "user", 
-</span><span class='line'>        password: "password"
-</span><span class='line'>      },
-</span><span class='line'>      staging: {
-</span><span class='line'>        host: "my.staging.server",
-</span><span class='line'>        port: 22,
-</span><span class='line'>        username: "user",
-</span><span class='line'>        password: "password"
-</span><span class='line'>      }    
-</span><span class='line'>    },
-</span><span class='line'>    sshexec: {
-</span><span class='line'>      uptime: {
-</span><span class='line'>        command: "uptime"
-</span><span class='line'>      }
-</span><span class='line'>    }  
-</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So when we invoke the grunt task, we can specify a config:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>grunt sshexec:uptime --config qa</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Or we can set it programmatically (inside the Gruntfile)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>grunt.option('config', 'qa');</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong><em>SFTP Tasks</em></strong></p>
-
-<p>Grunt-ssh allows you to upload files via S<a href="FTP:">FTP:</a></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>grunt.initConfig({
-</span><span class='line'>    sshconfig: {
-</span><span class='line'>      qa: {
-</span><span class='line'>        host: "my.qa.server",
-</span><span class='line'>        port: 22,
-</span><span class='line'>        username: "user", 
-</span><span class='line'>        password: "password",
-</span><span class='line'>        path: "/path/on/server"
-</span><span class='line'>      },
-</span><span class='line'>      staging: {
-</span><span class='line'>        host: "my.staging.server",
-</span><span class='line'>        port: 22,
-</span><span class='line'>        username: "user",
-</span><span class='line'>        password: "password",
-</span><span class='line'>        path: "/path/on/server"
-</span><span class='line'>      }    
-</span><span class='line'>    },
-</span><span class='line'>    sshexec: {
-</span><span class='line'>      uptime: {
-</span><span class='line'>        command: "uptime"
-</span><span class='line'>      }
-</span><span class='line'>    }
-</span><span class='line'>    sftp: {
-</span><span class='line'>      deploy: {
-</span><span class='line'>        files: {
-</span><span class='line'>          "./": "package/**"
-</span><span class='line'>        },
-</span><span class='line'>        options: {
-</span><span class='line'>          srcBasePath: "package/",
-</span><span class='line'>          createDirectories: true
-</span><span class='line'>        }
-</span><span class='line'>      }
-</span><span class='line'>    }  
-</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
-
-
-<p>There are a couple of options here, so let&rsquo;s break it down:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>files: {
-</span><span class='line'>  "./": "package/**"
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This will copy all files from the &ldquo;package/&rdquo; folder locally. If you want to specify only certain types of files, you can use grunt&rsquo;s standard <a href="https://github.com/gruntjs/grunt/wiki/grunt.file#globbing-patterns">file globbing</a>.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>srcBasePath: "package/"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Optionally strip off an initial part of the path (without it, files would upload to &ldquo;/path/on/server/package/&rdquo;).</p>
-
-<p><strong><em>Putting it all together</em></strong>
-We&rsquo;ve got all the component parts, now lets put it together (plus a few other cool bits).</p>
-
-<p><em>Note: at the time of writing, there is a bug in Grunt-ssh where the sftp task does not use the shared sshconfig, so if you want the fixed code, use <a href="https://github.com/andyroyle/grunt-ssh">my fork</a> (there is a pull request outstanding)</em></p>
-
-<p>This snippet assumes that:</p>
-
-<ul>
-<li>You can connect to your deployment server using ssh</li>
-<li>You are deploying to /var/www/myapp</li>
-<li>You are using <a href="https://github.com/nodejitsu/forever">forever</a> to run your app</li>
-<li>Your application files are copied to ./package/</li>
-</ul>
-
-
-<p>(but, since we&rsquo;re just using bash commands, this is easily configurable)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>var dirname = (new Date()).toISOString();
-</span><span class='line'>
-</span><span class='line'>module.exports = function(grunt){
-</span><span class='line'>  grunt.initConfig({
-</span><span class='line'>    // our shared sshconfig
-</span><span class='line'>    sshconfig: {
-</span><span class='line'>      qa: {
-</span><span class='line'>        host: "my.qa.server",
-</span><span class='line'>        port: 22,
-</span><span class='line'>        username: "user",
-</span><span class='line'>        password: "password",
-</span><span class='line'>        path: "/path/on/server"
-</span><span class='line'>      },
-</span><span class='line'>      staging: {
-</span><span class='line'>        host: "my.staging.server",
-</span><span class='line'>        port: 22,
-</span><span class='line'>        username: "user",
-</span><span class='line'>        password: "password",
-</span><span class='line'>        path: "/path/on/server"
-</span><span class='line'>      },
-</span><span class='line'>      production: {
-</span><span class='line'>        host: "&lt;%= grunt.option('server') %&gt;",
-</span><span class='line'>        port: 22,
-</span><span class='line'>        username: "&lt;%= grunt.option('username') %&gt;",
-</span><span class='line'>        password: "&lt;%= grunt.option('password') %&gt;",
-</span><span class='line'>        path: "/path/on/server"
-</span><span class='line'>      }
-</span><span class='line'>    },
-</span><span class='line'>    // define our ssh commands
-</span><span class='line'>    sshexec: {
-</span><span class='line'>      start: {
-</span><span class='line'>        command: "cd /var/www/myapp/current && forever start -o /var/www/myapp/current/logs/forever.out -e /var/www/myapp/current/logs/forever.err --append app.js"
-</span><span class='line'>      },
-</span><span class='line'>      stop: {
-</span><span class='line'>        command: "forever stop app.js",
-</span><span class='line'>        options: {
-</span><span class='line'>          ignoreErrors: true
-</span><span class='line'>       }
-</span><span class='line'>      },
-</span><span class='line'>      'make-release-dir': {
-</span><span class='line'>        command: "mkdir -m 777 -p /var/www/myapp/releases/" + dirname + "/logs"
-</span><span class='line'>      },
-</span><span class='line'>      'update-symlinks': {
-</span><span class='line'>        command: "rm -rf /var/www/myapp/current && ln -s /var/www/myapp/releases/" + dirname + " /var/www/myapp/current"
-</span><span class='line'>      },
-</span><span class='line'>      'npm-update': {
-</span><span class='line'>        command: "cd /var/www/myapp/current && npm update"
-</span><span class='line'>      },
-</span><span class='line'>      'set-config': {
-</span><span class='line'>        command: "mv -f /var/www/myapp/current/config/&lt;%= grunt.option('config') %&gt;.yml /var/www/myapp/current/config/default.yml"
-</span><span class='line'>      }
-</span><span class='line'>    },
-</span><span class='line'>    // our sftp file copy config
-</span><span class='line'>    sftp: {
-</span><span class='line'>      deploy: {
-</span><span class='line'>        files: {
-</span><span class='line'>          "./": "package/**"
-</span><span class='line'>        },
-</span><span class='line'>        options: {
-</span><span class='line'>          srcBasePath: "package/",
-</span><span class='line'>          createDirectories: true
-</span><span class='line'>        }
-</span><span class='line'>      }
-</span><span class='line'>    }
-</span><span class='line'>  });
-</span><span class='line'>
-</span><span class='line'>  grunt.loadNpmTasks('grunt-ssh');
-</span><span class='line'>  grunt.registerTask('deploy', [
-</span><span class='line'>    'sshexec:stop',
-</span><span class='line'>    'sshexec:make-release-dir',
-</span><span class='line'>    'sshexec:update-symlinks',
-</span><span class='line'>    'sftp:deploy',
-</span><span class='line'>    'sshexec:npm-update',
-</span><span class='line'>    'sshexec:set-config',
-</span><span class='line'>    'sshexec:start'
-</span><span class='line'>  ]);
-</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
-
-
-<p>It should all make sense, the sshexec is just running remote ssh commands (making directories, starting and stopping using forever etc). Let&rsquo;s just re-iterate what this is doing:</p>
-
-<ol>
-<li><code>sshexec:stop</code>: stops the app (assumes you&rsquo;re using forever)</li>
-<li><code>sshexec:make-release-dir</code>: this will create the folder /var/www/myapp/releases/[current-date-time]</li>
-<li><code>sshexec:update-symlinks</code>: this will create a symlink from /var/www/myapp/current to the release folder we just created (this means that rolling back is just a case of changing the symlink back).</li>
-<li><code>sftp:deploy</code>: copy the files into place</li>
-<li><code>sshexec:npm-update</code>: installs any missing node modules</li>
-<li><code>sshexec:set-config</code>: copy the environment configuration into place</li>
-<li><code>sshexec:start</code>: start the application using forever, pointing the logs to /var/www/myapp/current/logs/</li>
-</ol>
-
-
-<p><strong><em>Deploying with one command</em></strong></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>grunt deploy --config qa</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Also, if you noticed the <em>production</em> config I specified in that snippet, you&rsquo;ll see that I didn&rsquo;t include any host, username or password configs. The <code>grunt.option('value')</code> allows us to access the command line switches, which means we don&rsquo;t have to keep any sensitive passwords in source control; we can specify them on the command line.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>grunt deploy --config production --server my.production.server --username user --password password</span></code></pre></td></tr></table></div></figure>
-
-
-<p>There are lots of other solutions to the problem of credentials, but this is by far the simplest. It&rsquo;s worth remembering the Grunt-ssh uses the ssh2 module, so by default it will look to <code>~/.ssh/</code> for keys when connecting without a password.</p>
-
-<p><strong>But wait, there&rsquo;s more</strong></p>
-
-<p>Basically any task you can think of is scriptable using grunt (and some combination of tools). Extra things that we&rsquo;ve added to our deployment process include:</p>
-
-<ul>
-<li>Removing the application server from the load-balancer before deploying (and pushing it back when the deployment is complete).</li>
-<li>Making a http request to check the health of the service before going live.</li>
-<li>Rollback from a single command</li>
-</ul>
-
-
-<p><strong>Oink, Oink &hellip;..</strong></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -1729,6 +1310,10 @@ We&rsquo;ve got all the component parts, now lets put it together (plus a few ot
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/10/06/puppetconf-2014-part-2/">PuppetConf 2014 - Part 2</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/10/06/puppetconf-2014-part-1/">PuppetConf 2014 - Part 1</a>
       </li>
     
@@ -1742,10 +1327,6 @@ We&rsquo;ve got all the component parts, now lets put it together (plus a few ot
     
       <li class="post">
         <a href="/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-2-the-windows-story/">Testing Puppet with Beaker pt.2 - The Windows story</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/08/08/what-can-i-do/">What can I do?</a>
       </li>
     
   </ul>

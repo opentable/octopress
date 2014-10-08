@@ -7,10 +7,10 @@ categories: puppet, puppetconf2014, conferences
 ---
 
 ## Day 1
-This is our summary of PuppetConf 2014. In our [previous post](http://#) we gave an overview of the contributor summit. This post will provide an overview
-of the first proper day of PuppetConf.
+This is our summary of PuppetConf 2014. In our [previous post](http://tech.opentable.co.uk/blog/2014/10/06/puppetconf-2014-part-1/) we gave an overview of the contributor summit. This post will provide an overview
+of the first day of PuppetConf.
 
-As you might expect there we great keynotes with plenty of announcements and too many talks for us to attend. We have provided an outline for all the talks
+As you might expect there were great keynotes with plenty of announcements and too many talks for us to attend. We have provided an outline for all the talks
 we did attend and links to those we didn't.
 
 
@@ -30,7 +30,7 @@ of philosophy of PuppetLabs to become ubiquitous across as many devices and plat
 PuppetLabs for the future.
 
 Puppet Server (a.k.a the Clojure rewrite). This is PuppetLabs big move away from Ruby on onto the JVM. Being on the JVM means they can slowly rewrite the
-codebase while also maintaining compatibility thanks to JRuby. They have gained a lot of experience with Clojure thanks to the PuppetDB project and given how
+codebase while also maintaining compatibility thanks to JRuby. They have gained a lot of experience with Clojure thanks to the PuppetDB & TrapKeeper projects and given how
 successful that project has been it has helped ease many of the fears people have in moving the JVM. Puppet Server is also a self contained application so there
 is no longer any need to worry about the whole apache/passanger yak shave. There was even a demo on the metrics that are now exposed by Puppet Server - yes
 you can now plug Puppet into graphite.
@@ -43,11 +43,11 @@ There have been plenty of follow-ups on this that you might be interested in rea
  * [https://github.com/puppetlabs/puppet-server](https://github.com/puppetlabs/puppet-server)
  * [http://www.informationweek.com/cloud/software-as-a-service/puppet-servers-big-revamp/d/d-id/1315934](http://www.informationweek.com/cloud/software-as-a-service/puppet-servers-big-revamp/d/d-id/1315934)
 
-Puppet Apps is the next big announcement. Puppet Apps is actually a fantastic piece of marketing around the idea that they are refactoring to a more micro-services
+Puppet Apps was the next big announcement. Puppet Apps is actually a fantastic piece of marketing around the idea that they are refactoring to a more micro-services
 style approach - splitting up the monolith that is currently the puppet master into smaller applications that have there own release cadence and can be scaled
 separately.
 
-The first announcement from the "Apps" initiative is Puppet Node Manager the new node classifier which will roll out in the first quarter of 2015 as an add-on
+The first announcement from the "Apps" initiative is Puppet Node Manager the new node classifier which will roll out in the Q1 of 2015 as an add-on
 to Puppet Enterprise. Given that puppet has allowed external node classifiers to be written for a long time now (and there are many open source ones out there)
 it is good to see PuppetLabs stepping up and trying to own this more and improve the experience.
 
@@ -91,7 +91,7 @@ I for one am very excited by all this and look forward to seeing what comes out 
 This was a great overview of Gene’s research of DevOps and how that intersects with high performing organisations. There were many interesting results that came
 out the the survey that he did in joint co-operation with PuppetLabs many of which he shared during this talk.
 
-I think the one that stands out and oft-tweeted is the following:
+I think the one that stands out and often tweeted is the following:
 
 *"High performers have 30x more deployments and 8000x faster lead time, 2x the change success rate and 12x faster recovery"*
 

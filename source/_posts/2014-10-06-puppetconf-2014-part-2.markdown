@@ -20,7 +20,7 @@ we did attend and links to those we didn't.
 #### Nearly a Decade of Puppet: What We’ve Learned and Where We’re Going Next - Luke Kanies, PuppetLabs - [Slides](http://www.slideshare.net/PuppetLabs/luke-kanies-keynote-nearly-a-decade-of-puppet-what-weve-learned-and-where-were-going-next-puppetconf-2014)
 
 <div style="float:right;margin:0 10px 10px 10px;width:50%">
-  <img src="images/posts/puppetconf-luke-1.jpg">
+  <img src="/images/posts/puppetconf-luke-1.jpg">
 </div>
 
 The big keynote of the event to kick off the first day from the author of Puppet himself. This was obviously going to be a tweet worthy affair full of photos
@@ -86,7 +86,7 @@ I for one am very excited by all this and look forward to seeing what comes out 
 #### The Phoenix Project: Lessons Learned - Gene Kim, IT Revolution Press - [Slides](http://www.slideshare.net/PuppetLabs/keynote-the-phoenix-project-lessons-learned-puppetconf-2014)
 
 <div style="float:right;margin:0 10px 10px 10px;width:50%">
-  <img src="images/posts/puppetconf-gene.jpg">
+  <img src="/images/posts/puppetconf-gene.jpg">
 </div>
 
 This was a great overview of Gene’s research of DevOps and how that intersects with high performing organisations. There were many interesting results that came
@@ -104,7 +104,7 @@ plenty of things to be learnt from this keynote and I look forward to re-watchin
 #### Trust Me - Kate Matsudaira, Popforms - [Slides](http://www.slideshare.net/PuppetLabs/keynote-trust-me-puppetconf-2014)
 
 <div style="float:right;margin:0 10px 10px 10px;width:50%">
-  <img src="images/posts/puppetconf-kate.jpg">
+  <img src="/images/posts/puppetconf-kate.jpg">
 </div>
 
 Following the theme of culture, Kate’s talk was a refreshing look on the culture of trust within an organisation. Far from being the usual "this is what my

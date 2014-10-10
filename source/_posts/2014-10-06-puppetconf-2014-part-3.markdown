@@ -8,10 +8,10 @@ categories: puppet, puppetconf2014, conferences
 
 ## Day 2
 
-This is our summary of PuppetConf 2014. In our [previous post](http://#) we gave an overview of the first day of the conference. This post will provide an
+This is our summary of PuppetConf 2014. In our [previous post](http://tech.opentable.co.uk/blog/2014/10/06/puppetconf-2014-part-2/) we gave an overview of the first day of the conference. This post will provide an
 overview of the final day.
 
-Even more inspiring keynotes. Lots more talks which has given us plenty of ideas to go home and think about.
+There were even more inspiring keynotes and lots more talks which have given us plenty of ideas to go home and think about.
 
 
 ### Key Notes
@@ -19,19 +19,19 @@ Even more inspiring keynotes. Lots more talks which has given us plenty of ideas
 #### Animating the Puppet: Creating a Culture of Puppet Adoption - Dan Spurling ([@spurling](https://twitter.com/spurling)), Getty Images - [Slides](http://www.slideshare.net/PuppetLabs/keynote-animating-the-puppet-creating-a-culture-of-puppet-adoption-puppetconf-2014)
 
 <div style="float:right;margin:0 10px 10px 10px;width:50%">
-  <img src="images/posts/puppetconf-dan.jpg">
+  <img src="/images/posts/puppetconf-dan.jpg">
 </div>
 
 
 Dan Spuring, VP of Tech Services at Getty came out of the gate with a strong message. His [GSD](http://www.urbandictionary.com/define.php?term=GSD) t-shirt
 giving you a clear understanding of who he is. His talk about creating a culture of Puppet adoption at his company was a great story of how challenging it
-can be to move various business units with projects of various ages to a configuration-managemet (with Puppet) ethos.
+can be to move various business units with projects of various ages to a configuration-management (with Puppet) ethos.
 
-I think it is good to hear that they are rolling out into the brown field, that huge backlog of legacy infrastructure that we all try to pretend isn’t there.
+I think it is good to hear that they are rolling cm out into that huge backlog of legacy infrastructure that we all try to pretend isn’t there.
 How do you make it integrate into existing processes? How do you sell the DevOps message at the same time as introducing a tool like Puppet into the mix as
-part of that message? Dan has thoughts on all of this and it was good to hear some of that from someone who appears to be on the other side of that challenge.
+part of that message? Dan gave some thoughts on this and it was good to hear some of that from someone who appears to be on the other side of that challenge.
 
-On the similes that he used I that found quite useful was that undertaking a project like this is like moving a boulder. It requires an executive sponsor to
+One of the analogies that he used I that found quite useful was that undertaking a project like this is like moving a boulder. It requires an executive sponsor to
 get the thing moving at all and then it requires everyone pulling in the same direction if it’s ever doing to get anywhere.
 
 The big take-away was that you need to puppetize right away - that you can’t wait for the right environment or conditions to start doing it, you just need
@@ -41,17 +41,17 @@ start now and demonstrate it. This echo’s the Continuous Delivery ideal of "if
 #### Decentralize Your Infrastructure - Alan Green, Sony Computer Entertainment America - [Slides](http://www.slideshare.net/PuppetLabs/keynote-decentralize-your-infrastructure-alan-green-sony-computer-entertainment-america)
 
 <div style="float:right;margin:0 10px 10px 10px;width:50%">
-  <img src="images/posts/puppetconf-alan.jpg">
+  <img src="/images/posts/puppetconf-alan.jpg">
 </div>
 
-Alan’s talk posed an interesting argument: decentralise and let your developers choose the tools and services that they wan’t - just make it easy for them to
+Alan’s talk posed an interesting argument: decentralise and let your developers choose the tools and services that they want - just make it easy for them to
 do so. This obviously flies in the face of conventional sysadmin wisdom of trying to centralise, standardise and control everything but for an organisation the
 size of scale of SCEA this is just never going to work. Sony has many different studios, each has their own special requirements and tooling that they need to
 try and support.
 
 The story of the interaction with these studios is a great classic sysadmin story that is worth repeating. It starts with something we have all heard before "I
 need to X right now because it’s preventing me from releasing this game on time”. The reaction here is to either say Yes and risk burning out your people getting
-it done or No risk your career if the release date gets pushed. As a sysadmin your at the back-foot at this point - you pretty much have to do whatever it takes.
+it done or No risk your career if the release date gets pushed. As a sysadmin you're on the back-foot at this point - you pretty much have to do whatever it takes.
 If you decentralize your infrastructure you get to turn the tables "No I don’t have tool X but we do have tool Y and Z that will meet your needs". This gives
 the engineers/managers the choice to make rather than you - they can go out on their own and implement their first choice tool and it will take a bit longer or
 they can have something supported by the team right now. Alan also made a interesting call-back to Kate Matsudaira’s keynote of the previous day when he said that
@@ -59,7 +59,7 @@ it’s all about honesty and trust. Be truthful with your engineers about what y
 
 This is the sort of thing we do here at OpenTable and it’s been working very well. You need to design puppet to be as flexible as possible and to support those
 teams that need support in their puppet implementations. Having a diverse set of tools is not a bad thing - especially when you are dealing with creative people -
-it keeps them creative and you can push that creativity back into the product. Your also decentralising control, giving teams the ability to move their
+it keeps them creative and you can push that creativity back into the product. You're also decentralising control, giving teams the ability to move their
 infrastructure as fast as they need to move the product - meaning that your business is going to move faster get meet it’s ROI (because managers care about that
 sort of thing)
 
@@ -67,7 +67,7 @@ sort of thing)
 #### Q&A with Luke Kanies
 
 <div style="float:right;margin:0 10px 10px 10px;width:50%">
-  <img src="images/posts/puppetconf-luke-2.jpg">
+  <img src="/images/posts/puppetconf-luke-2.jpg">
 </div>
 
 The last "keynote" of the conference brought Luke back to the stage for a Q&A with the audience. Allowing people to text in questions live led to some amusement
@@ -113,7 +113,7 @@ this evolves.
 
 #### Continuous Integration for Infrastructure as Code - Gareth Rushgrove, Puppet Labs - [Slides](http://www.slideshare.net/PuppetLabs/continuouslytestinginfrastructure)
 
-Arguable one of the most interesting talks of the conference this talk took the idea of infrastructure TDD to the next level. What would it be like to be able
+Arguable one of the most interesting talks of the conference. This talk took the idea of infrastructure TDD to the next level. What would it be like to be able
 to test common expectations of your infrastructure (monitoring, backups, machines in each region, budget limitations). There are lots of built-in assumptions
 that we make about of infrastructure and a lot of business decisions that have been difficult to codify. This talk raising the challenge of providing a complete
 API for your infrastructure and then testing against it.
@@ -133,7 +133,7 @@ API for your infrastructure and then testing against it.
 #### Experiences from Running Masterless Puppet - Erik Dalén, Spotify - [Slides](http://www.slideshare.net/PuppetLabs/puppetconf-2014-1)
 
 Erik (this years MVP) always has a lot of interesting insights about Puppet from scaling out the infrastructure at Spotify and this talk is no exception.
-This talk explains there decision to go masterless and the challenges in doing so. It seems that they have put in a lot of work in writing services to manage
+This talk explains their decision to go masterless and the challenges in doing so. It seems that they have put in a lot of work in writing services to manage
 things like hiera data and managing secrets. It is great to see how this approach scales, one can only hope that future work by PuppetLabs with the Apps project
 improves this as option for most people.
 
@@ -177,8 +177,8 @@ they are forge-ready. Useful for anyone who is new to the space or who hasn’t 
 
 #### Using Docker with Puppet - James Turnbull, Kickstarter - [Slides](http://www.slideshare.net/PuppetLabs/using-docker-with-puppet-puppetconf-2014)
 
-James giving a good introduction to Docker. Showing off the things that Docker is good at and also detailing some of the things that it isn’t.
-He also show how and when to use Puppet in this environment. For anyone moving from a  traditional set-up to a Docker based one then this talk is a must.
+James gave a good introduction to Docker. Showing off the things that Docker is good at and also detailing some of the things that it isn’t.
+He also showed how and when to use Puppet in this environment. For anyone moving from a  traditional set-up to a Docker based one then this talk is a must.
 
 * what is docker
 * dockerfile

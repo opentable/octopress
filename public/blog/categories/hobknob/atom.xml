@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Hobknob | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/hobknob/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-10T10:11:53+01:00</updated>
+  <updated>2014-10-20T19:54:00+01:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -101,11 +101,11 @@ vagrant up
 
 <p>You should now be able to open the dashboard on <a href="http://127.0.0.1:3006">http://127.0.0.1:3006</a></p>
 
-<p><img src="https://github.com/opentable/hobknob/raw/master/screenshots/dashboard.png" alt="Hobknob dashboard" /></p>
+<p><img src="/images/posts/hobknob-dashboard.png" alt="Hobknob dashboard" /></p>
 
 <p>All actions in the dashboard are audited. So when you create or update a toggle by turning it on/off an audit is written for that toggle. Clicking on a toggle in the dashboard takes you to the audit view:</p>
 
-<p><img src="https://github.com/opentable/hobknob/raw/master/screenshots/audit.png" alt="Hobknob audit" /></p>
+<p><img src="/images/posts/hobknob-audit.png" alt="Hobknob audit" /></p>
 
 <h3>Authentication</h3>
 

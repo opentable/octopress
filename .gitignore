@@ -12,3 +12,4 @@ vendor
 node_modules
 notes.txt
 .vagrant/
+.idea/

@@ -9,7 +9,6 @@ categories:  [Hobknob]
 We are pleased to announce the version 1.0 release of [Hobknob](https://github.com/opentable/hobknob), our open-source feature toggle management system. With it comes a few additions and several improvements. 
 
 This post will expand on some of the changes, in particular, authorisation via access control lists.
-
 For an introduction to Hobknob, see our previous post: [Introducing Hobknob: Feature toggling with etcd](http://tech.opentable.co.uk/blog/2014/09/04/introducing-hobknob-feature-toggling-with-etcd/).
 
 Authorisation with ACLs

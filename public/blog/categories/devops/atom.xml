@@ -4,7 +4,7 @@
   <title><![CDATA[Category: DevOps | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/devops/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-22T15:47:46+01:00</updated>
+  <updated>2014-10-22T08:24:57-07:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Managing Windows Features with Puppet]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/05/15/managing-windows-features-with-puppet/"/>
-    <updated>2014-05-15T16:12:38+01:00</updated>
+    <updated>2014-05-15T08:12:38-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/05/15/managing-windows-features-with-puppet</id>
     <content type="html"><![CDATA[<p>Back in June 2013, I wrote about <a href="http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/">Windows Feature Management with PowerShell</a>. We have since released a Puppet module that will do this for us. We originally wrote PowerShell:</p>
 
@@ -56,7 +56,7 @@ Add-WindowsFeature Web-Asp-Net
   <entry>
     <title type="html"><![CDATA[Managing Windows Web Applications with Puppet]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet/"/>
-    <updated>2014-05-13T15:25:16+01:00</updated>
+    <updated>2014-05-13T07:25:16-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet</id>
     <content type="html"><![CDATA[<p>As part of our move towards a configuration management tool, we really wanted to start automating as much of our infrastructure as possible. This included our application configuration stack. IIS management is pretty easy with PowerShell. It would look something like this</p>
 
@@ -158,7 +158,7 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
   <entry>
     <title type="html"><![CDATA[The adoption of Configuration Management]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management/"/>
-    <updated>2014-02-10T13:46:00+00:00</updated>
+    <updated>2014-02-10T13:46:00-08:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/02/10/the-adoption-of-configuration-management</id>
     <content type="html"><![CDATA[<p>In years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around nine months ago we started to really try and get these teams working together. We introduced a configuration management tool, <a href="http://puppetlabs.com/puppet/what-is-puppet">Puppet</a>, into our ecosystem.</p>
 
@@ -178,13 +178,13 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
 
 <p>We have just merged our #847 pull request. The stats of the repository look as follows:</p>
 
-<p><img class="center" src="/images/posts/puppet-adoption.png"></p>
+<p>{% img center /images/posts/puppet-adoption.png %}</p>
 
 <p>Our puppet repository has had contributions from over 40% of our engineering / operations teams. We use Puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage 548 nodes (a combination of internal and production) via Puppet.</p>
 
 <p>Using a project called <a href="www.fullybaked.co.uk/articles/getting-gource-running-on-osx">Gource</a>, one of our engineering leads, <a href="http://twitter.com/ryantomlinson">Ryan Tomlinson</a>, created a video of the repository vizualization. It&rsquo;s just over two minutes long and shows the activity the repository has taken.</p>
 
-<p><div class="embed-video-container"><iframe src="http://player.vimeo.com/video/86201508 "></iframe></div></p>
+<p>{% vimeo 86201508 %}</p>
 
 <p>Each branch in the tree relates to a directory inside our repository. Green zaps are additions, orange are updates and red deletions. The important thing to take from the video is the evolution of the repository, the amount of changes and the number of people pushing those changes.</p>
 
@@ -195,7 +195,7 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
   <entry>
     <title type="html"><![CDATA[Using Vagrant to work with ElasticSearch on your local machine]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine/"/>
-    <updated>2013-08-05T08:45:00+01:00</updated>
+    <updated>2013-08-05T08:45:00-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine</id>
     <content type="html"><![CDATA[<p>Recently, I have started to work a lot more with <a href="http://www.vagrantup.com/">Vagrant</a> as a tool for creating a standard development environment across my team. This essentially means that regardless what the developers' machine is set up or running as, they can still reproduce the same environment as their colleagues just by entering a command.</p>
 
@@ -347,7 +347,7 @@ end
   <entry>
     <title type="html"><![CDATA[Managing Windows Certificates with PowerShell]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell/"/>
-    <updated>2013-07-08T18:51:00+01:00</updated>
+    <updated>2013-07-08T18:51:00-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell</id>
     <content type="html"><![CDATA[<p>Managing certificates on Windows is <em>really</em> painful. There is no easy way to do it. The general way to install a certificate to a Windows Server 2008 machine is as follows:</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: puppetconf2014, | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/puppetconf2014/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-22T15:47:46+01:00</updated>
+  <updated>2014-10-22T08:24:57-07:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[PuppetConf 2014 - Part 3]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/10/06/puppetconf-2014-part-3/"/>
-    <updated>2014-10-06T13:43:36+01:00</updated>
+    <updated>2014-10-06T05:43:36-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/10/06/puppetconf-2014-part-3</id>
     <content type="html"><![CDATA[<h2>Day 2</h2>
 
@@ -303,7 +303,7 @@ achieving that.</p>
   <entry>
     <title type="html"><![CDATA[PuppetConf 2014 - Part 2]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/10/06/puppetconf-2014-part-2/"/>
-    <updated>2014-10-06T12:30:58+01:00</updated>
+    <updated>2014-10-06T04:30:58-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/10/06/puppetconf-2014-part-2</id>
     <content type="html"><![CDATA[<h2>Day 1</h2>
 
@@ -572,7 +572,7 @@ foreshadowing of things that may arise if your not careful (or are very unlucky)
   <entry>
     <title type="html"><![CDATA[PuppetConf 2014 - Part 1]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/10/06/puppetconf-2014-part-1/"/>
-    <updated>2014-10-06T11:47:57+01:00</updated>
+    <updated>2014-10-06T03:47:57-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/10/06/puppetconf-2014-part-1</id>
     <content type="html"><![CDATA[<p><img src="/images/posts/puppetconf2014.jpg" alt="The start of PuppetConf 2014" /></p>
 

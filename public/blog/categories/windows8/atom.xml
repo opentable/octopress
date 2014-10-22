@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Windows8 | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/windows8/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-22T15:47:46+01:00</updated>
+  <updated>2014-10-22T08:24:57-07:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Linking to your app in Windows 8]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8/"/>
-    <updated>2013-10-21T17:36:00+01:00</updated>
+    <updated>2013-10-21T17:36:00-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/10/21/linking-to-your-app-in-windows-8</id>
     <content type="html"><![CDATA[<p>In an effort to raise the visibility of our excellent Windows 8 app we have recently connected <a href="http://www.opentable.com">www.opentable.com</a> to the Windows Store.  This was simply a case of adding two lines of meta data to our site. Or it should have been &ndash; there were several gotchas along the way that are worth sharing.</p>
 
@@ -28,7 +28,7 @@
 &lt;meta name="msApplication-PackageFamilyName" content="OpenTable.OpenTable_r44en0zefym0a"/&gt;
 </code></pre>
 
-<p><img class="right" src="/images/posts/get-app-for-this-site.png"></p>
+<p>{% img right /images/posts/get-app-for-this-site.png %}</p>
 
 <p>This will enable the <strong>&ldquo;Get app for this site&rdquo;</strong> link when you are viewing your page in the full-screen Metro version of Internet Explorer (i.e. launched from the start screen); the desktop version of IE doesn&rsquo;t have this capability.</p>
 
@@ -38,7 +38,7 @@
 
 <p>There are at least two ways of finding the values. If you have your application code and Visual Studio 2012 (or later) then the values can be found in the <strong>package.appxmanifest</strong> file &ndash; open this in VS and it automatically launches the manifest designer view.  Select the Packaging tab and the &ldquo;Package name&rdquo; is the <em>ID</em>, and the <em>Package family name</em> is at the bottom of this screen.</p>
 
-<p><img class="center" src="/images/posts/vs-screenshot.png"></p>
+<p>{% img center /images/posts/vs-screenshot.png %}</p>
 
 <p>If you don&rsquo;t have the local code with Visual Studio you can still find out these values by other means.</p>
 

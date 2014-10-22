@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Testing | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/testing/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-22T15:47:46+01:00</updated>
+  <updated>2014-10-22T08:24:57-07:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Acceptance Now]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/05/20/acceptance-now/"/>
-    <updated>2014-05-20T15:00:00+01:00</updated>
+    <updated>2014-05-20T07:00:00-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/05/20/acceptance-now</id>
     <content type="html"><![CDATA[<p><em>When is acceptance-only testing a good idea, and how can its problems be overcome?</em></p>
 
@@ -163,7 +163,7 @@ public void it_has_2_bananas()
   <entry>
     <title type="html"><![CDATA[Look ma, no unit tests!]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests/"/>
-    <updated>2014-04-16T17:00:00+01:00</updated>
+    <updated>2014-04-16T17:00:00-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests</id>
     <content type="html"><![CDATA[<p><em><strong>UPDATE:</strong> I&rsquo;ve written a <a href="/blog/2014/05/19/acceptance-now">follow-up to this post</a> with a bit more detail into how we made acceptance-only testing work in practice.</em></p>
 
@@ -257,7 +257,7 @@ public void it_has_2_bananas()
   <entry>
     <title type="html"><![CDATA[One Gun - Many Enemies]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/07/24/one-gun-many-enemies/"/>
-    <updated>2013-07-24T14:32:00+01:00</updated>
+    <updated>2013-07-24T14:32:00-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/07/24/one-gun-many-enemies</id>
     <content type="html"><![CDATA[<p>I spent some time, re-investigating Javascript. After a few months of intensive TDD and SOLID training at OpenTable I was curious how those principles apply in a slightly different environment. Guess what, they do not differ that much&hellip; I planned to write about all this sometime in the future after gaining more experience from real battles ahead, however <a href="http://watirmelon.com/2013/02/09/why-i-dont-like-Jasmine/">Watirmelon post</a> invited me to attack this subject immediately.</p>
 

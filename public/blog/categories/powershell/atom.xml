@@ -4,7 +4,7 @@
   <title><![CDATA[Category: PowerShell | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/powershell/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-22T15:47:46+01:00</updated>
+  <updated>2014-10-22T08:24:57-07:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Managing Windows Features with Puppet]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/05/15/managing-windows-features-with-puppet/"/>
-    <updated>2014-05-15T16:12:38+01:00</updated>
+    <updated>2014-05-15T08:12:38-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/05/15/managing-windows-features-with-puppet</id>
     <content type="html"><![CDATA[<p>Back in June 2013, I wrote about <a href="http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/">Windows Feature Management with PowerShell</a>. We have since released a Puppet module that will do this for us. We originally wrote PowerShell:</p>
 
@@ -56,7 +56,7 @@ Add-WindowsFeature Web-Asp-Net
   <entry>
     <title type="html"><![CDATA[Managing Windows Web Applications with Puppet]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet/"/>
-    <updated>2014-05-13T15:25:16+01:00</updated>
+    <updated>2014-05-13T07:25:16-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet</id>
     <content type="html"><![CDATA[<p>As part of our move towards a configuration management tool, we really wanted to start automating as much of our infrastructure as possible. This included our application configuration stack. IIS management is pretty easy with PowerShell. It would look something like this</p>
 
@@ -158,7 +158,7 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
   <entry>
     <title type="html"><![CDATA[Managing Windows Certificates with PowerShell]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell/"/>
-    <updated>2013-07-08T18:51:00+01:00</updated>
+    <updated>2013-07-08T18:51:00-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell</id>
     <content type="html"><![CDATA[<p>Managing certificates on Windows is <em>really</em> painful. There is no easy way to do it. The general way to install a certificate to a Windows Server 2008 machine is as follows:</p>
 
@@ -201,7 +201,7 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
   <entry>
     <title type="html"><![CDATA[Windows Feature Management with PowerShell]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/"/>
-    <updated>2013-06-14T20:31:00+01:00</updated>
+    <updated>2013-06-14T20:31:00-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell</id>
     <content type="html"><![CDATA[<p>In late 2012, our development team started to move towards our systems being much more automated. Long gone are the days of developers creating runbooks in Word and giving them to our operations team to use to set up our production servers.</p>
 
@@ -217,7 +217,7 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
 
 <p>This would present a screen as follows:</p>
 
-<p><img class="center" src="/images/posts/windowsfeature.png"></p>
+<p>{% img center /images/posts/windowsfeature.png %}</p>
 
 <p>You would need to find the correct features to enable and check the box, press OK and then wait for the features to be installed.</p>
 

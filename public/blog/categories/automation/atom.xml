@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Automation | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/automation/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-22T15:47:46+01:00</updated>
+  <updated>2014-10-22T08:24:57-07:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Grunt + Vagrant = Acceptance Test Heaven]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/"/>
-    <updated>2013-08-16T15:32:00+01:00</updated>
+    <updated>2013-08-16T15:32:00-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven</id>
     <content type="html"><![CDATA[<p>My continued love affair with Grunt reached a new high the other day, when I combined <a href="http://www.vagrantup.com">Vagrant</a> with my <a href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">Grunt deployment tasks</a> and test runners.</p>
 
@@ -177,7 +177,7 @@ grunt.registerTask('acceptance', [
   <entry>
     <title type="html"><![CDATA[Managing Windows Certificates with PowerShell]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell/"/>
-    <updated>2013-07-08T18:51:00+01:00</updated>
+    <updated>2013-07-08T18:51:00-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/07/08/managing-windows-certificates-with-powershell</id>
     <content type="html"><![CDATA[<p>Managing certificates on Windows is <em>really</em> painful. There is no easy way to do it. The general way to install a certificate to a Windows Server 2008 machine is as follows:</p>
 
@@ -220,7 +220,7 @@ grunt.registerTask('acceptance', [
   <entry>
     <title type="html"><![CDATA[Windows Feature Management with PowerShell]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/"/>
-    <updated>2013-06-14T20:31:00+01:00</updated>
+    <updated>2013-06-14T20:31:00-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell</id>
     <content type="html"><![CDATA[<p>In late 2012, our development team started to move towards our systems being much more automated. Long gone are the days of developers creating runbooks in Word and giving them to our operations team to use to set up our production servers.</p>
 
@@ -236,7 +236,7 @@ grunt.registerTask('acceptance', [
 
 <p>This would present a screen as follows:</p>
 
-<p><img class="center" src="/images/posts/windowsfeature.png"></p>
+<p>{% img center /images/posts/windowsfeature.png %}</p>
 
 <p>You would need to find the correct features to enable and check the box, press OK and then wait for the features to be installed.</p>
 
@@ -329,7 +329,7 @@ Write-Host('Application Server Setup complete')
   <entry>
     <title type="html"><![CDATA[Getting Started With SpecRun]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/06/07/getting-started-with-specrun/"/>
-    <updated>2013-06-07T11:33:00+01:00</updated>
+    <updated>2013-06-07T11:33:00-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/06/07/getting-started-with-specrun</id>
     <content type="html"><![CDATA[<h2>First some background</h2>
 

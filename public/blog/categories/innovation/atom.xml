@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Innovation | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/innovation/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-22T15:47:46+01:00</updated>
+  <updated>2014-10-22T08:24:57-07:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Acceptance Now]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/05/20/acceptance-now/"/>
-    <updated>2014-05-20T15:00:00+01:00</updated>
+    <updated>2014-05-20T07:00:00-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/05/20/acceptance-now</id>
     <content type="html"><![CDATA[<p><em>When is acceptance-only testing a good idea, and how can its problems be overcome?</em></p>
 
@@ -163,7 +163,7 @@ public void it_has_2_bananas()
   <entry>
     <title type="html"><![CDATA[Look ma, no unit tests!]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests/"/>
-    <updated>2014-04-16T17:00:00+01:00</updated>
+    <updated>2014-04-16T17:00:00-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/16/look-ma-no-unit-tests</id>
     <content type="html"><![CDATA[<p><em><strong>UPDATE:</strong> I&rsquo;ve written a <a href="/blog/2014/05/19/acceptance-now">follow-up to this post</a> with a bit more detail into how we made acceptance-only testing work in practice.</em></p>
 
@@ -257,7 +257,7 @@ public void it_has_2_bananas()
   <entry>
     <title type="html"><![CDATA[MapReduce in MongoDB]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/08/07/mapreduce-in-mongodb/"/>
-    <updated>2013-08-07T10:40:00+01:00</updated>
+    <updated>2013-08-07T10:40:00-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/08/07/mapreduce-in-mongodb</id>
     <content type="html"><![CDATA[<p>One of the first things I took on when joining OpenTable was building a new endpoint in our reviews API to aggregate and summarise restaurant review data. Thankfully, at the time, all the data I needed was cached in memory so building the response object was a simple set of linq queries over the cached reviews.</p>
 

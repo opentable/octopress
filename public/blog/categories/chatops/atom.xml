@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Chatops | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/chatops/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-22T15:47:46+01:00</updated>
+  <updated>2014-10-22T08:24:57-07:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,25 +16,25 @@
   <entry>
     <title type="html"><![CDATA[Continuous Delivery: Automating Deployment Visibility]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/05/19/continuous-delivery-automating-deployment-visibility/"/>
-    <updated>2014-05-19T17:17:40+01:00</updated>
+    <updated>2014-05-19T09:17:40-07:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/05/19/continuous-delivery-automating-deployment-visibility</id>
     <content type="html"><![CDATA[<p>In our continued effort to drive towards a service oriented architecture each of our teams are continuously improving their deployment processes. Recently our team has focussed on automating as much as possible, putting as much into chat as we can and improving our logging/metrics.</p>
 
 <p>The image below shows at a high level what our teams current deployment pipeline looks like and this post will attempt to summarise some recent changes that have allowed us to automate visibility.</p>
 
-<p><img src="/images/posts/release-pipeline.png" width="900" height="350" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img /images/posts/release-pipeline.png 900 350 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <h2>Kicking off a deployment</h2>
 
 <p>I wrote previously that we started <a href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">using chatops</a> to increase visibility operationally. Hubot is central to this and we wrote a small script to kick off deployments within <a href="https://www.hipchat.com/">Hipchat</a></p>
 
-<p><img src="/images/posts/hubot-deploy-restaurant.png" width="350" height="350" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img /images/posts/hubot-deploy-restaurant.png 350 350 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <p>We have two TeamCity instances. The first is used as a build and deployment system to our pre-production servers. The second is used as a deployment system to our production servers. Artifacts from our non-production instance are stored in <a href="http://www.jfrog.com/home/v_artifactory_opensource_overview">Artifactory</a> and our production deployment makes an API call to non-production TeamCity to ask for the last successfully pinned build. Pinning a build only occurs when we&rsquo;re happy that the build is ready to be shipped (passing unit and acceptance tests). The above Hubot command will pin the non-production build, given that the build succeeded, and add a build to the queue in production.</p>
 
 <p>To configure Hubot to do this we wrote a command to setup aliases providing the build id of the build to pin (non-production) and the build id of the build to kick off (production).</p>
 
-<p><img src="/images/posts/hubot-deploy-alias.png" width="350" height="350" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img /images/posts/hubot-deploy-alias.png 350 350 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <h2>Deployment visibility</h2>
 
@@ -53,17 +53,17 @@
 
 <p>Once we have a CCB we fire a start and end event from TeamCity containing the build number to Redis which is then piped into <a href="http://logstash.net/">Logstash</a>. An event is sent before and after deploying the code to all nodes. This is hugely beneficial because it allows us to plot releases against our graphs in <a href="http://www.elasticsearch.org/overview/kibana/">Kibana</a>. Kibana recently added a new feature called Markers. Essentially these are tags that display at the bottom of a graph.</p>
 
-<p><img src="/images/posts/kibana-tags.png" width="350" height="350" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img /images/posts/kibana-tags.png 350 350 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <p>You can find information on this Markers module on github &ndash; <a href="https://github.com/opentable/grunt-deployment-logger">https://github.com/opentable/grunt-deployment-logger</a></p>
 
 <p>This has already proved incredibly useful for the team and has allowed us to visually correlate issues or changes in key metrics (response times/requests per second) to releases. The following image shows how these look over several graphs.</p>
 
-<p><img src="/images/posts/kibana-dashboard.png" width="900" height="900" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img /images/posts/kibana-dashboard.png 900 900 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <h2>Hipchat build complete notification</h2>
 
-<p><img src="/images/posts/hubot-notification.png" width="350" height="200" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
+<p>{% img /images/posts/hubot-notification.png 350 200 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
 
 <p>Once our deployment pipeline has completed we send a notification to our teams room in Hipchat (as a final step in TeamCity) to inform the team that the release has completed. It&rsquo;s great to see a deployment start and end in chat. Having a central log of key operations in our team means that we don&rsquo;t have to go and find information when it&rsquo;s baked into chat.</p>
 
@@ -76,9 +76,9 @@
   <entry>
     <title type="html"><![CDATA[Beginning a journey to chatops with Hubot]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/"/>
-    <updated>2013-11-22T09:34:00+00:00</updated>
+    <updated>2013-11-22T09:34:00-08:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot</id>
-    <content type="html"><![CDATA[<p><img class="center" src="/images/posts/hubot_pug_me.png"></p>
+    <content type="html"><![CDATA[<p>{% img center /images/posts/hubot_pug_me.png %}</p>
 
 <p>As a part of our 30% time a few of our team, <a href="https://twitter.com/ajroyle">@ajroyle</a>, <a href="https://twitter.com/stack72">@stack72</a> and I (<a href="https://twitter.com/ryantomlinson">@ryantomlinson</a>) decided to get together and look at <a href="http://hubot.github.com/">Hubot</a> with <a href="https://www.hipchat.com/">Hipchat</a> integration. There are several weird and wonderful scripts that ship with Hubot (see above) but the core concept of driving tooling via chat is one that we see value in.</p>
 
@@ -100,7 +100,7 @@
 
 <p>Although the core scripts that shipped with Hubot are helpful…</p>
 
-<p><img class="center" src="/images/posts/hubot_beer_me.png"></p>
+<p>{% img center /images/posts/hubot_beer_me.png %}</p>
 
 <p>…we started to focus on commands that would be most useful to how we work at <a href="http://www.opentable.co.uk/">OpenTable</a> and the tools and technologies that we employ. Specifically we got together and decided the following would be a useful starting point:</p>
 
@@ -115,11 +115,11 @@
 
 <p>Within no time we had some useful scripts written:</p>
 
-<p><img class="center" src="/images/posts/hubot_tube_status.png"></p>
+<p>{% img center /images/posts/hubot_tube_status.png %}</p>
 
-<p><img class="center" src="/images/posts/hubot_jira.png"></p>
+<p>{% img center /images/posts/hubot_jira.png %}</p>
 
-<p><img class="center" src="/images/posts/hubot_teamcity.png"></p>
+<p>{% img center /images/posts/hubot_teamcity.png %}</p>
 
 <p>Immediately as we were developing these scripts we realised the potential of what else we could automate into Hubot and we will continue to do so. Some of which are:</p>
 

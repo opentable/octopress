@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Beaker | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/beaker/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-22T08:24:57-07:00</updated>
+  <updated>2014-10-27T16:37:52+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Testing Puppet with Beaker pt.3 - Testing Roles]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-3-testing-roles/"/>
-    <updated>2014-09-01T05:09:05-07:00</updated>
+    <updated>2014-09-01T13:09:05+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-3-testing-roles</id>
     <content type="html"><![CDATA[<p>In the first two parts of this blog series we have focusing on testing puppet <em>modules</em> with beaker. As an open source contributor there is always
 a large test matrix so this makes absolute sense. But what about the other large use-case for beaker &ndash; what about our day-to-day internal code base?
@@ -415,7 +415,7 @@ At this moment we are looking to expand beyond vagrant and run these against AWS
   <entry>
     <title type="html"><![CDATA[Testing Puppet with Beaker pt.2 - The Windows story]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-2-the-windows-story/"/>
-    <updated>2014-09-01T01:43:10-07:00</updated>
+    <updated>2014-09-01T09:43:10+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-2-the-windows-story</id>
     <content type="html"><![CDATA[<p>In <a href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/">part one</a> we discussed our first steps into the world of acceptance testing our Puppet manifests.
 By using Beaker we able to test managing local users on our Linux boxes. This was a positive experience for us. It allowed us to get to grips with the basics of configuring
@@ -704,7 +704,7 @@ Bitvise support will go some way it allowing other providers, such as wirm going
   <entry>
     <title type="html"><![CDATA[Testing Puppet with Beaker]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/"/>
-    <updated>2014-04-04T17:30:00-07:00</updated>
+    <updated>2014-04-04T17:30:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker</id>
     <content type="html"><![CDATA[<p>One afternoon I got asked to write a new Puppet module to manage local users on our Linux boxes. Not a contrived example but a real-world need as we begin to move our infrastructure from Windows to Linux. Managing users is one of those tasks that is at the core of the Puppet ecosystem and I thought this would be pretty easy as I had done this sort of thing many times before. What added to the complexity was that we needed to support Ubuntu, Centos and FreeBSD machines that we had in our stack and we wanted to make it something that was open source and on the Forge &ndash; so lots of testing was required.</p>
 

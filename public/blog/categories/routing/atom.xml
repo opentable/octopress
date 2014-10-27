@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Routing | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/routing/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-22T08:24:57-07:00</updated>
+  <updated>2014-10-27T16:37:52+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Resolving domains to areas in ASP.NET MVC]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc/"/>
-    <updated>2013-09-25T19:28:00-07:00</updated>
+    <updated>2013-09-25T19:28:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc</id>
     <content type="html"><![CDATA[<p>When building a previous project, I created an ASP.NET MVC application that would allow subdomains to resolve to different areas of the project and thus show different views. I wanted to be able to extend this functionality. I wanted to allow different domains to point to different areas. This would allow me to deploy the application just once and then have different headers on the web server rather than regional variances. Whilst on a flight to San Francisco, I was able to hack together some code that allows just that. The details of that hackiness are below.</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Hobknob | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/hobknob/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-22T08:24:57-07:00</updated>
+  <updated>2014-10-27T16:37:52+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Hobknob v1.0: Now with authorization]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/10/22/hobknob-v1-dot-0-now-with-authorization/"/>
-    <updated>2014-10-22T06:00:31-07:00</updated>
+    <updated>2014-10-22T14:00:31+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/10/22/hobknob-v1-dot-0-now-with-authorization</id>
     <content type="html"><![CDATA[<p>We are pleased to announce the version 1.0 release of <a href="https://github.com/opentable/hobknob">Hobknob</a>, our open-source feature toggle management system. With it comes a few additions and several improvements.</p>
 
@@ -84,7 +84,7 @@ The user can then add other application owners by clicking the &lsquo;Add user&r
   <entry>
     <title type="html"><![CDATA[Introducing Hobknob: Feature toggling with etcd]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/09/04/introducing-hobknob-feature-toggling-with-etcd/"/>
-    <updated>2014-09-04T12:09:52-07:00</updated>
+    <updated>2014-09-04T20:09:52+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/09/04/introducing-hobknob-feature-toggling-with-etcd</id>
     <content type="html"><![CDATA[<p>The ability to dynamically turn features on/off in software without the need to redeploy code is extremely beneficial. Whether you are trialing a new feature or using branch by abstraction to avoid creating feature branches, the use of feature toggles can aid continuous delivery and provide a mechanism to reduce mean time to resolution when an issue occurs.</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Configuration Management | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/configuration-management/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-22T08:24:57-07:00</updated>
+  <updated>2014-10-27T16:37:52+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Managing Windows Features with Puppet]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/05/15/managing-windows-features-with-puppet/"/>
-    <updated>2014-05-15T08:12:38-07:00</updated>
+    <updated>2014-05-15T16:12:38+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/05/15/managing-windows-features-with-puppet</id>
     <content type="html"><![CDATA[<p>Back in June 2013, I wrote about <a href="http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/">Windows Feature Management with PowerShell</a>. We have since released a Puppet module that will do this for us. We originally wrote PowerShell:</p>
 
@@ -56,7 +56,7 @@ Add-WindowsFeature Web-Asp-Net
   <entry>
     <title type="html"><![CDATA[Managing Windows Web Applications with Puppet]]></title>
     <link href="http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet/"/>
-    <updated>2014-05-13T07:25:16-07:00</updated>
+    <updated>2014-05-13T15:25:16+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2014/05/13/managing-windows-web-applications-with-puppet</id>
     <content type="html"><![CDATA[<p>As part of our move towards a configuration management tool, we really wanted to start automating as much of our infrastructure as possible. This included our application configuration stack. IIS management is pretty easy with PowerShell. It would look something like this</p>
 

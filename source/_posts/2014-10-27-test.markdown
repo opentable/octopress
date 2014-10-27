@@ -1,7 +1,0 @@
----
-layout: post
-title: "Balls"
-date: 2014-10-27 16:36:13 +0000
-comments: true
-categories:
----

@@ -53,10 +53,10 @@ Effective leaders stop jumping to the rescue and start coaching people through a
 
 ## Further reading ##
 
-[1] [http://outsmartyourbrain.com/stop-fixing-people-what-to-do-when-your-brilliant-ideas-arent-helping/](http://outsmartyourbrain.com/stop-fixing-people-what-to-do-when-your-brilliant-ideas-arent-helping/)
+[http://outsmartyourbrain.com/stop-fixing-people-what-to-do-when-your-brilliant-ideas-arent-helping/](http://outsmartyourbrain.com/stop-fixing-people-what-to-do-when-your-brilliant-ideas-arent-helping/)
 
-[2] [http://www.huffingtonpost.com/nora-t-akins/resist-the-rescue-management_b_5537309.html](http://www.huffingtonpost.com/nora-t-akins/resist-the-rescue-management_b_5537309.html)
+[http://www.huffingtonpost.com/nora-t-akins/resist-the-rescue-management_b_5537309.html](http://www.huffingtonpost.com/nora-t-akins/resist-the-rescue-management_b_5537309.html)
 
-[3] [http://teambuildersplus.com/articles/heroic-leaders-dont-always-save-the-day](http://teambuildersplus.com/articles/heroic-leaders-dont-always-save-the-day)
+[http://teambuildersplus.com/articles/heroic-leaders-dont-always-save-the-day](http://teambuildersplus.com/articles/heroic-leaders-dont-always-save-the-day)
 
-[4] [http://www.dialogueworks.com/pages/blogs.php?blog_id=52#.VDery9TF87d](http://www.dialogueworks.com/pages/blogs.php?blog_id=52#.VDery9TF87d)
+[http://www.dialogueworks.com/pages/blogs.php?blog_id=52#.VDery9TF87d](http://www.dialogueworks.com/pages/blogs.php?blog_id=52#.VDery9TF87d)

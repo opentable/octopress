@@ -4,7 +4,7 @@
   <title><![CDATA[Category: SOA | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/soa/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-30T16:27:35+00:00</updated>
+  <updated>2014-10-30T16:34:36+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -63,7 +63,7 @@ Fastest Service is nodeJS
 
 <p>In case of RESTful services, it is possible to make series of requests to test response times, find peaks and classify errors; it is possible to perform concurrent calls to see how many parallel requests your service can handle (when deployed in single boxes, or when load balanced and globalised); and every time grunt runs everything is saved and plotted to readable and shareable graphs, so the knowledge can be shared between people that belong to different backgrounds.</p>
 
-<p><img class="center" src="/images/posts/api_benchmark.png"></p>
+<p>{% img center /images/posts/api_benchmark.png %}</p>
 
 <p>A lot of other features are still under development, including support for SOAP services and historical analysis (compare results from previous benchmarks and create historical graphs to represent the evolution of your software).</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: PowerShell | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/powershell/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-30T16:27:35+00:00</updated>
+  <updated>2014-10-30T16:34:36+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -217,7 +217,7 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
 
 <p>This would present a screen as follows:</p>
 
-<p><img class="center" src="/images/posts/windowsfeature.png"></p>
+<p>{% img center /images/posts/windowsfeature.png %}</p>
 
 <p>You would need to find the correct features to enable and check the box, press OK and then wait for the features to be installed.</p>
 

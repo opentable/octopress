@@ -4,7 +4,7 @@
   <title><![CDATA[Category: DevOps | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/devops/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-30T16:27:35+00:00</updated>
+  <updated>2014-10-30T16:34:36+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -178,13 +178,13 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
 
 <p>We have just merged our #847 pull request. The stats of the repository look as follows:</p>
 
-<p><img class="center" src="/images/posts/puppet-adoption.png"></p>
+<p>{% img center /images/posts/puppet-adoption.png %}</p>
 
 <p>Our puppet repository has had contributions from over 40% of our engineering / operations teams. We use Puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage 548 nodes (a combination of internal and production) via Puppet.</p>
 
 <p>Using a project called <a href="www.fullybaked.co.uk/articles/getting-gource-running-on-osx">Gource</a>, one of our engineering leads, <a href="http://twitter.com/ryantomlinson">Ryan Tomlinson</a>, created a video of the repository vizualization. It&rsquo;s just over two minutes long and shows the activity the repository has taken.</p>
 
-<p><div class="embed-video-container"><iframe src="http://player.vimeo.com/video/86201508 "></iframe></div></p>
+<p>{% vimeo 86201508 %}</p>
 
 <p>Each branch in the tree relates to a directory inside our repository. Green zaps are additions, orange are updates and red deletions. The important thing to take from the video is the evolution of the repository, the amount of changes and the number of people pushing those changes.</p>
 

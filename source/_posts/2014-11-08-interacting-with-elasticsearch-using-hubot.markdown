@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Interacting with ElasticSearch with Hubot"
+title: "Interacting with ElasticSearch using Hubot"
 date: 2014-11-08 11:32:42 +0100
 comments: true
 author: pstack

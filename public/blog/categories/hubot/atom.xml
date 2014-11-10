@@ -4,7 +4,7 @@
   <title><![CDATA[Category: hubot | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/hubot/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-11-10T14:58:12+00:00</updated>
+  <updated>2014-11-10T15:01:00+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -14,10 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Interacting with ElasticSearch with Hubot]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2014/11/08/interacting-with-elasticsearch-with-hubot/"/>
+    <title type="html"><![CDATA[Interacting with ElasticSearch using Hubot]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/11/08/interacting-with-elasticsearch-using-hubot/"/>
     <updated>2014-11-08T10:32:42+00:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2014/11/08/interacting-with-elasticsearch-with-hubot</id>
+    <id>http://tech.opentable.co.uk/blog/2014/11/08/interacting-with-elasticsearch-using-hubot</id>
     <content type="html"><![CDATA[<p>At OpenTable, we use a few <a href="">ElasticSearch</a> clusters. Our aim was to be able to interact with our ElasticSearch clusters via <a href="http://www.hipchat.com">HipChat</a> so that we could troubleshoot easily and without having to log into our VPN. We already use <a href="http://hubot.github.com">Hubot</a> as part of our systems workflow, so it made sense to be able to interact with ElasticSearch with it.</p>
 
 <h3>Setting a cluster alias</h3>

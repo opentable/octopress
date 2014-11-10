@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Hubot | OpenTable Tech UK Blog]]></title>
+  <title><![CDATA[Category: hubot | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/hubot/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-30T16:34:36+00:00</updated>
+  <updated>2014-11-10T14:58:12+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -14,135 +14,100 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Continuous Delivery: Automating Deployment Visibility]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2014/05/19/continuous-delivery-automating-deployment-visibility/"/>
-    <updated>2014-05-19T17:17:40+01:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2014/05/19/continuous-delivery-automating-deployment-visibility</id>
-    <content type="html"><![CDATA[<p>In our continued effort to drive towards a service oriented architecture each of our teams are continuously improving their deployment processes. Recently our team has focussed on automating as much as possible, putting as much into chat as we can and improving our logging/metrics.</p>
+    <title type="html"><![CDATA[Interacting with ElasticSearch with Hubot]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/11/08/interacting-with-elasticsearch-with-hubot/"/>
+    <updated>2014-11-08T10:32:42+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/11/08/interacting-with-elasticsearch-with-hubot</id>
+    <content type="html"><![CDATA[<p>At OpenTable, we use a few <a href="">ElasticSearch</a> clusters. Our aim was to be able to interact with our ElasticSearch clusters via <a href="http://www.hipchat.com">HipChat</a> so that we could troubleshoot easily and without having to log into our VPN. We already use <a href="http://hubot.github.com">Hubot</a> as part of our systems workflow, so it made sense to be able to interact with ElasticSearch with it.</p>
 
-<p>The image below shows at a high level what our teams current deployment pipeline looks like and this post will attempt to summarise some recent changes that have allowed us to automate visibility.</p>
+<h3>Setting a cluster alias</h3>
 
-<p>{% img /images/posts/release-pipeline.png 900 350 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p>When a pager wakes me at 3am, I really do not want to have to try and type the cluster URL into my mobile hipchat client. So the first thing that was added to the script was the ability to give a cluster an alias.</p>
 
-<h2>Kicking off a deployment</h2>
+<p><code>
+elasticsearch add alias my-test-alias http://my-cluster.com:9200
+</code></p>
 
-<p>I wrote previously that we started <a href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">using chatops</a> to increase visibility operationally. Hubot is central to this and we wrote a small script to kick off deployments within <a href="https://www.hipchat.com/">Hipchat</a></p>
+<p><img src="/images/posts/elasticsearch-add-alias.png" alt="add-alias" /></p>
 
-<p>{% img /images/posts/hubot-deploy-restaurant.png 350 350 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p>This allows us to use that alias for all commands going forward. Please note that you can remove and query aliases as well:</p>
 
-<p>We have two TeamCity instances. The first is used as a build and deployment system to our pre-production servers. The second is used as a deployment system to our production servers. Artifacts from our non-production instance are stored in <a href="http://www.jfrog.com/home/v_artifactory_opensource_overview">Artifactory</a> and our production deployment makes an API call to non-production TeamCity to ask for the last successfully pinned build. Pinning a build only occurs when we&rsquo;re happy that the build is ready to be shipped (passing unit and acceptance tests). The above Hubot command will pin the non-production build, given that the build succeeded, and add a build to the queue in production.</p>
+<p><code>
+elasticsearch show aliases
+</code></p>
 
-<p>To configure Hubot to do this we wrote a command to setup aliases providing the build id of the build to pin (non-production) and the build id of the build to kick off (production).</p>
+<p><img src="/images/posts/elasticsearch-show-aliases.png" alt="show-alias" /></p>
 
-<p>{% img /images/posts/hubot-deploy-alias.png 350 350 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p><code>
+elasticsearch clear alias my-test-alias
+</code></p>
 
-<h2>Deployment visibility</h2>
+<p><img src="/images/posts/elasticsearch-clear-alias.png" alt="clear-alias" /></p>
 
-<p>Our production deployments must be auditable and it&rsquo;s important that we know what went out with each release and keep a log of this for our Risk Management team. We do this by creating a ticket in <a href="https://www.atlassian.com/software/jira">JIRA</a>, internally known as a CCB, and this gives us a central store of all deployments by all teams.</p>
+<h3>Using the ElasticSearch Cat API</h3>
 
-<p>In the past these tickets were manually created for each release. We soon realised that this was something we could automate. To do so we created a new &ldquo;deployment-info&rdquo; endpoint for our service. This simply contains the SHA of the last commit released along with a time stamp. The first step of our production deploy is to query this endpoint and then using the Github API to get all the commits since that last SHA. These commits are then logged to JIRA to create a CCB ticket using the JIRA API. Each of these steps are automated from TeamCity using grunt tasks. You can find information of the grunt tasks on github as follows:</p>
+<p>A lot of what we do with ElasticSearch can be done via the <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat.html">cat</a> API. This has proved extremely useful to get node status, cluster health and index status.</p>
 
-<ul>
-<li><a href="https://github.com/opentable/grunt-ccb">https://github.com/opentable/grunt-ccb</a></li>
-<li><a href="https://github.com/opentable/grunt-github-manifest">https://github.com/opentable/grunt-github-manifest</a></li>
-<li><a href="https://github.com/opentable/grunt-package-github">https://github.com/opentable/grunt-package-github</a></li>
-</ul>
+<h4>Cat Health</h4>
 
+<p>As documented <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-health.html#cat-health">here</a></p>
 
-<h2>Build Notifications to Kibana</h2>
+<p><code>
+elasticsearch cluster health my-test-alias
+</code></p>
 
-<p>Once we have a CCB we fire a start and end event from TeamCity containing the build number to Redis which is then piped into <a href="http://logstash.net/">Logstash</a>. An event is sent before and after deploying the code to all nodes. This is hugely beneficial because it allows us to plot releases against our graphs in <a href="http://www.elasticsearch.org/overview/kibana/">Kibana</a>. Kibana recently added a new feature called Markers. Essentially these are tags that display at the bottom of a graph.</p>
+<h4>Cat Nodes</h4>
 
-<p>{% img /images/posts/kibana-tags.png 350 350 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p>As documented <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-nodes.html">here</a></p>
 
-<p>You can find information on this Markers module on github &ndash; <a href="https://github.com/opentable/grunt-deployment-logger">https://github.com/opentable/grunt-deployment-logger</a></p>
+<p><code>
+elasticsearch cat nodes my-test-alias
+</code></p>
 
-<p>This has already proved incredibly useful for the team and has allowed us to visually correlate issues or changes in key metrics (response times/requests per second) to releases. The following image shows how these look over several graphs.</p>
+<h4>Cat Indices</h4>
 
-<p>{% img /images/posts/kibana-dashboard.png 900 900 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p>As documented <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-indices.html">here</a></p>
 
-<h2>Hipchat build complete notification</h2>
+<p><code>
+elasticsearch cat indexes my-test-alias
+</code></p>
 
-<p>{% img /images/posts/hubot-notification.png 350 200 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<h4>Cat Allocation</h4>
 
-<p>Once our deployment pipeline has completed we send a notification to our teams room in Hipchat (as a final step in TeamCity) to inform the team that the release has completed. It&rsquo;s great to see a deployment start and end in chat. Having a central log of key operations in our team means that we don&rsquo;t have to go and find information when it&rsquo;s baked into chat.</p>
+<p>As documented <a href="">here</a></p>
 
-<h2>Conclusion</h2>
+<p><code>
+elasticsearch cat allocation my-test-alias
+</code></p>
 
-<p>We&rsquo;ve come along way with improving our pipeline and automating visibility. Our team is made up of 4 members; 3 in the office and 1 remote. The ultimate goal is to improve speed of deployment and visibility of events not just within the team but for everyone who is interested. Equally we want to continue to open source by as much as possible, allowing us to share our process with teams inside and outside of our organization. We can release code anywhere in the world and the process is completely centralised in chat. We want to continue to move fast and fix faster.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Beginning a journey to chatops with Hubot]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/"/>
-    <updated>2013-11-22T09:34:00+00:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot</id>
-    <content type="html"><![CDATA[<p>{% img center /images/posts/hubot_pug_me.png %}</p>
+<h3>Getting the Cluster Settings</h3>
 
-<p>As a part of our 30% time a few of our team, <a href="https://twitter.com/ajroyle">@ajroyle</a>, <a href="https://twitter.com/stack72">@stack72</a> and I (<a href="https://twitter.com/ryantomlinson">@ryantomlinson</a>) decided to get together and look at <a href="http://hubot.github.com/">Hubot</a> with <a href="https://www.hipchat.com/">Hipchat</a> integration. There are several weird and wonderful scripts that ship with Hubot (see above) but the core concept of driving tooling via chat is one that we see value in.</p>
+<p>Sometimes when we are rebalancing shards or recycling nodes, we want to be able to control the cluster settings. By using the cluster settings API, can have some insight into the settings currently set on the cluster:</p>
 
-<h2>What is Chatops?</h2>
+<p><code>
+elasticsearch cluster settings my-test-alias
+</code>
+More information about the cluster settings API can be found <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-update-settings.html#cluster-settings">here</a></p>
 
-<p><a href="https://speakerdeck.com/jnewland/chatops-at-github">Chatops</a> is a term coined by Github to describe their growing culture of “putting tools in the middle of the conversation”. But what does that exactly mean?</p>
+<h3>Getting the Settings for an Index</h3>
 
-<p>To move fast and maintain stability it’s important to have a culture of automation, measurement and sharing (<a href="http://www.opscode.com/blog/2010/07/16/what-devops-means-to-me/">CAMS</a>). Tooling plays a key role in doing so and as your devops toolkit grows with the team there is an inherent learning and maintenance overhead. <a href="http://github.com/">Github</a> made a move to centralise the conversation by driving everything they do into chat. By building tools and executing commands in a chat room that can be automated by a bot, communication doesn’t become an afterthought to operational processes but is core to how you operate. If I want to deploy code, I type a command into chat. If I want to take a server offline, I type a command into chat. If I want to merge a git pull request into master, I type in a command into chat, and so on. Communication is baked in.</p>
+<p>Should we want to start to understand the actual settings that are attributed to an index, we can use the Cat Indices settings API. More information can be found <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-settings.html">here</a></p>
 
-<h2>What is Hubot?</h2>
+<p><code>
+elasticsearch index settings my-test-alias my-index-name-2014-11-07
+</code></p>
 
-<p>Hubot is a chat bot that sits in your chat room, listens for commands and executes them. It was written by Github in Coffeescript on Node.js and comes with a host of <a href="https://github.com/github/hubot-scripts/tree/master/src/scripts">prewritten scripts</a> to get started with. Hubot also comes with a range of adaptors that allow it to plug-in to chat servers such as Campfire, IRC and Hipchat. We chose the latter.</p>
+<h3>Clearing the cluster Cache</h3>
 
-<h2>How do you get started?</h2>
+<p>The last piece of the puzzle we are able to do, is to clear the cache of the ElasticSearch cluster. This can be done as follows:</p>
 
-<p>I won’t re-write the readme because the getting started section <a href="https://github.com/github/hubot/tree/master/docs">here</a> says it all. Using the node package manager it’s so easy to get up and running with <a href="https://github.com/blog/968-say-hello-to-hubot">Hubot</a>. So many other people have documented this process that I won’t attempt to rewrite their <a href="http://net.tutsplus.com/tutorials/javascript-ajax/writing-hubot-plugins-with-coffeescript/">good</a> <a href="https://github.com/blog/968-say-hello-to-hubot">posts</a>.</p>
+<p><code>
+hubot elasticsearch clear cache my-test-alias
+</code></p>
 
-<h2>How we want to use it and our first scripts</h2>
+<h3>Where can I find the code?</h3>
 
-<p>Although the core scripts that shipped with Hubot are helpful…</p>
-
-<p>{% img center /images/posts/hubot_beer_me.png %}</p>
-
-<p>…we started to focus on commands that would be most useful to how we work at <a href="http://www.opentable.co.uk/">OpenTable</a> and the tools and technologies that we employ. Specifically we got together and decided the following would be a useful starting point:</p>
-
-<ul>
-<li>Triggering TeamCity builds to ship to production</li>
-<li>Displaying the status of a JIRA ticket, adding comments and changing their status</li>
-<li>Checking London Underground tube lines for delays via Transport for London API</li>
-<li>Querying the status of our APIs (internal and external)</li>
-<li>Query ElasticSearch node and health cluster</li>
-</ul>
-
-
-<p>Within no time we had some useful scripts written:</p>
-
-<p>{% img center /images/posts/hubot_tube_status.png %}</p>
-
-<p>{% img center /images/posts/hubot_jira.png %}</p>
-
-<p>{% img center /images/posts/hubot_teamcity.png %}</p>
-
-<p>Immediately as we were developing these scripts we realised the potential of what else we could automate into Hubot and we will continue to do so. Some of which are:</p>
-
-<ul>
-<li>Github interaction</li>
-<li>AWS interaction to see host health</li>
-<li>Teamcity integration to trigger builds</li>
-<li>Nagios interaction to trigger status checks</li>
-<li>More JIRA integration to comment on tickets</li>
-<li>Kibana integration to create dashboard URLs</li>
-<li>AppDynamics interaction to query response times etc. (and more)</li>
-</ul>
-
-
-<p>Driving operations in chat has huge benefits for us. Collaboration, deployment and automation of common tasks can be done from anywhere, in the office (UK or US) or remotely for those that work from home. Hipchat has mobile support and their mobile apps are great. We hope it will improve on-call visibility, triaging of issues and resolving them without the need for VPN.</p>
-
-<h2>Resources</h2>
-
-<ul>
-<li>Chatops: Augmented reality for Ops (Video) by Mark Imbriaco &ndash; <a href="http://www.youtube.com/watch?v=pCVvYCjvoZI">http://www.youtube.com/watch?v=pCVvYCjvoZI</a></li>
-<li>ChatOps at Github by Jesse Newland &ndash; <a href="http://www.youtube.com/watch?v=NST3u-GjjFw">http://www.youtube.com/watch?v=NST3u-GjjFw</a></li>
-</ul>
-
+<p>The code is available on <a href="https://github.com/stack72/hubot-elasticsearch">github</a> or also as an <a href="https://www.npmjs.org/package/hubot-elasticsearch">NPM package</a>. Please feel free to send PRs or create issues on our repository. All feedback is useful.</p>
 ]]></content>
   </entry>
   

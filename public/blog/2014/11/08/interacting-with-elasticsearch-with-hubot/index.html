@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Interacting with ElasticSearch with Hubot - OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
+
+  
+  <meta name="description" content="At OpenTable, we use a few ElasticSearch clusters. Our aim was to be able to interact with our ElasticSearch clusters via HipChat so that we could &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.opentable.co.uk/blog/2014/11/08/interacting-with-elasticsearch-with-hubot/">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
+  <script type="text/javascript" src="http://use.typekit.com/syx2vfn.js"></script>
+  <script type="text/javascript">try { Typekit.load(); } catch (e) { }</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
+  
+    <h2>The technology blog for OpenTable UK.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/authors">Authors</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Interacting with ElasticSearch with Hubot</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Paul Stack</span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-08T10:32:42+00:00" pubdate data-updated="true">Nov 8<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>At OpenTable, we use a few <a href="">ElasticSearch</a> clusters. Our aim was to be able to interact with our ElasticSearch clusters via <a href="http://www.hipchat.com">HipChat</a> so that we could troubleshoot easily and without having to log into our VPN. We already use <a href="http://hubot.github.com">Hubot</a> as part of our systems workflow, so it made sense to be able to interact with ElasticSearch with it.</p>
+
+<h3>Setting a cluster alias</h3>
+
+<p>When a pager wakes me at 3am, I really do not want to have to try and type the cluster URL into my mobile hipchat client. So the first thing that was added to the script was the ability to give a cluster an alias.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>elasticsearch add alias my-test-alias http://my-cluster.com:9200</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/posts/elasticsearch-add-alias.png" alt="add-alias" /></p>
+
+<p>This allows us to use that alias for all commands going forward. Please note that you can remove and query aliases as well:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>elasticsearch show aliases</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/posts/elasticsearch-show-aliases.png" alt="show-alias" /></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>elasticsearch clear alias my-test-alias</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/posts/elasticsearch-clear-alias.png" alt="clear-alias" /></p>
+
+<h3>Using the ElasticSearch Cat API</h3>
+
+<p>A lot of what we do with ElasticSearch can be done via the <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat.html">cat</a> API. This has proved extremely useful to get node status, cluster health and index status.</p>
+
+<h4>Cat Health</h4>
+
+<p>As documented <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-health.html#cat-health">here</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>elasticsearch cluster health my-test-alias</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Cat Nodes</h4>
+
+<p>As documented <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-nodes.html">here</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>elasticsearch cat nodes my-test-alias</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h4>Cat Indices</h4>
+
+<p>As documented <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-indices.html">here</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>elasticsearch cat indexes my-test-alias</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Cat Allocation</h4>
+
+<p>As documented <a href="">here</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>elasticsearch cat allocation my-test-alias</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Getting the Cluster Settings</h3>
+
+<p>Sometimes when we are rebalancing shards or recycling nodes, we want to be able to control the cluster settings. By using the cluster settings API, can have some insight into the settings currently set on the cluster:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>elasticsearch cluster settings my-test-alias</span></code></pre></td></tr></table></div></figure>
+
+
+<p>More information about the cluster settings API can be found <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-update-settings.html#cluster-settings">here</a></p>
+
+<h3>Getting the Settings for an Index</h3>
+
+<p>Should we want to start to understand the actual settings that are attributed to an index, we can use the Cat Indices settings API. More information can be found <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-settings.html">here</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>elasticsearch index settings my-test-alias my-index-name-2014-11-07</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Clearing the cluster Cache</h3>
+
+<p>The last piece of the puzzle we are able to do, is to clear the cache of the ElasticSearch cluster. This can be done as follows:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>hubot elasticsearch clear cache my-test-alias</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Where can I find the code?</h3>
+
+<p>The code is available on <a href="https://github.com/stack72/hubot-elasticsearch">github</a> or also as an <a href="https://www.npmjs.org/package/hubot-elasticsearch">NPM package</a>. Please feel free to send PRs or create issues on our repository. All feedback is useful.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Paul Stack</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-08T10:32:42+00:00" pubdate data-updated="true">Nov 8<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/chatops/'>chatops</a>, <a class='category' href='/blog/categories/elasticsearch/'>elasticsearch</a>, <a class='category' href='/blog/categories/hubot/'>hubot</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.opentable.co.uk/blog/2014/11/08/interacting-with-elasticsearch-with-hubot/" data-via="opentabletechuk" data-counturl="http://tech.opentable.co.uk/blog/2014/11/08/interacting-with-elasticsearch-with-hubot/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/10/31/coach-dont-rescue/" title="Previous Post: Coach don't rescue">&laquo; Coach don't rescue</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/11/08/interacting-with-elasticsearch-with-hubot/">Interacting with ElasticSearch with Hubot</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/10/31/coach-dont-rescue/">Coach don't rescue</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/10/22/hobknob-v1-dot-0-now-with-authorization/">Hobknob v1.0: Now with authorization</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/10/06/puppetconf-2014-part-3/">PuppetConf 2014 - Part 3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/10/06/puppetconf-2014-part-2/">PuppetConf 2014 - Part 2</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2014 - OpenTable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

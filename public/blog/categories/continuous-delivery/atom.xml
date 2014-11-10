@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Continuous Delivery | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/continuous-delivery/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-30T16:34:36+00:00</updated>
+  <updated>2014-11-10T14:58:12+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -22,19 +22,19 @@
 
 <p>The image below shows at a high level what our teams current deployment pipeline looks like and this post will attempt to summarise some recent changes that have allowed us to automate visibility.</p>
 
-<p>{% img /images/posts/release-pipeline.png 900 350 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p><img src="/images/posts/release-pipeline.png" width="900" height="350" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
 
 <h2>Kicking off a deployment</h2>
 
 <p>I wrote previously that we started <a href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">using chatops</a> to increase visibility operationally. Hubot is central to this and we wrote a small script to kick off deployments within <a href="https://www.hipchat.com/">Hipchat</a></p>
 
-<p>{% img /images/posts/hubot-deploy-restaurant.png 350 350 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p><img src="/images/posts/hubot-deploy-restaurant.png" width="350" height="350" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
 
 <p>We have two TeamCity instances. The first is used as a build and deployment system to our pre-production servers. The second is used as a deployment system to our production servers. Artifacts from our non-production instance are stored in <a href="http://www.jfrog.com/home/v_artifactory_opensource_overview">Artifactory</a> and our production deployment makes an API call to non-production TeamCity to ask for the last successfully pinned build. Pinning a build only occurs when we&rsquo;re happy that the build is ready to be shipped (passing unit and acceptance tests). The above Hubot command will pin the non-production build, given that the build succeeded, and add a build to the queue in production.</p>
 
 <p>To configure Hubot to do this we wrote a command to setup aliases providing the build id of the build to pin (non-production) and the build id of the build to kick off (production).</p>
 
-<p>{% img /images/posts/hubot-deploy-alias.png 350 350 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p><img src="/images/posts/hubot-deploy-alias.png" width="350" height="350" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
 
 <h2>Deployment visibility</h2>
 
@@ -53,17 +53,17 @@
 
 <p>Once we have a CCB we fire a start and end event from TeamCity containing the build number to Redis which is then piped into <a href="http://logstash.net/">Logstash</a>. An event is sent before and after deploying the code to all nodes. This is hugely beneficial because it allows us to plot releases against our graphs in <a href="http://www.elasticsearch.org/overview/kibana/">Kibana</a>. Kibana recently added a new feature called Markers. Essentially these are tags that display at the bottom of a graph.</p>
 
-<p>{% img /images/posts/kibana-tags.png 350 350 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p><img src="/images/posts/kibana-tags.png" width="350" height="350" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
 
 <p>You can find information on this Markers module on github &ndash; <a href="https://github.com/opentable/grunt-deployment-logger">https://github.com/opentable/grunt-deployment-logger</a></p>
 
 <p>This has already proved incredibly useful for the team and has allowed us to visually correlate issues or changes in key metrics (response times/requests per second) to releases. The following image shows how these look over several graphs.</p>
 
-<p>{% img /images/posts/kibana-dashboard.png 900 900 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p><img src="/images/posts/kibana-dashboard.png" width="900" height="900" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
 
 <h2>Hipchat build complete notification</h2>
 
-<p>{% img /images/posts/hubot-notification.png 350 200 &lsquo;image&rsquo; &lsquo;images&rsquo; %}</p>
+<p><img src="/images/posts/hubot-notification.png" width="350" height="200" title="&lsquo;image&rsquo; &lsquo;images&rsquo;" ></p>
 
 <p>Once our deployment pipeline has completed we send a notification to our teams room in Hipchat (as a final step in TeamCity) to inform the team that the release has completed. It&rsquo;s great to see a deployment start and end in chat. Having a central log of key operations in our team means that we don&rsquo;t have to go and find information when it&rsquo;s baked into chat.</p>
 

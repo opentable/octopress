@@ -4,7 +4,7 @@
   <title><![CDATA[OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-11-10T15:03:22+00:00</updated>
+  <updated>2014-11-24T16:14:09+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -12,6 +12,108 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Hobknob v2.0: A new dimension]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/11/24/hobknob-v2-dot-0-a-new-dimension/"/>
+    <updated>2014-11-24T13:45:50+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/11/24/hobknob-v2-dot-0-a-new-dimension</id>
+    <content type="html"><![CDATA[<p>Sometimes there is the requirement for more granularity when toggling a feature switch.
+Version 2.0 of <a href="https://github.com/opentable/hobknob">Hobknob</a> hopes to address this with feature categories.</p>
+
+<h3>TL;DR.</h3>
+
+<p>Hobknob now allows you define categories of features that have multiple toggles per feature.</p>
+
+<p>For example, you can define the &lsquo;Domain Features&rsquo; category which allows you to toggle a feature OFF in <code>your-website.com</code>, but ON in <code>your-website.co.uk</code>.</p>
+
+<p><img src="http://tech.opentable.co.uk/images/posts/hobknob-domain-features.png" alt="Domain Features" /></p>
+
+<h2>Categories</h2>
+
+<p>Feature categories are configured with a few pieces of information. For example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nt">&quot;categories&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Simple Features&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Use when you want your feature to be either on or off&quot;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Domain Features&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Use when you want your features to be toggled separately for different domains&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;com&quot;</span><span class="p">,</span> <span class="s2">&quot;couk&quot;</span><span class="p">,</span> <span class="s2">&quot;de&quot;</span><span class="p">,</span> <span class="s2">&quot;commx&quot;</span><span class="p">,</span> <span class="s2">&quot;jp&quot;</span><span class="p">,</span> <span class="s2">&quot;ca&quot;</span><span class="p">]</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Locale Features&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Use when you want your features to be toggled separately for different locales&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;en-GB&quot;</span><span class="p">,</span> <span class="s2">&quot;en-US&quot;</span><span class="p">,</span> <span class="s2">&quot;fr-CA&quot;</span><span class="p">,</span> <span class="s2">&quot;de-DE&quot;</span><span class="p">,</span> <span class="s2">&quot;ja-JP&quot;</span><span class="p">,</span> <span class="s2">&quot;es-MX&quot;</span><span class="p">]</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Notice that each category (except the simple feature category) provides an array of accepted toggle values.</p>
+
+<p>All non-simple feature toggles will have the key <code>application-name/feature-name/toggle-name</code>.
+For example, <code>main-website/show-user-section/com</code>.</p>
+
+<p>Simple features will continue to have the key <code>application-name/feature-name</code>.</p>
+
+<h2>Setting Toggles</h2>
+
+<p>Both simple and non-simple features are added via the application view (which is accessed via the left-hand navigation menu). Simple features are automatically set to false, this value can be changed in the feature view (by clicking the feature name).</p>
+
+<p>A newly added non-simple feature will be initialised with no toggles values. You can add a toggle by clicking the Add Toggle button in the feature view, and choosing which toggle to add.</p>
+
+<p><img src="http://tech.opentable.co.uk/images/posts/hobknob-adding-toggle.png" alt="Adding a toggle" /></p>
+
+<p>New toggles are initially set to OFF. The toggle can be switched in the usual way by clicking the toggle button. You should also see an audit of the change in the panel below.</p>
+
+<h2>Getting Toggles</h2>
+
+<p>All of the Hobknob <a href="https://github.com/opentable/hobknob#hobknob-clients">clients</a> now support getting non-simple features toggles. The only requirement is to pass the name of the toggle, so for example in node:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">nonSimpleFeatureInCom</span> <span class="o">=</span> <span class="nx">hobknobClient</span><span class="p">.</span><span class="nx">getOrDefault</span><span class="p">(</span><span class="s1">&#39;feature-name&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It is highly reccommended that you use the get or default methods when accessing non-simple features. Getting a toggle that does not exist for a non-simple feature could be a likely scenario, since you might want to only set a feature for a few toggles explicitly (e.g. com and couk) and then use the default value for the rest (e.g. jp and de).</p>
+
+<p>The behaviour for simple features has not changed, and is backwards compatible in all client libraries.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">simpleFeature</span> <span class="o">=</span> <span class="nx">hobknobClient</span><span class="p">.</span><span class="nx">getOrDefault</span><span class="p">(</span><span class="s1">&#39;simple-feature&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Interacting with ElasticSearch using Hubot]]></title>
@@ -2638,31 +2740,6 @@ end
 <h2>Summary</h2>
 
 <p>So now you know a little about testing Beaker with Puppet go forth and test all your modules against everything that you expect your users to be running it on.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ForgeFriday - our commitment to the Puppet Forge]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/"/>
-    <updated>2014-04-04T15:30:00+01:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge</id>
-    <content type="html"><![CDATA[<p>Those of you that read this blog on a regular basis will be aware that here at OpenTable we take our commitment to Open Source very seriously. As part of the infrastructure team at OpenTable we are begining a process of being open-first. That means that everything we write will be open-sourced unless it contains a significant amount of internal information but we will architect to limit this.</p>
-
-<p>As part of that commitment we are trying to release all our Puppet configuration. The key to maintaining any good habit is to do little and often and with that in mind we wanted to let you know about ForgeFriday.</p>
-
-<p>Every Friday we will be releasing our Puppet code onto the <a href="http://forge.puppetlabs.com/opentable">PuppetLabs Forge</a> (until we run out of modules). That means all our Windows modules, all our forks, our experiments, our custom facts and functions &ndash; anything and everything will start rolling out on Fridays.</p>
-
-<p>It&rsquo;s not just forge and forget either, we will continue to support all of our modules and those that use them. We will blog about some of the bigger, more important ones and continue to engage with the community as much as possible. If you&rsquo;re using our modules (even if you have no issues) then let us know &ndash; we&rsquo;d love to hear from you.</p>
-
-<p>In the meantime go and check out what we have already released:</p>
-
-<p><a href="http://forge.puppetlabs.com/opentable/windowsfeature">opentable/windowsfeature</a> &ndash; Module that will turn Windows features on or off<br/>
-<a href="http://forge.puppetlabs.com/opentable/iis_rewrite">opentable/iis_rewrite</a> &ndash; Module that will install the IIS Rewrite 2.0 Module on Windows <br/>
-<a href="http://forge.puppetlabs.com/opentable/remaster">opentable/remaster</a> &ndash; Module for managing the remaster of agent nodes <br/>
-<a href="http://forge.puppetlabs.com/opentable/puppetversion">opentable/puppetversion</a> &ndash; Module for managing the installation and upgrade of Puppet<br/>
-<a href="http://forge.puppetlabs.com/opentable/altlib">opentable/altlib</a> &ndash; Module providing some additional useful functions <br/></p>
-
-<p>Keep an eye on Twitter for the latest ForgeFriday updates.</p>
 ]]></content>
   </entry>
   

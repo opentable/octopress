@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Hobknob | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/hobknob/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-11-26T10:26:59+00:00</updated>
+  <updated>2014-11-26T10:39:59+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -23,7 +23,7 @@ Version 2.0 of <a href="https://github.com/opentable/hobknob">Hobknob</a> hopes 
 
 <h3>TL;DR.</h3>
 
-<p>Hobknob now allows you define categories of features that have multiple toggles per feature.</p>
+<p>Hobknob now allows you to define categories of features that have multiple toggles per feature.</p>
 
 <p>For example, you can define the &lsquo;Domain Features&rsquo; category which allows you to toggle a feature OFF in <code>your-website.com</code>, but ON in <code>your-website.co.uk</code>.</p>
 

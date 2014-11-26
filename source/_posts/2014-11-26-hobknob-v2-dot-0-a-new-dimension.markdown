@@ -11,7 +11,7 @@ Sometimes there is the requirement for more granularity when toggling a feature 
 Version 2.0 of [Hobknob](https://github.com/opentable/hobknob) hopes to address this with feature categories.
 
 ### TL;DR.
-Hobknob now allows you define categories of features that have multiple toggles per feature.
+Hobknob now allows you to define categories of features that have multiple toggles per feature.
 
 For example, you can define the 'Domain Features' category which allows you to toggle a feature OFF in `your-website.com`, but ON in `your-website.co.uk`.
 

@@ -61,5 +61,5 @@ Driving operations in chat has huge benefits for us. Collaboration, deployment a
 ## Resources
 
 * Chatops: Augmented reality for Ops (Video) by Mark Imbriaco - [http://www.youtube.com/watch?v=pCVvYCjvoZI](http://www.youtube.com/watch?v=pCVvYCjvoZI)
-* ChatOps at Github by Jesse Newland - [http://www.youtube.com/watch?v=NST3u-GjjFw](http://www.youtube.com/watch?v=NST3u-GjjFw)
+* Chatops at Github by Jesse Newland - [http://www.youtube.com/watch?v=NST3u-GjjFw](http://www.youtube.com/watch?v=NST3u-GjjFw)
 

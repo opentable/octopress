@@ -4,7 +4,7 @@ title: "PuppetConf 2014 - Part 3"
 date: 2014-10-06 13:43:36 +0100
 comments: true
 author: lbennett
-categories: puppet, puppetconf2014, conferences
+categories: [Puppet, PuppetConf 2014, Conferences]
 ---
 
 ## Day 2

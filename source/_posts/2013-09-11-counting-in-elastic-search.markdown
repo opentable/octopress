@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Counting in Elastic Search"
+title: "Counting in ElasticSearch"
 date: 2013-09-11 15:48
 comments: true
 author: mbazydlo

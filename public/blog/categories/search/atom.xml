@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Search | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/search/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-11-10T15:03:22+00:00</updated>
+  <updated>2014-11-26T10:08:57+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Counting in Elastic Search]]></title>
+    <title type="html"><![CDATA[Counting in ElasticSearch]]></title>
     <link href="http://tech.opentable.co.uk/blog/2013/09/11/counting-in-elastic-search/"/>
     <updated>2013-09-11T15:48:00+01:00</updated>
     <id>http://tech.opentable.co.uk/blog/2013/09/11/counting-in-elastic-search</id>

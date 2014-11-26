@@ -4,7 +4,7 @@ title: "PuppetConf 2014 - Part 1"
 date: 2014-10-06 11:47:57 +0100
 comments: true
 author: lbennett
-categories: puppet, puppetconf2014, conferences
+categories: [Puppet, PuppetConf 2014, Conferences]
 ---
 
 ![The start of PuppetConf 2014](/images/posts/puppetconf2014.jpg)

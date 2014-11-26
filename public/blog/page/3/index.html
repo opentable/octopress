@@ -9,7 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="I18n is often a painful afterthought when serving content from a http-api. It can be taken for granted and tacked on using nasty query string values &hellip;">
+  <meta name="description" content="Those of you that read this blog on a regular basis will be aware that here at OpenTable we take our commitment to Open Source very seriously. As &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +81,58 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday - our commitment to the Puppet Forge</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-04T15:30:00+01:00" pubdate data-updated="true">Apr 4<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Those of you that read this blog on a regular basis will be aware that here at OpenTable we take our commitment to Open Source very seriously. As part of the infrastructure team at OpenTable we are begining a process of being open-first. That means that everything we write will be open-sourced unless it contains a significant amount of internal information but we will architect to limit this.</p>
+
+<p>As part of that commitment we are trying to release all our Puppet configuration. The key to maintaining any good habit is to do little and often and with that in mind we wanted to let you know about ForgeFriday.</p>
+
+<p>Every Friday we will be releasing our Puppet code onto the <a href="http://forge.puppetlabs.com/opentable">PuppetLabs Forge</a> (until we run out of modules). That means all our Windows modules, all our forks, our experiments, our custom facts and functions &ndash; anything and everything will start rolling out on Fridays.</p>
+
+<p>It&rsquo;s not just forge and forget either, we will continue to support all of our modules and those that use them. We will blog about some of the bigger, more important ones and continue to engage with the community as much as possible. If you&rsquo;re using our modules (even if you have no issues) then let us know &ndash; we&rsquo;d love to hear from you.</p>
+
+<p>In the meantime go and check out what we have already released:</p>
+
+<p><a href="http://forge.puppetlabs.com/opentable/windowsfeature">opentable/windowsfeature</a> &ndash; Module that will turn Windows features on or off<br/>
+<a href="http://forge.puppetlabs.com/opentable/iis_rewrite">opentable/iis_rewrite</a> &ndash; Module that will install the IIS Rewrite 2.0 Module on Windows <br/>
+<a href="http://forge.puppetlabs.com/opentable/remaster">opentable/remaster</a> &ndash; Module for managing the remaster of agent nodes <br/>
+<a href="http://forge.puppetlabs.com/opentable/puppetversion">opentable/puppetversion</a> &ndash; Module for managing the installation and upgrade of Puppet<br/>
+<a href="http://forge.puppetlabs.com/opentable/altlib">opentable/altlib</a> &ndash; Module providing some additional useful functions <br/></p>
+
+<p>Keep an eye on Twitter for the latest ForgeFriday updates.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1133,92 +1185,6 @@ What if we refactor with the MVP pattern first and see where the duplication lie
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/10/21/linking-to-your-app-in-windows-8/">Linking to your app in Windows 8</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-10-21T17:36:00+01:00" pubdate data-updated="true">Oct 21<span>st</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In an effort to raise the visibility of our excellent Windows 8 app we have recently connected <a href="http://www.opentable.com">www.opentable.com</a> to the Windows Store.  This was simply a case of adding two lines of meta data to our site. Or it should have been &ndash; there were several gotchas along the way that are worth sharing.</p>
-
-<h2>The code</h2>
-
-<p>The meta data that we added to the site are an <em>application ID</em>, and what Microsoft have termed the <em>Package Family name</em>.  Once you have these, add the following lines of code to your page &lt;head&gt;.</p>
-
-<pre><code>&lt;meta name="msApplication-ID" content="OpenTable.OpenTable"/&gt; 
-&lt;meta name="msApplication-PackageFamilyName" content="OpenTable.OpenTable_r44en0zefym0a"/&gt;
-</code></pre>
-
-<p><img class="right" src="/images/posts/get-app-for-this-site.png"></p>
-
-<p>This will enable the <strong>&ldquo;Get app for this site&rdquo;</strong> link when you are viewing your page in the full-screen Metro version of Internet Explorer (i.e. launched from the start screen); the desktop version of IE doesn&rsquo;t have this capability.</p>
-
-<p>There are <a href="http://msdn.microsoft.com/en-us/library/ie/hh781489%28v=vs.85%29.aspx#code-snippet-1">three other optional meta values</a> that can also be used to control your link.</p>
-
-<h2>Finding the values</h2>
-
-<p>There are at least two ways of finding the values. If you have your application code and Visual Studio 2012 (or later) then the values can be found in the <strong>package.appxmanifest</strong> file &ndash; open this in VS and it automatically launches the manifest designer view.  Select the Packaging tab and the &ldquo;Package name&rdquo; is the <em>ID</em>, and the <em>Package family name</em> is at the bottom of this screen.</p>
-
-<p><img class="center" src="/images/posts/vs-screenshot.png"></p>
-
-<p>If you don&rsquo;t have the local code with Visual Studio you can still find out these values by other means.</p>
-
-<p>The <strong>msApplication-PackageFamilyName</strong> can be found in the source code of your online Windows 8 app.  For example, <a href="view-source:http://apps.microsoft.com/windows/en-us/app/d7c37fb3-d594-4366-8003-e49c8e953095">viewing the source of the OpenTable app</a> shows a Javascript variable <code>packageFamilyName</code> embedded in the page head.</p>
-
-<pre><code>var packageFamilyName = 'OpenTable.OpenTable_r44en0zefym0a';
-</code></pre>
-
-<p>The <strong>msApplication-ID</strong> is still found in the <code>package.appxmanifest</code> file in your Win8 app, but you don&rsquo;t necessarily need to have the local code or Visual Studio.  We were able to access package.appxmanifest in our GitHub repo (it&rsquo;s an XML file) and the msApplication-ID was the same as the <strong>identity name</strong>.  I don&rsquo;t know if the Application ID and the identity name are always the same, but they were for us.</p>
-
-<pre><code>&lt;Identity Name="OpenTable.OpenTable" Publisher="CN=9C8CE42A-5BD4-4679" Version="1.0.0.1910" /&gt; 
-</code></pre>
-
-<h2>Gotchas</h2>
-
-<p>We tried opening the site in Visual Studio 2012 in Windows 7, but the project containing package.appxmanifest wouldn&rsquo;t open.  We had to open the solution in Windows 8, which finally worked once we&rsquo;d logged into MSDN and installed the suggested updates.</p>
-
-<p>Also, the content values of the meta data are not case sensitive, but the names msApplication-ID and msApplication-PackageFamilyName are.</p>
-
-<p>Finally, having entered what we knew to be the correct values, clicking the &ldquo;Get app for this site&rdquo; link still wouldn&rsquo;t take us to <a href="http://apps.microsoft.com/windows/en-us/app/d7c37fb3-d594-4366-8003-e49c8e953095">the OpenTable app in the Windows store</a>.  After checking with an American colleague the penny dropped that the OpenTable app is only available in the US and Microsoft have unfortunately not provided any visual feedback to explain this.</p>
-
-<p>Luckily instead of just having to take his word that the new code worked there is a way to change your Windows Store settings and fake your location.  <a href="http://www.guidingtech.com/20936/change-windows-8-store-region/">Have a look at this helpful article</a> and you&rsquo;re all set to have your website and Windows app happily talking to each other.</p>
-
-<h3>Further reading</h3>
-
-<ul>
-<li><a href="http://msdn.microsoft.com/en-us/library/ie/hh781489%28v=vs.85%29.aspx">Connect your website to your Windows Store app</a> (Internet Explorer Dev Center)</li>
-<li><a href="http://blogs.msdn.com/b/windowsstore/archive/2012/02/22/linking-to-your-apps-on-the-web.aspx">Linking to your apps on the web</a> (MSDN blog)</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -1236,6 +1202,10 @@ What if we refactor with the MVP pattern first and see where the duplication lie
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/11/26/hobknob-v2-dot-0-a-new-dimension/">Hobknob v2.0: A new dimension</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/11/08/interacting-with-elasticsearch-using-hubot/">Interacting with ElasticSearch using Hubot</a>
       </li>
     
@@ -1249,10 +1219,6 @@ What if we refactor with the MVP pattern first and see where the duplication lie
     
       <li class="post">
         <a href="/blog/2014/10/06/puppetconf-2014-part-3/">PuppetConf 2014 - Part 3</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/10/06/puppetconf-2014-part-2/">PuppetConf 2014 - Part 2</a>
       </li>
     
   </ul>

@@ -22,6 +22,8 @@ footer: false
 
 [Andy Metcalfe]
 
+[Chris Riddle]
+
 [Andy Royle]
 
 [Sam Salisbury]
@@ -42,3 +44,4 @@ footer: false
 [Matteo Figus]:/blog/authors/mfigus.html
 [Liam Bennett]:/blog/authors/lbennett.html
 [Sam Salisbury]:/blog/authors/ssalisbury.html
+[Chris Riddle]:/blog/authors/criddle.html

@@ -1,0 +1,13 @@
+---
+layout: author
+author: criddle
+title: Posts by Chris Riddle
+twitter: christriddle
+---
+<ul>
+{% for p in site.posts do %}
+  {% if p.author == page.author %}
+    <li><a href="{{ p.url }}">{{ p.title }}</a></li>
+  {% endif %}
+{% endfor %}
+</ul>

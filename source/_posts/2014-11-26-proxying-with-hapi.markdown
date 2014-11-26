@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Proxying Services With Hapi.js"
-date: 2014-11-26 11:32:42 +0100
+date: 2014-11-28 11:32:42 +0100
 comments: true
 author: aroyle
 categories: [hapijs, microservices, proxy]

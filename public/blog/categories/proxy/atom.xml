@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: proxy | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/proxy/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2014-12-03T16:09:17+00:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
+  <author>
+    <name><![CDATA[OpenTable]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Proxying Services With Hapi.js]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/11/28/proxying-with-hapi/"/>
+    <updated>2014-11-28T10:32:42+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/11/28/proxying-with-hapi</id>
+    <content type="html"><![CDATA[<p>I&rsquo;ve raved in the past about how awesome <a href="http://hapijs.com">hapi.js</a> is, but I&rsquo;m going to talk about just a specific case today.</p>
+
+<p>We started off with just a couple of hapi.js apis. This was at a time when standing up new infrastructure was still a bit painful, so inevitably those apis ended up having more functionality in them than they should have. Now it&rsquo;s easy for us to get infrastructure, so we want to do more of it.</p>
+
+<p>Our goal is to have lots of small(er) apis that just look after one specific piece (skillfully avoiding using the buzzword &lsquo;microservices&rsquo;).</p>
+
+<p>When you want to split out functionality from one api to another, it can be a pain, especially if you have a lot of consumers who aren&rsquo;t particularly fast-moving or communicative. Or maybe you don&rsquo;t know all your consumers up front.</p>
+
+<p>You&rsquo;ve got a couple of options here:</p>
+
+<ul>
+<li><p>Maintain the functionality in two places and slowly migrate consumers across</p></li>
+<li><p>Use a proxy or routing layer in-front of the api to rewrite or redirect requests</p></li>
+<li><p>Write code in your api to proxy requests to a different server</p></li>
+</ul>
+
+
+<p>The first two options are pretty icky, and frankly the third isn&rsquo;t all that great either. It all depends on you having the right framework. Do you see where I&rsquo;m going here?</p>
+
+<h3>Enter Hapi.js</h3>
+
+<p>Hapi.js has the concept of a &lsquo;proxy&rsquo; handler, which can transparently proxy requests to a different server.</p>
+
+<p>```javascript
+server.route([
+  {</p>
+
+<pre><code>method: 'GET',
+path: '/foo',
+handler: {
+  proxy: {
+    host: 'my-other-service.mydomain.com',
+    port: 80,
+    protocol: 'http',
+    passThrough: true,
+    xforward: true
+  }
+}
+</code></pre>
+
+<p>  }
+]);
+```</p>
+
+<p>And boom, you&rsquo;re done. You can now safely delete <em>all</em> of that code from your api and move it. The <em>only</em> thing you need to have kicking about is that proxy handler code.</p>
+
+<p>The <code>passthrough</code> setting specifies whether or not to preserve headers on the original request, and <code>xforward</code> tells hapi to add (or append) an &lsquo;x-forwarded-for&rsquo; header to the request.</p>
+
+<p>The proxy handler is really powerful. It can rewrite the request (using <code>mapUri</code>), pass local-state (from the hapi instance) along, reject unauthorised requests, you can even hook into the response and monkey about with it if you want (using <code>onResponse</code>).</p>
+
+<p>For full details, see the <a href="http://hapijs.com/api/v7.5.2#route-options">proxy section</a> of the route options.</p>
+]]></content>
+  </entry>
+  
+</feed>

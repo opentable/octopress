@@ -1,0 +1,327 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Proxying Services With Hapi.js - OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
+
+  
+  <meta name="description" content="I&rsquo;ve raved in the past about how awesome hapi.js is, but I&rsquo;m going to talk about just a specific case today. We started off with just a &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.opentable.co.uk/blog/2014/11/28/proxying-with-hapi/">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
+  <script type="text/javascript" src="http://use.typekit.com/syx2vfn.js"></script>
+  <script type="text/javascript">try { Typekit.load(); } catch (e) { }</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
+  
+    <h2>The technology blog for OpenTable UK.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/authors">Authors</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Proxying Services With Hapi.js</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Andy Royle</span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-28T10:32:42+00:00" pubdate data-updated="true">Nov 28<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I&rsquo;ve raved in the past about how awesome <a href="http://hapijs.com">hapi.js</a> is, but I&rsquo;m going to talk about just a specific case today.</p>
+
+<p>We started off with just a couple of hapi.js apis. This was at a time when standing up new infrastructure was still a bit painful, so inevitably those apis ended up having more functionality in them than they should have. Now it&rsquo;s easy for us to get infrastructure, so we want to do more of it.</p>
+
+<p>Our goal is to have lots of small(er) apis that just look after one specific piece (skillfully avoiding using the buzzword &lsquo;microservices&rsquo;).</p>
+
+<p>When you want to split out functionality from one api to another, it can be a pain, especially if you have a lot of consumers who aren&rsquo;t particularly fast-moving or communicative. Or maybe you don&rsquo;t know all your consumers up front.</p>
+
+<p>You&rsquo;ve got a couple of options here:</p>
+
+<ul>
+<li><p>Maintain the functionality in two places and slowly migrate consumers across</p></li>
+<li><p>Use a proxy or routing layer in-front of the api to rewrite or redirect requests</p></li>
+<li><p>Write code in your api to proxy requests to a different server</p></li>
+</ul>
+
+
+<p>The first two options are pretty icky, and frankly the third isn&rsquo;t all that great either. It all depends on you having the right framework. Do you see where I&rsquo;m going here?</p>
+
+<h3>Enter Hapi.js</h3>
+
+<p>Hapi.js has the concept of a &lsquo;proxy&rsquo; handler, which can transparently proxy requests to a different server.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">server</span><span class="p">.</span><span class="nx">route</span><span class="p">([</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="nx">method</span><span class="o">:</span> <span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;/foo&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">handler</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">proxy</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">host</span><span class="o">:</span> <span class="s1">&#39;my-other-service.mydomain.com&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">port</span><span class="o">:</span> <span class="mi">80</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">protocol</span><span class="o">:</span> <span class="s1">&#39;http&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">passThrough</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">xforward</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">]);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And boom, you&rsquo;re done. You can now safely delete <em>all</em> of that code from your api and move it. The <em>only</em> thing you need to have kicking about is that proxy handler code.</p>
+
+<p>The <code>passthrough</code> setting specifies whether or not to preserve headers on the original request, and <code>xforward</code> tells hapi to add (or append) an &lsquo;x-forwarded-for&rsquo; header to the request.</p>
+
+<p>The proxy handler is really powerful. It can rewrite the request (using <code>mapUri</code>), pass local-state (from the hapi instance) along, reject unauthorised requests, you can even hook into the response and monkey about with it if you want (using <code>onResponse</code>).</p>
+
+<p>For full details, see the <a href="http://hapijs.com/api/v7.5.2#route-options">proxy section</a> of the route options.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Andy Royle</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-28T10:32:42+00:00" pubdate data-updated="true">Nov 28<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/hapijs/'>hapijs</a>, <a class='category' href='/blog/categories/microservices/'>microservices</a>, <a class='category' href='/blog/categories/proxy/'>proxy</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.opentable.co.uk/blog/2014/11/28/proxying-with-hapi/" data-via="opentabletechuk" data-counturl="http://tech.opentable.co.uk/blog/2014/11/28/proxying-with-hapi/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/11/26/hobknob-v2-dot-0-a-new-dimension/" title="Previous Post: Hobknob v2.0: A new dimension">&laquo; Hobknob v2.0: A new dimension</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/11/28/proxying-with-hapi/">Proxying Services With Hapi.js</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/26/hobknob-v2-dot-0-a-new-dimension/">Hobknob v2.0: A new dimension</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/08/interacting-with-elasticsearch-using-hubot/">Interacting with ElasticSearch using Hubot</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/10/31/coach-dont-rescue/">Coach don't rescue</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/10/22/hobknob-v1-dot-0-now-with-authorization/">Hobknob v1.0: Now with authorization</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2014 - OpenTable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

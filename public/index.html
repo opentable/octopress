@@ -9,8 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="Sometimes there is the requirement for more granularity when toggling a feature switch.
-Version 2.0 of Hobknob hopes to address this with feature &hellip;">
+  <meta name="description" content="I&rsquo;ve raved in the past about how awesome hapi.js is, but I&rsquo;m going to talk about just a specific case today. We started off with just a &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -82,6 +81,104 @@ Version 2.0 of Hobknob hopes to address this with feature &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/11/28/proxying-with-hapi/">Proxying Services With Hapi.js</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-28T10:32:42+00:00" pubdate data-updated="true">Nov 28<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I&rsquo;ve raved in the past about how awesome <a href="http://hapijs.com">hapi.js</a> is, but I&rsquo;m going to talk about just a specific case today.</p>
+
+<p>We started off with just a couple of hapi.js apis. This was at a time when standing up new infrastructure was still a bit painful, so inevitably those apis ended up having more functionality in them than they should have. Now it&rsquo;s easy for us to get infrastructure, so we want to do more of it.</p>
+
+<p>Our goal is to have lots of small(er) apis that just look after one specific piece (skillfully avoiding using the buzzword &lsquo;microservices&rsquo;).</p>
+
+<p>When you want to split out functionality from one api to another, it can be a pain, especially if you have a lot of consumers who aren&rsquo;t particularly fast-moving or communicative. Or maybe you don&rsquo;t know all your consumers up front.</p>
+
+<p>You&rsquo;ve got a couple of options here:</p>
+
+<ul>
+<li><p>Maintain the functionality in two places and slowly migrate consumers across</p></li>
+<li><p>Use a proxy or routing layer in-front of the api to rewrite or redirect requests</p></li>
+<li><p>Write code in your api to proxy requests to a different server</p></li>
+</ul>
+
+
+<p>The first two options are pretty icky, and frankly the third isn&rsquo;t all that great either. It all depends on you having the right framework. Do you see where I&rsquo;m going here?</p>
+
+<h3>Enter Hapi.js</h3>
+
+<p>Hapi.js has the concept of a &lsquo;proxy&rsquo; handler, which can transparently proxy requests to a different server.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">server</span><span class="p">.</span><span class="nx">route</span><span class="p">([</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="nx">method</span><span class="o">:</span> <span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;/foo&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">handler</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">proxy</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">host</span><span class="o">:</span> <span class="s1">&#39;my-other-service.mydomain.com&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">port</span><span class="o">:</span> <span class="mi">80</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">protocol</span><span class="o">:</span> <span class="s1">&#39;http&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">passThrough</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">xforward</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">]);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And boom, you&rsquo;re done. You can now safely delete <em>all</em> of that code from your api and move it. The <em>only</em> thing you need to have kicking about is that proxy handler code.</p>
+
+<p>The <code>passthrough</code> setting specifies whether or not to preserve headers on the original request, and <code>xforward</code> tells hapi to add (or append) an &lsquo;x-forwarded-for&rsquo; header to the request.</p>
+
+<p>The proxy handler is really powerful. It can rewrite the request (using <code>mapUri</code>), pass local-state (from the hapi instance) along, reject unauthorised requests, you can even hook into the response and monkey about with it if you want (using <code>onResponse</code>).</p>
+
+<p>For full details, see the <a href="http://hapijs.com/api/v7.5.2#route-options">proxy section</a> of the route options.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1889,322 +1986,6 @@ At this moment we are looking to expand beyond vagrant and run these against AWS
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-2-the-windows-story/">Testing Puppet with Beaker pt.2 - The Windows story</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-09-01T09:43:10+01:00" pubdate data-updated="true">Sep 1<span>st</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In <a href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/">part one</a> we discussed our first steps into the world of acceptance testing our Puppet manifests.
-By using Beaker we able to test managing local users on our Linux boxes. This was a positive experience for us. It allowed us to get to grips with the basics of configuring
-Beaker to run tests and configuring our node sets to run those tests against. In this post, we will be discussing how we went about getting Beaker working with Windows.</p>
-
-<p>As many of your reading this will be aware, OpenTable currently has quite a large Windows infrastructure and we are using Puppet extensively to maintain that environment.
-We are also moving forward with releasing as many of our modules open source onto the <a href="https://forge.puppetlabs.com/opentable">Puppet Forge</a> as possible (11 out of 18 of which are Windows
-exclusive). What this means is that there was no way that we could ignore trying to use Beaker to test our manifests against Windows. We knew that we would have to support
-many different versions and editions of Windows out there in the community as well that the ones we have to support internally.</p>
-
-<p>This was going to be a challenge (configuration management with Windows usually is) but we were up for it.</p>
-
-<h2>The Preliminaries</h2>
-
-<h3>Serverspec</h3>
-
-<p>The first step was looking at Serverspec. Serverspec is a Ruby gem that provides extensions to RSpec that allow you to test the actual state of your servers, either locally
-or from the outside in via SSH. What we needed to know was did it support Windows? The answer was thankfully a resounding &ldquo;Yes!&rdquo;. All the <a href="http://serverspec.org/resource_types.html">resource types</a> that you might want to test including file, service and user are available and supported on Windows. There are also a couple of Windows specific ones such as iis_website, Windows_feature and Windows_registry_key. We even added our own to support <a href="https://github.com/serverspec/serverspec/pull/403/files">Windows_scheduled_task</a>. Interestingly Serverspec also supports WinRM as an alternative to SSH when you are testing from the outside-in but we will go back into that later. As long as your using Serverspec > 1.6 you will have all the Windows support you might need.</p>
-
-<h3>Packer</h3>
-
-<p>Step two was to build some Windows Vagrant boxes to test against. The documentation on the <a href="http://github.com/puppetlabs/beaker/wiki">wiki</a> was (at the time) a bit slim when it came
-to building test boxes but we knew we needed Cygwin so we went ahead and created the boxes that we needed. All our boxes are created with Packer <a href="http://github.com/opentable/packer-images">and are open sourced on GitHub</a>. They have also been <a href="http://vagrantcloud.com/opentable">published to Vagrant Cloud</a>
-so you can download pre-built images and get up and running quickly (version 1.x images contain the Cygwin installation).</p>
-
-<h3>Beaker</h3>
-
-<p>So far, so good. We hit a couple of issues in our initial test runs with Beaker: missing module_path, installation using the msi and 32-bit Windows support &ndash; but these were very
-small issues and we were happy to be able to contribute back some changes (<a href="https://github.com/puppetlabs/beaker/pull/234">234</a>,
-<a href="https://github.com/puppetlabs/beaker/pull/235">235</a>, <a href="https://github.com/puppetlabs/beaker/pull/236">236</a>). We were very happy and managed to get out first module tested,
-the <a href="http://github.com/opentable/puppet-puppetversion/">cross-platform module puppet-puppetversion</a> for doing Puppet upgrades.</p>
-
-<h2>The First Example</h2>
-
-<p>Let&rsquo;s take a more detailed look at those puppetversion tests, how we configured Beaker to run and how it changed for the Windows support. I am going to assume at this point that
-you already have some familiarity with Beaker; if not and this is your first steps into the testing tool then I would suggest going back and read <a href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/">part one</a> of this series which contains a little bit of background to this and some useful resources for getting started.</p>
-
-<p>The first thing that we needed to change for Windows was our <a href="https://raw.githubusercontent.com/opentable/puppet-puppetversion/master/spec/spec_helper_acceptance.rb">spec_accepentance.rb file</a>.</p>
-
-<p>Step one was to include the appropriate Serverspec helpers. What this does is let Serverspec know that we are executing on Windows so that underlying resources work correctly. We are also telling
-server spec here to communicate using WinRM.</p>
-
-<pre><code>require 'beaker-rspec/spec_helper'
-require 'beaker-rspec/helpers/serverspec'
-require 'winrm'
-
-hosts.each do |host|
-  case host['platform']
-    when /windows/
-      include Serverspec::Helper::Windows
-      include Serverspec::Helper::WinRM
-
-      version = ENV['PUPPET_VERSION'] || '3.4.3'
-
-      install_puppet(:version =&gt; version)
-
-  else
-    install_puppet
-  end
-end
-
-...
-</code></pre>
-
-<p>The next step is to configure WinRM so that it can connect properly. In our case this meant connecting to Vagrant boxes.</p>
-
-<pre><code>...
-
-RSpec.configure do |c|
-  ...
-  hosts.each do |host|
-    c.host = host
-
-    if host['platform'] =~ /windows/
-      endpoint = "http://127.0.0.1:5985/wsman"
-      c.winrm = ::WinRM::WinRMWebService.new(endpoint, :ssl, :user =&gt; 'vagrant', :pass =&gt; 'vagrant', :basic_auth_only =&gt; true)
-      c.winrm.set_timeout 300
-    end
-
-    ...
-  end
-end
-
-...
-</code></pre>
-
-<p>Now let&rsquo;s look at one of the tests themselves.</p>
-
-<p>The first part should look pretty familiar. We use the face(&lsquo;osfamily&rsquo;) helper in Beaker to make sure that the test itself is only ever executed for our Windows hosts. We are then running an apply_manifest two times in order to validate that the manifest is idempotent. The only different here is that we are specifying a custom Windows-specific module_path.</p>
-
-<pre><code>...
-require 'spec_helper_acceptance'
-
-describe 'puppetversion', :unless =&gt; UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
-  ...
-
-  context 'upgrade on windows', :if =&gt; fact('osfamily').eql?('windows') do
-
-  it 'should install the new version' do
-    pp = &lt;&lt;-PP
-      class { 'puppetversion':
-        version =&gt; '3.5.1',
-        time_delay =&gt; 1
-      }
-    PP
-
-    apply_manifest(pp, :modulepath =&gt; 'C:/ProgramData/PuppetLabs/puppet/etc/modules', :catch_failures =&gt; true)
-    expect(apply_manifest(pp, :modulepath =&gt; 'C:/ProgramData/PuppetLabs/puppet/etc/modules', :catch_failures =&gt; true).exit_code).to be_zero
-  end
-</code></pre>
-
-<p>The next part is where we actually perform the bulk of the tests. In the case of this module, we are testing
-that the scheduled task has run and that Puppet has been upgraded to the appropriate version. We are making use
-of the Windows_scheduled_task resource that we created earlier:</p>
-
-<pre><code>  describe Windows_scheduled_task('puppet upgrade task') do
-    it { should exist }
-  end
-
-  #This will fail if your laptop (and therefor the Vagrant vm) is not running on AC power
-  describe package('puppet') do
-    it {
-      sleep(240) #Wait for the task to execute
-      should be_installed.with_version('3.5.1')
-    }
-  end
-
-  describe Windows_scheduled_task('puppet upgrade task') do
-    it {
-      pp = &lt;&lt;-PP
-        class { 'puppetversion':
-          version =&gt; '3.5.1'
-        }
-      PP
-
-      apply_manifest(pp, :modulepath =&gt; 'C:/ProgramData/PuppetLabs/puppet/etc/modules', :catch_failures =&gt; true)
-
-      should_not exist
-    }
-  end
-end
-</code></pre>
-
-<p>The final part was to configure the nodeset file for the Windows box that we wanted to run our test against:</p>
-
-<pre><code>HOSTS:
-  windows-2008R2-serverstandard-x64:
-  roles:
-    - agent
-  platform: windows-server-amd64
-  box : opentable/win-2008r2-standard-amd64-nocm
-  box_url : opentable/win-2008r2-standard-amd64-nocm
-  hypervisor : vagrant
-  user: vagrant
-CONFIG:
-  log_level: verbose
-  type: git
-</code></pre>
-
-<p>This was working well for us so we continued on to our next module.</p>
-
-<p>The next module we chose to look at was <a href="http://github.com/opentable/puppet-Windowsfeature">puppet-Windowsfeature</a>.</p>
-
-<p>The test we have implemented in this moudle looks like this:</p>
-
-<pre><code>require 'spec_helper_acceptance'
-
-describe 'Windowsfeature' do
-  context 'windows feature should be installed' do
-    it 'should install .net 3.5 feature' do
-
-      pp = &lt;&lt;-PP
-        Windowsfeature { 'as-net-framework': }
-      PP
-
-      apply_manifest(pp, :catch_failures =&gt; true)
-      expect(apply_manifest(pp, :catch_failures =&gt; true).exit_code).to be_zero
-    end
-
-    describe Windows_feature('as-net-framework') do
-      it { should be_installed.by('powershell') }
-    end
-  end
-end
-</code></pre>
-
-<p>This module was a little more tricky. Why? Installing Windows features requires elevated permissions. What this meant is that when Beaker attempted to SSH into our Windows box and our Puppet module ran its underlying PowerShell we were faced with a harsh and non-descriptive <strong>&ldquo;Access is denied error&rdquo;</strong>.</p>
-
-<h2>SSH</h2>
-
-<p>Not all SSH daemons are created equal. To understand the &ldquo;Access is denied error&rdquo; we were seeing and why it happens you need to understand a little bit about how sshd on Cygwin works. You can read all about the details from the Cygwin forum archives (<a href="http://cygwin.com/ml/cygwin/2004-09/msg00087.html">[1]</a>, <a href="http://cygwin.com/ml/cygwin/2006-06/msg00862.html">[2]</a>, <a href="http://thread.gmane.org/gmane.os.cygwin/128472">[3]</a>, <a href="https://cygwin.com/cygwin-ug-net/ntsec.html#ntsec-nopasswd1">[4]</a>) but TLDR; is that you need to use a username and password rather than private key authentication in order to get reasonable admin permissions. Having said all that, and having read all the documentation about the issue above we were still facing the same problem so we had to look at alternative options.</p>
-
-<p>There are several paths you can go down and I want to tell you about them here to save you a similar yak shave:</p>
-
-<h3>OpenSSH for Windows</h3>
-
-<p>A thinner alternative than having to install the full Cygwin stack using OpenSSH for Windows is the same OpenSSH implementation. The issue here however is that it doesn’t contain some of the Unix binaries required for Beaker to function. You can work around this if you have Git for Windows installed on your machine by putting its bin directory on your path but overall this doesn’t really solve any of the issues we were facing. We get a lighter footprint on the machine but still the same error as before</p>
-
-<h3>Bitvise SSH Server</h3>
-
-<p><a href="http://www.bitvise.com/ssh-server-download">Bitvise SSH Server</a> is an alternative SSH implementation (of which there are many more listed on <a href="http://en.wikipedia.org/wiki/Comparison_of_SSH_servers">Wikipedia</a>). It resolves the permissions issue (it deals with the elevation internally) and has the benefit that it provides a proper command shell rather than a emulated bash shell. It also means we don’t have to have any binaries on there that we don’t need &ndash; a big plus. It would mean that we needed to make a few small changes to Beaker in order to replace some of the internal bash command with Windows alternatives but this was not a big task to do and is something we could contribute back.</p>
-
-<h3>WinRM</h3>
-
-<p>Could we do away with SSH altogether? It eliminates the problem we were facing and also means we don’t have to install anything on our Windows boxes &ndash; it’s all built in already. This would be an ideal solution but does all our tooling support it? I’ll discuss this in a little bit more detail later.</p>
-
-<h3>Not use Beaker at all</h3>
-
-<p>The nuclear option. If we couldn’t get anything to work we could not use Beaker at all, we could try and use Test Kitchen (with <a href="https://github.com/neillturner/kitchen-puppet">test-kitchen-puppet</a>) or some hand-rolled solution. Not the best idea, for us or the community but we though we might have to go down this path at one point. We even added <a href="https://github.com/liamjbennett/kitchen-puppet/tree/Windows_support">Windows support to test-kitchen-puppet</a> as part our diversion in this direction.</p>
-
-<h2>What worked in the end:</h2>
-
-<p>So we went down all these avenues and decided that the best option for us was to use Bitvise. It fixed the problem we were facing but it meant that we had some work ahead of us:
-1. We had to rebuild all our Windows images with Bitvise rather than Cygwin (<a href="https://vagrantcloud.com/opentable">vagrantcloud.com/opentable</a> &ndash; version 2.x images now have this)
-2. We had to make some changes to Beaker to support using a standard Windows command shell rather than a Unix shell:</p>
-
-<ul>
-<li> <a href="https://github.com/puppetlabs/beaker/pull/419">https://github.com/puppetlabs/beaker/pull/419</a> – configure_puppet method</li>
-<li> <a href="https://github.com/puppetlabs/beaker/pull/420">https://github.com/puppetlabs/beaker/pull/419</a> – host_entry method</li>
-<li> <a href="https://github.com/puppetlabs/beaker/pull/418">https://github.com/puppetlabs/beaker/pull/419</a> – Vagrant box_version</li>
-<li> <a href="https://github.com/puppetlabs/beaker/pull/424">https://github.com/puppetlabs/beaker/pull/419</a> – Bitvise SSH</li>
-</ul>
-
-
-<p>With it finally working we had something that looked like this:</p>
-
-<h2>Second Example</h2>
-
-<p>Well with all the changes we implemented there were actually very few changes that we needed to make to our actual tests code.</p>
-
-<p>No adjustments are needed for our spec_acceptance.rb file.</p>
-
-<p>No adjustments are required for our spec file (show above).</p>
-
-<p>The main change we made was in the nodeset file:</p>
-
-<pre><code>HOSTS:
-  win-2008R2-std:
-  roles:
-    - default
-    - agent
-  platform: Windows-server-amd64
-  box: opentable/win-2008r2-standard-amd64-nocm
-  hypervisor: vagrant
-  user: vagrant
-  ip: '10.255.33.129'
-  communicator: bitvise
-CONFIG:
-  log_level: verbose
-  type: git
-</code></pre>
-
-<p>The biggest change you will see here is the addition of the &lsquo;communicator&rsquo; option. What this does is to allows us to actively select to use either Cygwin or Bitvise. This means that in our case we want to use Bitvise SSH as this fixes the error we were seeing and it&rsquo;s the version of SSH now installed on your newer Vagrant boxes. Bitvise is the only supported option at the moment (in our Beaker fork) but it is likely that this will soon support WinRM as well.</p>
-
-<p>Things to note here:
-* The name of the Windows host defined in the node set must be the same as the name of the Windows hostname &ndash; if it is not then when Vagrant boots up it will change the hostname
-which will put Windows into a &ldquo;restart pending&rdquo; state.</p>
-
-<h2>The Future and WinRM</h2>
-
-<p>Most modern versions of Windows server have WinRM enabled by default but if you are using an older version or you are attempting to test a client then you will need to make sure
-that this is enabled on your boxes. This is still the direction that we would like to go long-term as it is the most Windows-friendly approach but there are few road blocks in
-the way of doing so right now:</p>
-
-<ol>
-<li><p>Packer doesn’t set support WinRM as a communication method. This is being actively worked on and you can follow the work here:</p>
-
-<ul>
-<li><a href="https://github.com/mitchellh/packer/issues/451">https://github.com/mitchellh/packer/issues/451</a></li>
-<li><a href="https://github.com/dylanmei/packer-communicator-winrm">https://github.com/dylanmei/packer-communicator-winrm</a></li>
-</ul>
-</li>
-<li><p>Beaker doesn’t yet support WinRM as a communication protocol. This is currently being discussed internally after we raised the idea. The work that we have completed for
-Bitvise support will go some way it allowing other providers, such as wirm going forward and therefore WinRM support should be coming in the near future.</p></li>
-</ol>
-
-
-<h2>Summary</h2>
-
-<p>Using Beaker to test modules for Windows has been a long and complicated journey. I have attempted to cover here all the problems that you might run into when trying to do this for yourselves and provide some good examples to get you going. You will soon see this being rolled out to all of the OpenTable open source modules shortly so you will have some complete working examples to reference. We will continue to work with PuppetLabs in improving Beaker (and its Windows support) in order to make this a easy process for everyone.</p>
-
-<p>For any questions or comments then please reach out to me on twitter <a href="https://twitter.com/liamjbennett">@liamjbennett</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -2220,6 +2001,10 @@ Bitvise support will go some way it allowing other providers, such as wirm going
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/11/28/proxying-with-hapi/">Proxying Services With Hapi.js</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/11/26/hobknob-v2-dot-0-a-new-dimension/">Hobknob v2.0: A new dimension</a>
       </li>
     
@@ -2233,10 +2018,6 @@ Bitvise support will go some way it allowing other providers, such as wirm going
     
       <li class="post">
         <a href="/blog/2014/10/22/hobknob-v1-dot-0-now-with-authorization/">Hobknob v1.0: Now with authorization</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/10/06/puppetconf-2014-part-3/">PuppetConf 2014 - Part 3</a>
       </li>
     
   </ul>

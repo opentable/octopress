@@ -4,7 +4,7 @@
   <title><![CDATA[OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-12-03T16:09:17+00:00</updated>
+  <updated>2014-12-08T23:26:14+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -12,6 +12,86 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Supporting IE8 in the OpenTable redesign]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/12/08/supporting-ie8-in-the-opentable-redesign/"/>
+    <updated>2014-12-08T21:14:57+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/12/08/supporting-ie8-in-the-opentable-redesign</id>
+    <content type="html"><![CDATA[<p>We&rsquo;re really <a href="http://blog.opentable.com/2014/opentables-website-re-designed-re-architected-re-imagined/">proud to have released</a> last week our redesigned <a href="http://www.opentable.co.uk">OpenTable</a> site, the culmination of months of hard work from many talented people here in London and in San Francisco.</p>
+
+<p>However despite killing off our old site and its 2004 design, 2.8% of our visitors could have been crying into their keyboard as a far worse opentable.co.uk filled their screen.</p>
+
+<p>That version of OpenTable was our new responsive site viewed in Internet Explorer 8.</p>
+
+<p><img src="http://tech.opentable.co.uk/images/posts/redesign-ie8.png" alt="Our redesign before we optimised for IE8" /></p>
+
+<p>The fundamental issue is that IE8 doesn&rsquo;t support media queries so the age-old browser would try to stretch our <em>mobile-first</em> responsive design as wide as it could go &ndash; not great across a 27&#8221; Thunderbolt.</p>
+
+<p>To solve the problem we first tried the <a href="https://github.com/scottjehl/Respond">Respond.js</a> polyfill but this didn&rsquo;t work as we&rsquo;d hoped.  The main issue appeared to be that because we serve our CSS and JS on a separate sub-domain we fell foul of the browser&rsquo;s cross-domain security.  We followed the Respond.js instructions to solve this but having no luck we looked for alternatives.</p>
+
+<h2>Legacssy</h2>
+
+<p>Further Googling lead us to <a href="https://github.com/robinpokorny/grunt-legacssy">Legacssy</a>. With this Grunt task we could create a IE8-only stylesheet and not have to serve extra JS and cross-domain proxy files to all visitors.</p>
+
+<p>Our existing process is to create our core CSS with an <code>app.scss</code> file and <a href="https://github.com/sindresorhus/grunt-sass">grunt-sass</a>.  Our additional step was to create an <code>app_ie8.scss</code> file, parse it with <code>grunt-sass</code> like before, but then also run it through Legacssy.</p>
+
+<h3>Our app.scss file</h3>
+
+<pre><code>@import 'normalize';
+
+@import 'components/global';
+
+@import
+  'components/icons',
+  'components/buttons',
+  'components/calendar',
+  'components/forms',
+  'components/pagination',
+  'components/star-rating';
+
+@import
+  'partials/footer',
+  'partials/header',
+  'partials/location-picker';
+</code></pre>
+
+<h3>And our app_ie8.scss file</h3>
+
+<pre><code>@import ‘app';
+@import 'browsers/_ie8.scss';
+</code></pre>
+
+<p>This process left us with a duplicate of the main site CSS that would be IE8 friendly &ndash; and as you can see we are also able to merge in an IE8 specific stylesheet with further overrides.  All we now needed to was serve this inside conditional comments after the main stylesheet, and CSS specificity would ensure our IE rules overwrite the media queries.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;!--[if lte IE 8]&gt;
+</span><span class='line'>&lt;link rel="stylesheet" href="//eu-srs.opentable.com/content/static/css/app_ie8.css" /&gt;
+</span><span class='line'>&lt;![endif]—&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Drawbacks</h2>
+
+<p>We are very happy with this solution as it generates the IE8 fixes as part of our automated build with no extra effort.  The only obvious negative is for the IE8 visitors who will effectively be downloading the same stylesheet twice, but if they are routinely browsing the web with IE8 this could be the least of their worries.</p>
+
+<h2>Conclusion</h2>
+
+<p>We&rsquo;re really proud of our new site; we&rsquo;re still ironing out some kinks but we hope that it&rsquo;s good enough for those of you who visit us with Internet Explorer 8 (probably through no fault of your own).</p>
+
+<p>For the record, here a couple of other issues we found which may help other intrepid developers with their IE debugging in 2015 and beyond.</p>
+
+<h3>Other IE8 issues</h3>
+
+<ul>
+<li>The other unsupported CSS values were rem units and RGBA colours.  After running Legacssy we used <a href="https://github.com/robwierzbowski/grunt-pixrem">pixrem.js</a> to replace rems with pixels and a custom task to replace RGBA values with their HEX equivalents.</li>
+<li>IE11&rsquo;s F12 developer tools don&rsquo;t render identically to native IE8. We used Microsoft&rsquo;s excellent <a href="http://www.modern.ie">modern.ie</a> site to download virtual machines with Windows 7 and IE8.</li>
+<li>We only tested on Windows 7 as this makes up 66% of our IE8 visitors. The remainder are on different operating systems which collectively only make up 0.95% of our total visitors; this is below our threshold for support.</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Proxying Services With Hapi.js]]></title>
@@ -2602,66 +2682,6 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
 <p>The upshot, for me at least, is that you shouldn&rsquo;t be afraid to shirk convention when the project demands it. By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster <em>without</em> breaking stuff.</p>
 
 <blockquote><p>By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster <em>without</em> breaking stuff.</p></blockquote>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Upgrading Puppet with Puppet]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet/"/>
-    <updated>2014-04-07T13:23:00+01:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2014/04/07/upgrading-puppet-with-puppet</id>
-    <content type="html"><![CDATA[<p>As part of one of our recent <a href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
-
-<p>This should be a very straightforward task to complete because this is one of the core resources that Puppet manages &ndash; the upgrading of packages. With that in mind, putting <code>package { ‘puppet’: ensure =&gt; $version }</code> in one of our base profiles would be all that was needed but alas it was not. In this blog I want to take you through the history, the bugs, the platforms and the edge-cases that make performing an in-place upgrade of Puppet a more complex task that it ought to be.</p>
-
-<h2>Debian</h2>
-
-<p>Like many, Ubuntu is our Debian derivative of choice for much of our newer production infrastructure. Debian, has the apt package management system and PuppetLabs provide the required deb packages as well as hosting their own apt repository to point our systems to. The main point of package management systems is that they take care of the dependency hell and the awkward upgrade paths all from within the confines of the package itself, and that is what happens with the PuppetLabs packages &ndash; great.</p>
-
-<p>The problem that we had in some of our systems was that they had been built without the PuppetLabs apt repository. This means that they picked up a slightly older version of the Puppet packages from the main Ubuntu distribution repositories and didn’t have access to the newer versions of the Puppet packages. Ok, so we solved that with the following code:</p>
-
-<pre><code>  exec { 'rm_duplicate_puppet_source':
-    path    =&gt; '/usr/local/bin:/bin:/usr/bin',
-    command =&gt; 'sed -i \'s:deb\ http\:\/\/apt.puppetlabs.com\/ precise main::\' /etc/apt/sources.list',
-    onlyif  =&gt; 'grep \'deb http://apt.puppetlabs.com/ precise main\' /etc/apt/sources.list',
-  }
-
-  apt::source { 'puppetlabs':
-    location    =&gt; 'http://apt.puppetlabs.com',
-    repos       =&gt; 'main dependencies',
-    key         =&gt; '4BD6EC30',
-    key_content =&gt; template('puppetversion/puppetlabs.gpg'),
-    require     =&gt; Exec['rm_duplicate_puppet_source']
-  }
-</code></pre>
-
-<p>We&rsquo;re making use of the <a href="http://forge.puppetlabs.com/puppetlabs/apt">puppetlabs/apt</a> module here. This removes the old reference and adding in the new apt source. Then we just add the package and ensure the version we’re upgrading. Perfect.</p>
-
-<h2>RedHat</h2>
-
-<p>Same problem different OS family &ndash; this time we had some older CentOS machines that needed fixing. Thankfully there is also a module <a href="http://forge.puppetlabs.com/stahnma/puppetlabs_yum">stahnma/puppetlabs_yum</a> for the yum repositories. Add that in, add the package resource and start upgrading. Phew! This seems like it’s getting easier.</p>
-
-<h2>Windows</h2>
-
-<p>Many of you will be following the work of OpenTable closely because of our work with Puppet on Windows. We have a pretty large Windows infrastructure, with a wide range of client and server versions deployed ranging from 2012 R2 all the way back to the historic times of 2003. Windows also has its own package format, the msi, and PuppetLabs also provides all versions of Puppet packaged as msi files.</p>
-
-<p>This is where it gets a little tricky. The big problem we had was that the Windows provider, prior to 3.4.0 was not versionable (<a href="http://projects.puppetlabs.com/issues/21133">issues/21133</a>) that means that <code>package { ‘puppet’: ensure =&gt; installed }</code> would work but <code>package { ‘puppet’: ensure =&gt; $version }</code> would not &ndash; the exact thing we were trying to do! The only way to resolve that problem is to uninstall and reinstall the package with the correct version.</p>
-
-<p>Now there are a lot of problems with the uninstall/reinstall approach. Firstly we had to script the process because Windows only allows one installer to run at any one time meaning that you had to wait for the uninstall to finish before that subsequent install takes place. Secondly we have to deal with Puppet runs and make sure that when the upgrade script runs that we wait for any active Puppet runs to complete before trying to uninstall Puppet. Next we have to trigger our script using a scheduled task.</p>
-
-<p>Our experience with scheduled tasks has been painful. We attempted using the <a href="http://docs.puppetlabs.com/references/latest/type.html#scheduledtask">scheduled_task</a> resource type but soon realised that this wasn’t going to work for us. The resource type is good if you want to create a task to run at a fixed point in time but there is no way to provide a relative time e.g. “in five mins from now”. Also on occasion the task would not run or would silently fail &ndash; this was almost certainly due to another Puppet issue we discovered (<a href="https://tickets.puppetlabs.com/browse/PUP-1368">PUP-1368</a>). Without being able to use the scheduled task resource we were again back in the land of Powershell using a script to create the scheduled task that would call our upgrade script.</p>
-
-<p>So if you&rsquo;re keeping up we now have something like this:</p>
-
-<p>Puppet &ndash;> calls script to create scheduled task &ndash;> scheduled task calls upgrade script &ndash;> upgrade script upgrade Puppet and triggers next Puppet run &ndash;> Puppet</p>
-
-<p>Nice little cycle there, but it works.</p>
-
-<p>One final issue worth mentioning is that for Windows 2003 servers you’ll need to actually have Powershell installed. Luckily, we also have a module for that <a href="http://forge.puppetlabs.com/dcharleston/powershell">dcharleston/powershell</a></p>
-
-<h2>Summary</h2>
-
-<p>Well we’ve discussed some of the pain points, and we’ve discussed them in detail with PuppetLabs themselves. The advice here is to upgrade to Puppet 3.4.3 as soon as you can as many of these issues are resolved in that version. For those of you not on that version yet then we have you covered with our puppetversion module.</p>
 ]]></content>
   </entry>
   

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Flux | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/flux/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2015-01-01T15:54:42+00:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
+  <author>
+    <name><![CDATA[OpenTable]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Explaining Flux architecture with macgyver.js]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2015/01/01/explaining-flux-architecture-with-macgyver-dot-js/"/>
+    <updated>2015-01-01T15:33:46+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2015/01/01/explaining-flux-architecture-with-macgyver-dot-js</id>
+    <content type="html"><![CDATA[<h2>What is Flux?</h2>
+
+<p><a href="https://github.com/facebook/flux">Flux</a> is an application architectural pattern developed by Facebook. It was developed to solve some of the complexities of the MVC pattern when used at scale by favouring a uni-directional approach. It is a pattern and not a technology or framework.</p>
+
+<p><img src="/images/posts/mvc-scale.png" alt="MVC scale issue" /></p>
+
+<p>When applications that use the model-view-controller (MVC) pattern at any scale it becomes difficult to maintain consistent data across multiple views. In particular the case whereby flow between models and views is not uni-directional and may require increasing logic to maintain parity between views when model data is updated. Facebook hit this issue several times and in particular with their unseen count (an incremented value of unseen messages which is updated by several UI chat components). It wasn&rsquo;t until they realised that the MVC pattern accomodated the complexity that they stepped back from the problem and addressed the architecture.</p>
+
+<p>Flux is intentionally unidirectional.</p>
+
+<p><img src="/images/posts/flux.png" alt="flux" /></p>
+
+<p>Key to this architecture is the dispatcher. The dispatcher forms the gatekeeper that all actions must go through. When a view, or views, wish to do something they fire an action which the dispatcher correctly routes via registered callbacks made by the stores.</p>
+
+<p>Stores are responsible for the data and respond to callbacks from the dispatcher. When data is changed they emit change events that views listen to to notify them that data has changed. The view can then respond accordingly (for example to update/rebind).</p>
+
+<p>This will become more obvious when we go through the macgyver.js example.</p>
+
+<h2>What is macgyver.js?</h2>
+
+<p><a href="https://github.com/stevejhiggs/macgyver">Macgyver</a> is a project fork of <a href="http://mullet.io/">mullet.io</a> by <a href="https://github.com/stevejhiggs">Steve Higgs</a>. Mullet is an aggregate stack to get started using Node.js with Facebooks <a href="http://facebook.github.io/react/">React</a> framework on the client and Walmarts <a href="http://walmartlabs.github.io/hapi/">hapi.js</a> on the server.</p>
+
+<p>Steve initially swapped out grunt for gulp, updated hapi and react and fixed some issues with the React dev tools. I then added another example to incorporate the Flux architecture, which you can see <a href="https://github.com/stevejhiggs/macgyver/tree/master/reactPlusFlux">here</a>. As React was also developed by Facebook you can begin to see how flux compliments its design and component based model.</p>
+
+<h2>The macgyver.js Flux example</h2>
+
+<p>The demo is a very simple quiz. In true Macgyver style he is faced with abnormally unrealistic situations armed with impossibly useless &ldquo;every-day&rdquo; items to escape the situation. If you select the correct tool, you proceed to the next situation.</p>
+
+<p><img class="left" src="/images/posts/structure.png" width="200"></p>
+
+<p>Let&rsquo;s start by going through the uni-directional flow above and at the same time look at the code and its structure.</p>
+
+<p>When the game is first loaded the view fires an action to get the next situation. This is then fired off to the dispatcher, as are all actions.</p>
+
+<p>```javascript
+receiveSituations: function(data) {</p>
+
+<pre><code>AppDispatcher.handleViewAction({
+    actionType: MacgyverConstants.RECEIVE_SITUATIONS_DATA,
+        data: data
+});
+</code></pre>
+
+<p>},</p>
+
+<p>```</p>
+
+<p>The store registers to listen for events from the dispatcher with a registered callback. It has the job of loading the situation data and emitting an event when this data is changed. In this case the SituationStore.js has the job of setting the current situation for the view to render.</p>
+
+<p>```javascript
+AppDispatcher.register(function(payload){</p>
+
+<pre><code>var action = payload.action;
+
+switch(action.actionType) {
+    case MacgyverConstants.RECEIVE_SITUATIONS_DATA:
+        loadSituationsData(action.data);
+        break;
+    case MacgyverConstants.CHECK_ANSWER:
+        checkAnswer(action.data);
+        break;
+    default:
+        return true;
+}
+
+SituationStore.emitChange();
+
+return true;
+</code></pre>
+
+<p>});
+```</p>
+
+<p>The React view (in this case Game.jsx) registers an event listener for these changes in the SituationStore using the React &ldquo;componentDidMount&rdquo; function. When the situation is received by the component it rebinds to the data by loading the situaion and the possible answers.</p>
+
+<p>```javascript
+var Game = React.createClass({</p>
+
+<pre><code>componentDidMount: function () {
+    SituationStore.addChangeListener(this._onChange);
+    ToolStore.addChangeListener(this._onChange);
+},
+componentWillUnmount: function() {
+    SituationStore.removeChangeListener(this._onChange);
+    ToolStore.removeChangeListener(this._onChange);
+},
+render: ...
+</code></pre>
+
+<p>});
+```</p>
+
+<p>When the user selects an answer this fires off another &ldquo;CHECK_ANSWER&rdquo; event to the dispatcher. The situation store recieves this event with the answer in the payload and checks whether the answer selected is the correct one. If it is it updates the situation and emits a changes event to which the view receives and rebinds the view to the new situation.</p>
+
+<h2>Conclusion</h2>
+
+<p>Flux can be quite difficult to fathom eventhough it is quite a simple architectural pattern. In this small example it does initially feel overly complex and indeed it probably is. The pattern was designed to solve issues that occur at large scale in MVC applications due to the increased amound of bi-directional dependencies between views and models. For smaller applications it could be seen as over-engineered, however I really like the simplicity in the uni-directional flow and the assurance that unit tests are almost always going to mimic the state changes possible in your application because of the guarantee of a simple flow of data.</p>
+]]></content>
+  </entry>
+  
+</feed>

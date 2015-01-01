@@ -1,0 +1,388 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Explaining Flux architecture with macgyver.js - OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
+
+  
+  <meta name="description" content="What is Flux? Flux is an application architectural pattern developed by Facebook. It was developed to solve some of the complexities of the MVC &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.opentable.co.uk/blog/2015/01/01/explaining-flux-architecture-with-macgyver-dot-js/">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
+  <script type="text/javascript" src="http://use.typekit.com/syx2vfn.js"></script>
+  <script type="text/javascript">try { Typekit.load(); } catch (e) { }</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
+  
+    <h2>The technology blog for OpenTable UK.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/authors">Authors</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Explaining Flux architecture with macgyver.js</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"></span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-01T15:33:46+00:00" pubdate data-updated="true">Jan 1<span>st</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>What is Flux?</h2>
+
+<p><a href="https://github.com/facebook/flux">Flux</a> is an application architectural pattern developed by Facebook. It was developed to solve some of the complexities of the MVC pattern when used at scale by favouring a uni-directional approach. It is a pattern and not a technology or framework.</p>
+
+<p><img src="/images/posts/mvc-scale.png" alt="MVC scale issue" /></p>
+
+<p>When applications that use the model-view-controller (MVC) pattern at any scale it becomes difficult to maintain consistent data across multiple views. In particular the case whereby flow between models and views is not uni-directional and may require increasing logic to maintain parity between views when model data is updated. Facebook hit this issue several times and in particular with their unseen count (an incremented value of unseen messages which is updated by several UI chat components). It wasn&rsquo;t until they realised that the MVC pattern accomodated the complexity that they stepped back from the problem and addressed the architecture.</p>
+
+<p>Flux is intentionally unidirectional.</p>
+
+<p><img src="/images/posts/flux.png" alt="flux" /></p>
+
+<p>Key to this architecture is the dispatcher. The dispatcher forms the gatekeeper that all actions must go through. When a view, or views, wish to do something they fire an action which the dispatcher correctly routes via registered callbacks made by the stores.</p>
+
+<p>Stores are responsible for the data and respond to callbacks from the dispatcher. When data is changed they emit change events that views listen to to notify them that data has changed. The view can then respond accordingly (for example to update/rebind).</p>
+
+<p>This will become more obvious when we go through the macgyver.js example.</p>
+
+<h2>What is macgyver.js?</h2>
+
+<p><a href="https://github.com/stevejhiggs/macgyver">Macgyver</a> is a project fork of <a href="http://mullet.io/">mullet.io</a> by <a href="https://github.com/stevejhiggs">Steve Higgs</a>. Mullet is an aggregate stack to get started using Node.js with Facebooks <a href="http://facebook.github.io/react/">React</a> framework on the client and Walmarts <a href="http://walmartlabs.github.io/hapi/">hapi.js</a> on the server.</p>
+
+<p>Steve initially swapped out grunt for gulp, updated hapi and react and fixed some issues with the React dev tools. I then added another example to incorporate the Flux architecture, which you can see <a href="https://github.com/stevejhiggs/macgyver/tree/master/reactPlusFlux">here</a>. As React was also developed by Facebook you can begin to see how flux compliments its design and component based model.</p>
+
+<h2>The macgyver.js Flux example</h2>
+
+<p>The demo is a very simple quiz. In true Macgyver style he is faced with abnormally unrealistic situations armed with impossibly useless &ldquo;every-day&rdquo; items to escape the situation. If you select the correct tool, you proceed to the next situation.</p>
+
+<p><img class="left" src="/images/posts/structure.png" width="200"></p>
+
+<p>Let&rsquo;s start by going through the uni-directional flow above and at the same time look at the code and its structure.</p>
+
+<p>When the game is first loaded the view fires an action to get the next situation. This is then fired off to the dispatcher, as are all actions.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">receiveSituations</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">AppDispatcher</span><span class="p">.</span><span class="nx">handleViewAction</span><span class="p">({</span>
+</span><span class='line'>          <span class="nx">actionType</span><span class="o">:</span> <span class="nx">MacgyverConstants</span><span class="p">.</span><span class="nx">RECEIVE_SITUATIONS_DATA</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">data</span><span class="o">:</span> <span class="nx">data</span>
+</span><span class='line'>      <span class="p">});</span>
+</span><span class='line'><span class="p">},</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The store registers to listen for events from the dispatcher with a registered callback. It has the job of loading the situation data and emitting an event when this data is changed. In this case the SituationStore.js has the job of setting the current situation for the view to render.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">AppDispatcher</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">payload</span><span class="p">){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">action</span> <span class="o">=</span> <span class="nx">payload</span><span class="p">.</span><span class="nx">action</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">switch</span><span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">actionType</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">case</span> <span class="nx">MacgyverConstants</span><span class="p">.</span><span class="nx">RECEIVE_SITUATIONS_DATA</span><span class="o">:</span>
+</span><span class='line'>          <span class="nx">loadSituationsData</span><span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+</span><span class='line'>          <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">case</span> <span class="nx">MacgyverConstants</span><span class="p">.</span><span class="nx">CHECK_ANSWER</span><span class="o">:</span>
+</span><span class='line'>          <span class="nx">checkAnswer</span><span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+</span><span class='line'>          <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">default</span><span class="o">:</span>
+</span><span class='line'>          <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">SituationStore</span><span class="p">.</span><span class="nx">emitChange</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The React view (in this case Game.jsx) registers an event listener for these changes in the SituationStore using the React &ldquo;componentDidMount&rdquo; function. When the situation is received by the component it rebinds to the data by loading the situaion and the possible answers.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">Game</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">componentDidMount</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">SituationStore</span><span class="p">.</span><span class="nx">addChangeListener</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_onChange</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">ToolStore</span><span class="p">.</span><span class="nx">addChangeListener</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_onChange</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">componentWillUnmount</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">SituationStore</span><span class="p">.</span><span class="nx">removeChangeListener</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_onChange</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">ToolStore</span><span class="p">.</span><span class="nx">removeChangeListener</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_onChange</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">render</span><span class="o">:</span> <span class="p">...</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When the user selects an answer this fires off another &ldquo;CHECK_ANSWER&rdquo; event to the dispatcher. The situation store recieves this event with the answer in the payload and checks whether the answer selected is the correct one. If it is it updates the situation and emits a changes event to which the view receives and rebinds the view to the new situation.</p>
+
+<h2>Conclusion</h2>
+
+<p>Flux can be quite difficult to fathom eventhough it is quite a simple architectural pattern. In this small example it does initially feel overly complex and indeed it probably is. The pattern was designed to solve issues that occur at large scale in MVC applications due to the increased amound of bi-directional dependencies between views and models. For smaller applications it could be seen as over-engineered, however I really like the simplicity in the uni-directional flow and the assurance that unit tests are almost always going to mimic the state changes possible in your application because of the guarantee of a simple flow of data.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-01T15:33:46+00:00" pubdate data-updated="true">Jan 1<span>st</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/flux/'>Flux</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>, <a class='category' href='/blog/categories/macgyver/'>macgyver</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.opentable.co.uk/blog/2015/01/01/explaining-flux-architecture-with-macgyver-dot-js/" data-via="opentabletechuk" data-counturl="http://tech.opentable.co.uk/blog/2015/01/01/explaining-flux-architecture-with-macgyver-dot-js/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/12/08/supporting-ie8-in-the-opentable-redesign/" title="Previous Post: Supporting IE8 in the OpenTable redesign">&laquo; Supporting IE8 in the OpenTable redesign</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/01/01/explaining-flux-architecture-with-macgyver-dot-js/">Explaining Flux architecture with macgyver.js</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/08/supporting-ie8-in-the-opentable-redesign/">Supporting IE8 in the OpenTable redesign</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/28/proxying-with-hapi/">Proxying Services With Hapi.js</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/26/hobknob-v2-dot-0-a-new-dimension/">Hobknob v2.0: A new dimension</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/08/interacting-with-elasticsearch-using-hubot/">Interacting with ElasticSearch using Hubot</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2015 - OpenTable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -3,7 +3,7 @@ layout: post
 title: "Explaining Flux architecture with macgyver.js"
 date: 2015-01-01 15:33:46 +0000
 comments: true
-categories: [javascript, macgyver, Flux]
+categories: [Javascript, Macgyver, Flux]
 ---
 
 
@@ -27,9 +27,9 @@ This will become more obvious when we go through the macgyver.js example.
 
 ## What is macgyver.js?
 
-[Macgyver](https://github.com/stevejhiggs/macgyver) is a project fork of [mullet.io](http://mullet.io/) by [Steve Higgs](https://github.com/stevejhiggs). Mullet is an aggregate stack to get started using Node.js with Facebooks [React](http://facebook.github.io/react/) framework on the client and Walmarts [hapi.js](http://walmartlabs.github.io/hapi/) on the server. 
+[Macgyver](https://github.com/stevejhiggs/macgyver) is a project fork of [mullet.io](http://mullet.io/) by [Steve Higgs](https://github.com/stevejhiggs). Mullet is an aggregate stack to get started using Node.js with Facebook's [React](http://facebook.github.io/react/) framework on the client and Walmart's [hapi.js](http://walmartlabs.github.io/hapi/) on the server. 
 
-Steve initially swapped out grunt for gulp, updated hapi and react and fixed some issues with the React dev tools. I then added another example to incorporate the Flux architecture, which you can see [here](https://github.com/stevejhiggs/macgyver/tree/master/reactPlusFlux). As React was also developed by Facebook you can begin to see how flux compliments its design and component based model.
+Steve initially swapped out Grunt for Gulp, updated hapi and React and fixed some issues with the React dev tools. I then added another example to incorporate the Flux architecture, which you can see [here](https://github.com/stevejhiggs/macgyver/tree/master/reactPlusFlux). As React was also developed by Facebook you can begin to see how flux compliments its design and component based model.
 
 ## The macgyver.js Flux example
 
@@ -74,7 +74,7 @@ AppDispatcher.register(function(payload){
 });
 ```
 
-The React view (in this case Game.jsx) registers an event listener for these changes in the SituationStore using the React "componentDidMount" function. When the situation is received by the component it rebinds to the data by loading the situaion and the possible answers.
+The React view (in this case Game.jsx) registers an event listener for these changes in the SituationStore using the React "componentDidMount" function. When the situation is received by the component it rebinds to the data by loading the sitution and the possible answers.
 
 ```javascript
 var Game = React.createClass({

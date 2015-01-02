@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: javascript | OpenTable Tech UK Blog]]></title>
+  <title><![CDATA[Category: Javascript | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2015-01-01T19:41:17+00:00</updated>
+  <updated>2015-01-02T15:31:17+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -38,9 +38,9 @@
 
 <h2>What is macgyver.js?</h2>
 
-<p><a href="https://github.com/stevejhiggs/macgyver">Macgyver</a> is a project fork of <a href="http://mullet.io/">mullet.io</a> by <a href="https://github.com/stevejhiggs">Steve Higgs</a>. Mullet is an aggregate stack to get started using Node.js with Facebooks <a href="http://facebook.github.io/react/">React</a> framework on the client and Walmarts <a href="http://walmartlabs.github.io/hapi/">hapi.js</a> on the server.</p>
+<p><a href="https://github.com/stevejhiggs/macgyver">Macgyver</a> is a project fork of <a href="http://mullet.io/">mullet.io</a> by <a href="https://github.com/stevejhiggs">Steve Higgs</a>. Mullet is an aggregate stack to get started using Node.js with Facebook&rsquo;s <a href="http://facebook.github.io/react/">React</a> framework on the client and Walmart&rsquo;s <a href="http://walmartlabs.github.io/hapi/">hapi.js</a> on the server.</p>
 
-<p>Steve initially swapped out grunt for gulp, updated hapi and react and fixed some issues with the React dev tools. I then added another example to incorporate the Flux architecture, which you can see <a href="https://github.com/stevejhiggs/macgyver/tree/master/reactPlusFlux">here</a>. As React was also developed by Facebook you can begin to see how flux compliments its design and component based model.</p>
+<p>Steve initially swapped out Grunt for Gulp, updated hapi and React and fixed some issues with the React dev tools. I then added another example to incorporate the Flux architecture, which you can see <a href="https://github.com/stevejhiggs/macgyver/tree/master/reactPlusFlux">here</a>. As React was also developed by Facebook you can begin to see how flux compliments its design and component based model.</p>
 
 <h2>The macgyver.js Flux example</h2>
 
@@ -91,7 +91,7 @@ return true;
 <p>});
 ```</p>
 
-<p>The React view (in this case Game.jsx) registers an event listener for these changes in the SituationStore using the React &ldquo;componentDidMount&rdquo; function. When the situation is received by the component it rebinds to the data by loading the situaion and the possible answers.</p>
+<p>The React view (in this case Game.jsx) registers an event listener for these changes in the SituationStore using the React &ldquo;componentDidMount&rdquo; function. When the situation is received by the component it rebinds to the data by loading the sitution and the possible answers.</p>
 
 <p>```javascript
 var Game = React.createClass({</p>

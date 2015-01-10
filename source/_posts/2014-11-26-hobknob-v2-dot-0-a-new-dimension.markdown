@@ -4,7 +4,7 @@ title: "Hobknob v2.0: A new dimension"
 date: 2014-11-26 10:11:37 +0000
 comments: true
 author: criddle
-categories:  [Hobknob]
+categories: [Hobknob]
 ---
 
 Sometimes there is the requirement for more granularity when toggling a feature switch.

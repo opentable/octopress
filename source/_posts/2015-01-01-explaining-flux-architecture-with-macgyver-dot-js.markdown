@@ -4,7 +4,7 @@ title: "Explaining Flux architecture with macgyver.js"
 date: 2015-01-01 15:33:46 +0000
 comments: true
 author: rtomlinson
-categories: [Javascript, Macgyver, Flux]
+categories: [JavaScript, Macgyver, Flux]
 ---
 
 

@@ -9,7 +9,8 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="The ability to dynamically turn features on/off in software without the need to redeploy code is extremely beneficial. Whether you are trialing a new &hellip;">
+  <meta name="description" content="It has been one week since our attendance at this years PuppetConf and we have just now caught up on all the great talks that were
+given and the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -25,8 +26,8 @@
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
-  <script type="text/javascript" src="http://use.typekit.com/syx2vfn.js"></script>
-  <script type="text/javascript">try { Typekit.load(); } catch (e) { }</script>
+  <script src="//fonts.otstatic.com/dwh4rpg.js"></script>
+  <script>try{Typekit.load();}catch(e){}</script>
 
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -81,6 +82,196 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/10/06/puppetconf-2014-part-1/">PuppetConf 2014 - Part 1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-06T11:47:57+01:00" pubdate data-updated="true">Oct 6<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="/images/posts/puppetconf2014.jpg" alt="The start of PuppetConf 2014" /></p>
+
+<p>It has been one week since our attendance at this years PuppetConf and we have just now caught up on all the great talks that were
+given and the projects demonstrated over the 3 day period. Here&rsquo;s our summary of the event (split into 3 parts), hopefully you will
+find as much inspiration in the content as we have.</p>
+
+<h2>Day 0 &ndash; Contributor Summit</h2>
+
+<p>For the first time, this years Puppet Contributor Summit was held the day prior to the conference itself and I think this was a great idea.
+Most of the Puppetlabs staff and many of the high profile community members were in town for PuppetConf anyway so it made sense. There was
+roughly 60-70 people in attendance both senior contributors and people new to the community so it was a great mix that led to some
+fantastic discussions.</p>
+
+<p>The day itself had two tracks: a module track for forge modules and a core track for people contributing to puppet and factor.</p>
+
+<p>Those of you who have seen our <a href="http://forge.puppetlabs.com/opentable">forge module page</a> will understand why we chose to stay in the module track.
+Although I heard there were many great discussions to be had with regards to Puppet 4 in the core track.</p>
+
+<p>Each track was split into three sections: a brief introduction from the track lead Ryan Coleman (<a href="https://twitter.com/ryanycoleman">@ryanycoleman</a>),
+followed by some lighting talks and then several hours of hacking and open discussions.</p>
+
+<h3>Lightning Talks:</h3>
+
+<p>Here is a quick overview of the lightening talks from the module track:</p>
+
+<h4>Puppet Analytics (Spencer Krum <a href="https://twitter.com/nibalizer">@nibalizer</a>)</h4>
+
+<p>Spencer gave a quick demonstration of his latest project <a href="http://puppet-analytics.org/">puppet-analytics</a>. This problem that this tool was aiming to
+solve was that at the present time the are no good analytics for the forge modules. The number of downloads listed for each module is very inaccurate
+and can be easily inflated by (for example) an automated CI process. The point of this web app and it’s corresponding client
+<a href="https://github.com/nibalizer/puppet-analytics-client">puppet-analytics-client</a> was to be built into an existing tool chain and for end users to report
+which modules and versions they were using. It also has the added benefit that we could also get stats for teams using private forges.</p>
+
+<p>Ryan also commented that PuppetLabs has some metrics it uses for it’s own modules that can be found here:
+<a href="http://forge-module-metrics.herokuapp.com/">http://forge-module-metrics.herokuapp.com/</a></p>
+
+<h4>Puppet Community (Daniele Sluijters <a href="https://twitter.com/daenney">@daenney</a>)</h4>
+
+<p>Discussion of the shared namespace for community modules: <a href="http://puppet-community.github.io/">puppet-community</a>. This talk was about a community project
+to keep modules in a shared namespace so that everyone can work on them independent of company ownership. There are limitations right now with with
+regards to the forge e.g. no shared accounts and no easy migration path to move modules between namespaces but working with Ryan on that.</p>
+
+<p>This is how the boxen project works and it seems to work pretty well.</p>
+
+<h4>Beaker Testing Windows Environments (Liam Bennett <a href="https://twitter.com/liamjbennett">@liamjbennett</a>) &ndash; me!!</h4>
+
+<p>My talk on hacking beaker to work better for testing windows environments.</p>
+
+<p>Demos and PRs. Discussed more in some of our earlier posts: <a href="http://tech.opentable.co.uk/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-2-the-windows-story/">Testing Puppet with Beaker pt.2 &ndash; The Windows story</a>
+and <a href="http://tech.opentable.co.uk/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-3-testing-roles/">Testing Puppet with Beaker pt.3 &ndash; Testing Roles</a></p>
+
+<h4>Module Anti-Patterns (Peter Souter <a href="https://twitter.com/petems">@petems</a>) &ndash; <a href="http://www.slideshare.net/petems/puppet-module-anti-patterns">Slides</a></h4>
+
+<p>Some interesting patterns here that are still quite preverlant in the modules found on the forge. Hopefully improved tooling and the new Puppet Approved
+program will help here.</p>
+
+<h4>Puppetlabs ModuleSync tool (Colleen Murphy <a href="https://twitter.com/pdx_krinkle">@pdx_krinkle</a>)</h4>
+
+<p>A demonstration of the the tool <a href="https://github.com/puppetlabs/modulesync">puppetlabs-modulesync</a> which aims to take out some of the pain of managing common
+static build files across a number of modules (e.g. a common Rakefile or .travis.yml which the same across almost all modules)</p>
+
+<p>Having used this on a number of our modules now I can say that this in extremely useful and I don’t know how we managed without it. A key use case for us was
+adding support for puppet 3.7 into our test matrix of our travis.yml file. 1 line change &ndash; 1 command &ndash; 18 modules updated.</p>
+
+<h4>Strict Variables (Tomas Doran <a href="https://twitter.com/bobtfish">@bobtfish</a>)</h4>
+
+<p>Tomas has one very good point to make here: enable <a href="https://docs.puppetlabs.com/references/latest/configuration.html#strictvariables">strict_variables</a>. Many
+languages have a strict option and Puppet’s makes sure to check for those unknown variable references. The latest version of the
+<a href="https://github.com/puppetlabs/puppetlabs_spec_helper">puppetlabs_spec_helper</a> supports adding this setting with an environment variable so that you can now
+add this into your testing matrix.</p>
+
+<p>We have enabled this on our open source modules and it did indeed surfice a few bugs so go and do it now.</p>
+
+<h4>Puppet Documentation Linting (Peter Souter <a href="https://twitter.com/petems">@petems</a>)</h4>
+
+<p>While we have very good linking for our puppet manifests themselves thanks to the <a href="http://puppet-lint.com/">puppet-lint</a> project. We still do not have any
+coverage for our documentation of those manifests. That is where Peter’s <a href="https://github.com/petems/puppet-doc-lint">puppet-doc-lint</a> project comes in and aims
+to lint each of you manifests for correct rdoc documentation.</p>
+
+<p>This only supports puppet 3.4.3 right now but it is a useful tool and demonstrations something functional in an area that is missing from the current crop of
+community tooling. This is going to become more useful as we want to have good documentation for Puppet Approved status.</p>
+
+<p>It is also worth noting that PuppetLabs themselves have been doing some work in this area with
+<a href="https://github.com/puppetlabs/puppetlabs-strings/">puppet-strings</a>. This projects works on puppet 3.6 + and support yard doc but is roughly the same idea.</p>
+
+<h4>Quick Survey (Michael Stahnke <a href="https://twitter.com/stahnma">@stahnma</a>)</h4>
+
+<p>Michael here decided to use the opportunity of having everyone in the room to ask a few questions regarding the state of puppet use and the platforms it’s
+deployed on. Not too many surprises here: Debian (mostly ubuntu 12) and RedHat (mostly centos 6) dominate with a small grouping of other platforms like AIX and
+Solaris in toe. Some poor individuals still have ubuntu 8 and 10 in production but I won’t name name’s because we have all been in that position before. No
+mention of windows but then I did bring that up in my own talk so I think that was covered already.</p>
+
+<h3>Hacking and Discussions</h3>
+
+<p>The second part of the day was the hacking and discussions part. This was more un-conference style with variables tables put together to discuss various topics,
+try and resolves issues or hack on projects. There were four main areas that I noticed: module testing, windows, docker, forge improvements (apologies if I
+missed your topic/table).</p>
+
+<h4>Module Testing</h4>
+
+<p>This was probably the most common topic and several tables were set up around this idea but a huge range of things were discussed. Some people wanted to know
+about how to get up and running with beaker tests using vagrant+vagrant cloud, some wanted to discuss specific platform issues (windows, docker, solaris), other
+ wanted to discuss how best to scale out the tests once you have them.</p>
+
+<p>There was some discussion based around the tools like puppet-doc-lint that were demonstrated during the lightning talks and it’s good to see these missing
+aspects of the testing tool chain getting some light.</p>
+
+<p>It’s nice to think that we have moved to this stage now where we have all the tools to support a full development tool chain for puppet and that most of the
+discussion was around improving and maturing what we have.</p>
+
+<h4>Docker</h4>
+
+<p>Docker is one of those tools that can be considered the latest hotness so it’s no surprise that it gained some interest here also. Many people wanted to see it
+in use and demonstrated and to discuss it’s use either from the point of view of being able to test with it or test against it.</p>
+
+<p>I see this topic getting a lot more coverage in the future as more and more teams move into this space.</p>
+
+<h4>Windows</h4>
+
+<p>Led by myself, Drewi Wilson and Travis Fields (<a href="https://twitter.com/tefields">@tefields</a>) the two aims for this discussion were to gather input/feedback from people using
+the existing windows modules and to try and discover areas in the windows ecosystem that were not currently managed (either well or at all) by Puppet.</p>
+
+<p>We got some fantastic feedback we got regarding our OpenTable modules &ndash; thank you to everyone who was there any everyone else who reached out about that.</p>
+
+<p>We also managed to start to populate a list of things that need some work. You can contribute to that list
+<a href="https://docs.google.com/document/d/1bwgTo4D7lL8REA1s-IIKlfMrvY434Xn0cyZ7b1X-TwQ">here</a></p>
+
+<p>There was also some discussion of using MCollective on Windows. This has been a little painful in the past (I should blog about this in the future) but it will
+be getting a little more love going forward. Generally PuppetLabs is very aware of the orchestration space and will be looking into solving this problem with
+it’s tools going forward.</p>
+
+<h4>Forge Improvements</h4>
+
+<p>Given that this was the Module track it was obvious that at some point we would all want to discuss improvement that we would want to see in the puppet forge. Ryan
+led the table here and there was lots of be said by all.</p>
+
+<p>A couple of interesting documents emerged that you might be interested in:</p>
+
+<ul>
+<li><a href="https://docs.google.com/document/d/1N8U_8UnIGFHC1Q6aTyLgx1d6wvvjuyTT1EO-OYSIu3k">Suggestions for the Puppet Approved module criteria</a></li>
+<li><a href="https://docs.google.com/document/d/1gwoM8xHnWaRQ3Jqce0oursI_ts5BWnHEUVXRQuIh6Yk">Forge Improvements</a></li>
+</ul>
+
+
+<p>There was also some discussion of how best to pull stats out from the forge. Many people either scrape the API, use the API to take a dump of the whole of the forge
+but none of these approaches are best for either the user or for the forge site itself. PuppetLabs uses various approaches to this internally depending on the use
+case. Such use cases include: &ldquo;who is using my module?&rdquo; or &ldquo;who is using the bit of code?&rdquo;. There should be improvements to the forge to make answering these sorts
+of questions a little easier in the future.</p>
+
+<h2>Summary</h2>
+
+<p>The contributor summit was personally one of the most useful days of the conference. Being able to see the lastest tooling and discuss the latest problems is always
+very useful to module authors like ourselves. Hopefully you&rsquo;ll find this summary as useful as we do.</p>
+
+<p>Next up Day 1 &ndash; PuppetConf proper..</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1610,126 +1801,6 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/04/28/effective-prioritisation/">Effective prioritisation</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-04-28T14:51:51+01:00" pubdate data-updated="true">Apr 28<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Prioritisation is a huge part of modern life.</p>
-
-<p>No.</p>
-
-<p>Prioritisation is an ESSENTIAL part of modern life.</p>
-
-<p>I&rsquo;m not talking solely about Agile here either. Yes we plan stories, yes we prioritise them to get them into the backlog but I&rsquo;m aiming at a higher level. Life lessons that are useful to all of us.</p>
-
-<p>How do we know what to do next? Perhaps you lean on your gut feeling to order your to-do list. Maybe it is real-time cost and budget implications that influence your priorities or does it come down to who shouts loudest?</p>
-
-<h2>Why is prioritisation important?</h2>
-
-<p>The experts would have us believe we are living through the Digital Age, also know as the Computer Age. Increasingly this has been more accurately redefined as the Information Age.</p>
-
-<p>The society we live in today truly bombardes us with information. Whether it be TV, mobile, emails, blog posts, status updates, tweets, likes and check-in&rsquo;s we are rarely unconnected to modern day life and have a vast amount of data and information at our disposal.</p>
-
-<p>This flood of information leads to a problem: we often confuse the importance of everyday tasks and activities.</p>
-
-<p>For instance how many times have we said &ldquo;I don&rsquo;t have time to read&rdquo; or &ldquo;I&rsquo;d love to be able to go to the gym more&rdquo;. Perhaps a more honest way to say this is &ldquo;reading is not a high priority for me&rdquo; or &ldquo;I prioritise other activities higher than going to the gym&rdquo;.</p>
-
-<p>The decision not to spend time reading or working-out in the gym means you are spending time on other activities you consider more important. Consciously or unconsciously, we prioritise our life. The key is to prioritise effectively.</p>
-
-<h2>The Focus Quadrant</h2>
-
-<p>I&rsquo;ve been introduced to a framework that helped me to grab this idea of effective prioritisation and certainly opened my eyes to some of the mistakes I made previously.</p>
-
-<p>Stephen Covey, a sadly deceased educator, author and businessman, designed a matrix called The Focus Quadrant that categorises activities and helps us deal with the struggle of prioritisation by clearly outlining the conflicts involved.</p>
-
-<p><img src="http://www.chowamigo.co.uk/images/focus.jpg" alt="image" /></p>
-
-<table style="font-size: 80%;margin-bottom:20px;">
-    <tr>
-        <th style="padding:3px;"></th>
-        <th style="padding:3px;"><b>Description</b></th>
-        <th style="padding:3px;"><b>Examples</b></th>
-    </tr>
-<tr style="background-color: #E5E5E5">
-    <td style="white-space:nowrap;padding:3px;vertical-align:top;">A. Important/Urgent</td>
-    <td style="padding:3px;vertical-align:top;">Tasks that are necessary usually deadline driven or time sensitive. This usually this means panic and problems.</td>
-    <td style="padding:3px;vertical-align:top;">Fixing the server crash, firefighting a site outage, entering expenses before a deadline</td>
-</tr>
-<tr>
-    <td style="white-space:nowrap;padding:3px;vertical-align:top;">B. Important/Not urgent</td>
-    <td style="padding:3px;vertical-align:top;">Activities in direct alignment to your goals. Typically these tasks involve planning ahead. Prevention rather than cure.</td>
-    <td style="padding:3px;vertical-align:top;">Relationship building, researching your next API, learning a new coding language, taking time out to exercise</td>
-</tr>
-<tr style="background-color: #E5E5E5">
-    <td style="white-space:nowrap;padding:3px;vertical-align:top;">C. Not important/Urgent</td>
-    <td style="padding:3px;vertical-align:top;">Activities that seem important but in reality are not. It&#8217;s thought these tasks will make you popular as you are responding to requests for your time.</td>
-    <td style="padding:3px;vertical-align:top;">Going to a meeting, answering the phone, replying instantly on IMs or email</td>
-</tr>
-<tr>
-    <td style="white-space:nowrap;padding:3px;vertical-align:top;">D. Not important/Not urgent</td>
-    <td style="padding:3px;vertical-align:top;">While it would seem pleasant enough to live here permentantly, in reality these activities are time wasters that should be eliminated as much as possible.</td>
-    <td style="padding:3px;vertical-align:top;">Playing video games, surfing the net, getting a tea or coffee, flicking through the magazine on your desk</td>
-</tr>
-</table>
-
-
-<h2>How does this help?</h2>
-
-<p>Covey&rsquo;s point is that if we have a long list of items and activities and we are struggling to prioritise them, spending 20 minutes writing the list down and assigning each task A, B, C or D can help clarify importance.</p>
-
-<p>For me the interesting part is that we should not be spending too much time in A. This goes against our natural reaction that A is good &ndash; probably the fault of our education system. In fact category A is considered beneficial only in the short term. We are not overly productive even if we spend a lot of time on A category tasks. We really want to shift our attention to more longer term plans.</p>
-
-<p>Category B on the other hand is considered the sweet spot. This is where we are doing our best work. It is where we will be ticking off a lot of our important long term goals. Yes we all have different goals but the majority of the goals we want to achieve fit into B &ndash; non urgent and important.</p>
-
-<p>For category C there is a great saying &lsquo;The quadrant of deception&rsquo;. These are tasks we THINK are urgent but in reality they are not. Considered to be a distraction, get used to politely saying no to any activities in the C category. We should look to regain control of our time and not be forced to respond when it suits others.</p>
-
-<p>Finally category D is the worst place to spend your time. It&rsquo;s okay to roam across each of these four quadrants but if we identify we are spending too much time in quadrant D we need to step back, reassess and pick up a task more aligned to our goals &ndash; ideally something from category B.</p>
-
-<h2>Money => mouth</h2>
-
-<p>While this is useful in theory, we of course need to be realistic. You should factor in time for impromptu interruptions &ndash; saying no to every meeting isn&rsquo;t possible and this isn&rsquo;t an excuse to push back difficult tasks. However, the next time your to-do list gets unmanageable, take time out to clarify your priorities.</p>
-
-<p>Now my current my to-do list looks like this&hellip;</p>
-
-<ol>
-<li>Investigate a blip in our API performance <strong><code>(A)</code></strong></li>
-<li>Scope out our next API <strong><code>(B)</code></strong></li>
-<li>Improve the way our current API deploys to production <strong><code>(B)</code></strong></li>
-<li>Send out a team update to interested parties <strong><code>(C)</code></strong></li>
-<li>Go and grab a cup of tea :) <strong><code>(D)</code></strong></li>
-</ol>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -1747,6 +1818,10 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/01/19/building-a-living-styleguide-at-opentable/">Building a living styleguide at OpenTable</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/01/01/explaining-flux-architecture-with-macgyver-dot-js/">Explaining Flux architecture with macgyver.js</a>
       </li>
     
@@ -1760,10 +1835,6 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
     
       <li class="post">
         <a href="/blog/2014/11/26/hobknob-v2-dot-0-a-new-dimension/">Hobknob v2.0: A new dimension</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/11/08/interacting-with-elasticsearch-using-hubot/">Interacting with ElasticSearch using Hubot</a>
       </li>
     
   </ul>

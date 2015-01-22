@@ -1,0 +1,367 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>On Strongly Typed Logging - OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
+
+  
+  <meta name="description" content="Logging is a crucial element of monitoring highly available systems. It allows not only to find out about errors but also quickly identify their &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.opentable.co.uk/blog/2015/01/23/on-strongly-typed-logging/">
+  <link href="/favicon-32.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
+  <script src="//fonts.otstatic.com/dwh4rpg.js"></script>
+  <script>try{Typekit.load();}catch(e){}</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
+  
+    <h2>The technology blog for OpenTable UK.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/authors">Authors</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">On Strongly Typed Logging</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Marcin Bazydlo</span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-23T13:13:13+00:00" pubdate data-updated="true">Jan 23<span>rd</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Logging is a crucial element of monitoring highly available systems. It allows not only to find out about errors but also quickly identify their cause. Logs are often used to generate metrics that help business and engineering make informative decisions on future development directions.</p>
+
+<p>At OpenTable we have a central logging infrastructure, that means all logs are stored in the same shared database (ElasticSearch for us). And everybody can access any logs they want without having very specialized knowledge (thanks Kibana!).</p>
+
+<p>ElasticSearch, though living in a NoSQL world, is not actually a schema-free database. Sure, you do not need to provide schema to it but instead ES will infer schema for you from documents you send to it. This is very similar to type inference you can find in many programming languages. You do not need to specify type of field, but if you later on try to assign inappropriate value to it you will get an exception.</p>
+
+<p>This trait of our database goes all the way to the root of our logging system design. Let me explain why I say that we have &lsquo;strongly typed logs&rsquo;.</p>
+
+<h2>In The Beginning There Was String</h2>
+
+<p>Before centralization we just logged a single message along with its importance. In code it looked something like:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>logger.ERROR(“Kaboom!”)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>which resulted in logline on disk having timestamp, severity and message.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{2014-10-10T07:33:04Z [ERROR] Kaboom!}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That worked pretty well. As time passed we often started making log messages more generic to hold relevant data:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>logger.INFO(string.Format(“Received {0} from {1}. Status: {2}. Took {3}”, httpMethod, sourceIp, statusCode, durationms));</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When we decided to centralize logs we moved the same logs from local disk to a central database. Suddenly things that used to live on single server in a file called &lsquo;application.log&rsquo; become part of one huge lump of data. Instead of easing access to logs they were really hard to filter, without even speaking about aggregation, or any simple form of operations to find the source of the problem. ElasticSearch is really good at free text searching, but frankly speaking FTS is never as precise as a good filter.</p>
+
+<h2>Then There Was Dictionary Of Strings</h2>
+
+<p>Wherever there is problem there is also a solution. So we changed the way our logging works. We created a custom logger and started sending logs more like documents than single string.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>customLogger.send(‘info’, new Dictionary&lt;string, string&gt; {
+</span><span class='line'>{‘method’, httpMethod.ToString()},
+</span><span class='line'>{‘sourceIp’, sourceIp.ToString()},
+</span><span class='line'>{‘statusCode’, statusCode.ToString()},
+</span><span class='line'>{‘duration’, durationms.ToString()},
+</span><span class='line'>{‘requestId’, requestId.ToString()},
+</span><span class='line'>{‘service’, ‘myservice’}
+</span><span class='line'>{‘message’, string.Format(“Received {0} from {1}. Status: {2}. Took {3}”, httpMethod, sourceIp, statusCode, durationms)}
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>That helped a lot.</strong></p>
+
+<p>You might wonder why we serialized everything to string? The answer is ElasticSearch mapping as I described above. Mapping, once it is inferred, cannot be changed. So from time to time we used to have conflicts (e.g. one application logging requestId as number, other as guid). Those conflicts were costly &ndash; logs were lost &ndash; so we simply applied the simplest solution available and serialized everything.</p>
+
+<p>Now filtering was working fine. We were even able to group requests based on a single field and count them. You cannot imagine how useful it is to simply count the different status codes returned by a service. Also you may have noticed we introduced some extra fields like &lsquo;service&rsquo; which helped us group logs coming from a single application. We did the same with hostname etc.</p>
+
+<p>With this easy success our appetite has grown and we wanted to log more. And being lazy programmers we found a way to do it quickly so our logs often included just relevant objects.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>customLogger.log(‘info’, request)
+</span><span class='line'>customLogger.log(‘error’, exception)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Our custom logging library did all the serialization for us. This worked really well. Now we were actually logging whole things that mattered without having to worry about serialization at all. What&rsquo;s even better, whenever the object in question changed (e.g. a new field was added to request), it was automagically logged.</p>
+
+<p>However one thing was still missing. We really wanted to see performance of our application in real time or do range queries (e.g. &ldquo;show me all requests that have 5xx status code&rdquo;). We also were aware that both ES and Kibana can deliver it but our logging is not yet good enough.</p>
+
+<h2>Strongly Typed Logs</h2>
+
+<p>So we looked at our logging and infrastructure and at what needs to be done to allow different types of fields to live in ElasticSearch. And you can imagine that it was a pretty simple fix; we just started using types. Each log format was assigned its own type. This type was then used by ElasticSearch to put different logs into separate buckets with separate mapping. The type is equivalent in meaning to classes in OO programming. If we take this comparison further then each log entry would be an object in OO programming. ElasticSearch supports searches across multiple types, which is very convenient when you don&rsquo;t know what you are looking for. On the other hand, when you know, you can limit your query to single type and take advantage of fields types.</p>
+
+<p>It was a big application change as we needed to completely change our transport mechanism to LogStash. We started with Gelf and switched to Redis, which allowed us to better control format of our logs.</p>
+
+<p>We also agreed on a first standard. The standard defined that type will consist of three parts:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;serviceName&gt;-&lt;logName&gt;-&lt;version&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This ensures that each team can use any logs they want to (thus serviceName). Each log will have its own format (thus logName). But they can also change in the future (thus version). One little word of caution, ES doesn&rsquo;t like dots in type name, so don&rsquo;t use them.</p>
+
+<p>So our logs look now like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>customLogger.log(new RequestLog {
+</span><span class='line'>Request = request,
+</span><span class='line'>Headers = headers,
+</span><span class='line'>Status = status})</span></code></pre></td></tr></table></div></figure>
+
+
+<p>RequestLog is responsible for providing valid type to the logging library.</p>
+
+<p>With sending serialized objects as logs and assigning each class unique type our logs have become strongly typed.</p>
+
+<p>We are already couple steps further down the path of improving our logs. We standardized some common fields and logtypes. That, however, is a completely different tale. ​</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Marcin Bazydlo</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-23T13:13:13+00:00" pubdate data-updated="true">Jan 23<span>rd</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/architecture/'>Architecture</a>, <a class='category' href='/blog/categories/elasticsearch/'>ElasticSearch</a>, <a class='category' href='/blog/categories/kibana/'>Kibana</a>, <a class='category' href='/blog/categories/logs/'>Logs</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.opentable.co.uk/blog/2015/01/23/on-strongly-typed-logging/" data-via="opentabletechuk" data-counturl="http://tech.opentable.co.uk/blog/2015/01/23/on-strongly-typed-logging/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/01/19/building-a-living-styleguide-at-opentable/" title="Previous Post: Building a living styleguide at OpenTable">&laquo; Building a living styleguide at OpenTable</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/01/23/on-strongly-typed-logging/">On Strongly Typed Logging</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/19/building-a-living-styleguide-at-opentable/">Building a living styleguide at OpenTable</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/01/explaining-flux-architecture-with-macgyver-dot-js/">Explaining Flux architecture with macgyver.js</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/12/08/supporting-ie8-in-the-opentable-redesign/">Supporting IE8 in the OpenTable redesign</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/11/28/proxying-with-hapi/">Proxying Services With Hapi.js</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2015 - OpenTable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

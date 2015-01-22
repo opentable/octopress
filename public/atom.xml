@@ -4,7 +4,7 @@
   <title><![CDATA[OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2015-01-18T20:09:02+00:00</updated>
+  <updated>2015-01-22T19:49:25+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -12,6 +12,117 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[On Strongly Typed Logging]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2015/01/23/on-strongly-typed-logging/"/>
+    <updated>2015-01-23T13:13:13+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2015/01/23/on-strongly-typed-logging</id>
+    <content type="html"><![CDATA[<p>Logging is a crucial element of monitoring highly available systems. It allows not only to find out about errors but also quickly identify their cause. Logs are often used to generate metrics that help business and engineering make informative decisions on future development directions.</p>
+
+<p>At OpenTable we have a central logging infrastructure, that means all logs are stored in the same shared database (ElasticSearch for us). And everybody can access any logs they want without having very specialized knowledge (thanks Kibana!).</p>
+
+<p>ElasticSearch, though living in a NoSQL world, is not actually a schema-free database. Sure, you do not need to provide schema to it but instead ES will infer schema for you from documents you send to it. This is very similar to type inference you can find in many programming languages. You do not need to specify type of field, but if you later on try to assign inappropriate value to it you will get an exception.</p>
+
+<p>This trait of our database goes all the way to the root of our logging system design. Let me explain why I say that we have &lsquo;strongly typed logs&rsquo;.</p>
+
+<h2>In The Beginning There Was String</h2>
+
+<p>Before centralization we just logged a single message along with its importance. In code it looked something like:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>logger.ERROR(“Kaboom!”)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>which resulted in logline on disk having timestamp, severity and message.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{2014-10-10T07:33:04Z [ERROR] Kaboom!}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That worked pretty well. As time passed we often started making log messages more generic to hold relevant data:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>logger.INFO(string.Format(“Received {0} from {1}. Status: {2}. Took {3}”, httpMethod, sourceIp, statusCode, durationms));</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When we decided to centralize logs we moved the same logs from local disk to a central database. Suddenly things that used to live on single server in a file called &lsquo;application.log&rsquo; become part of one huge lump of data. Instead of easing access to logs they were really hard to filter, without even speaking about aggregation, or any simple form of operations to find the source of the problem. ElasticSearch is really good at free text searching, but frankly speaking FTS is never as precise as a good filter.</p>
+
+<h2>Then There Was Dictionary Of Strings</h2>
+
+<p>Wherever there is problem there is also a solution. So we changed the way our logging works. We created a custom logger and started sending logs more like documents than single string.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>customLogger.send(‘info’, new Dictionary&lt;string, string&gt; {
+</span><span class='line'>{‘method’, httpMethod.ToString()},
+</span><span class='line'>{‘sourceIp’, sourceIp.ToString()},
+</span><span class='line'>{‘statusCode’, statusCode.ToString()},
+</span><span class='line'>{‘duration’, durationms.ToString()},
+</span><span class='line'>{‘requestId’, requestId.ToString()},
+</span><span class='line'>{‘service’, ‘myservice’}
+</span><span class='line'>{‘message’, string.Format(“Received {0} from {1}. Status: {2}. Took {3}”, httpMethod, sourceIp, statusCode, durationms)}
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>That helped a lot.</strong></p>
+
+<p>You might wonder why we serialized everything to string? The answer is ElasticSearch mapping as I described above. Mapping, once it is inferred, cannot be changed. So from time to time we used to have conflicts (e.g. one application logging requestId as number, other as guid). Those conflicts were costly &ndash; logs were lost &ndash; so we simply applied the simplest solution available and serialized everything.</p>
+
+<p>Now filtering was working fine. We were even able to group requests based on a single field and count them. You cannot imagine how useful it is to simply count the different status codes returned by a service. Also you may have noticed we introduced some extra fields like &lsquo;service&rsquo; which helped us group logs coming from a single application. We did the same with hostname etc.</p>
+
+<p>With this easy success our appetite has grown and we wanted to log more. And being lazy programmers we found a way to do it quickly so our logs often included just relevant objects.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>customLogger.log(‘info’, request)
+</span><span class='line'>customLogger.log(‘error’, exception)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Our custom logging library did all the serialization for us. This worked really well. Now we were actually logging whole things that mattered without having to worry about serialization at all. What&rsquo;s even better, whenever the object in question changed (e.g. a new field was added to request), it was automagically logged.</p>
+
+<p>However one thing was still missing. We really wanted to see performance of our application in real time or do range queries (e.g. &ldquo;show me all requests that have 5xx status code&rdquo;). We also were aware that both ES and Kibana can deliver it but our logging is not yet good enough.</p>
+
+<h2>Strongly Typed Logs</h2>
+
+<p>So we looked at our logging and infrastructure and at what needs to be done to allow different types of fields to live in ElasticSearch. And you can imagine that it was a pretty simple fix; we just started using types. Each log format was assigned its own type. This type was then used by ElasticSearch to put different logs into separate buckets with separate mapping. The type is equivalent in meaning to classes in OO programming. If we take this comparison further then each log entry would be an object in OO programming. ElasticSearch supports searches across multiple types, which is very convenient when you don&rsquo;t know what you are looking for. On the other hand, when you know, you can limit your query to single type and take advantage of fields types.</p>
+
+<p>It was a big application change as we needed to completely change our transport mechanism to LogStash. We started with Gelf and switched to Redis, which allowed us to better control format of our logs.</p>
+
+<p>We also agreed on a first standard. The standard defined that type will consist of three parts:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;serviceName&gt;-&lt;logName&gt;-&lt;version&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This ensures that each team can use any logs they want to (thus serviceName). Each log will have its own format (thus logName). But they can also change in the future (thus version). One little word of caution, ES doesn&rsquo;t like dots in type name, so don&rsquo;t use them.</p>
+
+<p>So our logs look now like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>customLogger.log(new RequestLog {
+</span><span class='line'>Request = request,
+</span><span class='line'>Headers = headers,
+</span><span class='line'>Status = status})</span></code></pre></td></tr></table></div></figure>
+
+
+<p>RequestLog is responsible for providing valid type to the logging library.</p>
+
+<p>With sending serialized objects as logs and assigning each class unique type our logs have become strongly typed.</p>
+
+<p>We are already couple steps further down the path of improving our logs. We standardized some common fields and logtypes. That, however, is a completely different tale. ​</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Building a living styleguide at OpenTable]]></title>
@@ -2645,78 +2756,6 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
 <p>The module does more than just these tasks and I could give more and more examples of what we wrote, but you can find more about our IIS module on the <a href="http://github.com/opentable/puppet-iis">github repo</a>. If you want to use the module, then you can install it using the Puppet Module tool via the <a href="http://forge.puppetlabs.com/opentable/iis">Puppet forge</a>.</p>
 
 <p>We love to hear feedback on things that the module should support. We like Pull Requests even more :)</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Remote Worker Notes &ndash; Tools and Setup]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup/"/>
-    <updated>2014-04-29T10:56:49+01:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2014/04/29/remote-worker-notes-tools-and-setup</id>
-    <content type="html"><![CDATA[<p>For the last couple months I&rsquo;ve been working remotely with our search team at OpenTable. Let me share our remote working setup and some rationale for our choices. I will shy away from judging how it&rsquo;s all worked out and leave that for subsequent blog posts.</p>
-
-<h2>The deal</h2>
-
-<p>I started as an on-site engineer and subsequently became a remote worker and my challenge was to make remote working as similar to on-site working as possible. Thus it is natural that <strong>I work the same working hours</strong> as my colleagues in the office (despite the time difference) and I take <strong>public holidays</strong> at the same time that there are bank holidays in UK (even though in Poland they are different).</p>
-
-<p>We also decided that every two months I will <strong>visit the office for a week</strong> as well as arranging visits to coincide with other office guests (like contractors, overseas colleagues and so on). All this is to try to keep me as close to the team as possible and disrupt the normal work-flow as little as possible.</p>
-
-<h2>The workplace setup</h2>
-
-<p>Once home in Poland I had to carefully consider my options for a workplace. I tried three obvious possibilities:</p>
-
-<ul>
-<li>Dining room in my own one bedroom flat</li>
-<li>Co-working space</li>
-<li>Private room in my parents&#8217; house</li>
-</ul>
-
-
-<p>The <strong>dining room</strong> worked pretty well, for a time&hellip;  I would &lsquo;arrive&rsquo; really early in the office (just after taking a shower), and then be &lsquo;home&rsquo; straight after the laptop lid was closed. My wife kindly respected that I am focused at work and distracted me only to share lunch (or to kick me out of house to bring the lunch in).</p>
-
-<p>A couple of things made it only a short-term solution &ndash; the first being my back complaining about working on a chair that&rsquo;s nice for a dinner, but awful for working on computer. Then I realised that I really miss a second monitor and separate keyboard &ndash; I guess anybody who coded in the middle of summer on a laptop knows the pain of a hot computer under your fingers.  Finally, my child was born, and that was it &ndash; a crying child in the same room when you are trying to pair with somebody is a deal-breaker.</p>
-
-<p>In the meantime I evaluated a local <strong>co-working space</strong>. The problem was that it was quiet, <em>really quiet</em>, up to the point that I was embarrassed to pair with somebody remotely. The way we work fluctuates over time; there are weeks when I do stuff alone and in silence, there are weeks when I spend whole days on conversations or pairing. I just cannot be too quiet. For that matter I tried also a coffee shop, but it failed me for exactly the same reasons as the dining room table.</p>
-
-<p><strong>My little own office is currently the winner</strong> and the only way it could be better is if behind the closed doors there was my house, not my parents&#8217; one. But even this one is pretty good &ndash; I have access to an always full fridge and a decent coffee machine. I can bring my family with me and it is not awkward.</p>
-
-<p>Finally, I can share a lunch with whoever is at home. With a decent chair and desk I cannot complain about anything. Actually, I found that even after work if we stay for a coffee or dinner I am tempted to pop in into the office and look at our dashboards or chat room.</p>
-
-<h2>The tools setup</h2>
-
-<p>To facilitate continuous communication <em>you first need a good attitude, and then good tools</em>. With the attitude two things matter the most:</p>
-
-<ul>
-<li>A quick response</li>
-<li>Patience</li>
-</ul>
-
-
-<p>By nature all remote communication channels are asynchronous, which is hugely different to face-to-face communication. It is much easier this way for an important question to go unnoticed by you. Conversely it is easy to get annoyed that somebody is not responding, when in fact they may just be talking to the person at the desk next to them.</p>
-
-<p>Our primary tool is <strong>Google Hangout</strong>. It works quite well for a team, being nice for stand-ups, though it fails miserably as a constant communication tool. There are two reasons for that; the first is that its messages often get lost and the second is it makes our MacBook radiators spin like crazy when open for too long. <em>Unfortunately we had to rule out an online window to the office after a couple of days trying</em>.</p>
-
-<p>We also extensively use <a href="http://www.hipchat.com"><strong>HipChat</strong></a>, and that brought one of best breakthroughs in our communication patterns. It has a few features which make it great as a team collaboration tool:</p>
-
-<ol>
-<li>You get messages whether you pay attention or not</li>
-<li>You can interrupt other people by mentioning them</li>
-<li>It makes sharing links and images really easy</li>
-<li>When you type you can collaborate with multiple persons at the same time</li>
-</ol>
-
-
-<p>I also mentioned that pairing is a big part of our daily work. I have to admit that I haven&rsquo;t yet found a tool that would make the experience seamless. There is always a bit of delay on the line, or shortcuts not working, or problems of mismatch between screen resolutions that would never appear when pairing on the same machine.</p>
-
-<p>On the other hand when you have a keyboard just under your fingers it is much easier to swap sides and while discussing actually write code constructs. For this we use combination of <strong>Hangout</strong> screen share feature (for quick debug help) and <strong>RDP</strong>.</p>
-
-<p>One last tool that I like to use quite extensively is <strong>Google Drive</strong> as a shared whiteboard. It has proved to be especially useful for retrospectives or architecture discussion. The nice thing about the Drive draw tool is that it forces you to use shapes, lines and text. Those three primitives allow for an unlimited number of possible drawings. Being vector means you can easily move stuff around (nothing will fall on the floor), you never run out of space and you have an immediate and lasting backup of your board. I also found that a distributed retrospective facilitates a more equal participation of those attending.</p>
-
-<p>The best feature of the most of those tools is that they allow to <strong>easily save and store the outcomes of your conversations.</strong> Hangouts can be recorded, HipChat naturally creates history of chats and Google Drive&rsquo;s drawings become a persistent track of team discussions.</p>
-
-<h2>Get Involved</h2>
-
-<p>If you have a different setup or tools that help with having a distributed team member, or you want to share your experiences be sure to tweet us <a href="http://www.twitter.com/OpenTableTechUK">@OpenTableTechUK</a> or me personally <a href="http://www.twitter.com/mbazydlo">@mbazydlo</a>.​</p>
 ]]></content>
   </entry>
   

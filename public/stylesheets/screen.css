@@ -221,8 +221,8 @@ body>header h1,
 body>header h2,
 body>nav form .search,
 body>nav a  {
-    /*font-family: "franklin-gothic-urw",Arial,Helvetica Neue,Helvetica,sans-serif;*/
-    font-family: "museo-sans","PT Sans","Helvetica Neue",Arial,sans-serif
+    /*font-family: Arial,Helvetica Neue,Helvetica,sans-serif;*/
+    font-family: "franklin-gothic-urw","museo-sans","PT Sans","Helvetica Neue",Arial,sans-serif
 }
 
 .serif,

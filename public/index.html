@@ -9,7 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="Logging is a crucial element of monitoring highly available systems. It allows not only to find out about errors but also quickly identify their &hellip;">
+  <meta name="description" content="Why this post? As a junior, I always find it easier to just sit and write code than actually stop to think about the theoretical basis that lie under &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +81,242 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/02/02/a-beginners-guide-to-rest-services/">A Beginner&#8217;s guide to REST services</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-02-02T11:53:25+00:00" pubdate data-updated="true">Feb 2<span>nd</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Why this post?</h2>
+
+<p>As a junior, I always find it easier to just sit and write code than actually stop to think about the theoretical basis that lie under the applications I work on. <strong>REST</strong>  is one of those terms I heard a lot about, so I decided to try to sum up what it means and how it affects the choices we make everyday as software engineers.</p>
+
+<h2>Introduction to REST</h2>
+
+<p>REST stands for Representational State Transfer, and it can be defined as an architectural style used to build Web Services that are lightweight, maintainable, and scalable. A service that is designed by REST principles can be called a <strong>RESTful service</strong>.</p>
+
+<p>It has been described first in 2000 by Roy Fielding, in a <a href="http://www.ics.uci.edu/~fielding/pubs/webarch_icse2000.pdf">dissertation</a> called &ldquo;Architectural Styles and the Design of Network-based Software Architectures&rdquo;. The basic idea was to describe the interactions between the components of a distributed system, putting constraints on them and emphasizing the importance of an uniform interface, that is abstracted from the single components.</p>
+
+<p>REST is often applied to the design and development of web services, which is the scenario I&rsquo;ll try to address in this post.</p>
+
+<p>The purpose of a web service can be summed up as follows: it exposes <strong>resources</strong> to a <strong>client</strong> so that it can have access to them (examples of typical resources include pictures, video files, web pages and business data).</p>
+
+<p>Common features of a service that is built in a REST style are:</p>
+
+<ul>
+<li>Representations</li>
+<li>Messages</li>
+<li>URIs</li>
+<li>Uniform Interface</li>
+<li>Stateless</li>
+<li>Links between resources</li>
+<li>Caching</li>
+</ul>
+
+
+<h2>Representations &ndash; what are they?</h2>
+
+<p>REST style does not put a constraint into the way resources are represented.</p>
+
+<p>Good examples of data formats in which a resource could be returned from a service are <a href="http://www.json.org/"><strong>JSON</strong></a> (JavaScript Object Notation, which nowadays is the coolest one) and <a href="http://www.w3.org/XML/"><strong>XML</strong></a> (Extensible Markup Language, used for more complex data structures). Say for instance a REST service has to expose the data related to a song, with its attributes. A way of doing it in JSON could be:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;ID&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;(You gotta) Fight for your right (To party)&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;artist&quot;</span><span class="p">:</span> <span class="s2">&quot;Beastie Boys&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;album&quot;</span><span class="p">:</span> <span class="s2">&quot;Licensed To Ill&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;year&quot;</span><span class="p">:</span> <span class="mi">1986</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;genre&quot;</span><span class="p">:</span> <span class="s2">&quot;Hip-Hop&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Easy, huh?</p>
+
+<p>Anyway, a service can represent a resource in a number of ways at the same time, leaving the client to choose which one is better suited for its needs. The important thing is that there is agreement on what format to send/expect.</p>
+
+<p>The format that the client needs will be part of the <strong>request</strong> sent by the client.</p>
+
+<p>The resource will be eventually sent by the service as part of what we call a <strong>response</strong>.</p>
+
+<p>It has to be kept in mind that a resource should be completely described by the representation, since this is the only information the client will have. It has to be exaustive, but without exposing classified or useless information about the entity at the same time.</p>
+
+<h2>Messages A.K.A. client and service chatting</h2>
+
+<p>Q: So, how exactly do client and service exchange requests and responses?</p>
+
+<p>A: They send messages.</p>
+
+<p>In fact, to be more specific, the client will send an <strong>HTTP request</strong> to the service, specifying the following details:</p>
+
+<ul>
+<li>The <strong>method</strong> that is called on the resource. It can correspond to a <em>GET</em>, a <em>POST</em>, a <em>PUT</em>, a <em>DELETE</em>, an <em>OPTIONS</em> or a <em>HEAD</em> operation.</li>
+<li>The <strong>URI</strong> of the request. It identifies what is the resource on which the client wants to use the method. More on that later. For now let&rsquo;s say it is the only way the client knows how to call the needed resource.</li>
+<li>The <strong>HTTP version</strong>, which is usually <a href="http://tools.ietf.org/html/rfc2616"><em>HTTP/1.1</em></a>.</li>
+<li>The <strong>request headers</strong>, which are the additional information passed, with the request, to the service. These fields are basically request modifiers, similar to the parameters sent to a programming language method, and they depend on the type of request sent. More on that later.</li>
+<li>The <strong>request body</strong>: is the actual content of a message. In a RESTful service, it’s where the representation of resources sit. A body will not be present in a GET request, for instance, since it is a request to retrieve a resource rather than to create one, whereas a POST request will most likely have one.</li>
+</ul>
+
+
+<p>The request will then generate an <strong>HTTP response</strong> to the client, that will contain the following elements:</p>
+
+<ul>
+<li>The <strong>HTTP version</strong>, same as above.</li>
+<li>The <strong>response code</strong>: which is a three-digit status code sent back to the client. Can be of the <strong>1xx</strong> format (informational), <strong>2xx</strong> (success), <strong>3xx</strong> (redirect), <strong>4xx</strong> (client error), <strong>5xx</strong> (server error).</li>
+<li>The <strong>response header</strong>, which contains metadata and settings related to the message.</li>
+<li>The <strong>response body</strong>: contains the representation (if the request was successful).</li>
+</ul>
+
+
+<h2>URIs, home of the resources</h2>
+
+<p>A requirement of REST is that each resource has to correspond to an <a href="(http://en.wikipedia.org/wiki/Uniform_resource_identifier">URI</a>) address, which unsurprisingly stands for Uniform Resource Identifier. Having URIs associated to resources is key, because they are the addresses on which the client is allowed to perform the operations on the resources. It is important to stress that according to REST an URI should describe a resource, but never the operation performed on it.</p>
+
+<p>The addresses are usually constructed hierarchically, to allow readability. A typical resource URL could be written as: <code>http://serviceName/resourceName/resourceID</code></p>
+
+<p>Basic guidelines to build well-structured URIs are:</p>
+
+<ul>
+<li>Resources should be named with plural nouns, no verbs, using conventions throughout the whole service.</li>
+<li>Query URIs <code>http://serviceName/resourceName?id=resourceID</code> should be used only when really necessary. They are not deprecated by REST style, but they are less readable than the normal URIs, and are ignored by search engines. On the upside, they allow the client to send parameters to the service, to refine the request for a specific subset of resources, or resources in a specific format.</li>
+</ul>
+
+
+<h2>Uniform interface, various operations</h2>
+
+<p>Ok, so now that a client knows where a resource is reachable, how is it going to handle the resource? What are the operations that it can perform?</p>
+
+<p>HTTP provides a set of methods that allow the client to perform standard operations on the service:</p>
+
+<table style="margin-bottom:16px;">
+    <tr>
+        <th style="font-weight:bold;padding:5px 10px;">Method</th>
+        <th style="font-weight:bold;padding:5px 10px;">Operation performed</th> 
+        <th style="font-weight:bold;padding:5px 10px;">Quality</th>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;">**GET**</td>
+        <td style="padding:5px 10px;">Read a resource</td> 
+        <td style="padding:5px 10px;">Safe</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;">**POST**</td>
+        <td style="padding:5px 10px;">Insert a new resource, or update an existing one</td> 
+        <td style="padding:5px 10px;">Not idempotent</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;">**PUT**</td>
+        <td style="padding:5px 10px;">Insert a new resource, or update an existing one</td> 
+        <td style="padding:5px 10px;">Idempotent (see below)</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;">**DELETE**</td>
+        <td style="padding:5px 10px;">Delete a resource</td> 
+        <td style="padding:5px 10px;">Idempotent</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;">**OPTIONS**</td>
+        <td style="padding:5px 10px;">List allowed operations on a resource</td> 
+        <td style="padding:5px 10px;">Safe</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;">**HEAD**</td>
+        <td style="padding:5px 10px;">Return only the response header, no body</td> 
+        <td style="padding:5px 10px;">Safe</td>
+    </tr>
+</table>
+
+
+<p>The key difference between <em>POST</em> and <em>PUT</em> is that no matter how many times a <em>PUT</em> operation is performed, the result will be the same (this is what <em>idempotent</em> means), whereas with a <em>POST</em> operation a resource will be added or updated multiple times.</p>
+
+<p>Another difference is that a client that sends a <em>PUT</em> request always need to know the exact URI to operate on, I.E. assigning a name or an ID to a resource. If the client is not able to do so, it has no choice but to use a POST request.</p>
+
+<p>Finally, if the resource already exists, <em>POST</em> and <em>PUT</em> will update it in an identical fashion.</p>
+
+<h2>Statelessness of the client side</h2>
+
+<p>A RESTful service does not maintain the application state client-side. This only allows the client to perform requests that are resource specific, and does not allow the client to perform operations that assume prior knowledge of past requests.</p>
+
+<h2>Links between resources</h2>
+
+<p>In the case of a resource that contains a list of resources, REST suggests to include links to the single resources on the representation, to keep it compact and avoid redundant data.</p>
+
+<h2>Caching to optimize time and efficiency</h2>
+
+<p>Allows to store responses and return them if the same request is performed again. It has to be handled carefully to avoid returning stale results. The headers that allow us to perform controls over caching are:</p>
+
+<table style="margin-bottom:16px;">
+    <tr>
+        <th style="font-weight:bold;padding:5px 10px;">Header</th>
+        <th style="font-weight:bold;padding:5px 10px;">Application</th>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;">**Date**</td>
+        <td style="padding:5px 10px;">Finding out when this representation was generated</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;">**Last Modified**</td>
+        <td style="padding:5px 10px;">Date and time when the server modified the representation</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;">**Cache-Control**</td>
+        <td style="padding:5px 10px;">HTTP 1.1 header used to control caching, can contain directives</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;">**Expires**</td>
+        <td style="padding:5px 10px;">Expiration date (supports HTTP 1.0)</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;">**Age**</td>
+        <td style="padding:5px 10px;">Duration since the resource was fetched from server</td>
+    </tr>
+</table>
+
+
+<p>Cache-Control values can be tweaked to control if a cached result is still valid or stale. For example, the <em>max-age</em> value indicates for how many seconds from the moment expressed by the Date header a cached result will be valid.</p>
+
+<h2>Conclusion</h2>
+
+<p>REST is a language-agnostic style that abstracts over components and allows to build scalable, reusable and relatively lightweight web services. Thinking about it, it seems that REST is nothing more than a description of the characteristics that made the World Wide Web so popular.</p>
+
+<p>That of course is encouraging developers from all over the world to comply to these very basic ideas, owned by no one but at the same time used by everyone. Fascinating!</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1139,320 +1375,6 @@ The user can then add other application owners by clicking the &lsquo;Add user&r
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/10/06/puppetconf-2014-part-3/">PuppetConf 2014 - Part 3</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-10-06T13:43:36+01:00" pubdate data-updated="true">Oct 6<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>Day 2</h2>
-
-<p>This is our summary of PuppetConf 2014. In our <a href="http://tech.opentable.co.uk/blog/2014/10/06/puppetconf-2014-part-2/">previous post</a> we gave an overview of the first day of the conference. This post will provide an
-overview of the final day.</p>
-
-<p>There were even more inspiring keynotes and lots more talks which have given us plenty of ideas to go home and think about.</p>
-
-<h3>Key Notes</h3>
-
-<h4>Animating the Puppet: Creating a Culture of Puppet Adoption &ndash; Dan Spurling (<a href="https://twitter.com/spurling">@spurling</a>), Getty Images &ndash; <a href="http://www.slideshare.net/PuppetLabs/keynote-animating-the-puppet-creating-a-culture-of-puppet-adoption-puppetconf-2014">Slides</a></h4>
-
-<div style="float:right;margin:0 10px 10px 10px;width:50%">
-  <img src="/images/posts/puppetconf-dan.jpg">
-</div>
-
-
-<p>Dan Spuring, VP of Tech Services at Getty came out of the gate with a strong message. His <a href="http://www.urbandictionary.com/define.php?term=GSD">GSD</a> t-shirt
-giving you a clear understanding of who he is. His talk about creating a culture of Puppet adoption at his company was a great story of how challenging it
-can be to move various business units with projects of various ages to a configuration-management (with Puppet) ethos.</p>
-
-<p>I think it is good to hear that they are rolling cm out into that huge backlog of legacy infrastructure that we all try to pretend isn’t there.
-How do you make it integrate into existing processes? How do you sell the DevOps message at the same time as introducing a tool like Puppet into the mix as
-part of that message? Dan gave some thoughts on this and it was good to hear some of that from someone who appears to be on the other side of that challenge.</p>
-
-<p>One of the analogies that he used I that found quite useful was that undertaking a project like this is like moving a boulder. It requires an executive sponsor to
-get the thing moving at all and then it requires everyone pulling in the same direction if it’s ever doing to get anywhere.</p>
-
-<p>The big take-away was that you need to puppetize right away &ndash; that you can’t wait for the right environment or conditions to start doing it, you just need
-start now and demonstrate it. This echo’s the Continuous Delivery ideal of &ldquo;if it hurts, then do it more often&rdquo;.</p>
-
-<h4>Decentralize Your Infrastructure &ndash; Alan Green, Sony Computer Entertainment America &ndash; <a href="http://www.slideshare.net/PuppetLabs/keynote-decentralize-your-infrastructure-alan-green-sony-computer-entertainment-america">Slides</a></h4>
-
-<div style="float:right;margin:0 10px 10px 10px;width:50%">
-  <img src="/images/posts/puppetconf-alan.jpg">
-</div>
-
-
-<p>Alan’s talk posed an interesting argument: decentralise and let your developers choose the tools and services that they want &ndash; just make it easy for them to
-do so. This obviously flies in the face of conventional sysadmin wisdom of trying to centralise, standardise and control everything but for an organisation the
-size of scale of SCEA this is just never going to work. Sony has many different studios, each has their own special requirements and tooling that they need to
-try and support.</p>
-
-<p>The story of the interaction with these studios is a great classic sysadmin story that is worth repeating. It starts with something we have all heard before &ldquo;I
-need to X right now because it’s preventing me from releasing this game on time”. The reaction here is to either say Yes and risk burning out your people getting
-it done or No risk your career if the release date gets pushed. As a sysadmin you&rsquo;re on the back-foot at this point &ndash; you pretty much have to do whatever it takes.
-If you decentralize your infrastructure you get to turn the tables &#8220;No I don’t have tool X but we do have tool Y and Z that will meet your needs&rdquo;. This gives
-the engineers/managers the choice to make rather than you &ndash; they can go out on their own and implement their first choice tool and it will take a bit longer or
-they can have something supported by the team right now. Alan also made a interesting call-back to Kate Matsudaira’s keynote of the previous day when he said that
-it’s all about honesty and trust. Be truthful with your engineers about what you are capable of achieving or not.</p>
-
-<p>This is the sort of thing we do here at OpenTable and it’s been working very well. You need to design puppet to be as flexible as possible and to support those
-teams that need support in their puppet implementations. Having a diverse set of tools is not a bad thing &ndash; especially when you are dealing with creative people &ndash;
-it keeps them creative and you can push that creativity back into the product. You&rsquo;re also decentralising control, giving teams the ability to move their
-infrastructure as fast as they need to move the product &ndash; meaning that your business is going to move faster get meet it’s ROI (because managers care about that
-sort of thing)</p>
-
-<h4>Q&amp;A with Luke Kanies</h4>
-
-<div style="float:right;margin:0 10px 10px 10px;width:50%">
-  <img src="/images/posts/puppetconf-luke-2.jpg">
-</div>
-
-
-<p>The last &ldquo;keynote&rdquo; of the conference brought Luke back to the stage for a Q&amp;A with the audience. Allowing people to text in questions live led to some amusement
-and once the silly questions were out of the way ( what is your favourite book?, what is your favourite animal? ) we got down to some of the big questions that
-people really wanted answers to.</p>
-
-<p><strong>Q</strong>: What is the roadmap for Puppet Apps?<br/>
-<strong>A</strong>: I would be surprised if we release more than one per quarter, I’d rather put out four than 20, with five releases for each app. We are a small company,
-and we have to try not to get overextended to the point where we can’t evolve the apps. They have to be evolved to be successful.</p>
-
-<p>This seems fair, they is a lot of work involved in putting together something that is polished and tested and ready for market.</p>
-
-<p><strong>Q</strong>: What is the future of Open Source Puppet?<br/>
-<strong>A</strong>: My goal is to keep the two products complementary, and to understand each is used for different reasons .. We’re trying to change how the market works
-and thinks and this is done better with software that’s absolutely everywhere.</p>
-
-<p>He probably gets asked this all the time. The more features that are poured into Enterprise it would be easy to think that the OSS efforts are diminishing and
-that there is even motivation for them to close-source. My conversations with various parties suggest that this is far from the case and I think that open source
-puppet community will continue to be vibrant for a long time yet.</p>
-
-<p><strong>Q</strong>: Where does Puppet fit into environments that don’t require convergence, where instead of adjusting the container you just re-provision?<br/>
-<strong>A</strong>: Containers are a result of 10 to 15 years of investment in virtualization, so it’s easy to switch from the virtualization world to the containers world —
-but a container can’t do everything.</p>
-
-<p>This is a very pragmatic argument and he’s right. Containers are a very exciting space right now and there is no doubt that it will be a big part of the future
-but the community and tooling needs to mature and there is also going to be a very long tail of “traditional” virtualisation technologies around for a very
-long time yet.</p>
-
-<p><strong>Q</strong>: Are there any plan to integration remote orchestration into Puppet?<br/>
-<strong>A</strong>: It’s an area we are investing heavily in, and I’m personally investing heavily in. … I’m a big fan of small independent tools that do one job and do it
-correctly, rather than big huge tools that do a lot. I want to make our orchestration better, not by adding to Puppet, but by adding tools. I don’t want to add
-more functionality to Puppet, but add functionality to the Puppet ecosystem.</p>
-
-<p>MCollective has been in the puppet eco-system for a while now. It’s going to be getting a lot more attention over the next year so I am very excited to see how
-this evolves.</p>
-
-<h3>Tech Talks</h3>
-
-<h4>Continuous Integration for Infrastructure as Code &ndash; Gareth Rushgrove, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/continuouslytestinginfrastructure">Slides</a></h4>
-
-<p>Arguable one of the most interesting talks of the conference. This talk took the idea of infrastructure TDD to the next level. What would it be like to be able
-to test common expectations of your infrastructure (monitoring, backups, machines in each region, budget limitations). There are lots of built-in assumptions
-that we make about of infrastructure and a lot of business decisions that have been difficult to codify. This talk raising the challenge of providing a complete
-API for your infrastructure and then testing against it.</p>
-
-<ul>
-<li>usual tools (serverspec, wrecker)
-
-<ul>
-<li>for containers</li>
-<li>TDD</li>
-</ul>
-</li>
-<li>Policy Driven development</li>
-<li>Infrastructure as an API</li>
-<li>common expectations (budget etc)</li>
-<li>clojure</li>
-<li>can you generate serverspec tests from PuppetDB data??? &ndash; yes!</li>
-<li>rake test::role::web_server</li>
-<li><a href="https://github.com/garethr/serverspec-puppetdb">serverspec-puppetdb</a></li>
-<li>rspec outputter &ndash; monitoring &ndash; using it as a bridge</li>
-</ul>
-
-
-<h4>Experiences from Running Masterless Puppet &ndash; Erik Dalén, Spotify &ndash; <a href="http://www.slideshare.net/PuppetLabs/puppetconf-2014-1">Slides</a></h4>
-
-<p>Erik (this years MVP) always has a lot of interesting insights about Puppet from scaling out the infrastructure at Spotify and this talk is no exception.
-This talk explains their decision to go masterless and the challenges in doing so. It seems that they have put in a lot of work in writing services to manage
-things like hiera data and managing secrets. It is great to see how this approach scales, one can only hope that future work by PuppetLabs with the Apps project
-improves this as option for most people.</p>
-
-<ul>
-<li>scaling workflow rather than puppet masters</li>
-<li>complex modules dependencies make it easy to break things</li>
-<li>r10k is still a fixed environment (upgrade apache and progress at the same time)</li>
-<li>they use their own tool for secret management</li>
-</ul>
-
-
-<h4>Getting Started with Puppet on Windows &ndash; Josh Cooper, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/puppetconf2014-gettingstartedwindowsfinal140925174855phpapp01">Slides</a></h4>
-
-<p>This was a basic introduction to Puppet on windows. It covers what is possible and the many edge cases that you might run into. It was also the time to
-re-announce the recent support for 64-bit puppet on windows. Thanks to Josh we also got a shout-out for the work we have done with our
-<a href="forge.puppetlabs.com/opentable">forge modules</a></p>
-
-<ul>
-<li>Basic intro</li>
-<li>powershell, registry_key</li>
-<li>installing &ndash; mention of 64-bit</li>
-<li>puppet resource</li>
-<li>supported modules</li>
-<li>community modules (inc OT)</li>
-<li>geppetto vs VS</li>
-<li>problems
-
-<ul>
-<li>quotes</li>
-<li>case sensitivity</li>
-<li>UAC</li>
-</ul>
-</li>
-</ul>
-
-
-<h4>Test Driven Development with Puppet &ndash; Gareth Rushgrove, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/tddforpuppet-39598529">Slides</a></h4>
-
-<p>This is Gareth’s basic introduction to TDD with Puppet. It covers the latest tooling and how to build yourself a recent CI pipeline for your modules so that
-they are forge-ready. Useful for anyone who is new to the space or who hasn’t released any modules yet.</p>
-
-<ul>
-<li>TDD</li>
-<li><a href="http://rspec-puppet.com/">rspec-puppet</a></li>
-<li><a href="http://puppet-lint.com/">puppet-lint</a></li>
-<li><a href="https://github.com/guard/guard-rspec">guard</a></li>
-<li><a href="https://github.com/gds-operations/puppet-syntax">puppet-syntax</a></li>
-<li><a href="https://github.com/puppetlabs/beaker">beaker</a> (vagrant + serverspec)</li>
-<li><a href="https://travis-ci.org/">travis</a></li>
-<li><a href="https://github.com/garethr/puppet-module-skeleton">puppet module skeleton</a></li>
-</ul>
-
-
-<h4>Using Docker with Puppet &ndash; James Turnbull, Kickstarter &ndash; <a href="http://www.slideshare.net/PuppetLabs/using-docker-with-puppet-puppetconf-2014">Slides</a></h4>
-
-<p>James gave a good introduction to Docker. Showing off the things that Docker is good at and also detailing some of the things that it isn’t.
-He also showed how and when to use Puppet in this environment. For anyone moving from a  traditional set-up to a Docker based one then this talk is a must.</p>
-
-<ul>
-<li>what is docker</li>
-<li>dockerfile</li>
-<li>dockerhub</li>
-<li>what it does</li>
-<li>what it doesn’t
-
-<ul>
-<li>low-level</li>
-<li>resource dependencies</li>
-<li>what runs, when</li>
-</ul>
-</li>
-<li>don’t install puppet inside your containers</li>
-<li>puppet apply</li>
-</ul>
-
-
-<h4>Tools and Virtualization to Manage our Operations at Puppet Labs &ndash; Cody Herriges, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/tools-and-virtualization-to-manage-our-operations-at-puppet-labs-puppetconf-2014">Slides</a></h4>
-
-<p>Cody, is a member of the PuppetLabs operations team and wow they seriously have their work cut out for them. They have to manage pretty much every network,
-vm technology and cloud platform available. This gives some of the challenges in doing that and some of the tools they have built to help them in
-achieving that.</p>
-
-<ul>
-<li>all the VM technologies</li>
-<li>all the cloud platforms</li>
-<li>all the network providers</li>
-<li>automation</li>
-<li>monitoring (ELK)</li>
-<li>vmpooler (<a href="https://github.com/puppetlabs/vmpooler">https://github.com/puppetlabs/vmpooler</a>)</li>
-</ul>
-
-
-<h3>Other Talks</h3>
-
-<ul>
-<li>The Switch as a Server &ndash; Leslie Carr, Cumulus Networks &ndash; <a href="http://www.slideshare.net/PuppetLabs/the-switch-as-a-server-puppetconf-2014">Slides</a></li>
-<li>Intro to Using MCollective &ndash; Devon Peters, Jive Software &ndash; <a href="http://www.slideshare.net/PuppetLabs/intro-to-using-mcollective-puppetconf-2014">Slides</a></li>
-<li>How Puppet Enables the Use of Lightweight Virtualized Containers &ndash; Jeff McCune, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/how-puppet-enables-the-use-of-lightweight-virtualized-containers-jeff-mc-cune-puppet-labs">Slides</a></li>
-<li>Server Locality Using Razor and LLDP &ndash; Jonas Rosland, EMC &ndash; <a href="http://www.slideshare.net/PuppetLabs/server-locality-withrazorandlldp">Slides</a></li>
-<li>Node Classifier Fundamentals &ndash; Dan Lidral-Porter, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/node-classifier-fundamentals-dan-lidralporter-puppet-lab">Slides</a></li>
-<li>What&rsquo;s Next for Puppet Enterprise &ndash; Lindsey Smith, Puppet Labs &amp; Susannah Axelrod, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/whats-next-for-puppet-enterprise-and-beyond">Slides</a></li>
-<li>The DevOps Field Guide to Cognitive Biases (2nd Edition) &ndash; Lindsay Holmwood, Bulletproof Networks</li>
-<li>Delegated Configuration with Multiple Hiera Databases &ndash; Robert Terhaar, Atlantic Dynamic &ndash; <a href="http://www.slideshare.net/PuppetLabs/rob-terhaar-puppetconf2014">Slides</a></li>
-<li>Understanding OpenStack Deployments &ndash; Chris Hoge, OpenStack Foundation &ndash; <a href="http://www.slideshare.net/PuppetLabs/understanding-openstack-deployments-puppetconf-2014">Slides</a></li>
-<li>Implementing Puppet at a South American Government Agency, Challenges and Solutions &ndash; Pablo Wright, Edrans &ndash; <a href="http://www.slideshare.net/PuppetLabs/implementing-puppet-at-a-south-american-government-agency-challenges-and-solutions-pablo-wright-edrans">Slides</a></li>
-<li>Infrastructure as Software &ndash; Dustin J. Mitchell, Mozilla, Inc. &ndash; <a href="http://www.slideshare.net/PuppetLabs/infrastructure-as-software-dustin-j-mitchell-mozilla-inc?">Slides</a></li>
-<li>Dev to Delivery with Puppet &ndash; Sam Bashton, Bashton Ltd. &ndash; <a href="http://www.slideshare.net/PuppetLabs/dev-to-delivery-with-puppet-sam-bashton-bashton-ltd">Slides</a></li>
-<li>Get Puppet Enterprise into Your Company &ndash; Iko Saadhoff, KPN</li>
-<li>The Puppet Master on the JVM &ndash; Chris Price, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/the-puppet-master-on-the-jvm-puppetconf-2014">Slides</a></li>
-<li>The Grand Puppet Sub-Systems Tour &ndash; Nicholas Fagerlund, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/the-grand-puppet-subsystems-tour-nicholas-fagerlund-puppet-labs">Slides</a></li>
-<li>Building Community: One Puppet Module at a Time &ndash; Diane Mueller, Red Hat &amp; Diego Castro, Getup Cloud</li>
-<li>Puppet for Everybody! &ndash; Federated and Hierarchical Puppet Enterprise &ndash; Chris Bowles, University of Texas at Austin &ndash; <a href="http://www.slideshare.net/PuppetLabs/puppet-for-everybody-federated-and-hierarchical-puppet-enterprise-puppetconf-2014">Slides</a></li>
-<li>Puppetizing Multitier Architecture &ndash; Reid Vandewiele, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/puppetizing-multitier-architecture-puppetconf-2014">Slides</a></li>
-<li>The Evolving Design Patterns of Puppet Enterprise &ndash; Jonathan Spinks, Sourced Group &amp; John Painter, Sourced Group &ndash; <a href="http://www.slideshare.net/PuppetLabs/the-evolving-design-patterns-of-puppet-enterprise-jonathan-spinks-sourced-group-john-painter-sourced-group">Slides</a></li>
-<li>From Development to Testing to Deployment with Puppet Enterprise and Microsoft Azure &ndash; Ross Gardler, Microsoft Open Technologies, Inc. &ndash; <a href="http://www.slideshare.net/PuppetLabs/from-development-to-testing-to-deployment-with-puppet-enterprise-and-microsoft-azure-ross-gardler-microsoft-open-technologies-inc">Slides</a></li>
-<li>Exploring the Final Frontier of Data Center Orchestration: Network Elements &ndash; Jason Pfeifer, Cisco &ndash; <a href="http://www.slideshare.net/PuppetLabs/puppetconf-cisco">Slides</a></li>
-<li>An In-Depth Introduction to the Puppet Enterprise Console &ndash; Ruth Linehan, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/an-indepth-introduction-to-the-puppet-enterprise-console-ruth-linehan-puppet-labs">Slides</a></li>
-<li>Packaging Software, Puppet Labs Style &ndash; Melissa Stone, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/packaging-software-puppet-labs-style-puppetconf-2014">Slides</a></li>
-<li>Orchestrated Functional Testing with Puppet-spec and Mspectator &ndash; Raphaël Pinson, Camptocamp &ndash; <a href="http://www.slideshare.net/PuppetLabs/puppetconf-mspectator-talk">Slides</a></li>
-<li>Fully Automate Application Delivery with Puppet and F5 &ndash; Colin Walker, F5 &ndash; <a href="http://www.slideshare.net/PuppetLabs/i-control-rest-presentation-for-puppet">Slides</a></li>
-<li>Managing the File and Exposing the API &ndash; Christopher Webber, Chef Software</li>
-<li>Case Study: Developing a Vblock Systems Based Private Cloud Platform with Puppet and VMware vCloud Suite &ndash; Peng Liu &amp; Paul Harb, VCE &ndash; <a href="http://www.slideshare.net/VCE_Computing/puppet-confvce-preso20140925">Slides</a></li>
-<li>Got Logs? Get Answers with Elasticsearch ELK &ndash; Jordan Sissel, Elasticsearch &ndash; <a href="http://www.slideshare.net/PuppetLabs/got-logs-get-answers-with-elasticsearch-elk-puppetconf-2014">Slides</a></li>
-<li>Managing Network Security Monitoring at Large Scale with Puppet &ndash; Michael Pananen &amp; Chris Nyhuis, Vigilant Technology Services &ndash; <a href="http://www.slideshare.net/PuppetLabs/managing-network-security-monitoring-at-large-scale-with-puppet-puppetconf-2014">Slides</a></li>
-<li>Building and Testing from Scratch a Puppet Environment with Docker &ndash; Carla Souza, Reliant &ndash; <a href="http://www.slideshare.net/PuppetLabs/puppet-conf2014">Slides</a></li>
-</ul>
-
-
-<h3>Other Interesting Links</h3>
-
-<ul>
-<li><a href="http://blog.superk.org/2014/09/puppet-conf-2014-review.html">http://blog.superk.org/2014/09/puppet-conf-2014-review.html</a></li>
-<li><a href="http://www.olindata.com/blog/2014/09/first-impressions-new-cfacter">http://www.olindata.com/blog/2014/09/first-impressions-new-cfacter</a></li>
-<li><a href="http://cwebber.net/blog/2014/09/26/i-am-not-a-coder/">http://cwebber.net/blog/2014/09/26/i-am-not-a-coder/</a></li>
-<li><a href="http://www.slideshare.net/PuppetLabs/tag/puppetconf-2014">http://www.slideshare.net/PuppetLabs/tag/puppetconf-2014</a></li>
-<li><a href="http://puppetlabs.com/blog/puppetconf-2014-day-1-tips-treats-and-tweets">http://puppetlabs.com/blog/puppetconf-2014-day-1-tips-treats-and-tweets</a></li>
-<li><a href="http://puppetlabs.com/blog/puppetconf-2014-day-2-luke-q-and-a-devops-containers-and-more">http://puppetlabs.com/blog/puppetconf-2014-day-2-luke-q-and-a-devops-containers-and-more</a></li>
-<li><a href="http://puppetlabs.com/blog/puppetconf-2014-day-1-tips-treats-and-tweets">http://puppetlabs.com/blog/puppetconf-2014-day-1-tips-treats-and-tweets</a></li>
-<li><a href="http://puppetlabs.com/blog/puppet-conf-2014-wrap-up">http://puppetlabs.com/blog/puppet-conf-2014-wrap-up</a></li>
-<li><a href="https://forge.puppetlabs.com/approved/criteria">https://forge.puppetlabs.com/approved/criteria</a></li>
-<li><a href="http://puppetlabs.com/blog/puppet-server-bringing-soa-to-a-puppet-master-near-you">http://puppetlabs.com/blog/puppet-server-bringing-soa-to-a-puppet-master-near-you</a></li>
-<li><a href="https://github.com/puppetlabs/puppetlabs-strings/">https://github.com/puppetlabs/puppetlabs-strings/</a></li>
-<li><a href="http://bitergia.dev.puppetlabs.com/browser/">http://bitergia.dev.puppetlabs.com/browser/</a></li>
-<li><a href="https://www.flickr.com/photos/pleia2/sets/72157648049231891">https://www.flickr.com/photos/pleia2/sets/72157648049231891/</a></li>
-<li><a href="http://theshipshow.com/2014/10/the-pulse-of-puppetconf-2014/">http://theshipshow.com/2014/10/the-pulse-of-puppetconf-2014/</a></li>
-<li><a href="http://www.theregister.co.uk/2014/09/23/puppetconf_2014_keynote/">http://www.theregister.co.uk/2014/09/23/puppetconf_2014_keynote/</a></li>
-<li><a href="http://www.infoq.com/news/2014/09/puppet-approved-modules">http://www.infoq.com/news/2014/09/puppet-approved-modules</a></li>
-<li><a href="https://github.com/ferventcoder/puppet-chocolatey-presentation">https://github.com/ferventcoder/puppet-chocolatey-presentation</a></li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1468,6 +1390,10 @@ achieving that.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/02/02/a-beginners-guide-to-rest-services/">A Beginner&#8217;s guide to REST services</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/01/23/on-strongly-typed-logging/">On Strongly Typed Logging</a>
       </li>
     
@@ -1481,10 +1407,6 @@ achieving that.</p>
     
       <li class="post">
         <a href="/blog/2014/12/08/supporting-ie8-in-the-opentable-redesign/">Supporting IE8 in the OpenTable redesign</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/11/28/proxying-with-hapi/">Proxying Services With Hapi.js</a>
       </li>
     
   </ul>

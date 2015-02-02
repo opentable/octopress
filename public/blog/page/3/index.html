@@ -9,7 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="For the last couple months I&rsquo;ve been working remotely with our search team at OpenTable. Let me share our remote working setup and some &hellip;">
+  <meta name="description" content="As part of our move towards a configuration management tool, we really wanted to start automating as much of our infrastructure as possible. This &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +81,135 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/13/managing-windows-web-applications-with-puppet/">Managing Windows Web Applications with Puppet</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-13T15:25:16+01:00" pubdate data-updated="true">May 13<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>As part of our move towards a configuration management tool, we really wanted to start automating as much of our infrastructure as possible. This included our application configuration stack. IIS management is pretty easy with PowerShell. It would look something like this</p>
+
+<pre><code>Import-Module WebAdministration
+New-WebSite -Name "DemoSite" -Port 80 -IP * -PhysicalPath "c:\inetpub\wwwroot" -ApplicationPool "MyAppPool"
+</code></pre>
+
+<p>This would of course set up a website called &lsquo;DemoSite&rsquo; running on port 80 on the local machine. The cmdlets that come with PowerShell make this pretty easy. This is great if it is a one-off job to set up a site. We run our websites from a number of webservers, therefore, it would be silly to have to RDP into each webserver and run a script on it. This is why tools like Puppet, Chef, Ansible etc. exist. We needed a configuration management tool to do this work for us. It has a number of benefits:</p>
+
+<ul>
+<li>Orchestration</li>
+<li>Idempotency</li>
+<li>Makes sure that each server is configured in &lsquo;exactly&rsquo; the same way as no human intervention is needed</li>
+<li>Developers can help the operations team by creating the scripts needed. This is great for collaboration between teams</li>
+</ul>
+
+
+<p>On investigating how we would do this with Puppet, we noticed that there were not many other people managing their site in this way. Therefore, we would have to turn our PowerShell scripts into Puppet modules to manage our system.</p>
+
+<p>We have since created a Puppet module to manage IIS. To manage IIS with Puppet, we can now write the following code:</p>
+
+<pre><code>iis::manage_site { 'DemoSite:
+   site_path     =&gt; 'c:\inetpub\wwwroot',
+   port          =&gt; '80',
+   ip_address    =&gt; '*',
+   app_pool      =&gt; 'MyAppPool'
+}
+</code></pre>
+
+<p>This would produce <strong>exactly</strong> the same results as the code from above. But it has 1 difference. There are checks in the code behind this module that will mean the code will only execute when it is needed, i.e. when the site_path isn&rsquo;t correct or the app_pool isn&rsquo;t correct. This is idempotency. The script can be run again and again and again&hellip;.</p>
+
+<p>To create an application binding, we used to do this in PowerShell:</p>
+
+<pre><code>Import-Module WebAdministration
+New-WebBinding -Name 'DemoSite' -Port '8080' -IPAddress '*'
+</code></pre>
+
+<p>This would set up an extra binding on port 8080 for the site, DemoSite. We replaced this code with our puppet equivalent:</p>
+
+<pre><code>iis::manage_binding { 'DemoSite-8080':
+  site_name   =&gt; 'DemoSite',
+  protocol    =&gt; 'http',
+  port        =&gt; '8080',
+  ip_address  =&gt; '*',
+}
+</code></pre>
+
+<p>To create a virtual application, we would write the PowerShell:</p>
+
+<pre><code>Import-Module WebAdministration
+New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub\wwwroot\MyVirtualApp' -ApplicationPool 'MyAppPool'
+</code></pre>
+
+<p>This will create a VirtualApp folder on the DemoSite, use the same application pool and then set the path of the folder. I can do the same thing in Puppet as follows:</p>
+
+<pre><code>iis::manage_virtual_application {'VirtualApp':
+  site_name   =&gt; 'DemoSite',
+  site_path   =&gt; 'C:\inetpub\wwwroot\MyVirtualApplication',
+  app_pool    =&gt; 'MyAppPool'
+ }  
+</code></pre>
+
+<p>We can therefore, chain a manifest together that does all this for us in 1 go. It would look as follows:</p>
+
+<pre><code>class mywebsite {
+  iis::manage_app_pool {'MyAppPool':
+    enable_32_bit           =&gt; true,
+    managed_runtime_version =&gt; 'v4.0',
+  } -&gt;
+
+  iis::manage_site {'DemoSite':
+    site_path   =&gt; 'C:\inetpub\wwwroot',
+    port        =&gt; '80',
+    ip_address  =&gt; '*',
+    app_pool    =&gt; 'MyAppPool'
+  } -&gt;
+
+  iis::manage_virtual_application {'VirtualApp':
+    site_name  =&gt; 'DemoSite',
+    site_path  =&gt; 'C:\inetpub\wwwroot\MyVirtualApp',
+    app_pool   =&gt; 'MyAppPool'
+  } -&gt; 
+
+  iis::manage_binding {'DemoSite-8080':
+    site_name  =&gt; 'DemoSite',
+    protocol   =&gt; 'http',
+    port       =&gt; '8080',
+    ip_address =&gt; '*'
+  }
+}
+</code></pre>
+
+<p>The module does more than just these tasks and I could give more and more examples of what we wrote, but you can find more about our IIS module on the <a href="http://github.com/opentable/puppet-iis">github repo</a>. If you want to use the module, then you can install it using the Puppet Module tool via the <a href="http://forge.puppetlabs.com/opentable/iis">Puppet forge</a>.</p>
+
+<p>We love to hear feedback on things that the module should support. We like Pull Requests even more :)</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1088,289 +1217,6 @@ end
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/28/api-benchmark/">Benchmarking APIs - why it’s important, and how</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-28T09:00:00+00:00" pubdate data-updated="true">Feb 28<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Since I joined OpenTable I’ve been experimenting with performance monitoring, specifically on web services. One of the projects my team is responsible for is a REST API that provides UI elements for HTML5 applications, shaped as HTML snippets and static resources. Our consumers are websites deployed in multiple parts of the world, so our service needs to be fast and reliable.</p>
-
-<h2>The why</h2>
-
-<p>A couple of weeks after joining the company I decided, as part of my <a href="http://tech.opentable.co.uk/blog/2014/02/06/20-percent-time/">innovation time</a>, to rebuild the core of a .NET WebApi project in node.js in order to have a working prototype that could do exactly the same job as the original one, and could help me to observe how the two applications could react with similar volumes of traffic. After managing to make the two apis run on two clean VMs with the same configuration, I wrote a little node.js script to start performing some requests and test the response times. After seeing the results I thought that something was going wrong:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>.NET/route1 x 9.16 ops/sec ±12.71% <span class="o">(</span>17 runs sampled<span class="o">)</span>
-</span><span class='line'>nodeJS/route1 x 106 ops/sec ±1.19% <span class="o">(</span>180 runs sampled<span class="o">)</span>
-</span><span class='line'><span class="o">======================================</span>
-</span><span class='line'>Fastest is nodeJS/route1
-</span><span class='line'>
-</span><span class='line'>.NET/route2 x 10.70 ops/sec ±8.54% <span class="o">(</span>19 runs sampled<span class="o">)</span>
-</span><span class='line'>nodeJS/route2 x 118 ops/sec ±1.22% <span class="o">(</span>175 runs sampled<span class="o">)</span>
-</span><span class='line'><span class="o">======================================</span>
-</span><span class='line'>Fastest is nodeJS/route2
-</span><span class='line'>
-</span><span class='line'><span class="o">======================================</span>
-</span><span class='line'>Fastest Service is nodeJS
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>After trying to microbenchmark different layers of the software, I found the problem. On the .NET side I was reading a file synchronously, for every request; the file system’s library used with the node.js app, instead, was automatically caching the reads as default. After setting up a basic caching mechanism in the .NET app and running my script again the node.js API was only 1.4 times faster. After finding and solving that issue I thought how badly the application could have handled concurrency when deployed in production, even if it was heavily unit tested, the specs were well defined, and it was built using all the best techniques we all love.</p>
-
-<p>As developers we rely on technologies that, with a minimum effort, can guarantee some pretty decent results in terms of performance. Modern web frameworks handle concurrency and thread management without requiring much plumbing code. Sophisticated and relatively cheap cloud services help us monitor our applications, providing dashboards, reports and alerting systems. Deploying on the cloud we can run our services and even auto-scale them depending on how much power we need. Even with these tools we must still own the responsibility of writing good quality code, testing it properly, and deploying as fast as possible in order to optimise the delivery process of our products.</p>
-
-<p>But what about performance? I mean, what about the relationship between the code we write every day, and the way we impact overall performance? Are we sure that we are not deploying to production something that is degrading our services’ performance?</p>
-
-<h2>The how</h2>
-
-<p>Talking about the ‘why’ could be relatively easy, but the ‘how’ is a controversial topic. In my experience there are three important steps to any dish. First, we need the right tools to manipulate the ingredients. I tried many different tools but I couldn&rsquo;t find a good fit for all my benchmarking requirements. It always makes sense to start with something to get you going but after a while it is important to find what’s the best for you, your team, and your project.</p>
-
-<p>Then, you start cooking: personally, the number of things I’ve learned by just starting to benchmark some services is incredible. Nevertheless, as with every time we talk about metrics, it is key to know what is important about the data we are analysing, recognise the false positives/negatives and be aware of vanity metrics that could emphasize something irrelevant, or, more importantly, hide something significant.</p>
-
-<p>The last step is simple: react and persist. If you discover something relevant, you can do something to improve the quality of your software.  With the right tools you can write some benchmark tests to target different layers of your software and execute them each and every time you contribute to that repository.  Doing this helps you keep your system performance under control which is really valuable.</p>
-
-<h2>The how, for me</h2>
-
-<p>When I found that little bug in the application (and it wasn’t actually a bug in the way we usually define them, as it wasn’t breaking any test or any software’s feature), I decided to spend some time to make my benchmark script better, in order to support different HTTP verbs, HTTPS, and a few things I needed to test all the routes of the API in a easy way. The goal was to wrap my little script as a <a href="http://www.gruntjs.com">grunt.js</a> module, (we use Teamcity as a CI platform and we already use grunt to run various tasks during our release process). I wanted to run this benchmarks externally to avoid interfering with the performance of the application, and to have a configuration-based simple-to-use tool.</p>
-
-<p>So after some refactoring I started working on <a href="https://github.com/matteofigus/api-benchmark">api-benchmark</a> and its grunt wrapper <a href="https://github.com/matteofigus/grunt-api-benchmark">grunt-api-benchmark</a>, in order to make performance testing part of our continuous delivery process. A couple of days later my team was using it to run benchmark tests on our pre-prod environments against our APIs, running some hundreds of requests on each route every time we made a single commit to Github. What I managed to do was to break the build if response times were not good enough (stopping the production deployment), and producing a tiny report with some graphs, in order to have something useful to observe and eventually collect. Now, a couple of months later, a lot of functionality has been added and other teams are using it with success.</p>
-
-<p>In case of RESTful services, it is possible to make series of requests to test response times, find peaks and classify errors; it is possible to perform concurrent calls to see how many parallel requests your service can handle (when deployed in single boxes, or when load balanced and globalised); and every time grunt runs everything is saved and plotted to readable and shareable graphs, so the knowledge can be shared between people that belong to different backgrounds.</p>
-
-<p><img class="center" src="/images/posts/api_benchmark.png"></p>
-
-<p>A lot of other features are still under development, including support for SOAP services and historical analysis (compare results from previous benchmarks and create historical graphs to represent the evolution of your software).</p>
-
-<h2>How it works &amp; how to use it</h2>
-
-<p>The way it works is simple. A configuration file contains the list of all the routes of the API. For each route it is possible to set different parameters such as headers, methods, expected status code, and expected response times. Other options that can be set such as the minimum number of samples, the maximum time for collecting the results, the number of concurrent requests, etc. It should be something like:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="nt">&quot;service&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nt">&quot;My api&quot;</span><span class="p">:</span> <span class="s2">&quot;http://localhost:3007/api/&quot;</span>
-</span><span class='line'>  <span class="p">},</span>
-</span><span class='line'>  <span class="nt">&quot;endpoints&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nt">&quot;simpleRoute&quot;</span><span class="p">:</span> <span class="s2">&quot;v1/getJson&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nt">&quot;postRoute&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nt">&quot;route&quot;</span><span class="p">:</span> <span class="s2">&quot;v1/postJson&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;post&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nt">&quot;test&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>        <span class="nt">&quot;someData&quot;</span><span class="p">:</span> <span class="s2">&quot;someStrings&quot;</span>
-</span><span class='line'>      <span class="p">},</span>
-</span><span class='line'>      <span class="nt">&quot;expectedStatusCode&quot;</span><span class="p">:</span> <span class="mi">200</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="nt">&quot;deleteRoute&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nt">&quot;route&quot;</span><span class="p">:</span> <span class="s2">&quot;v1/deleteMe?test=true&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;delete&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;maxMean&quot;</span><span class="p">:</span> <span class="mf">0.06</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;maxSingleMean&quot;</span><span class="p">:</span> <span class="mf">0.003</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">},</span>
-</span><span class='line'>  <span class="nt">&quot;options&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nt">&quot;minSamples&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
-</span><span class='line'>    <span class="nt">&quot;runMode&quot;</span><span class="p">:</span> <span class="s2">&quot;parallel&quot;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nt">&quot;maxConcurrentRequests&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
-</span><span class='line'>    <span class="nt">&quot;debug&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>    <span class="nt">&quot;stopOnError&quot;</span><span class="p">:</span> <span class="kc">false</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Then it is possible to include the script in a project that is written in any language and runs on any platform. The only requirement is to <a href="http://www.nodejs.org">install node.js</a> on that machine. If the project doesn’t have a package.json file in the root of your project, it’s as easy as doing:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm init
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Once this is complete, include and install grunt-api-benchmark as a dependency (if you are not on Windows, you may want to sudo it depending on how you’ve installed node.js):</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm install grunt-api-benchmark --save-dev
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The last thing to do is to create a task inside your Gruntfile.js. Create one if you already don’t have one, and then add the ‘api_benchmark’ task in order to have something like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">grunt</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">grunt</span><span class="p">.</span><span class="nx">initConfig</span><span class="p">({</span>
-</span><span class='line'>    <span class="nx">pkg</span><span class="o">:</span> <span class="nx">grunt</span><span class="p">.</span><span class="nx">file</span><span class="p">.</span><span class="nx">readJSON</span><span class="p">(</span><span class="s1">&#39;package.json&#39;</span><span class="p">),</span>
-</span><span class='line'>    <span class="nx">api_benchmark</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">myApi</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">output</span><span class="o">:</span> <span class="s1">&#39;output_folder&#39;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="nx">files</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>          <span class="s1">&#39;report.html&#39;</span><span class="o">:</span> <span class="s1">&#39;config.json&#39;</span><span class="p">,</span>
-</span><span class='line'>          <span class="s1">&#39;export.json&#39;</span><span class="o">:</span> <span class="s1">&#39;config.json&#39;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span><span class="p">(</span><span class="s1">&#39;grunt-api-benchmark&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;benchmark&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;api_benchmark&#39;</span><span class="p">]);</span>
-</span><span class='line'><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Where “generated” is the output folder, “config.json” is your configuration file, and “report.html” (or “export.json”) is the output’s filename. To run it just:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>grunt benchmark
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>If you use TravisCI, TeamCity, or any other CI platform, all you’ll have to do is to make it run after being sure the dependencies are resolved:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm install
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Let’s benchmark &ndash; some lessons learned</h2>
-
-<p>I think this is the most important part of the whole process, however I don’t think there are any general rules that are applicable for every context. I believe that after testing and stressing your system you will find out what matters to you and to your business. Nevertheless, I want to share some of the lessons I’ve learned.</p>
-
-<p>First, set-up everything correctly.</p>
-
-<ul>
-<li>Benchmarks need to run always on the same machine, same agent, and same configuration to be reliable and comparable.</li>
-<li>The network should be tested to be sure there aren’t any particular limits that would affect the benchmarks. It should be tested each time before running any benchmarks and could include things like bandwidth, host name correctness, and OS limitations.</li>
-<li>Don’t run the tests from the same machine that hosts the application. Run it from the outside, and if you deploy in different regions, keep that in mind when you look at the results.</li>
-</ul>
-
-
-<p>When you benchmark, remember that stress and performance are two different things.</p>
-
-<ul>
-<li>You should test both to learn about performance but also your limits, in order to have an idea on how to scale your application or how to fix it when necessary.</li>
-<li>10 seconds is not enough. 1 minute is nice, 5 is better.</li>
-<li>One route is not enough. Testing all the routes allow us to see the difference between different response lengths.</li>
-<li>Sometimes your application needs a warm-up, especially if you test it after a deployment. Set up a script to do that or set a proper time-out to be sure you are retrieving some valuable numbers back.</li>
-<li>Don&rsquo;t benchmark the live production environment. Your results are affected by too many variables. If possible, set-up a staging environment with exactly the same configuration to run benchmarks.</li>
-</ul>
-
-
-<p>If necessary, adapt your API to be more testable through some very basic design patterns.</p>
-
-<ul>
-<li>Performance could depend on synchronous calls to third-party APIs or databases. Ideally routes should have an optional parameter to mock external dependencies so we should test that as well.</li>
-<li>Ensure that changes to data or the operating environment are not persisted after the benchmarks complete. This is important to ensure no side effects on subsequent runs and will allow you to  benchmark production boxes if needed (after the deployment and obviously before directing any traffic to them).</li>
-</ul>
-
-
-<p>Last but not least, let’s analyse the data</p>
-
-<ul>
-<li>Averages are not enough, peaks are important, investigate them.</li>
-<li>When something unexpected happens, try to reproduce it in order to fix it.</li>
-<li>If wildly different numbers come up every time you run the tests, your API is depending on too many unpredictable events. Try to fix it. Try to run benchmarks locally and microbenchmark your software until you find the element that is causing the unpredictability. Then, fix it or find a way to mock it if you have no other option.</li>
-<li>Numbers should be readable and shareable by everyone. Find a tool that dashboards your results and easily allow you to share that data.</li>
-</ul>
-
-
-<h2>‘benchmarking’ != ‘monitoring’;</h2>
-
-<p>Benchmarking doesn’t equal and doesn’t replace monitoring. Once you start having an extensive knowledge about your system’s performance, you can find useful and easy to establish correlations between your benchmarks and your monitoring metrics. Depending on the scale of your system, it could be something very important.</p>
-
-<h2>Conclusions</h2>
-
-<p>I believe that taking care of performance is our responsibility, as developers. We can and should do more, and I hope this subject will gain more interest. In the meanwhile, if <a href="https://github.com/matteofigus/api-benchmark">api-benchmark</a> sounds interesting for you and you are interested in trying it or contributing (it is totally open-source), don’t hesitate to <a href="http://www.twitter.com/matteofigus">get in touch with me</a>.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -1388,6 +1234,10 @@ end
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/02/02/a-beginners-guide-to-rest-services/">A Beginner&#8217;s guide to REST services</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/01/23/on-strongly-typed-logging/">On Strongly Typed Logging</a>
       </li>
     
@@ -1401,10 +1251,6 @@ end
     
       <li class="post">
         <a href="/blog/2014/12/08/supporting-ie8-in-the-opentable-redesign/">Supporting IE8 in the OpenTable redesign</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/11/28/proxying-with-hapi/">Proxying Services With Hapi.js</a>
       </li>
     
   </ul>

@@ -27,13 +27,13 @@ Common features of a service that is built in a REST style are:
 - Messages
 - URIs
 - Uniform Interface
-- Statelessness
+- Stateless
 - Links between resources
 - Caching
 
 ## Representations - what are they? ##
 
-REST style does not put a constraint into the way resources are represented, as long as their format is understandable by the client.
+REST style does not put a constraint into the way resources are represented.
 
 Good examples of data formats in which a resource could be returned from a service are [**JSON**](http://www.json.org/) (JavaScript Object Notation, which nowadays is the coolest one) and [**XML**](http://www.w3.org/XML/) (Extensible Markup Language, used for more complex data structures). Say for instance a REST service has to expose the data related to a song, with its attributes. A way of doing it in JSON could be:
 
@@ -81,7 +81,7 @@ The request will then generate an **HTTP response** to the client, that will con
 
 ## URIs, home of the resources ##
 
-A requirement of REST is that each resource has to correspond to an [URI](http://en.wikipedia.org/wiki/Uniform_resource_identifier) address, which unsurprisingly stands for Uniform Resource Identifier. Having URIs associated to resources is key, because they are the addresses on which the client is allowed to perform the operations on the resources. It is important to stress that according to REST an URI should describe a resource, but never the operation performed on it.
+A requirement of REST is that each resource has to correspond to an [URI]((http://en.wikipedia.org/wiki/Uniform_resource_identifier)) address, which unsurprisingly stands for Uniform Resource Identifier. Having URIs associated to resources is key, because they are the addresses on which the client is allowed to perform the operations on the resources. It is important to stress that according to REST an URI should describe a resource, but never the operation performed on it.
 
 The addresses are usually constructed hierarchically, to allow readability. A typical resource URL could be written as: `http://serviceName/resourceName/resourceID`
 
@@ -140,13 +140,9 @@ Another difference is that a client that sends a *PUT* request always need to kn
 
 Finally, if the resource already exists, *POST* and *PUT* will update it in an identical fashion.
 
-These operations, according to REST, should be available to the client as hyperlinks to the above described URIs, and that is how the client/service interface is constrained to be *uniform*.
-
 ## Statelessness of the client side ##
 
-A RESTful service does not maintain the application state client-side. This only allows the client to perform requests that are resource specific, and does not allow the client to perform operations that assume prior knowledge of past requests. The client only knows what to do based on the ability to read the hypertext it receives, knowing its media type.
-
-This leads me to mention an important constraint of REST, that was also [enforced by Fielding](http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven) after publishing his dissertation: hyperlinks within hypertext are the only way for the client to make state transitions and perform operations on resources. This constraint is also known as **HATEOAS** (Hypermedia As The Engine Of Application State).
+A RESTful service does not maintain the application state client-side. This only allows the client to perform requests that are resource specific, and does not allow the client to perform operations that assume prior knowledge of past requests.
 
 ## Links between resources ##
 
@@ -187,6 +183,6 @@ Cache-Control values can be tweaked to control if a cached result is still valid
 
 ## Conclusion ##
 
-REST is a language-agnostic style that abstracts over components and allows to build scalable, reusable and relatively lightweight web services. Thinking about it, it seems that REST is very close to an accurate description of the characteristics that made the World Wide Web so popular.
+REST is a language-agnostic style that abstracts over components and allows to build scalable, reusable and relatively lightweight web services. Thinking about it, it seems that REST is nothing more than a description of the characteristics that made the World Wide Web so popular.
 
 That of course is encouraging developers from all over the world to comply to these very basic ideas, owned by no one but at the same time used by everyone. Fascinating!

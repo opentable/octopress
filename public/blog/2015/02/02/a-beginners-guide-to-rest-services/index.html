@@ -133,7 +133,7 @@
 <li>Messages</li>
 <li>URIs</li>
 <li>Uniform Interface</li>
-<li>Statelessness</li>
+<li>Stateless</li>
 <li>Links between resources</li>
 <li>Caching</li>
 </ul>
@@ -141,7 +141,7 @@
 
 <h2>Representations &ndash; what are they?</h2>
 
-<p>REST style does not put a constraint into the way resources are represented, as long as their format is understandable by the client.</p>
+<p>REST style does not put a constraint into the way resources are represented.</p>
 
 <p>Good examples of data formats in which a resource could be returned from a service are <a href="http://www.json.org/"><strong>JSON</strong></a> (JavaScript Object Notation, which nowadays is the coolest one) and <a href="http://www.w3.org/XML/"><strong>XML</strong></a> (Extensible Markup Language, used for more complex data structures). Say for instance a REST service has to expose the data related to a song, with its attributes. A way of doing it in JSON could be:</p>
 
@@ -203,7 +203,7 @@
 
 <h2>URIs, home of the resources</h2>
 
-<p>A requirement of REST is that each resource has to correspond to an <a href="http://en.wikipedia.org/wiki/Uniform_resource_identifier">URI</a> address, which unsurprisingly stands for Uniform Resource Identifier. Having URIs associated to resources is key, because they are the addresses on which the client is allowed to perform the operations on the resources. It is important to stress that according to REST an URI should describe a resource, but never the operation performed on it.</p>
+<p>A requirement of REST is that each resource has to correspond to an <a href="(http://en.wikipedia.org/wiki/Uniform_resource_identifier">URI</a>) address, which unsurprisingly stands for Uniform Resource Identifier. Having URIs associated to resources is key, because they are the addresses on which the client is allowed to perform the operations on the resources. It is important to stress that according to REST an URI should describe a resource, but never the operation performed on it.</p>
 
 <p>The addresses are usually constructed hierarchically, to allow readability. A typical resource URL could be written as: <code>http://serviceName/resourceName/resourceID</code></p>
 
@@ -266,13 +266,9 @@
 
 <p>Finally, if the resource already exists, <em>POST</em> and <em>PUT</em> will update it in an identical fashion.</p>
 
-<p>These operations, according to REST, should be available to the client as hyperlinks to the above described URIs, and that is how the client/service interface is constrained to be <em>uniform</em>.</p>
-
 <h2>Statelessness of the client side</h2>
 
-<p>A RESTful service does not maintain the application state client-side. This only allows the client to perform requests that are resource specific, and does not allow the client to perform operations that assume prior knowledge of past requests. The client only knows what to do based on the ability to read the hypertext it receives, knowing its media type.</p>
-
-<p>This leads me to mention an important constraint of REST, that was also <a href="http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven">enforced by Fielding</a> after publishing his dissertation: hyperlinks within hypertext are the only way for the client to make state transitions and perform operations on resources. This constraint is also known as <strong>HATEOAS</strong> (Hypermedia As The Engine Of Application State).</p>
+<p>A RESTful service does not maintain the application state client-side. This only allows the client to perform requests that are resource specific, and does not allow the client to perform operations that assume prior knowledge of past requests.</p>
 
 <h2>Links between resources</h2>
 
@@ -314,7 +310,7 @@
 
 <h2>Conclusion</h2>
 
-<p>REST is a language-agnostic style that abstracts over components and allows to build scalable, reusable and relatively lightweight web services. Thinking about it, it seems that REST is very close to an accurate description of the characteristics that made the World Wide Web so popular.</p>
+<p>REST is a language-agnostic style that abstracts over components and allows to build scalable, reusable and relatively lightweight web services. Thinking about it, it seems that REST is nothing more than a description of the characteristics that made the World Wide Web so popular.</p>
 
 <p>That of course is encouraging developers from all over the world to comply to these very basic ideas, owned by no one but at the same time used by everyone. Fascinating!</p>
 </div>

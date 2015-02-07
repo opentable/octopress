@@ -9,7 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="Day 2 This is our summary of PuppetConf 2014. In our previous post we gave an overview of the first day of the conference. This post will provide an &hellip;">
+  <meta name="description" content="We are pleased to announce the version 1.0 release of Hobknob, our open-source feature toggle management system. With it comes a few additions and &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +81,101 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/10/22/hobknob-v1-dot-0-now-with-authorization/">Hobknob v1.0: Now with authorization</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-22T14:00:31+01:00" pubdate data-updated="true">Oct 22<span>nd</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>We are pleased to announce the version 1.0 release of <a href="https://github.com/opentable/hobknob">Hobknob</a>, our open-source feature toggle management system. With it comes a few additions and several improvements.</p>
+
+<p>This post will expand on some of the changes, in particular, authorisation via access control lists.
+For an introduction to Hobknob, see our previous post: <a href="http://tech.opentable.co.uk/blog/2014/09/04/introducing-hobknob-feature-toggling-with-etcd/">Introducing Hobknob: Feature toggling with etcd</a>.</p>
+
+<h2>Authorisation with ACLs</h2>
+
+<p>A much requested feature was the ability to control who can add/update/delete toggles on an application by application basis. We achieve this via the use if an Access Control List for each application. Users that are part of the ACL for an application are known as application owners.</p>
+
+<p><img src="/images/posts/hobknob-owners.png" alt="Hobknob Owner List" /></p>
+
+<p>Application owners can (for an owned application):</p>
+
+<ul>
+<li>Add toggles</li>
+<li>Set the value of a toggle</li>
+<li>Delete toggles</li>
+<li>Add additional owners</li>
+<li>Remove owners</li>
+</ul>
+
+
+<p>Everyone can:</p>
+
+<ul>
+<li>Add an application</li>
+<li>See toggles</li>
+<li>See application owners</li>
+<li>See the audit trail for a toggle</li>
+</ul>
+
+
+<p>When a user creates an new application, they are automatically added as an owner for that application.
+The user can then add other application owners by clicking the &lsquo;Add user&rsquo; button in the Owners panel and entering the users email address.</p>
+
+<p><strong>Note:</strong> this feature is only available when authentication is enabled. If Hobknob is not configured to require authentication, everyone has owner permissions to all applications. See the <a href="https://github.com/opentable/hobknob#configuring-authentication">readme</a> for more information on how to configure authentication.</p>
+
+<h2>Deleting Toggles</h2>
+
+<p>Feature toggles can now be deleted. This ability is available on the toggle view (get there by clicking a toggle name in the application view).</p>
+
+<p><img src="/images/posts/hobknob-delete.png" alt="Hobknob Toggle Delete" /></p>
+
+<p>You&rsquo;ll notice the delete toggle button in the Danger Zone panel (we didn&rsquo;t steal that idea from Github, honest). You&rsquo;ll need to confirm the delete by clicking the delete button a second time.</p>
+
+<p><strong>Warning:</strong> Deleting a toggle will perform a &lsquo;hard&rsquo; delete, that is, the key is deleted in etcd. The audit will persist however, and can be accessed via this route: <code>/#!/applications/app-name/toggle-name</code>. You are also allowed to re-add a toggle, and the audit will be appended to an existing audit for that toggle name.</p>
+
+<p><strong>Note:</strong> If authentication is enabled, you must be an application owner to delete a toggle.</p>
+
+<h2>Makeover</h2>
+
+<p>Gone is the &lsquo;Add Toggle&rsquo; modal dialog from the previous version. This is replaced by two separate inline forms.</p>
+
+<p>Applications are now added by clicking &lsquo;Add&rsquo; in the sidebar.</p>
+
+<p><img src="/images/posts/hobknob-newapplication.png" alt="Hobknob New Application" /></p>
+
+<p>Toggles are added by clicking &lsquo;New Toggle&rsquo; in the Toggles panel for an application.</p>
+
+<p><img src="/images/posts/hobknob-newtoggle-v2.png" alt="Hobknob New Toggle" /></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2115,73 +2210,6 @@ In our project, we took on the overhead of providing mock &ldquo;sandbox&rdquo; 
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/05/15/managing-windows-features-with-puppet/">Managing Windows Features with Puppet</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-05-15T16:12:38+01:00" pubdate data-updated="true">May 15<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Back in June 2013, I wrote about <a href="http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/">Windows Feature Management with PowerShell</a>. We have since released a Puppet module that will do this for us. We originally wrote PowerShell:</p>
-
-<pre><code>Import-Module ServerManager
-Add-WindowsFeature Web-Asp-Net
-</code></pre>
-
-<p>The Puppet module now wraps this code as follows:</p>
-
-<pre><code>windowsfeature { 'Web-Asp-Net': }
-</code></pre>
-
-<p>The declaration windowsfeature is a specific Puppet type called a <a href="http://docs.puppetlabs.com/learning/definedtypes.html">define</a>. In developer terms, this is the equivalent of a helper method that can be reused. We can also make sure that Windows Features are <em>not</em> installed on the server as follows:</p>
-
-<pre><code>windowsfeature { 'Telnet-Server': 
-  ensure =&gt; absent 
-}
-</code></pre>
-
-<p>In the backing code for the module, we do a check before we install / uninstall any windows features. This means that we will only make the changes we really need to. This ensures idempotency of the script. By using this class, we can build up a list of what features a server should have enabled / installed on it. As example manifest would look as follows:</p>
-
-<pre><code>class my_windows_features {
-  windowsfeature { 'Web-Asp-Net': }
-  windowsfeature { 'Web-Net-Ext': }
-  windowsfeature { 'Web-ISAPI-Ext': }
-  windowsfeature { 'Web-ISAPI-Filter': }
-  windowsfeature { 'Web-Mgmt-Tools': }
-  windowsfeature { 'Web-Mgmt-Console': }
-  windowsfeature { 'Telnet-Server': ensure =&gt; absent }
-}
-</code></pre>
-
-<p>The server will have it&rsquo;s shipping list of Windows Features checked every 30 minutes by Puppet. We are sure that any changes encountered during that time will be applied as expected.  You can find more about our WindowsFeature module on the <a href="http://github.com/opentable/puppet-windowsfeature">github repo</a>. If you want to use the module, then you can install it using the Puppet Module tool via the <a href="http://forge.puppetlabs.com/opentable/windowsfeature">Puppet Forge</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -2199,6 +2227,10 @@ Add-WindowsFeature Web-Asp-Net
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/02/07/dismantling-the-monolith-microsites-at-opentable/">Dismantling the monolith - Microsites at Opentable</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/02/02/a-beginners-guide-to-rest-services/">A Beginner&#8217;s guide to REST services</a>
       </li>
     
@@ -2212,10 +2244,6 @@ Add-WindowsFeature Web-Asp-Net
     
       <li class="post">
         <a href="/blog/2015/01/01/explaining-flux-architecture-with-macgyver-dot-js/">Explaining Flux architecture with macgyver.js</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/12/08/supporting-ie8-in-the-opentable-redesign/">Supporting IE8 in the OpenTable redesign</a>
       </li>
     
   </ul>

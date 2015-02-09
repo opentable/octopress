@@ -9,7 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="Why this post? As a junior, I always find it easier to just sit and write code than actually stop to think about the theoretical basis that lie under &hellip;">
+  <meta name="description" content="A couple of years ago we started to break-up the code-base behind our consumer site opentable.com, to smaller units of code, in order to improve our &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +81,109 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">Dismantling the monolith - Microsites at Opentable</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-02-09T09:43:03+00:00" pubdate data-updated="true">Feb 9<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>A couple of years ago we started to break-up the code-base behind our consumer site <a href="http://www.opentable.com">opentable.com</a>, to smaller units of code, in order to improve our productivity. New teams were created with the goal of splitting up the logic that was powering the back-end and then bring to life new small services. Then, we started working on what we call <em>Microsites</em>.</p>
+
+<h3>Microsites</h3>
+
+<p>A microsite is a very small set of web-pages, or even a single one, that takes care of handling a very specific part of the system&rsquo;s domain logic. Examples are the <em>Search Results</em> page or the <em>Restaurant&rsquo;s Profile</em> page. Every microsite is an independently deployable unit of code, so it is easier to test, to deploy, and in consequence more resilient. Microsites are then all connected by a front-door service that handles the routing.</p>
+
+<h3>Not a free ride</h3>
+
+<p>When we deployed some microsites to production we immediately discovered a lot of pros:</p>
+
+<ul>
+<li>Bi-weekly deployments of the monolith became hundreds of deployments every week.</li>
+<li>Not anymore a shared codebase for hundreds of engineers. Pull requests accepted, merged, and often deployed on the same day.</li>
+<li>Teams experimenting and reiterating faster: product was happy.</li>
+<li><em>Diversity</em> on tech stacks: teams were finally able to pick their own favourite web-stack, as soon as they were capable of deploying their code and taking care of it in terms of reliability and performance.</li>
+<li>Robustness: when something was wrong with a microsite, everything else was fine.</li>
+</ul>
+
+
+<p>On the other hand, we soon realised that we introduced new problems on the system:</p>
+
+<ul>
+<li>Duplication: teams started duplicating a lot of code, specifically front-end components such as the header, the footer, etc.</li>
+<li>Coordination: when we needed to change something on the header, for example, we were expecting to see the change live in different time frames, resulting in inconsistencies.</li>
+<li>Performance: every microsite was hosting its own duplicated css, javascript libraries, and static resources; resulting as a big disadvantage for the end-user in terms of performance.</li>
+</ul>
+
+
+<h3>SRS &ndash; aka Site Resources Service</h3>
+
+<p>To solve some of these problems we created a REST api to serve html snippets, that soon we started to call <em>components</em>. Main characteristics of the system are:</p>
+
+<ul>
+<li>We have components for shared parts of the website such as the header, the footer, and the adverts. When a change has to go live, we apply the change, we deploy, and we see the change live everywhere.</li>
+<li>Output is in HTML format, so the integration is possible if the microsite is either a .NET MVC site or a node.js app.</li>
+<li>We have components for the core CSS and the JS common libraries, so that all the microsites use the same resources and the browser can cache them making the navigation smooth.</li>
+<li>The service takes care of hosting all the static resources in a separate CDN, so microsites don&rsquo;t have to host that resources.</li>
+</ul>
+
+
+<p>This is an example of a request to the <em>core</em> css component:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>curl http://srs-sc.otenv.com/v1/com-2014/resource-includes/css
+</span><span class='line'>
+</span><span class='line'><span class="o">{</span>
+</span><span class='line'>  <span class="s2">&quot;href&quot;</span>: <span class="s2">&quot;http://srs-sc.otenv.com/v1/com-2014/resource-includes/css&quot;</span>,
+</span><span class='line'>  <span class="s2">&quot;html&quot;</span>: <span class="s2">&quot;&lt;link rel=\&quot;stylesheet\&quot; href=\&quot;//na-srs.opentable.com/content/static-1.0.1388.0/css-new-min/app.css\&quot; /&gt;&lt;!--[if lte IE 8]&gt;&lt;link rel=\&quot;stylesheet\&quot; href=\&quot;//na-srs.opentable.com/content/static-1.0.1388.0/css-new-min/app_ie8.css\&quot; /&gt; &lt;![endif]--&gt;&quot;</span>,
+</span><span class='line'>  <span class="s2">&quot;type&quot;</span>:<span class="s2">&quot;css&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The downside of this approach is that there is a strict dependency with SRS for each microsite. On every request, a call to SRS has to be made, so <strong>we had to work hard to guarantee reliability and good performance</strong>.</p>
+
+<h2>Conclusions</h2>
+
+<p>When we tried the microsite approach we “traded” some of our code problems with some new cultural problems. We became more agile and we were working in a new different way, with the downside of having the <strong>need to more effectively coordinate more people</strong>. The consequence is that the <strong>way we were approaching the code</strong> evolved over time.</p>
+
+<p>One year later, with the front-end (almost completely) living on micro-sites, and with the help of SRS, we are experimenting more effective ways to be resilient and robust, with the specific goal to allow teams to create their own components and share them with other teams in order to be independent, and use them to easily approach to A/B experiments.</p>
+
+<p>In the next post I&rsquo;ll write about <a href="https://github.com/opentable/oc">OpenComponents</a>, an experimental framework we just open-sourced that is trying to address some of this needs.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1284,101 +1387,6 @@ For example, <code>main-website/show-user-section/com</code>.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/10/22/hobknob-v1-dot-0-now-with-authorization/">Hobknob v1.0: Now with authorization</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-10-22T14:00:31+01:00" pubdate data-updated="true">Oct 22<span>nd</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>We are pleased to announce the version 1.0 release of <a href="https://github.com/opentable/hobknob">Hobknob</a>, our open-source feature toggle management system. With it comes a few additions and several improvements.</p>
-
-<p>This post will expand on some of the changes, in particular, authorisation via access control lists.
-For an introduction to Hobknob, see our previous post: <a href="http://tech.opentable.co.uk/blog/2014/09/04/introducing-hobknob-feature-toggling-with-etcd/">Introducing Hobknob: Feature toggling with etcd</a>.</p>
-
-<h2>Authorisation with ACLs</h2>
-
-<p>A much requested feature was the ability to control who can add/update/delete toggles on an application by application basis. We achieve this via the use if an Access Control List for each application. Users that are part of the ACL for an application are known as application owners.</p>
-
-<p><img src="/images/posts/hobknob-owners.png" alt="Hobknob Owner List" /></p>
-
-<p>Application owners can (for an owned application):</p>
-
-<ul>
-<li>Add toggles</li>
-<li>Set the value of a toggle</li>
-<li>Delete toggles</li>
-<li>Add additional owners</li>
-<li>Remove owners</li>
-</ul>
-
-
-<p>Everyone can:</p>
-
-<ul>
-<li>Add an application</li>
-<li>See toggles</li>
-<li>See application owners</li>
-<li>See the audit trail for a toggle</li>
-</ul>
-
-
-<p>When a user creates an new application, they are automatically added as an owner for that application.
-The user can then add other application owners by clicking the &lsquo;Add user&rsquo; button in the Owners panel and entering the users email address.</p>
-
-<p><strong>Note:</strong> this feature is only available when authentication is enabled. If Hobknob is not configured to require authentication, everyone has owner permissions to all applications. See the <a href="https://github.com/opentable/hobknob#configuring-authentication">readme</a> for more information on how to configure authentication.</p>
-
-<h2>Deleting Toggles</h2>
-
-<p>Feature toggles can now be deleted. This ability is available on the toggle view (get there by clicking a toggle name in the application view).</p>
-
-<p><img src="/images/posts/hobknob-delete.png" alt="Hobknob Toggle Delete" /></p>
-
-<p>You&rsquo;ll notice the delete toggle button in the Danger Zone panel (we didn&rsquo;t steal that idea from Github, honest). You&rsquo;ll need to confirm the delete by clicking the delete button a second time.</p>
-
-<p><strong>Warning:</strong> Deleting a toggle will perform a &lsquo;hard&rsquo; delete, that is, the key is deleted in etcd. The audit will persist however, and can be accessed via this route: <code>/#!/applications/app-name/toggle-name</code>. You are also allowed to re-add a toggle, and the audit will be appended to an existing audit for that toggle name.</p>
-
-<p><strong>Note:</strong> If authentication is enabled, you must be an application owner to delete a toggle.</p>
-
-<h2>Makeover</h2>
-
-<p>Gone is the &lsquo;Add Toggle&rsquo; modal dialog from the previous version. This is replaced by two separate inline forms.</p>
-
-<p>Applications are now added by clicking &lsquo;Add&rsquo; in the sidebar.</p>
-
-<p><img src="/images/posts/hobknob-newapplication.png" alt="Hobknob New Application" /></p>
-
-<p>Toggles are added by clicking &lsquo;New Toggle&rsquo; in the Toggles panel for an application.</p>
-
-<p><img src="/images/posts/hobknob-newtoggle-v2.png" alt="Hobknob New Toggle" /></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1394,6 +1402,10 @@ The user can then add other application owners by clicking the &lsquo;Add user&r
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">Dismantling the monolith - Microsites at Opentable</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/02/02/a-beginners-guide-to-rest-services/">A Beginner&#8217;s guide to REST services</a>
       </li>
     
@@ -1407,10 +1419,6 @@ The user can then add other application owners by clicking the &lsquo;Add user&r
     
       <li class="post">
         <a href="/blog/2015/01/01/explaining-flux-architecture-with-macgyver-dot-js/">Explaining Flux architecture with macgyver.js</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/12/08/supporting-ie8-in-the-opentable-redesign/">Supporting IE8 in the OpenTable redesign</a>
       </li>
     
   </ul>

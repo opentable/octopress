@@ -1,0 +1,332 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Dismantling the monolith - Microsites at Opentable - OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
+
+  
+  <meta name="description" content="A couple of years ago we started to break-up the code-base behind our consumer site opentable.com, to smaller units of code, in order to improve our &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.opentable.co.uk/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">
+  <link href="/favicon-32.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
+  <script src="//fonts.otstatic.com/dwh4rpg.js"></script>
+  <script>try{Typekit.load();}catch(e){}</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
+  
+    <h2>The technology blog for OpenTable UK.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/authors">Authors</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Dismantling the monolith - Microsites at Opentable</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/blog/authors/mfigus.html">Matteo Figus</a></span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-02-09T09:43:03+00:00" pubdate data-updated="true">Feb 9<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>A couple of years ago we started to break-up the code-base behind our consumer site <a href="http://www.opentable.com">opentable.com</a>, to smaller units of code, in order to improve our productivity. New teams were created with the goal of splitting up the logic that was powering the back-end and then bring to life new small services. Then, we started working on what we call <em>Microsites</em>.</p>
+
+<h3>Microsites</h3>
+
+<p>A microsite is a very small set of web-pages, or even a single one, that takes care of handling a very specific part of the system&rsquo;s domain logic. Examples are the <em>Search Results</em> page or the <em>Restaurant&rsquo;s Profile</em> page. Every microsite is an independently deployable unit of code, so it is easier to test, to deploy, and in consequence more resilient. Microsites are then all connected by a front-door service that handles the routing.</p>
+
+<h3>Not a free ride</h3>
+
+<p>When we deployed some microsites to production we immediately discovered a lot of pros:</p>
+
+<ul>
+<li>Bi-weekly deployments of the monolith became hundreds of deployments every week.</li>
+<li>Not anymore a shared codebase for hundreds of engineers. Pull requests accepted, merged, and often deployed on the same day.</li>
+<li>Teams experimenting and reiterating faster: product was happy.</li>
+<li><em>Diversity</em> on tech stacks: teams were finally able to pick their own favourite web-stack, as soon as they were capable of deploying their code and taking care of it in terms of reliability and performance.</li>
+<li>Robustness: when something was wrong with a microsite, everything else was fine.</li>
+</ul>
+
+
+<p>On the other hand, we soon realised that we introduced new problems on the system:</p>
+
+<ul>
+<li>Duplication: teams started duplicating a lot of code, specifically front-end components such as the header, the footer, etc.</li>
+<li>Coordination: when we needed to change something on the header, for example, we were expecting to see the change live in different time frames, resulting in inconsistencies.</li>
+<li>Performance: every microsite was hosting its own duplicated css, javascript libraries, and static resources; resulting as a big disadvantage for the end-user in terms of performance.</li>
+</ul>
+
+
+<h3>SRS &ndash; aka Site Resources Service</h3>
+
+<p>To solve some of these problems we created a REST api to serve html snippets, that soon we started to call <em>components</em>. Main characteristics of the system are:</p>
+
+<ul>
+<li>We have components for shared parts of the website such as the header, the footer, and the adverts. When a change has to go live, we apply the change, we deploy, and we see the change live everywhere.</li>
+<li>Output is in HTML format, so the integration is possible if the microsite is either a .NET MVC site or a node.js app.</li>
+<li>We have components for the core CSS and the JS common libraries, so that all the microsites use the same resources and the browser can cache them making the navigation smooth.</li>
+<li>The service takes care of hosting all the static resources in a separate CDN, so microsites don&rsquo;t have to host that resources.</li>
+</ul>
+
+
+<p>This is an example of a request to the <em>core</em> css component:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>curl http://srs-sc.otenv.com/v1/com-2014/resource-includes/css
+</span><span class='line'>
+</span><span class='line'><span class="o">{</span>
+</span><span class='line'>  <span class="s2">&quot;href&quot;</span>: <span class="s2">&quot;http://srs-sc.otenv.com/v1/com-2014/resource-includes/css&quot;</span>,
+</span><span class='line'>  <span class="s2">&quot;html&quot;</span>: <span class="s2">&quot;&lt;link rel=\&quot;stylesheet\&quot; href=\&quot;//na-srs.opentable.com/content/static-1.0.1388.0/css-new-min/app.css\&quot; /&gt;&lt;!--[if lte IE 8]&gt;&lt;link rel=\&quot;stylesheet\&quot; href=\&quot;//na-srs.opentable.com/content/static-1.0.1388.0/css-new-min/app_ie8.css\&quot; /&gt; &lt;![endif]--&gt;&quot;</span>,
+</span><span class='line'>  <span class="s2">&quot;type&quot;</span>:<span class="s2">&quot;css&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The downside of this approach is that there is a strict dependency with SRS for each microsite. On every request, a call to SRS has to be made, so <strong>we had to work hard to guarantee reliability and good performance</strong>.</p>
+
+<h2>Conclusions</h2>
+
+<p>When we tried the microsite approach we “traded” some of our code problems with some new cultural problems. We became more agile and we were working in a new different way, with the downside of having the <strong>need to more effectively coordinate more people</strong>. The consequence is that the <strong>way we were approaching the code</strong> evolved over time.</p>
+
+<p>One year later, with the front-end (almost completely) living on micro-sites, and with the help of SRS, we are experimenting more effective ways to be resilient and robust, with the specific goal to allow teams to create their own components and share them with other teams in order to be independent, and use them to easily approach to A/B experiments.</p>
+
+<p>In the next post I&rsquo;ll write about <a href="https://github.com/opentable/oc">OpenComponents</a>, an experimental framework we just open-sourced that is trying to address some of this needs.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/blog/authors/mfigus.html">Matteo Figus</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-02-09T09:43:03+00:00" pubdate data-updated="true">Feb 9<span>th</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/microservices/'>Microservices</a>, <a class='category' href='/blog/categories/microsites/'>Microsites</a>, <a class='category' href='/blog/categories/monolith/'>Monolith</a>, <a class='category' href='/blog/categories/opencomponents/'>OpenComponents</a>, <a class='category' href='/blog/categories/soa/'>SOA</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.opentable.co.uk/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/" data-via="opentabletechuk" data-counturl="http://tech.opentable.co.uk/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/02/02/a-beginners-guide-to-rest-services/" title="Previous Post: A Beginner's guide to REST services">&laquo; A Beginner's guide to REST services</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">Dismantling the monolith - Microsites at Opentable</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/02/a-beginners-guide-to-rest-services/">A Beginner's guide to REST services</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/23/on-strongly-typed-logging/">On Strongly Typed Logging</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/19/building-a-living-styleguide-at-opentable/">Building a living styleguide at OpenTable</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/01/explaining-flux-architecture-with-macgyver-dot-js/">Explaining Flux architecture with macgyver.js</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2015 - OpenTable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

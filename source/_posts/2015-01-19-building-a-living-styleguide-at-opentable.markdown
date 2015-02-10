@@ -78,4 +78,4 @@ Finally, as one of the developers who created the styleguide I want it to be wid
 ## Read more
 
 - View an online directory [of styleguide articles and examples](http://styleguides.io/)
-- Join us - [apply for our senior front-end engineer role at OpenTable, London.](https://hire.jobvite.com/Jobvite/Job.aspx?b=nlsWXpwA&j=oXeiYfwb)
+<!-- - Join us - [apply for our senior front-end engineer role at OpenTable, London.](https://hire.jobvite.com/Jobvite/Job.aspx?b=nlsWXpwA&j=oXeiYfwb) -->

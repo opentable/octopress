@@ -60,11 +60,14 @@ h1 {
     }
 }
 
-#{headings()}{
-    @extend .heading;
+#{headings()} {
     text-rendering: optimizelegibility;
     margin-bottom: 1em;
     font-weight: bold;
+}
+
+#{headings(1,2)} {
+    @extend .heading;
 }
 
 h2,

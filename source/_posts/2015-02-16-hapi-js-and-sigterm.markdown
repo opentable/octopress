@@ -4,11 +4,11 @@ title: "Hapi.js and SIGTERM"
 date: 2015-02-16 10:32:42 +0000
 comments: true
 author: aroyle
-categories: [hapijs, microservices, sigterm]
+categories: [Hapi.js, Microservices, SIGTERM]
 ---
-When we first stood up our hapi.js apis, we wrote init scripts to start/stop them. Stopping the server, was simply a case of sending SIGKILL (causing the app to immediately exit).
+When we first stood up our hapi.js APIs, we wrote init scripts to start/stop them. Stopping the server, was simply a case of sending SIGKILL (causing the app to immediately exit).
 
-Whilst this is fine for most cases, if we want our apps to be good linux citizens, then they should terminate gracefully. Hapi.js has the handy `server.stop(...)` command (see docs [here](http://hapijs.com/api#serverstopoptions-callback)) which will terminate the server gracefully. It will cause the server to respond to new connections with a 503 (server unavailable), and wait for existing connections to terminate (up to some specified timeout), before stopping the server and allowing the node.js process to exit. Perfect.
+Whilst this is fine for most cases, if we want our apps to be good Linux citizens, then they should terminate gracefully. Hapi.js has the handy `server.stop(...)` command (see docs [here](http://hapijs.com/api#serverstopoptions-callback)) which will terminate the server gracefully. It will cause the server to respond to new connections with a 503 (server unavailable), and wait for existing connections to terminate (up to some specified timeout), before stopping the server and allowing the node.js process to exit. Perfect.
 
 This makes our graceful shutdown code really simple:
 
@@ -22,7 +22,7 @@ process.on('SIGTERM', function(){
 
 When we see a SIGTERM, call `server.stop()`, then once the server has stopped, call `process.exit(0)`. Easy peasy.
 
-__Throw a spanner in the works__
+### Throw a spanner in the works
 
 Whilst `server.stop()` is really useful, it has the problem that it immediately prevents the server from responding to new requests. In our case, that isn't particularly desirable. We use service-discovery, which means that the graceful termination of our app should run like this:
 
@@ -33,7 +33,7 @@ Whilst `server.stop()` is really useful, it has the problem that it immediately 
 
 Ideally we want the unannounce to happen before the server starts rejecting connections, in order to reduce the likelihood that clients will hit a server that is shutting down.
 
-__Plugins to the rescue!__
+### Plugins to the rescue!
 
 Thanks to hapi.js's awesome plugin interface ([shameless self promotion](http://t.co/GDw44SETfS)), we can do some magic to make the above possible.
 
@@ -41,7 +41,7 @@ I created a really simple plugin called [hapi-shutdown](https://www.npmjs.com/pa
 
 The idea is that it allows us to run the 'unannounce' step, before `server.stop(...)` is called.
 
-__How to use hapi-shutdown__
+### How to use hapi-shutdown
 
 ```javascript
 server.register([
@@ -70,7 +70,7 @@ The plugin exposes a `.register()` function which allows you to register your sh
  
  Neat, huh?
  
- __Hooking up unnanounce using hapi-shutdown__
+### Hooking up unannounce using hapi-shutdown
  
 We now have a place to register our 'unannounce' task. Our service-discovery code is wrapped in another plugin, which means we can use `server.dependency(...)`.
  

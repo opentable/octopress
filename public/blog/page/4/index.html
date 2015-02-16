@@ -9,7 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="It was midnight on the Friday before Christmas, my seven-week old child was tucked up asleep and I was pretty chilled. All was calm and it was time &hellip;">
+  <meta name="description" content="In my last post about performance testing I wrote about how we decided to do it in production as the ultimate test of success. Performance testing in &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,6 +80,68 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/20/when-to-performance-test-in-production/">When to performance test in production</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-20T09:56:00+00:00" pubdate data-updated="true">Mar 20<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In <a href="/blog/2014/03/19/performance-testing-our-search-api/">my last post</a> about performance testing I wrote about how we decided to do it in production as the ultimate test of success. Performance testing in production is enough to make some operations guys have a panic attack and a few odd looks were dished my way when I raised it on behalf of the team.</p>
+
+<h2>Why not have a dedicated environment?</h2>
+
+<p>If you can have a dedicated environment that you can build to be EXACTLY the same as where you are going to really need the performance (i.e. your production environment most likely, but possibly on a client machine) then do it in a dedicated, duplicated environment. Alternatively if there is no way you can use the production environment or your model means that everything will scale exactly like production, then a duplicate environment might work.</p>
+
+<p>For us, we had too many dependencies, mocking these out wasn&rsquo;t really satisfactory and frankly, as a business where we are quiet at night, it is easy to use the production environment at these times. We use configuration management and virtual machines, much of what should help build a replica environment, but we also have machines in restaurants around the globe. That is not easy to replicate and not worth the effort.</p>
+
+<h2>Even if you can have a duplicated environment should you?</h2>
+
+<p>We felt in the search team that we just wouldn&rsquo;t uncover a broken server (that can affect performance) or we wouldn&rsquo;t see that we had a problem with interactions with these services (we have now got to serialisation as our bottleneck, maybe we would have missed that).</p>
+
+<p>We just didn&rsquo;t trust that a duplicated environment would actually help us in this case. If you want to test a new idea as a prototype then the duplicate will probably work, even if just at first, we were trying to improve our actual environment.</p>
+
+<h2>Is testing in production right?</h2>
+
+<p>There is no &lsquo;right&rsquo; answer here, plenty of people test in a duplicate environment and then monitor in production. I think this is probably a valid approach and in a lot of use cases this would be fine for us too.</p>
+
+<p>Can you micro-optimise in a huge production system?  Probably not, so use a scaled down duplicate for that or even a local environment such as one created using Vagrant. Hopefully with enough micro-optimisations you will eventually see these in a larger environment.</p>
+
+<h2>Is it a free lunch?</h2>
+
+<p>Testing in production is not a free lunch. Even simple things like system logging will cost as you will be logging to production data centres, probably with backup costs etc. Do you need to code-in safeguards? Yes, and you will need to watch this running from your desk. When you are not watching it will be hard to be sure you will not cause production issues. We can use our regional environment that means we are testing during our day, that region&rsquo;s night, other companies might see you having to work in your timezone&rsquo;s evening &ndash; not fun.</p>
+
+<h2>Overall</h2>
+
+<p>Whilst, on the face of it, testing in production seems crazy, with all things considered we found it the easiest, most reliable and frankly most reassuring environment in which to test.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1143,100 +1205,6 @@ Notice that is has a parameter for constraints. All I need to do is to build the
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/09/23/quick-look-at-rethinkdb/">Quick look at RethinkDB</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-23T16:16:00+01:00" pubdate data-updated="true">Sep 23<span>rd</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Someone in the office mentioned <a href="http://www.rethinkdb.com">RethinkDb</a> and I was impressed by the rhetoric on the site, so I decided to spend a couple of hours spiking one of our existing nodejs apps with RethinkDb. The app currently uses MongoDb so inevitably I&rsquo;m comparing the two.</p>
-
-<h1>Things I liked:</h1>
-
-<p><strong>Nodejs Driver</strong></p>
-
-<p>The api on the nodejs driver is pretty nice, it makes a concerted effort to reduce &ldquo;pyramid code&rdquo; by allowing you to build your query by method-chaining and then call a <code>.run()</code> extension to execute the query.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>
-</span><span class='line'>r.db('Comics')
-</span><span class='line'> .table('Superheroes')
-</span><span class='line'> .getAll('Marvel', {index: 'universe'})
-</span><span class='line'> .filter({ hasSidekick: true })
-</span><span class='line'> .run(connection, function(err, cursor){
-</span><span class='line'>    cursor.toArray(function(err, items){
-</span><span class='line'>        callback(items);
-</span><span class='line'>    });
-</span><span class='line'> });
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong>Interface</strong>
-The management interface is very good, incredibly friendly, and has guided access to things like sharding and replication settings (as well as the usual array of other things to tinker with).</p>
-
-<p><strong>Sharding, Replication and Clustering</strong></p>
-
-<p>It&rsquo;s all there, up front in the web UI, written in plain English and with friendly guides to help. The health and performance monitoring is available up-front in clear and concise graphics.</p>
-
-<p><strong>Writes are non-locking operations</strong></p>
-
-<p>A major bugbear for us with mongoDb is that writes require a database-level lock. RethinkDb allows block-level locks for write operations, and furthermore, reads can still proceed while write locks are in effect. <a href="http://en.wikipedia.org/wiki/Multiversion_concurrency_control">MVCC ftw!</a></p>
-
-<h1>Things I didn&rsquo;t like:</h1>
-
-<p><strong>Cannot query on unindexed fields</strong></p>
-
-<p>Meaning ad-hoc queries can be a pain-in-the-arse, especially if you have a large data set.</p>
-
-<p><strong>Performance</strong></p>
-
-<p>RethinkDb readily admit that their current release (v1.9.0) has taken a performance hit after implementing their clustering layer. They are hopeful that they can bring the performance back in the next few versions. My very simple, somewhat unscientific testing found it to be about 5 times slower than mongo, for a simple document read (20ms vs 120ms).</p>
-
-<p><strong>Joins</strong></p>
-
-<p>Don&rsquo;t get me wrong, it&rsquo;s a nice feature, it just makes me feel dirty to do joins on a document database.</p>
-
-<h1>Conclusion</h1>
-
-<p>RethinkDb is a good looking database. It&rsquo;s feature-full and dead simple to use. Would I use it in production? Not yet. The performance issues are still a sticking point for me, but I have no doubt that once these are fixed RethinkDb will be a big contender.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/5/">&larr; Older</a>
@@ -1254,6 +1222,10 @@ The management interface is very good, incredibly friendly, and has guided acces
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/02/16/hapi-js-and-sigterm/">Hapi.js and SIGTERM</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">Dismantling the monolith - Microsites at Opentable</a>
       </li>
     
@@ -1267,10 +1239,6 @@ The management interface is very good, incredibly friendly, and has guided acces
     
       <li class="post">
         <a href="/blog/2015/01/19/building-a-living-styleguide-at-opentable/">Building a living styleguide at OpenTable</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/01/01/explaining-flux-architecture-with-macgyver-dot-js/">Explaining Flux architecture with macgyver.js</a>
       </li>
     
   </ul>

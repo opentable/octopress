@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: SIGTERM | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/sigterm/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2015-02-16T15:09:15+00:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
+  <author>
+    <name><![CDATA[OpenTable]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hapi.js and SIGTERM]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2015/02/16/hapi-js-and-sigterm/"/>
+    <updated>2015-02-16T10:32:42+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2015/02/16/hapi-js-and-sigterm</id>
+    <content type="html"><![CDATA[<p>When we first stood up our hapi.js APIs, we wrote init scripts to start/stop them. Stopping the server, was simply a case of sending SIGKILL (causing the app to immediately exit).</p>
+
+<p>Whilst this is fine for most cases, if we want our apps to be good Linux citizens, then they should terminate gracefully. Hapi.js has the handy <code>server.stop(...)</code> command (see docs <a href="http://hapijs.com/api#serverstopoptions-callback">here</a>) which will terminate the server gracefully. It will cause the server to respond to new connections with a 503 (server unavailable), and wait for existing connections to terminate (up to some specified timeout), before stopping the server and allowing the node.js process to exit. Perfect.</p>
+
+<p>This makes our graceful shutdown code really simple:</p>
+
+<p>```javascript
+process.on(&lsquo;SIGTERM&rsquo;, function(){
+  server.stop({ timeout: 5 * 1000}, function(){</p>
+
+<pre><code>process.exit(0);
+</code></pre>
+
+<p>  });
+});
+```</p>
+
+<p>When we see a SIGTERM, call <code>server.stop()</code>, then once the server has stopped, call <code>process.exit(0)</code>. Easy peasy.</p>
+
+<h3>Throw a spanner in the works</h3>
+
+<p>Whilst <code>server.stop()</code> is really useful, it has the problem that it immediately prevents the server from responding to new requests. In our case, that isn&rsquo;t particularly desirable. We use service-discovery, which means that the graceful termination of our app should run like this:</p>
+
+<ul>
+<li>SIGTERM</li>
+<li>Unannounce from Service-Discovery</li>
+<li><code>server.stop(...)</code></li>
+<li><code>process.exit(0)</code></li>
+</ul>
+
+
+<p>Ideally we want the unannounce to happen before the server starts rejecting connections, in order to reduce the likelihood that clients will hit a server that is shutting down.</p>
+
+<h3>Plugins to the rescue!</h3>
+
+<p>Thanks to hapi.js&rsquo;s awesome plugin interface (<a href="http://t.co/GDw44SETfS">shameless self promotion</a>), we can do some magic to make the above possible.</p>
+
+<p>I created a really simple plugin called <a href="https://www.npmjs.com/package/hapi-shutdown">hapi-shutdown</a> which will handle SIGTERM and then run triggers before calling <code>server.stop(...)</code>.</p>
+
+<p>The idea is that it allows us to run the &lsquo;unannounce&rsquo; step, before <code>server.stop(...)</code> is called.</p>
+
+<h3>How to use hapi-shutdown</h3>
+
+<p>```javascript
+server.register([
+  {</p>
+
+<pre><code>plugin: require('hapi-shutdown'),
+options: {
+  serverSpindownTime: 5000 // the timeout passed to server.stop(...)
+}
+</code></pre>
+
+<p>  }],
+  function(err){</p>
+
+<pre><code>server.start(function(){
+
+  server.plugins['hapi-shutdown'].register({
+    taskname: 'do stuff',
+    task: function(done){ 
+      console.log('doing stuff before server.stop is called'); 
+      done(); 
+    },
+    timeout: 2000 // time to wait before forcibly returning
+  })
+});
+</code></pre>
+
+<p>  });
+```</p>
+
+<p>The plugin exposes a <code>.register()</code> function which allows you to register your shutdown tasks. The tasks are named (to prevent multiple registrations), and each task must call the <code>done()</code> function. The <code>timeout</code> parameter is provided so that a task which never completes won&rsquo;t block the shutdown of the server.</p>
+
+<p> Neat, huh?</p>
+
+<h3>Hooking up unannounce using hapi-shutdown</h3>
+
+<p>We now have a place to register our &lsquo;unannounce&rsquo; task. Our service-discovery code is wrapped in another plugin, which means we can use <code>server.dependency(...)</code>.</p>
+
+<p>```javascript
+// inside the plugin&rsquo;s register function</p>
+
+<p>server.dependency(&lsquo;hapi-shutdown&rsquo;, function(_, cb){
+  var err = server.plugins[&lsquo;hapi-shutdown&rsquo;].register({</p>
+
+<pre><code>taskname: 'discovery-unannounce',
+task: function(done){
+  discovery.unannounce(function(){
+    done();
+  });
+},
+timeout: 10 * 1000
+</code></pre>
+
+<p>  });</p>
+
+<p>  cb(err);
+});
+```</p>
+
+<p><code>server.dependency(...)</code> allows us to specify that this plugin relies on another plugin (or list of plugins). If the dependent plugin is not registered before the server starts, then an exception is thrown.</p>
+
+<p>Handily, <code>server.dependency(...)</code> also takes a callback function, which is invoked after all the dependencies have been registered, which means that you don&rsquo;t need to worry about ordering inside your <code>server.register(...)</code> code.</p>
+
+<p>This allows our unannounce code to be decoupled from the actual business of shutting down the server.</p>
+]]></content>
+  </entry>
+  
+</feed>

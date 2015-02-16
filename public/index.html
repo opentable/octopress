@@ -9,7 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="A couple of years ago we started to break-up the code-base behind our consumer site opentable.com, to smaller units of code, in order to improve our &hellip;">
+  <meta name="description" content="When we first stood up our hapi.js APIs, we wrote init scripts to start/stop them. Stopping the server, was simply a case of sending SIGKILL (causing &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,6 +80,175 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/02/16/hapi-js-and-sigterm/">Hapi.js and SIGTERM</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-02-16T10:32:42+00:00" pubdate data-updated="true">Feb 16<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>When we first stood up our hapi.js APIs, we wrote init scripts to start/stop them. Stopping the server, was simply a case of sending SIGKILL (causing the app to immediately exit).</p>
+
+<p>Whilst this is fine for most cases, if we want our apps to be good Linux citizens, then they should terminate gracefully. Hapi.js has the handy <code>server.stop(...)</code> command (see docs <a href="http://hapijs.com/api#serverstopoptions-callback">here</a>) which will terminate the server gracefully. It will cause the server to respond to new connections with a 503 (server unavailable), and wait for existing connections to terminate (up to some specified timeout), before stopping the server and allowing the node.js process to exit. Perfect.</p>
+
+<p>This makes our graceful shutdown code really simple:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">process</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;SIGTERM&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>  <span class="nx">server</span><span class="p">.</span><span class="nx">stop</span><span class="p">({</span> <span class="nx">timeout</span><span class="o">:</span> <span class="mi">5</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">},</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>    <span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When we see a SIGTERM, call <code>server.stop()</code>, then once the server has stopped, call <code>process.exit(0)</code>. Easy peasy.</p>
+
+<h3>Throw a spanner in the works</h3>
+
+<p>Whilst <code>server.stop()</code> is really useful, it has the problem that it immediately prevents the server from responding to new requests. In our case, that isn&rsquo;t particularly desirable. We use service-discovery, which means that the graceful termination of our app should run like this:</p>
+
+<ul>
+<li>SIGTERM</li>
+<li>Unannounce from Service-Discovery</li>
+<li><code>server.stop(...)</code></li>
+<li><code>process.exit(0)</code></li>
+</ul>
+
+
+<p>Ideally we want the unannounce to happen before the server starts rejecting connections, in order to reduce the likelihood that clients will hit a server that is shutting down.</p>
+
+<h3>Plugins to the rescue!</h3>
+
+<p>Thanks to hapi.js&rsquo;s awesome plugin interface (<a href="http://t.co/GDw44SETfS">shameless self promotion</a>), we can do some magic to make the above possible.</p>
+
+<p>I created a really simple plugin called <a href="https://www.npmjs.com/package/hapi-shutdown">hapi-shutdown</a> which will handle SIGTERM and then run triggers before calling <code>server.stop(...)</code>.</p>
+
+<p>The idea is that it allows us to run the &lsquo;unannounce&rsquo; step, before <code>server.stop(...)</code> is called.</p>
+
+<h3>How to use hapi-shutdown</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">server</span><span class="p">.</span><span class="nx">register</span><span class="p">([</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="nx">plugin</span><span class="o">:</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;hapi-shutdown&#39;</span><span class="p">),</span>
+</span><span class='line'>    <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">serverSpindownTime</span><span class="o">:</span> <span class="mi">5000</span> <span class="c1">// the timeout passed to server.stop(...)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}],</span>
+</span><span class='line'>  <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">){</span>
+</span><span class='line'>    <span class="nx">server</span><span class="p">.</span><span class="nx">start</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nx">server</span><span class="p">.</span><span class="nx">plugins</span><span class="p">[</span><span class="s1">&#39;hapi-shutdown&#39;</span><span class="p">].</span><span class="nx">register</span><span class="p">({</span>
+</span><span class='line'>        <span class="nx">taskname</span><span class="o">:</span> <span class="s1">&#39;do stuff&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">task</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+</span><span class='line'>          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;doing stuff before server.stop is called&#39;</span><span class="p">);</span>
+</span><span class='line'>          <span class="nx">done</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="nx">timeout</span><span class="o">:</span> <span class="mi">2000</span> <span class="c1">// time to wait before forcibly returning</span>
+</span><span class='line'>      <span class="p">})</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The plugin exposes a <code>.register()</code> function which allows you to register your shutdown tasks. The tasks are named (to prevent multiple registrations), and each task must call the <code>done()</code> function. The <code>timeout</code> parameter is provided so that a task which never completes won&rsquo;t block the shutdown of the server.</p>
+
+<p> Neat, huh?</p>
+
+<h3>Hooking up unannounce using hapi-shutdown</h3>
+
+<p>We now have a place to register our &lsquo;unannounce&rsquo; task. Our service-discovery code is wrapped in another plugin, which means we can use <code>server.dependency(...)</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// inside the plugin&#39;s register function</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">server</span><span class="p">.</span><span class="nx">dependency</span><span class="p">(</span><span class="s1">&#39;hapi-shutdown&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">_</span><span class="p">,</span> <span class="nx">cb</span><span class="p">){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">err</span> <span class="o">=</span> <span class="nx">server</span><span class="p">.</span><span class="nx">plugins</span><span class="p">[</span><span class="s1">&#39;hapi-shutdown&#39;</span><span class="p">].</span><span class="nx">register</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">taskname</span><span class="o">:</span> <span class="s1">&#39;discovery-unannounce&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">task</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+</span><span class='line'>      <span class="nx">discovery</span><span class="p">.</span><span class="nx">unannounce</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="nx">done</span><span class="p">();</span>
+</span><span class='line'>      <span class="p">});</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">timeout</span><span class="o">:</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">1000</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">cb</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>server.dependency(...)</code> allows us to specify that this plugin relies on another plugin (or list of plugins). If the dependent plugin is not registered before the server starts, then an exception is thrown.</p>
+
+<p>Handily, <code>server.dependency(...)</code> also takes a callback function, which is invoked after all the dependencies have been registered, which means that you don&rsquo;t need to worry about ordering inside your <code>server.register(...)</code> code.</p>
+
+<p>This allows our unannounce code to be decoupled from the actual business of shutting down the server.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1302,92 +1471,6 @@ For example, <code>main-website/show-user-section/com</code>.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/10/31/coach-dont-rescue/">Coach don&#8217;t rescue</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-10-31T10:14:04+00:00" pubdate data-updated="true">Oct 31<span>st</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I recently attended a fascinating and emotionally-charged talk by <a href="https://twitter.com/sisoma">Samantha Soma</a> at <a href="https://2014.dareconf.com">DareConf 2014</a>, <a href="http://vimeo.com/108047198">&lsquo;How to stop rescuing people&rsquo;</a>. It strongly mirrored my experience of moving into a leadership role and I&rsquo;d recommend anyone with a spare 30mins to watch it.</p>
-
-<p>Samantha&rsquo;s talk made me reflect on how I struggle to coach talented individuals; how I can identify when it&rsquo;s going wrong and what steps I can take to remedy the situation.</p>
-
-<h2>Gold star syndrome</h2>
-
-<p>A new concept for me and a recurring theme throughout the sessions at DareConf, &lsquo;Gold Star Syndrome&rsquo; is a fixation on finding validation for your work. I feel this is a result of early childhood values spinning the perception of working life away from the actual reality. As a child, especially during our school years, we discovered that when we do good things, good things happen to us. Remember how it felt to get that gold star in your spelling test or that A+ on an English essay?</p>
-
-<p>That was great in school and even through to University but working life is a much more terse environment and getting positive reenforcement is much less common. As professionals, the majority of our work goes unnoticed &ndash; until there is a problem or issue to solve. Then we feel open to the stinging criticism but resentful that months of good work went unnoticed.</p>
-
-<p>When we continue to search for a gold star or continually strive for perfectionism we, as individuals, become much more insular and isolated. We tend to avoid showing our work until it is 100% ready and put up a shield to protect us from any feedback, in fear of being made to look stupid or being called a fraud.</p>
-
-<h2>Empowerment</h2>
-
-<p>There is a considerable amount of <a href="http://whatworksforhealth.wisc.edu/program.php?t1=20&amp;t2=6&amp;t3=84&amp;id=311">research</a> to suggest children who have bad experiences and manage to overcome them tend to grow up to become more rounded adults. By encouraging grit and allowing kids to solve their own problems, children learn they are empowered. They become more creative, more respectful, less dependant on others and display less problem behaviour.</p>
-
-<p>This is also relatively easy to implement and can be as simple as involving children in a decision-making process. &lsquo;What do you want to eat with dinner; carrots or broccoli&rsquo;? This might progress to &lsquo;What colour socks do you want to wear?&rsquo; or &lsquo;Which swing do you want to play on?&rsquo;</p>
-
-<p>The concept of preventing yourself from controlling a situation is really key to successful coaching. Rescuing people by dictating an outcome  requires one weak person and one strong person. This propagates itself so people drift towards being a victim or a rescuer. A much better outcome would be a group of confident, empowered individuals who are able to work together.</p>
-
-<h2>Provide tools not solutions</h2>
-
-<p>Even if they are unaware themselves, individuals we coach don&rsquo;t want a solution to their problem. What they want is for you to help them find their own solution. To paraphrase a great line in Samantha&rsquo;s presentation &ndash; &lsquo;Our role is to give people a view of the life they want instead of giving them the life we think they want.&rsquo;</p>
-
-<p>And how can we start doing that? I have started to adopt Samantha&rsquo;s principles and have been staggered by how effective they are in practice:</p>
-
-<ol>
-<li><p><a href="http://outsmartyourbrain.com/find-your-emotional-triggers-on-this-list/">Know your triggers</a> &ndash; what words and situations make you race to help a colleague in distress? Are there patterns you can spot and say &lsquo;Hang on I&rsquo;ve been here before&rsquo;?</p></li>
-<li><p><a href="http://www.successrockets.com/Blog-Professional-Personal-Development/bid/51210/Leadership-Development-Skill-Detached-Involvement">Maintain engaged detachment</a> &ndash; this is tough and requires us to build and nurture a certain skill set; if all else fails remember <a href="http://www.huffingtonpost.com/karen-ann-kennedy/not-my-circus-not-my-monk_b_5390455.html">&lsquo;Not my circus, not my monkeys&rsquo;</a>.</p></li>
-<li><p><a href="http://www.mindtools.com/pages/article/newTMC_85.htm">Appreciative Inquiry</a> &ndash; there are lots of models and frameworks out there but in essence Appreciative Inquiry  boils down to asking someone lots of questions and listening intently to their response, however difficult!</p></li>
-<li><p><a href="http://centerx.gseis.ucla.edu/xchange/teacher-leadership/teacher-workroom/reflecting-conversation">Challenge them to reflect on what happened</a> &ndash; before an individual can see past the problem, they need to acknowledge the problem and the events that lead them there.</p></li>
-<li><p><a href="http://www.reallifecoaching.net/tips-on-committing-to-your-goals/">Ask them to articulate what they want to happen next</a> &ndash; coach them through how this problem can be solved and what steps they might take to resolve it. This commitment helps to clarify any misunderstanding and sets a clear path forward for coach and coachee.</p></li>
-<li><p><a href="http://www.myinternalgps.com/?p=1149">Celebrate their success</a> &ndash; a pat on the back (mentally or physically) can go a long way. Why should individuals receive feedback when there is a problem? Loop back with people and celebrate the small wins as much as possible.</p></li>
-</ol>
-
-
-<h2>Leaders are not lifeguards!</h2>
-
-<p>While not exactly child&rsquo;s play, I hope you have read enough here to spot the danger signs and modify your approach away from the rescuer role that ultimately helps no one.</p>
-
-<p>Effective leaders stop jumping to the rescue and start coaching people through a bad experience, empowering individuals by providing them with the tools to come to their own conclusions and solve their own problems.</p>
-
-<h2>Further reading</h2>
-
-<p><a href="http://outsmartyourbrain.com/stop-fixing-people-what-to-do-when-your-brilliant-ideas-arent-helping/">http://outsmartyourbrain.com/stop-fixing-people-what-to-do-when-your-brilliant-ideas-arent-helping/</a></p>
-
-<p><a href="http://www.huffingtonpost.com/nora-t-akins/resist-the-rescue-management_b_5537309.html">http://www.huffingtonpost.com/nora-t-akins/resist-the-rescue-management_b_5537309.html</a></p>
-
-<p><a href="http://teambuildersplus.com/articles/heroic-leaders-dont-always-save-the-day">http://teambuildersplus.com/articles/heroic-leaders-dont-always-save-the-day</a></p>
-
-<p><a href="http://www.dialogueworks.com/pages/blogs.php?blog_id=52#.VDery9TF87d">http://www.dialogueworks.com/pages/blogs.php?blog_id=52#.VDery9TF87d</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1403,6 +1486,10 @@ For example, <code>main-website/show-user-section/com</code>.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/02/16/hapi-js-and-sigterm/">Hapi.js and SIGTERM</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">Dismantling the monolith - Microsites at Opentable</a>
       </li>
     
@@ -1416,10 +1503,6 @@ For example, <code>main-website/show-user-section/com</code>.</p>
     
       <li class="post">
         <a href="/blog/2015/01/19/building-a-living-styleguide-at-opentable/">Building a living styleguide at OpenTable</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/01/01/explaining-flux-architecture-with-macgyver-dot-js/">Explaining Flux architecture with macgyver.js</a>
       </li>
     
   </ul>

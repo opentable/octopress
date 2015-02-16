@@ -4,7 +4,7 @@
   <title><![CDATA[OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2015-02-10T10:32:54+00:00</updated>
+  <updated>2015-02-16T15:09:15+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -12,6 +12,148 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Hapi.js and SIGTERM]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2015/02/16/hapi-js-and-sigterm/"/>
+    <updated>2015-02-16T10:32:42+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2015/02/16/hapi-js-and-sigterm</id>
+    <content type="html"><![CDATA[<p>When we first stood up our hapi.js APIs, we wrote init scripts to start/stop them. Stopping the server, was simply a case of sending SIGKILL (causing the app to immediately exit).</p>
+
+<p>Whilst this is fine for most cases, if we want our apps to be good Linux citizens, then they should terminate gracefully. Hapi.js has the handy <code>server.stop(...)</code> command (see docs <a href="http://hapijs.com/api#serverstopoptions-callback">here</a>) which will terminate the server gracefully. It will cause the server to respond to new connections with a 503 (server unavailable), and wait for existing connections to terminate (up to some specified timeout), before stopping the server and allowing the node.js process to exit. Perfect.</p>
+
+<p>This makes our graceful shutdown code really simple:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">process</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;SIGTERM&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>  <span class="nx">server</span><span class="p">.</span><span class="nx">stop</span><span class="p">({</span> <span class="nx">timeout</span><span class="o">:</span> <span class="mi">5</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">},</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>    <span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When we see a SIGTERM, call <code>server.stop()</code>, then once the server has stopped, call <code>process.exit(0)</code>. Easy peasy.</p>
+
+<h3>Throw a spanner in the works</h3>
+
+<p>Whilst <code>server.stop()</code> is really useful, it has the problem that it immediately prevents the server from responding to new requests. In our case, that isn&rsquo;t particularly desirable. We use service-discovery, which means that the graceful termination of our app should run like this:</p>
+
+<ul>
+<li>SIGTERM</li>
+<li>Unannounce from Service-Discovery</li>
+<li><code>server.stop(...)</code></li>
+<li><code>process.exit(0)</code></li>
+</ul>
+
+
+<p>Ideally we want the unannounce to happen before the server starts rejecting connections, in order to reduce the likelihood that clients will hit a server that is shutting down.</p>
+
+<h3>Plugins to the rescue!</h3>
+
+<p>Thanks to hapi.js&rsquo;s awesome plugin interface (<a href="http://t.co/GDw44SETfS">shameless self promotion</a>), we can do some magic to make the above possible.</p>
+
+<p>I created a really simple plugin called <a href="https://www.npmjs.com/package/hapi-shutdown">hapi-shutdown</a> which will handle SIGTERM and then run triggers before calling <code>server.stop(...)</code>.</p>
+
+<p>The idea is that it allows us to run the &lsquo;unannounce&rsquo; step, before <code>server.stop(...)</code> is called.</p>
+
+<h3>How to use hapi-shutdown</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">server</span><span class="p">.</span><span class="nx">register</span><span class="p">([</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="nx">plugin</span><span class="o">:</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;hapi-shutdown&#39;</span><span class="p">),</span>
+</span><span class='line'>    <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">serverSpindownTime</span><span class="o">:</span> <span class="mi">5000</span> <span class="c1">// the timeout passed to server.stop(...)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}],</span>
+</span><span class='line'>  <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">){</span>
+</span><span class='line'>    <span class="nx">server</span><span class="p">.</span><span class="nx">start</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nx">server</span><span class="p">.</span><span class="nx">plugins</span><span class="p">[</span><span class="s1">&#39;hapi-shutdown&#39;</span><span class="p">].</span><span class="nx">register</span><span class="p">({</span>
+</span><span class='line'>        <span class="nx">taskname</span><span class="o">:</span> <span class="s1">&#39;do stuff&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">task</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+</span><span class='line'>          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;doing stuff before server.stop is called&#39;</span><span class="p">);</span>
+</span><span class='line'>          <span class="nx">done</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="nx">timeout</span><span class="o">:</span> <span class="mi">2000</span> <span class="c1">// time to wait before forcibly returning</span>
+</span><span class='line'>      <span class="p">})</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The plugin exposes a <code>.register()</code> function which allows you to register your shutdown tasks. The tasks are named (to prevent multiple registrations), and each task must call the <code>done()</code> function. The <code>timeout</code> parameter is provided so that a task which never completes won&rsquo;t block the shutdown of the server.</p>
+
+<p> Neat, huh?</p>
+
+<h3>Hooking up unannounce using hapi-shutdown</h3>
+
+<p>We now have a place to register our &lsquo;unannounce&rsquo; task. Our service-discovery code is wrapped in another plugin, which means we can use <code>server.dependency(...)</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// inside the plugin&#39;s register function</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">server</span><span class="p">.</span><span class="nx">dependency</span><span class="p">(</span><span class="s1">&#39;hapi-shutdown&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">_</span><span class="p">,</span> <span class="nx">cb</span><span class="p">){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">err</span> <span class="o">=</span> <span class="nx">server</span><span class="p">.</span><span class="nx">plugins</span><span class="p">[</span><span class="s1">&#39;hapi-shutdown&#39;</span><span class="p">].</span><span class="nx">register</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">taskname</span><span class="o">:</span> <span class="s1">&#39;discovery-unannounce&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">task</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+</span><span class='line'>      <span class="nx">discovery</span><span class="p">.</span><span class="nx">unannounce</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="nx">done</span><span class="p">();</span>
+</span><span class='line'>      <span class="p">});</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">timeout</span><span class="o">:</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">1000</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">cb</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>server.dependency(...)</code> allows us to specify that this plugin relies on another plugin (or list of plugins). If the dependent plugin is not registered before the server starts, then an exception is thrown.</p>
+
+<p>Handily, <code>server.dependency(...)</code> also takes a callback function, which is invoked after all the dependencies have been registered, which means that you don&rsquo;t need to worry about ordering inside your <code>server.register(...)</code> code.</p>
+
+<p>This allows our unannounce code to be decoupled from the actual business of shutting down the server.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Dismantling the monolith - Microsites at Opentable]]></title>
@@ -2845,66 +2987,6 @@ In our project, we took on the overhead of providing mock &ldquo;sandbox&rdquo; 
 <p>I hope this article has been a little more useful than the previous one. I have tried to explain more specifically what we actually did, from end-to-end, and how we overcame problems along the way. However, I&rsquo;ve really only scratched the surface. I will hopefully get the chance flesh out some of the ideas here in the coming months. In the mean time, there are plenty of <a href="http://www.shino.de/2012/07/02/atdd-by-example/">books</a> and <a href="http://jonkruger.com/blog/2012/02/20/when-acceptance-tests-are-better-than-unit-tests/">blog posts</a> on the subject of acceptance testing. In addition, Martin Fowler has writen <a href="http://martinfowler.com/articles/microservices.html">a great primer on microservices</a> that&rsquo;s really got me thinking about their utility alongside acceptance-only testing and sandbox data.</p>
 
 <p>Thanks for reading :)</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Continuous Delivery: Automating Deployment Visibility]]></title>
-    <link href="http://tech.opentable.co.uk/blog/2014/05/19/continuous-delivery-automating-deployment-visibility/"/>
-    <updated>2014-05-19T17:17:40+01:00</updated>
-    <id>http://tech.opentable.co.uk/blog/2014/05/19/continuous-delivery-automating-deployment-visibility</id>
-    <content type="html"><![CDATA[<p>In our continued effort to drive towards a service oriented architecture each of our teams are continuously improving their deployment processes. Recently our team has focussed on automating as much as possible, putting as much into chat as we can and improving our logging/metrics.</p>
-
-<p>The image below shows at a high level what our teams current deployment pipeline looks like and this post will attempt to summarise some recent changes that have allowed us to automate visibility.</p>
-
-<p><img src="http://tech.opentable.co.uk/images/posts/release-pipeline.png" width="900" height="350" title="image" alt="images"></p>
-
-<h2>Kicking off a deployment</h2>
-
-<p>I wrote previously that we started <a href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">using chatops</a> to increase visibility operationally. Hubot is central to this and we wrote a small script to kick off deployments within <a href="https://www.hipchat.com/">Hipchat</a></p>
-
-<p><img src="http://tech.opentable.co.uk/images/posts/hubot-deploy-restaurant.png" width="350" height="350" title="image" alt="images"></p>
-
-<p>We have two TeamCity instances. The first is used as a build and deployment system to our pre-production servers. The second is used as a deployment system to our production servers. Artifacts from our non-production instance are stored in <a href="http://www.jfrog.com/home/v_artifactory_opensource_overview">Artifactory</a> and our production deployment makes an API call to non-production TeamCity to ask for the last successfully pinned build. Pinning a build only occurs when we&rsquo;re happy that the build is ready to be shipped (passing unit and acceptance tests). The above Hubot command will pin the non-production build, given that the build succeeded, and add a build to the queue in production.</p>
-
-<p>To configure Hubot to do this we wrote a command to setup aliases providing the build id of the build to pin (non-production) and the build id of the build to kick off (production).</p>
-
-<p><img src="http://tech.opentable.co.uk/images/posts/hubot-deploy-alias.png" width="350" height="350" title="image" alt="images"></p>
-
-<h2>Deployment visibility</h2>
-
-<p>Our production deployments must be auditable and it&rsquo;s important that we know what went out with each release and keep a log of this for our Risk Management team. We do this by creating a ticket in <a href="https://www.atlassian.com/software/jira">JIRA</a>, internally known as a CCB, and this gives us a central store of all deployments by all teams.</p>
-
-<p>In the past these tickets were manually created for each release. We soon realised that this was something we could automate. To do so we created a new &ldquo;deployment-info&rdquo; endpoint for our service. This simply contains the SHA of the last commit released along with a time stamp. The first step of our production deploy is to query this endpoint and then using the Github API to get all the commits since that last SHA. These commits are then logged to JIRA to create a CCB ticket using the JIRA API. Each of these steps are automated from TeamCity using grunt tasks. You can find information of the grunt tasks on github as follows:</p>
-
-<ul>
-<li><a href="https://github.com/opentable/grunt-ccb">https://github.com/opentable/grunt-ccb</a></li>
-<li><a href="https://github.com/opentable/grunt-github-manifest">https://github.com/opentable/grunt-github-manifest</a></li>
-<li><a href="https://github.com/opentable/grunt-package-github">https://github.com/opentable/grunt-package-github</a></li>
-</ul>
-
-
-<h2>Build Notifications to Kibana</h2>
-
-<p>Once we have a CCB we fire a start and end event from TeamCity containing the build number to Redis which is then piped into <a href="http://logstash.net/">Logstash</a>. An event is sent before and after deploying the code to all nodes. This is hugely beneficial because it allows us to plot releases against our graphs in <a href="http://www.elasticsearch.org/overview/kibana/">Kibana</a>. Kibana recently added a new feature called Markers. Essentially these are tags that display at the bottom of a graph.</p>
-
-<p><img src="http://tech.opentable.co.uk/images/posts/kibana-tags.png" width="350" height="350" title="image" alt="images"></p>
-
-<p>You can find information on this Markers module on github &ndash; <a href="https://github.com/opentable/grunt-deployment-logger">https://github.com/opentable/grunt-deployment-logger</a></p>
-
-<p>This has already proved incredibly useful for the team and has allowed us to visually correlate issues or changes in key metrics (response times/requests per second) to releases. The following image shows how these look over several graphs.</p>
-
-<p><img src="http://tech.opentable.co.uk/images/posts/kibana-dashboard.png" width="900" height="900" title="image" alt="images"></p>
-
-<h2>Hipchat build complete notification</h2>
-
-<p><img src="http://tech.opentable.co.uk/images/posts/hubot-notification.png" width="350" height="200" title="image" alt="images"></p>
-
-<p>Once our deployment pipeline has completed we send a notification to our teams room in Hipchat (as a final step in TeamCity) to inform the team that the release has completed. It&rsquo;s great to see a deployment start and end in chat. Having a central log of key operations in our team means that we don&rsquo;t have to go and find information when it&rsquo;s baked into chat.</p>
-
-<h2>Conclusion</h2>
-
-<p>We&rsquo;ve come along way with improving our pipeline and automating visibility. Our team is made up of 4 members; 3 in the office and 1 remote. The ultimate goal is to improve speed of deployment and visibility of events not just within the team but for everyone who is interested. Equally we want to continue to open source by as much as possible, allowing us to share our process with teams inside and outside of our organization. We can release code anywhere in the world and the process is completely centralised in chat. We want to continue to move fast and fix faster.</p>
 ]]></content>
   </entry>
   

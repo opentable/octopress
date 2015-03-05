@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "The DNS ABC"
-date: 2015-02-24 18:00
+date: 2015-03-05 15:00
 author: fmaffei
 comments: true
 categories: [Engineering, DNS, Theory]
@@ -75,7 +75,7 @@ I made a diagram that shows that.
 
 ### Real life problems ###
 
-The mechanism explained above is great, but if applied in real life application, it will lead to a bottleneck. Every lookup would involve root servers and authoritative servers, which would be hit by gazillions of queries every day, putting a huge burden on the system since the start.
+The mechanism explained above is great, but if applied in a real life application, it will lead to a bottleneck. Every lookup would involve root servers and authoritative servers, which would be hit by gazillions of queries every day, putting a huge burden on the system since the start.
 
 To solve this, of course a [**caching**](http://blog.catchpoint.com/2014/07/15/world-dns-cache-king/) system comes to help. Yes, DNS allows and encourages caching. This way another class of DNS servers comes into play, the **recursive name servers**. They can perform recursive lookups and cache results, returning them when queried even if they don't have the authority to generate the results themselves.
 

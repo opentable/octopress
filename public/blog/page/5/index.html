@@ -9,7 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="Someone in the office mentioned RethinkDb and I was impressed by the rhetoric on the site, so I decided to spend a couple of hours spiking one of our &hellip;">
+  <meta name="description" content="When building a previous project, I created an ASP.NET MVC application that would allow subdomains to resolve to different areas of the project and &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,6 +80,175 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc/">Resolving domains to areas in ASP.NET MVC</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-25T19:28:00+01:00" pubdate data-updated="true">Sep 25<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>When building a previous project, I created an ASP.NET MVC application that would allow subdomains to resolve to different areas of the project and thus show different views. I wanted to be able to extend this functionality. I wanted to allow different domains to point to different areas. This would allow me to deploy the application just once and then have different headers on the web server rather than regional variances. Whilst on a flight to San Francisco, I was able to hack together some code that allows just that. The details of that hackiness are below.</p>
+
+<p>I started with a simple ASP.NET MVC application. I then created an area. The default area registration looks as follows:</p>
+
+<pre><code>public class Domain1AreaRegistration: AreaRegistration   
+{
+    public override void RegisterArea(AreaRegistrationContext context)
+    {
+        context.MapRoute(
+            "Domain_1_default",
+            "Domain1/{controller}/{action}/{id}",
+            new { controller = "Home", action = "Index", id = UrlParameter.Optional },
+            new[] { "WebApplication.Controllers" }
+        );
+    }
+
+    public override string AreaName
+    {
+        get { return "Domain1"; }
+    }
+}
+</code></pre>
+
+<p>The name of the folder in my project corresponds to the AreaName as above. I have approximately six areas in the application that relate to different views. Now is where the hacky magic happens. I build the routing for the application myself. In my global.asax.cs, I have the following declaration:</p>
+
+<pre><code>protected void Application_Start()
+{
+    AreaRegistration.RegisterAllAreas();
+
+    //this is done using my IoC container
+    var routingEngine = new RoutingEngineFactory();
+    routingEngine.RoutingRegistration(RouteTable.Routes);
+}
+</code></pre>
+
+<p>This is the creation of my RoutingEngine. This class is responsible for taking each area in the system in turn and then creating the routes for my application based on these. I am sure you are asking why I am doing that? The answer is simply that I can use a combination of MapRoute and IRouteConstraints to build a sufficient route for the URLs I need to map. The code looks as follows:</p>
+
+<pre><code>public void RoutingRegistration(RouteCollection routes)
+{
+    var areaNames = GetAllAreasRegistered(routes);
+    routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+    routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
+
+    foreach (var area in areaNames.Select(Area.From))
+    {
+        RegisterDefaultRoute(area.Name, routes);
+    }
+}
+
+private void RegisterDefaultRoute(string areaName, RouteCollection routes)
+{
+    var defaultRoute = routes.MapRoute(
+            BuildRouteSegment(areaName, "Default"),
+            "{controller}/{action}/{id}",
+            new { controller = "Home", action = "Index", id = UrlParameter.Optional },
+            BuildUrlConstraint(areaName),
+            new[] { DefaultControllerNameSpace }
+            );
+    defaultRoute.SetAreaDataTokens(areaName);
+}
+</code></pre>
+
+<p>The code works in the following way:</p>
+
+<p>Get a list of all the areas.
+Add the Ignore routes as these are more specific and need to be at the top of the list.
+To this list of areas, add a new area of name string.Empty. This will allow us to register the routes for the non area parts of the site. This is really hacky as denoted by the code above.
+Foreach area in the list, register a route. This route has the same URL for all routes.
+But how do we distinguish which of the routes match to a specific domain?</p>
+
+<p>routes.MapRoute in MVC has a number of overloads. The overload we will be using has the following signature:</p>
+
+<p>public static Route MapRoute(this RouteCollection routes, string name, string url, object defaults, object constraints, string[] namespaces)
+Notice that is has a parameter for constraints. All I need to do is to build the correct constraint and I will be able to give my system a way to match a specific domain. There is another overload that has no parameter for constraints and that passes null down the stack &ndash; so I can pass a null constraint for the non areas based part of the site. There is only a need to pass a constraint to the route if there is an area specified. The code to create the correct constraint looks as following:</p>
+
+<pre><code>private static object BuildUrlConstraint(string areaName)
+{
+    object constraint = null;
+    if (!string.IsNullOrWhiteSpace(areaName))
+    {
+        var constraintType = new DomainConstraintFactory(areaName).GetConstraint();
+        constraint = new {controller = constraintType};
+    }
+    return constraint;
+}
+</code></pre>
+
+<p>The domain constraint factory does all the work for me here. It can be as simple or as complex as you need it to be. Here is a snippet of code to show you:</p>
+
+<pre><code>public class DomainConstraintFactory
+{
+    private readonly string _areaName;
+    public DomainConstraintFactory(string areaName)
+    {
+        _areaName = areaName;
+    }
+
+    public IRouteConstraint GetConstraint()
+    {
+        switch (_areaName.ToLower())
+        {
+            case "domain1":
+                return new Domain1Constraint();
+            case "domain2":
+                return new Domain2Constraint();
+        }
+        return null;
+    }
+}
+</code></pre>
+
+<p>The correct constraint will now be able to be passed to the route. The constraints are very simple:</p>
+
+<pre><code>public class Domain1Constraint : IRouteConstraint
+{
+    public bool Match(HttpContextBase httpContext, Route route, string parameterName, RouteValueDictionary values, RouteDirection routeDirection)
+    {
+        if (httpContext != null &amp;&amp; httpContext.Request != null &amp;&amp; httpContext.Request.Url != null)
+        {
+            if (httpContext.Request.Url.Host == "www.mydomain.com")
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+</code></pre>
+
+<p>If we register Domain1 and Domain2 areas with the system, MVC will take each route in turn and test the constraint. It will return the Area to show based on the first match on the system.</p>
+
+<p>I can now pass in www.mydomain1.com and show the specific styling of the views in the Domain1 areas folder. By passing www.mydomain2.com, I can show a completely different set of views and let the user believe that they are on a completely different version of the site.</p>
+
+<p>The code needs to be cleaned up a lot. I will be doing this over the coming weeks. I wouldn’t quite class this as the best practice way of doing this, but it certainly shows that there is no need to have different versions of a website deployed just to show a different version of an application on a different URL. The biggest usecase here for me is deploying the same application to different countries without the need for separate deployments.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1628,142 +1797,6 @@ end
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/06/14/windows-feature-management-with-powershell/">Windows Feature Management with PowerShell</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-06-14T20:31:00+01:00" pubdate data-updated="true">Jun 14<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In late 2012, our development team started to move towards our systems being much more automated. Long gone are the days of developers creating runbooks in Word and giving them to our operations team to use to set up our production servers.</p>
-
-<p>When building our webservers on Windows, in order to install / activate Windows features, this was the general set of instructions that was needed to be followed:</p>
-
-<ul>
-<li>Click Start Button</li>
-<li>Click on Control Panel</li>
-<li>Click on Programs</li>
-<li>Click on Turn Windows features on or off</li>
-</ul>
-
-
-<p>This would present a screen as follows:</p>
-
-<p><img class="center" src="/images/posts/windowsfeature.png"></p>
-
-<p>You would need to find the correct features to enable and check the box, press OK and then wait for the features to be installed.</p>
-
-<p>When Microsoft introduced Windows Server 2008 and PowerShell 2.0, they also introducted the module &lsquo;ServerManager&rsquo;. This is a module that allows us to interact, with PowerShell, Windows Features using a range of cmdlets:</p>
-
-<ul>
-<li>Get-WindowsFeature</li>
-<li>Add-WindowsFeature</li>
-<li>Remove-WindowsFeature</li>
-</ul>
-
-
-<p>This meant that instead of creating runbooks in Word, our developers could create automation scripts that would take a base Windows Server 2008 server and enable all the Windows Features needed to run our applications. This allowed our operations team to move much faster in configuring our servers.</p>
-
-<p>To turn on the ASP.NET Application Development features in Windows, we would run the following script from PowerShell:</p>
-
-<pre><code>Import-Module ServerManager
-Add-WindowsFeature Web-Asp-Net
-</code></pre>
-
-<p>By knowing what Windows Features we needed to install on our servers, we were able to create the following script:</p>
-
-<pre><code>function enable_net_3_5_features()
-{
-    Add-WindowsFeature NET-HTTP-Activation
-    Add-WindowsFeature NET-Win-CFAC
-    Add-WindowsFeature NET-Non-HTTP-Activ
-    Add-WindowsFeature AS-MSMQ-Activation
-}
-
-function enable_iis_common_http_features()
-{
-    Add-WindowsFeature Web-Static-Content
-    Add-WindowsFeature Web-Http-Errors
-    Add-WindowsFeature Web-Default-Doc
-}
-
-function enable_iis_application_development_features()
-{
-    Add-WindowsFeature Web-Asp-Net
-    Add-WindowsFeature Web-Net-Ext
-    Add-WindowsFeature Web-ISAPI-Ext
-    Add-WindowsFeature Web-ISAPI-Filter
-}
-
-function enable_iis_health_and_diagnostics_features()
-{
-    Add-WindowsFeature Web-Http-Logging
-    Add-WindowsFeature Web-Request-Monitor
-}
-
-function enable_iis_security_features()
-{
-    Add-WindowsFeature Web-Filtering
-}
-
-function enable_iis_performance_features()
-{
-    Add-WindowsFeature Web-Stat-Compression
-    Add-WindowsFeature Web-Dyn-Compression
-}
-
-function enable_iis_management_tools()
-{
-    Add-WindowsFeature Web-Mgmt-Tools
-    Add-WindowsFeature Web-Mgmt-Console
-}
-
-
-Write-Host('Starting Application Server Setup')
-
-Import-Module ServerManager
-enable_net_3_5_features
-enable_iis_common_http_features
-enable_iis_application_development_features
-enable_iis_health_and_diagnostics_features
-enable_iis_security_features
-enable_iis_performance_features
-enable_iis_management_tools 
-
-Write-Host('Application Server Setup complete')
-</code></pre>
-
-<p>Running the script, meant that we could enable features much faster than we could enable them via the GUI. Notice how we have grouped how we enable Windows Features into the same groupings found in the &lsquo;Turn Windows features on or off&rsquo; menu. For a full list of the names of the features that can be turned on or off, please refer to this <a href="http://technet.microsoft.com/en-us/library/cc732757.aspx">technet article</a></p>
-
-<p>You can download a <a href="https://gist.github.com/opentable-devops/5886831">gist</a> of this script if you want to use it. Please note that the license that this script is available under can be read from our <a href="https://github.com/opentable/licensing/blob/master/LICENSE">github repository</a>. We hope that the script helps you as much as it helped us.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/6/">&larr; Older</a>
@@ -1781,6 +1814,10 @@ Write-Host('Application Server Setup complete')
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/03/05/the-dns-abc/">The DNS ABC</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/02/16/hapi-js-and-sigterm/">Hapi.js and SIGTERM</a>
       </li>
     
@@ -1794,10 +1831,6 @@ Write-Host('Application Server Setup complete')
     
       <li class="post">
         <a href="/blog/2015/01/23/on-strongly-typed-logging/">On Strongly Typed Logging</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/01/19/building-a-living-styleguide-at-opentable/">Building a living styleguide at OpenTable</a>
       </li>
     
   </ul>

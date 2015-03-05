@@ -9,7 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="In my last post about performance testing I wrote about how we decided to do it in production as the ultimate test of success. Performance testing in &hellip;">
+  <meta name="description" content="I18n is often a painful afterthought when serving content from a http-api. It can be taken for granted and tacked on using nasty query string values &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,6 +80,188 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/02/internationalisation-in-a-restful-world/">Internationalisation in a RESTful world</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-02T14:11:00+01:00" pubdate data-updated="true">Apr 2<span>nd</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I18n is often a painful afterthought when serving content from a http-api. It can be taken for granted and tacked on using nasty query string values. But thankfully HTTP provides us with a solid gold opportunity. If you can look past the mire of content negotiation you can see the nuggets that lie inside.</p>
+
+<p>The accept-language header is used by most browsers and allows websites to serve content in a language that the user can (hopefully) understand. When we expose content from an api (in most of our use cases, at least), this content eventually ends up in front of a human (in some shape or form). Having our service-service communication serve localised resources can be invaluable because it frees the clients from having to think about i18n of the resources being served from our api.</p>
+
+<p>It is a simple part of the HTTP specification and is widely used and supported.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>GET /product/123
+</span><span class='line'>Accept-Language: en-US</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The accept-language header is specifically designed to allow the server to provide a representation of the resource which approximates something the client can understand.</p>
+
+<p>The really useful bit comes from the quality value.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>GET /product/123
+</span><span class='line'>Accept-Language: en-US,en;q=0.8</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This header asks the service to provide en-US, and if it&rsquo;s unavailable then fall back to <strong>any</strong> english representation. The quality value (<code>q=0.8</code>) is a decimal value between 0 and 1 which indicates order of preference when specifying multiple languages. The server should pick the <strong>first</strong> available match. If there are multiple matches with the same quality value, then the server can pick any. If the client wants to specify some fierce preferences then they can crank out something like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>GET /product/123
+</span><span class='line'>Accept-Language: fr-CA,fr-FR;q=0.8,fr;q=0.6,en-US;q=0.4,en;q=0.2,*;q=0.1</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you decipher this it&rsquo;s pretty simple, you can see the quality headers giving the order in which the languages are preferred. What it does is give the client fantastic flexibility. For service-service communication you might have a use-case which will <em>never</em> serve a representation that doesn&rsquo;t match the request, or you might need to <em>always</em> provide some representation (i.e. for cases where some content is always better than none).</p>
+
+<p>The accept-language header gives you that flexibility. In my opinon, if your http-api&rsquo;s are serving content that <em>can</em> be internationalised, the server should always support this type of behaviour because it can shift the control from the server to the client. It allows the server&rsquo;s behaviour to be incredibly explicit and the clients get all that lovely flexibility.</p>
+
+<p><strong>What happens when there is no matching representation?</strong></p>
+
+<p>Well, the specification is (intentionally) vague. In other words, it is up to the server to decide. I myself always prefer to be explicit. Thankfully the HTTP specification provides for just such an eventuality.</p>
+
+<p><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">HTTP 406 Not Acceptable</a> <em>&ldquo;The resource identified by the request is only capable of generating response entities which have content characteristics not acceptable according to the accept headers sent in the request.&rdquo;</em></p>
+
+<p>The 406 response <em>should</em> contain a list of characteristics which the resource does support. In this case, a list of available languages. The specification does allow the server to automatically select a representation to return, however in my opinion, the server should be explicit, rather than implicit.</p>
+
+<p>If the client has a use case where it <em>always</em> requires some sort of response (i.e. where any content is better than no content), then the client can append a wildcard to the end of the accept-language header, which will instruct the server to fall back to <em>any</em> language, in the event that there are none matching.</p>
+
+<p><strong>Parsing the Accept-Language header</strong></p>
+
+<p>I wrote a little npm module to help us in <a href="https://github.com/andyroyle/accept-language-parser">parsing the accept-language header</a>. Once you get past the (somewhat hairy) regex, it&rsquo;s a simple little bit of code. (Disclaimer, I&rsquo;m not a regex god, so there are a couple of little bugs in it).</p>
+
+<p>Parsing an accept-language string such as <code>en-US,en;q=0.8</code> gives an object looking like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[
+</span><span class='line'>  {
+</span><span class='line'>    code: "en",
+</span><span class='line'>    region: "GB",
+</span><span class='line'>    quality: 1.0
+</span><span class='line'>  },
+</span><span class='line'>  {
+</span><span class='line'>    code: "en",
+</span><span class='line'>    region: undefined,
+</span><span class='line'>    quality: 0.8
+</span><span class='line'>  }
+</span><span class='line'>];</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Output is always sorted in quality order from highest &ndash;> lowest. as per the http spec, omitting the quality value implies 1.0.</p>
+
+<p>We can pass this around our application and use it to select the representation which best matches the client&rsquo;s request.</p>
+
+<p><strong>Using it</strong></p>
+
+<p>We use <a href="http://hapijs.com">hapi.js</a> for some of our api&rsquo;s (and I&rsquo;m very much in love), we use this module in a pre-requisite handler in our route:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var alparser = require('accept-language-parser');
+</span><span class='line'>server.route({
+</span><span class='line'>  method: "GET",
+</span><span class='line'>  path: "/v5/restaurants/{id}",
+</span><span class='line'>  config: {
+</span><span class='line'>    pre: [
+</span><span class='line'>      {
+</span><span class='line'>        method: function(req, next){
+</span><span class='line'>          next(alparser.parse(req.raw.req.headers["accept-language"] || ""));
+</span><span class='line'>        },
+</span><span class='line'>        assign: "language",
+</span><span class='line'>        mode: "parallel"
+</span><span class='line'>      }
+</span><span class='line'>    ],
+</span><span class='line'>    handler: function(req, reply){
+</span><span class='line'>        ...
+</span><span class='line'>    }
+</span><span class='line'>  }
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For those of you that don&rsquo;t know, the prerequisites run before the handler, and assign their values to the request object. You can now get hold of the parsed language object here:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>req.pre.language</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Content-Negotiation is hard</strong></p>
+
+<p>Yes, it is. But suck it up. In my opinion the benefits outweigh the costs. Besides, the Accept-Language header is part of the HTTP specification and is well understood. If you have doubts, start small, and always try to be <em>explicit</em> rather than implicit.</p>
+
+<p><strong>Gotchas</strong></p>
+
+<p>Caching (both client-side and intermediate) can be picky. By default, most caches won&rsquo;t respect the header content (i.e. the resource is cached by url only). You can get around this by using vary-headers:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>GET /product/123
+</span><span class='line'>Accept-Language: en-GB,en;q=0.8
+</span><span class='line'>Vary: Accept-Language</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This instructs the cache that the response will vary with the value of Accept-Language, so when this changes it should be cached as a separate resource. Vary headers <strong>should</strong> be applied by the client to the request, however the server can apply them to the response if necessary.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1036,175 +1218,6 @@ What if we refactor with the MVP pattern first and see where the duplication lie
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc/">Resolving domains to areas in ASP.NET MVC</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-25T19:28:00+01:00" pubdate data-updated="true">Sep 25<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>When building a previous project, I created an ASP.NET MVC application that would allow subdomains to resolve to different areas of the project and thus show different views. I wanted to be able to extend this functionality. I wanted to allow different domains to point to different areas. This would allow me to deploy the application just once and then have different headers on the web server rather than regional variances. Whilst on a flight to San Francisco, I was able to hack together some code that allows just that. The details of that hackiness are below.</p>
-
-<p>I started with a simple ASP.NET MVC application. I then created an area. The default area registration looks as follows:</p>
-
-<pre><code>public class Domain1AreaRegistration: AreaRegistration   
-{
-    public override void RegisterArea(AreaRegistrationContext context)
-    {
-        context.MapRoute(
-            "Domain_1_default",
-            "Domain1/{controller}/{action}/{id}",
-            new { controller = "Home", action = "Index", id = UrlParameter.Optional },
-            new[] { "WebApplication.Controllers" }
-        );
-    }
-
-    public override string AreaName
-    {
-        get { return "Domain1"; }
-    }
-}
-</code></pre>
-
-<p>The name of the folder in my project corresponds to the AreaName as above. I have approximately six areas in the application that relate to different views. Now is where the hacky magic happens. I build the routing for the application myself. In my global.asax.cs, I have the following declaration:</p>
-
-<pre><code>protected void Application_Start()
-{
-    AreaRegistration.RegisterAllAreas();
-
-    //this is done using my IoC container
-    var routingEngine = new RoutingEngineFactory();
-    routingEngine.RoutingRegistration(RouteTable.Routes);
-}
-</code></pre>
-
-<p>This is the creation of my RoutingEngine. This class is responsible for taking each area in the system in turn and then creating the routes for my application based on these. I am sure you are asking why I am doing that? The answer is simply that I can use a combination of MapRoute and IRouteConstraints to build a sufficient route for the URLs I need to map. The code looks as follows:</p>
-
-<pre><code>public void RoutingRegistration(RouteCollection routes)
-{
-    var areaNames = GetAllAreasRegistered(routes);
-    routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-    routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
-
-    foreach (var area in areaNames.Select(Area.From))
-    {
-        RegisterDefaultRoute(area.Name, routes);
-    }
-}
-
-private void RegisterDefaultRoute(string areaName, RouteCollection routes)
-{
-    var defaultRoute = routes.MapRoute(
-            BuildRouteSegment(areaName, "Default"),
-            "{controller}/{action}/{id}",
-            new { controller = "Home", action = "Index", id = UrlParameter.Optional },
-            BuildUrlConstraint(areaName),
-            new[] { DefaultControllerNameSpace }
-            );
-    defaultRoute.SetAreaDataTokens(areaName);
-}
-</code></pre>
-
-<p>The code works in the following way:</p>
-
-<p>Get a list of all the areas.
-Add the Ignore routes as these are more specific and need to be at the top of the list.
-To this list of areas, add a new area of name string.Empty. This will allow us to register the routes for the non area parts of the site. This is really hacky as denoted by the code above.
-Foreach area in the list, register a route. This route has the same URL for all routes.
-But how do we distinguish which of the routes match to a specific domain?</p>
-
-<p>routes.MapRoute in MVC has a number of overloads. The overload we will be using has the following signature:</p>
-
-<p>public static Route MapRoute(this RouteCollection routes, string name, string url, object defaults, object constraints, string[] namespaces)
-Notice that is has a parameter for constraints. All I need to do is to build the correct constraint and I will be able to give my system a way to match a specific domain. There is another overload that has no parameter for constraints and that passes null down the stack &ndash; so I can pass a null constraint for the non areas based part of the site. There is only a need to pass a constraint to the route if there is an area specified. The code to create the correct constraint looks as following:</p>
-
-<pre><code>private static object BuildUrlConstraint(string areaName)
-{
-    object constraint = null;
-    if (!string.IsNullOrWhiteSpace(areaName))
-    {
-        var constraintType = new DomainConstraintFactory(areaName).GetConstraint();
-        constraint = new {controller = constraintType};
-    }
-    return constraint;
-}
-</code></pre>
-
-<p>The domain constraint factory does all the work for me here. It can be as simple or as complex as you need it to be. Here is a snippet of code to show you:</p>
-
-<pre><code>public class DomainConstraintFactory
-{
-    private readonly string _areaName;
-    public DomainConstraintFactory(string areaName)
-    {
-        _areaName = areaName;
-    }
-
-    public IRouteConstraint GetConstraint()
-    {
-        switch (_areaName.ToLower())
-        {
-            case "domain1":
-                return new Domain1Constraint();
-            case "domain2":
-                return new Domain2Constraint();
-        }
-        return null;
-    }
-}
-</code></pre>
-
-<p>The correct constraint will now be able to be passed to the route. The constraints are very simple:</p>
-
-<pre><code>public class Domain1Constraint : IRouteConstraint
-{
-    public bool Match(HttpContextBase httpContext, Route route, string parameterName, RouteValueDictionary values, RouteDirection routeDirection)
-    {
-        if (httpContext != null &amp;&amp; httpContext.Request != null &amp;&amp; httpContext.Request.Url != null)
-        {
-            if (httpContext.Request.Url.Host == "www.mydomain.com")
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-}
-</code></pre>
-
-<p>If we register Domain1 and Domain2 areas with the system, MVC will take each route in turn and test the constraint. It will return the Area to show based on the first match on the system.</p>
-
-<p>I can now pass in www.mydomain1.com and show the specific styling of the views in the Domain1 areas folder. By passing www.mydomain2.com, I can show a completely different set of views and let the user believe that they are on a completely different version of the site.</p>
-
-<p>The code needs to be cleaned up a lot. I will be doing this over the coming weeks. I wouldn’t quite class this as the best practice way of doing this, but it certainly shows that there is no need to have different versions of a website deployed just to show a different version of an application on a different URL. The biggest usecase here for me is deploying the same application to different countries without the need for separate deployments.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/5/">&larr; Older</a>
@@ -1222,6 +1235,10 @@ Notice that is has a parameter for constraints. All I need to do is to build the
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/03/05/the-dns-abc/">The DNS ABC</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/02/16/hapi-js-and-sigterm/">Hapi.js and SIGTERM</a>
       </li>
     
@@ -1235,10 +1252,6 @@ Notice that is has a parameter for constraints. All I need to do is to build the
     
       <li class="post">
         <a href="/blog/2015/01/23/on-strongly-typed-logging/">On Strongly Typed Logging</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/01/19/building-a-living-styleguide-at-opentable/">Building a living styleguide at OpenTable</a>
       </li>
     
   </ul>

@@ -27,29 +27,33 @@ email:
 
 authors:
     pharrington:
-        display_name: Paul Harrington
+        display_name: <a href="/blog/authors/pharrington.html">Paul Harrington</a>
     mbarrett:
-        display_name: Mark Barrett
+        display_name: <a href="/blog/authors/mbarrett.html">Mark Barrett</a>
     rhopton:
-        display_name: Richard Hopton
+        display_name: <a href="/blog/authors/rhopton.html">Richard Hopton</a>
     ametcalfe:
-        display_name: Andy Metcalfe
+        display_name: <a href="/blog/authors/ametcalfe.html">Andy Metcalfe</a>
     pstack:
-        display_name: Paul Stack
+        display_name: <a href="/blog/authors/pstack.html">Paul Stack</a>
     mbazydlo:
-        display_name: Marcin Bazydlo
+        display_name: <a href="/blog/authors/mbazydlo.html">Marcin Bazydlo</a>
     aroyle:
-        display_name: Andy Royle
+        display_name: <a href="/blog/authors/aroyle.html">Andy Royle</a>
     jcatterfeld:
-        display_name: John Catterfeld
+        display_name: <a href="/blog/authors/jcatterfeld.html">John Catterfeld</a>
     rtomlinson:
-        display_name: Ryan Tomlinson
+        display_name: <a href="/blog/authors/rtomlinson.html">Ryan Tomlinson</a>
     mfigus:
-        display_name: Matteo Figus
+        display_name: <a href="/blog/authors/mfigus.html">Matteo Figus</a>
     lbennett:
-        display_name: Liam Bennett
+        display_name: <a href="/blog/authors/lbennett.html">Liam Bennett</a>
     ssalisbury:
-        display_name: Sam Salisbury
+        display_name: <a href="/blog/authors/ssalisbury.html">Sam Salisbury</a>
+    criddle:
+        display_name: <a href="/blog/authors/criddle.html">Chris Riddle</a>
+    fmaffei:
+        display_name: <a href="/blog/authors/fmaffei.html">Federico Maffei</a>
 
 # ----------------------- #
 #    Jekyll & Plugins     #

@@ -83,11 +83,11 @@ vagrant up
 
 You should now be able to open the dashboard on http://127.0.0.1:3006
 
-![Hobknob dashboard](https://github.com/opentable/hobknob/raw/master/screenshots/dashboard.png)
+![Hobknob dashboard](/images/posts/hobknob-dashboard.png)
 
 All actions in the dashboard are audited. So when you create or update a toggle by turning it on/off an audit is written for that toggle. Clicking on a toggle in the dashboard takes you to the audit view:
 
-![Hobknob audit](https://github.com/opentable/hobknob/raw/master/screenshots/audit.png)
+![Hobknob audit](/images/posts/hobknob-audit.png)
 
 ### Authentication
 

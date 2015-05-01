@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Innovation | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/innovation/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-08T11:14:33+01:00</updated>
+  <updated>2015-03-05T14:36:34+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -176,7 +176,7 @@ public void it_has_2_bananas()
 <li>We use continuous delivery to ship code to production within minutes.</li>
 <li>We have a high degree of high-quality test coverage.</li>
 <li>We are getting better and better at monitoring All The Things.</li>
-<li><a href="/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">We use ChatOps</a>, so communication is central to our work, and keeps remote workers/teams in the loop.</li>
+<li><a href="/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">We use Chatops</a>, so communication is central to our work, and keeps remote workers/teams in the loop.</li>
 </ul>
 
 

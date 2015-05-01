@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: conferences | OpenTable Tech UK Blog]]></title>
+  <title><![CDATA[Category: Conferences | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/conferences/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-08T11:14:33+01:00</updated>
+  <updated>2015-03-05T14:36:34+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -12,6 +12,293 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[PuppetConf 2014 - Part 3]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/10/06/puppetconf-2014-part-3/"/>
+    <updated>2014-10-06T13:43:36+01:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/10/06/puppetconf-2014-part-3</id>
+    <content type="html"><![CDATA[<h2>Day 2</h2>
+
+<p>This is our summary of PuppetConf 2014. In our <a href="http://tech.opentable.co.uk/blog/2014/10/06/puppetconf-2014-part-2/">previous post</a> we gave an overview of the first day of the conference. This post will provide an
+overview of the final day.</p>
+
+<p>There were even more inspiring keynotes and lots more talks which have given us plenty of ideas to go home and think about.</p>
+
+<h3>Key Notes</h3>
+
+<h4>Animating the Puppet: Creating a Culture of Puppet Adoption &ndash; Dan Spurling (<a href="https://twitter.com/spurling">@spurling</a>), Getty Images &ndash; <a href="http://www.slideshare.net/PuppetLabs/keynote-animating-the-puppet-creating-a-culture-of-puppet-adoption-puppetconf-2014">Slides</a></h4>
+
+<div style="float:right;margin:0 10px 10px 10px;width:50%">
+  <img src="http://tech.opentable.co.uk/images/posts/puppetconf-dan.jpg">
+</div>
+
+
+<p>Dan Spuring, VP of Tech Services at Getty came out of the gate with a strong message. His <a href="http://www.urbandictionary.com/define.php?term=GSD">GSD</a> t-shirt
+giving you a clear understanding of who he is. His talk about creating a culture of Puppet adoption at his company was a great story of how challenging it
+can be to move various business units with projects of various ages to a configuration-management (with Puppet) ethos.</p>
+
+<p>I think it is good to hear that they are rolling cm out into that huge backlog of legacy infrastructure that we all try to pretend isn’t there.
+How do you make it integrate into existing processes? How do you sell the DevOps message at the same time as introducing a tool like Puppet into the mix as
+part of that message? Dan gave some thoughts on this and it was good to hear some of that from someone who appears to be on the other side of that challenge.</p>
+
+<p>One of the analogies that he used I that found quite useful was that undertaking a project like this is like moving a boulder. It requires an executive sponsor to
+get the thing moving at all and then it requires everyone pulling in the same direction if it’s ever doing to get anywhere.</p>
+
+<p>The big take-away was that you need to puppetize right away &ndash; that you can’t wait for the right environment or conditions to start doing it, you just need
+start now and demonstrate it. This echo’s the Continuous Delivery ideal of &ldquo;if it hurts, then do it more often&rdquo;.</p>
+
+<h4>Decentralize Your Infrastructure &ndash; Alan Green, Sony Computer Entertainment America &ndash; <a href="http://www.slideshare.net/PuppetLabs/keynote-decentralize-your-infrastructure-alan-green-sony-computer-entertainment-america">Slides</a></h4>
+
+<div style="float:right;margin:0 10px 10px 10px;width:50%">
+  <img src="http://tech.opentable.co.uk/images/posts/puppetconf-alan.jpg">
+</div>
+
+
+<p>Alan’s talk posed an interesting argument: decentralise and let your developers choose the tools and services that they want &ndash; just make it easy for them to
+do so. This obviously flies in the face of conventional sysadmin wisdom of trying to centralise, standardise and control everything but for an organisation the
+size of scale of SCEA this is just never going to work. Sony has many different studios, each has their own special requirements and tooling that they need to
+try and support.</p>
+
+<p>The story of the interaction with these studios is a great classic sysadmin story that is worth repeating. It starts with something we have all heard before &ldquo;I
+need to X right now because it’s preventing me from releasing this game on time”. The reaction here is to either say Yes and risk burning out your people getting
+it done or No risk your career if the release date gets pushed. As a sysadmin you&rsquo;re on the back-foot at this point &ndash; you pretty much have to do whatever it takes.
+If you decentralize your infrastructure you get to turn the tables "No I don’t have tool X but we do have tool Y and Z that will meet your needs&rdquo;. This gives
+the engineers/managers the choice to make rather than you &ndash; they can go out on their own and implement their first choice tool and it will take a bit longer or
+they can have something supported by the team right now. Alan also made a interesting call-back to Kate Matsudaira’s keynote of the previous day when he said that
+it’s all about honesty and trust. Be truthful with your engineers about what you are capable of achieving or not.</p>
+
+<p>This is the sort of thing we do here at OpenTable and it’s been working very well. You need to design puppet to be as flexible as possible and to support those
+teams that need support in their puppet implementations. Having a diverse set of tools is not a bad thing &ndash; especially when you are dealing with creative people &ndash;
+it keeps them creative and you can push that creativity back into the product. You&rsquo;re also decentralising control, giving teams the ability to move their
+infrastructure as fast as they need to move the product &ndash; meaning that your business is going to move faster get meet it’s ROI (because managers care about that
+sort of thing)</p>
+
+<h4>Q&amp;A with Luke Kanies</h4>
+
+<div style="float:right;margin:0 10px 10px 10px;width:50%">
+  <img src="http://tech.opentable.co.uk/images/posts/puppetconf-luke-2.jpg">
+</div>
+
+
+<p>The last &ldquo;keynote&rdquo; of the conference brought Luke back to the stage for a Q&amp;A with the audience. Allowing people to text in questions live led to some amusement
+and once the silly questions were out of the way ( what is your favourite book?, what is your favourite animal? ) we got down to some of the big questions that
+people really wanted answers to.</p>
+
+<p><strong>Q</strong>: What is the roadmap for Puppet Apps?<br/>
+<strong>A</strong>: I would be surprised if we release more than one per quarter, I’d rather put out four than 20, with five releases for each app. We are a small company,
+and we have to try not to get overextended to the point where we can’t evolve the apps. They have to be evolved to be successful.</p>
+
+<p>This seems fair, they is a lot of work involved in putting together something that is polished and tested and ready for market.</p>
+
+<p><strong>Q</strong>: What is the future of Open Source Puppet?<br/>
+<strong>A</strong>: My goal is to keep the two products complementary, and to understand each is used for different reasons .. We’re trying to change how the market works
+and thinks and this is done better with software that’s absolutely everywhere.</p>
+
+<p>He probably gets asked this all the time. The more features that are poured into Enterprise it would be easy to think that the OSS efforts are diminishing and
+that there is even motivation for them to close-source. My conversations with various parties suggest that this is far from the case and I think that open source
+puppet community will continue to be vibrant for a long time yet.</p>
+
+<p><strong>Q</strong>: Where does Puppet fit into environments that don’t require convergence, where instead of adjusting the container you just re-provision?<br/>
+<strong>A</strong>: Containers are a result of 10 to 15 years of investment in virtualization, so it’s easy to switch from the virtualization world to the containers world —
+but a container can’t do everything.</p>
+
+<p>This is a very pragmatic argument and he’s right. Containers are a very exciting space right now and there is no doubt that it will be a big part of the future
+but the community and tooling needs to mature and there is also going to be a very long tail of “traditional” virtualisation technologies around for a very
+long time yet.</p>
+
+<p><strong>Q</strong>: Are there any plan to integration remote orchestration into Puppet?<br/>
+<strong>A</strong>: It’s an area we are investing heavily in, and I’m personally investing heavily in. … I’m a big fan of small independent tools that do one job and do it
+correctly, rather than big huge tools that do a lot. I want to make our orchestration better, not by adding to Puppet, but by adding tools. I don’t want to add
+more functionality to Puppet, but add functionality to the Puppet ecosystem.</p>
+
+<p>MCollective has been in the puppet eco-system for a while now. It’s going to be getting a lot more attention over the next year so I am very excited to see how
+this evolves.</p>
+
+<h3>Tech Talks</h3>
+
+<h4>Continuous Integration for Infrastructure as Code &ndash; Gareth Rushgrove, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/continuouslytestinginfrastructure">Slides</a></h4>
+
+<p>Arguable one of the most interesting talks of the conference. This talk took the idea of infrastructure TDD to the next level. What would it be like to be able
+to test common expectations of your infrastructure (monitoring, backups, machines in each region, budget limitations). There are lots of built-in assumptions
+that we make about of infrastructure and a lot of business decisions that have been difficult to codify. This talk raising the challenge of providing a complete
+API for your infrastructure and then testing against it.</p>
+
+<ul>
+<li>usual tools (serverspec, wrecker)
+
+<ul>
+<li>for containers</li>
+<li>TDD</li>
+</ul>
+</li>
+<li>Policy Driven development</li>
+<li>Infrastructure as an API</li>
+<li>common expectations (budget etc)</li>
+<li>clojure</li>
+<li>can you generate serverspec tests from PuppetDB data??? &ndash; yes!</li>
+<li>rake test::role::web_server</li>
+<li><a href="https://github.com/garethr/serverspec-puppetdb">serverspec-puppetdb</a></li>
+<li>rspec outputter &ndash; monitoring &ndash; using it as a bridge</li>
+</ul>
+
+
+<h4>Experiences from Running Masterless Puppet &ndash; Erik Dalén, Spotify &ndash; <a href="http://www.slideshare.net/PuppetLabs/puppetconf-2014-1">Slides</a></h4>
+
+<p>Erik (this years MVP) always has a lot of interesting insights about Puppet from scaling out the infrastructure at Spotify and this talk is no exception.
+This talk explains their decision to go masterless and the challenges in doing so. It seems that they have put in a lot of work in writing services to manage
+things like hiera data and managing secrets. It is great to see how this approach scales, one can only hope that future work by PuppetLabs with the Apps project
+improves this as option for most people.</p>
+
+<ul>
+<li>scaling workflow rather than puppet masters</li>
+<li>complex modules dependencies make it easy to break things</li>
+<li>r10k is still a fixed environment (upgrade apache and progress at the same time)</li>
+<li>they use their own tool for secret management</li>
+</ul>
+
+
+<h4>Getting Started with Puppet on Windows &ndash; Josh Cooper, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/puppetconf2014-gettingstartedwindowsfinal140925174855phpapp01">Slides</a></h4>
+
+<p>This was a basic introduction to Puppet on windows. It covers what is possible and the many edge cases that you might run into. It was also the time to
+re-announce the recent support for 64-bit puppet on windows. Thanks to Josh we also got a shout-out for the work we have done with our
+<a href="forge.puppetlabs.com/opentable">forge modules</a></p>
+
+<ul>
+<li>Basic intro</li>
+<li>powershell, registry_key</li>
+<li>installing &ndash; mention of 64-bit</li>
+<li>puppet resource</li>
+<li>supported modules</li>
+<li>community modules (inc OT)</li>
+<li>geppetto vs VS</li>
+<li>problems
+
+<ul>
+<li>quotes</li>
+<li>case sensitivity</li>
+<li>UAC</li>
+</ul>
+</li>
+</ul>
+
+
+<h4>Test Driven Development with Puppet &ndash; Gareth Rushgrove, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/tddforpuppet-39598529">Slides</a></h4>
+
+<p>This is Gareth’s basic introduction to TDD with Puppet. It covers the latest tooling and how to build yourself a recent CI pipeline for your modules so that
+they are forge-ready. Useful for anyone who is new to the space or who hasn’t released any modules yet.</p>
+
+<ul>
+<li>TDD</li>
+<li><a href="http://rspec-puppet.com/">rspec-puppet</a></li>
+<li><a href="http://puppet-lint.com/">puppet-lint</a></li>
+<li><a href="https://github.com/guard/guard-rspec">guard</a></li>
+<li><a href="https://github.com/gds-operations/puppet-syntax">puppet-syntax</a></li>
+<li><a href="https://github.com/puppetlabs/beaker">beaker</a> (vagrant + serverspec)</li>
+<li><a href="https://travis-ci.org/">travis</a></li>
+<li><a href="https://github.com/garethr/puppet-module-skeleton">puppet module skeleton</a></li>
+</ul>
+
+
+<h4>Using Docker with Puppet &ndash; James Turnbull, Kickstarter &ndash; <a href="http://www.slideshare.net/PuppetLabs/using-docker-with-puppet-puppetconf-2014">Slides</a></h4>
+
+<p>James gave a good introduction to Docker. Showing off the things that Docker is good at and also detailing some of the things that it isn’t.
+He also showed how and when to use Puppet in this environment. For anyone moving from a  traditional set-up to a Docker based one then this talk is a must.</p>
+
+<ul>
+<li>what is docker</li>
+<li>dockerfile</li>
+<li>dockerhub</li>
+<li>what it does</li>
+<li>what it doesn’t
+
+<ul>
+<li>low-level</li>
+<li>resource dependencies</li>
+<li>what runs, when</li>
+</ul>
+</li>
+<li>don’t install puppet inside your containers</li>
+<li>puppet apply</li>
+</ul>
+
+
+<h4>Tools and Virtualization to Manage our Operations at Puppet Labs &ndash; Cody Herriges, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/tools-and-virtualization-to-manage-our-operations-at-puppet-labs-puppetconf-2014">Slides</a></h4>
+
+<p>Cody, is a member of the PuppetLabs operations team and wow they seriously have their work cut out for them. They have to manage pretty much every network,
+vm technology and cloud platform available. This gives some of the challenges in doing that and some of the tools they have built to help them in
+achieving that.</p>
+
+<ul>
+<li>all the VM technologies</li>
+<li>all the cloud platforms</li>
+<li>all the network providers</li>
+<li>automation</li>
+<li>monitoring (ELK)</li>
+<li>vmpooler (<a href="https://github.com/puppetlabs/vmpooler">https://github.com/puppetlabs/vmpooler</a>)</li>
+</ul>
+
+
+<h3>Other Talks</h3>
+
+<ul>
+<li>The Switch as a Server &ndash; Leslie Carr, Cumulus Networks &ndash; <a href="http://www.slideshare.net/PuppetLabs/the-switch-as-a-server-puppetconf-2014">Slides</a></li>
+<li>Intro to Using MCollective &ndash; Devon Peters, Jive Software &ndash; <a href="http://www.slideshare.net/PuppetLabs/intro-to-using-mcollective-puppetconf-2014">Slides</a></li>
+<li>How Puppet Enables the Use of Lightweight Virtualized Containers &ndash; Jeff McCune, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/how-puppet-enables-the-use-of-lightweight-virtualized-containers-jeff-mc-cune-puppet-labs">Slides</a></li>
+<li>Server Locality Using Razor and LLDP &ndash; Jonas Rosland, EMC &ndash; <a href="http://www.slideshare.net/PuppetLabs/server-locality-withrazorandlldp">Slides</a></li>
+<li>Node Classifier Fundamentals &ndash; Dan Lidral-Porter, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/node-classifier-fundamentals-dan-lidralporter-puppet-lab">Slides</a></li>
+<li>What&rsquo;s Next for Puppet Enterprise &ndash; Lindsey Smith, Puppet Labs &amp; Susannah Axelrod, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/whats-next-for-puppet-enterprise-and-beyond">Slides</a></li>
+<li>The DevOps Field Guide to Cognitive Biases (2nd Edition) &ndash; Lindsay Holmwood, Bulletproof Networks</li>
+<li>Delegated Configuration with Multiple Hiera Databases &ndash; Robert Terhaar, Atlantic Dynamic &ndash; <a href="http://www.slideshare.net/PuppetLabs/rob-terhaar-puppetconf2014">Slides</a></li>
+<li>Understanding OpenStack Deployments &ndash; Chris Hoge, OpenStack Foundation &ndash; <a href="http://www.slideshare.net/PuppetLabs/understanding-openstack-deployments-puppetconf-2014">Slides</a></li>
+<li>Implementing Puppet at a South American Government Agency, Challenges and Solutions &ndash; Pablo Wright, Edrans &ndash; <a href="http://www.slideshare.net/PuppetLabs/implementing-puppet-at-a-south-american-government-agency-challenges-and-solutions-pablo-wright-edrans">Slides</a></li>
+<li>Infrastructure as Software &ndash; Dustin J. Mitchell, Mozilla, Inc. &ndash; <a href="http://www.slideshare.net/PuppetLabs/infrastructure-as-software-dustin-j-mitchell-mozilla-inc?">Slides</a></li>
+<li>Dev to Delivery with Puppet &ndash; Sam Bashton, Bashton Ltd. &ndash; <a href="http://www.slideshare.net/PuppetLabs/dev-to-delivery-with-puppet-sam-bashton-bashton-ltd">Slides</a></li>
+<li>Get Puppet Enterprise into Your Company &ndash; Iko Saadhoff, KPN</li>
+<li>The Puppet Master on the JVM &ndash; Chris Price, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/the-puppet-master-on-the-jvm-puppetconf-2014">Slides</a></li>
+<li>The Grand Puppet Sub-Systems Tour &ndash; Nicholas Fagerlund, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/the-grand-puppet-subsystems-tour-nicholas-fagerlund-puppet-labs">Slides</a></li>
+<li>Building Community: One Puppet Module at a Time &ndash; Diane Mueller, Red Hat &amp; Diego Castro, Getup Cloud</li>
+<li>Puppet for Everybody! &ndash; Federated and Hierarchical Puppet Enterprise &ndash; Chris Bowles, University of Texas at Austin &ndash; <a href="http://www.slideshare.net/PuppetLabs/puppet-for-everybody-federated-and-hierarchical-puppet-enterprise-puppetconf-2014">Slides</a></li>
+<li>Puppetizing Multitier Architecture &ndash; Reid Vandewiele, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/puppetizing-multitier-architecture-puppetconf-2014">Slides</a></li>
+<li>The Evolving Design Patterns of Puppet Enterprise &ndash; Jonathan Spinks, Sourced Group &amp; John Painter, Sourced Group &ndash; <a href="http://www.slideshare.net/PuppetLabs/the-evolving-design-patterns-of-puppet-enterprise-jonathan-spinks-sourced-group-john-painter-sourced-group">Slides</a></li>
+<li>From Development to Testing to Deployment with Puppet Enterprise and Microsoft Azure &ndash; Ross Gardler, Microsoft Open Technologies, Inc. &ndash; <a href="http://www.slideshare.net/PuppetLabs/from-development-to-testing-to-deployment-with-puppet-enterprise-and-microsoft-azure-ross-gardler-microsoft-open-technologies-inc">Slides</a></li>
+<li>Exploring the Final Frontier of Data Center Orchestration: Network Elements &ndash; Jason Pfeifer, Cisco &ndash; <a href="http://www.slideshare.net/PuppetLabs/puppetconf-cisco">Slides</a></li>
+<li>An In-Depth Introduction to the Puppet Enterprise Console &ndash; Ruth Linehan, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/an-indepth-introduction-to-the-puppet-enterprise-console-ruth-linehan-puppet-labs">Slides</a></li>
+<li>Packaging Software, Puppet Labs Style &ndash; Melissa Stone, Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/packaging-software-puppet-labs-style-puppetconf-2014">Slides</a></li>
+<li>Orchestrated Functional Testing with Puppet-spec and Mspectator &ndash; Raphaël Pinson, Camptocamp &ndash; <a href="http://www.slideshare.net/PuppetLabs/puppetconf-mspectator-talk">Slides</a></li>
+<li>Fully Automate Application Delivery with Puppet and F5 &ndash; Colin Walker, F5 &ndash; <a href="http://www.slideshare.net/PuppetLabs/i-control-rest-presentation-for-puppet">Slides</a></li>
+<li>Managing the File and Exposing the API &ndash; Christopher Webber, Chef Software</li>
+<li>Case Study: Developing a Vblock Systems Based Private Cloud Platform with Puppet and VMware vCloud Suite &ndash; Peng Liu &amp; Paul Harb, VCE &ndash; <a href="http://www.slideshare.net/VCE_Computing/puppet-confvce-preso20140925">Slides</a></li>
+<li>Got Logs? Get Answers with Elasticsearch ELK &ndash; Jordan Sissel, Elasticsearch &ndash; <a href="http://www.slideshare.net/PuppetLabs/got-logs-get-answers-with-elasticsearch-elk-puppetconf-2014">Slides</a></li>
+<li>Managing Network Security Monitoring at Large Scale with Puppet &ndash; Michael Pananen &amp; Chris Nyhuis, Vigilant Technology Services &ndash; <a href="http://www.slideshare.net/PuppetLabs/managing-network-security-monitoring-at-large-scale-with-puppet-puppetconf-2014">Slides</a></li>
+<li>Building and Testing from Scratch a Puppet Environment with Docker &ndash; Carla Souza, Reliant &ndash; <a href="http://www.slideshare.net/PuppetLabs/puppet-conf2014">Slides</a></li>
+</ul>
+
+
+<h3>Other Interesting Links</h3>
+
+<ul>
+<li><a href="http://blog.superk.org/2014/09/puppet-conf-2014-review.html">http://blog.superk.org/2014/09/puppet-conf-2014-review.html</a></li>
+<li><a href="http://www.olindata.com/blog/2014/09/first-impressions-new-cfacter">http://www.olindata.com/blog/2014/09/first-impressions-new-cfacter</a></li>
+<li><a href="http://cwebber.net/blog/2014/09/26/i-am-not-a-coder/">http://cwebber.net/blog/2014/09/26/i-am-not-a-coder/</a></li>
+<li><a href="http://www.slideshare.net/PuppetLabs/tag/puppetconf-2014">http://www.slideshare.net/PuppetLabs/tag/puppetconf-2014</a></li>
+<li><a href="http://puppetlabs.com/blog/puppetconf-2014-day-1-tips-treats-and-tweets">http://puppetlabs.com/blog/puppetconf-2014-day-1-tips-treats-and-tweets</a></li>
+<li><a href="http://puppetlabs.com/blog/puppetconf-2014-day-2-luke-q-and-a-devops-containers-and-more">http://puppetlabs.com/blog/puppetconf-2014-day-2-luke-q-and-a-devops-containers-and-more</a></li>
+<li><a href="http://puppetlabs.com/blog/puppetconf-2014-day-1-tips-treats-and-tweets">http://puppetlabs.com/blog/puppetconf-2014-day-1-tips-treats-and-tweets</a></li>
+<li><a href="http://puppetlabs.com/blog/puppet-conf-2014-wrap-up">http://puppetlabs.com/blog/puppet-conf-2014-wrap-up</a></li>
+<li><a href="https://forge.puppetlabs.com/approved/criteria">https://forge.puppetlabs.com/approved/criteria</a></li>
+<li><a href="http://puppetlabs.com/blog/puppet-server-bringing-soa-to-a-puppet-master-near-you">http://puppetlabs.com/blog/puppet-server-bringing-soa-to-a-puppet-master-near-you</a></li>
+<li><a href="https://github.com/puppetlabs/puppetlabs-strings/">https://github.com/puppetlabs/puppetlabs-strings/</a></li>
+<li><a href="http://bitergia.dev.puppetlabs.com/browser/">http://bitergia.dev.puppetlabs.com/browser/</a></li>
+<li><a href="https://www.flickr.com/photos/pleia2/sets/72157648049231891">https://www.flickr.com/photos/pleia2/sets/72157648049231891/</a></li>
+<li><a href="http://theshipshow.com/2014/10/the-pulse-of-puppetconf-2014/">http://theshipshow.com/2014/10/the-pulse-of-puppetconf-2014/</a></li>
+<li><a href="http://www.theregister.co.uk/2014/09/23/puppetconf_2014_keynote/">http://www.theregister.co.uk/2014/09/23/puppetconf_2014_keynote/</a></li>
+<li><a href="http://www.infoq.com/news/2014/09/puppet-approved-modules">http://www.infoq.com/news/2014/09/puppet-approved-modules</a></li>
+<li><a href="https://github.com/ferventcoder/puppet-chocolatey-presentation">https://github.com/ferventcoder/puppet-chocolatey-presentation</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[PuppetConf 2014 - Part 2]]></title>
@@ -31,14 +318,14 @@ we did attend and links to those we didn&rsquo;t.</p>
 <h4>Nearly a Decade of Puppet: What We’ve Learned and Where We’re Going Next &ndash; Luke Kanies, PuppetLabs &ndash; <a href="http://www.slideshare.net/PuppetLabs/luke-kanies-keynote-nearly-a-decade-of-puppet-what-weve-learned-and-where-were-going-next-puppetconf-2014">Slides</a></h4>
 
 <div style="float:right;margin:0 10px 10px 10px;width:50%">
-  <img src="images/posts/puppetconf-luke-1.jpg">
+  <img src="http://tech.opentable.co.uk/images/posts/puppetconf-luke-1.jpg">
 </div>
 
 
 <p>The big keynote of the event to kick off the first day from the author of Puppet himself. This was obviously going to be a tweet worthy affair full of photos
 and big announcements and it did not disappoint.</p>
 
-<p>Native Clients (CFactor + C++ rewrite of agents) are coming in very near future. This is not only a matter of improving the performance for existing users part
+<p>Native Clients (CFactor + C++ rewrite of agents) are coming in the very near future. This is not only a matter of improving the performance for existing users part
 of philosophy of PuppetLabs to become ubiquitous across as many devices and platforms as possible. This is one of those improvements that is really setting up
 PuppetLabs for the future.</p>
 
@@ -60,23 +347,23 @@ you can now plug Puppet into graphite.</p>
 
 
 <p>Puppet Apps was the next big announcement. Puppet Apps is actually a fantastic piece of marketing around the idea that they are refactoring to a more micro-services
-style approach &ndash; splitting up the monolith that is currently the puppet master into smaller applications that have there own release cadence and can be scaled
+style approach &ndash; splitting up the monolith that is currently the Puppet master into smaller applications that have their own release cadence and can be scaled
 separately.</p>
 
 <p>The first announcement from the &ldquo;Apps&rdquo; initiative is Puppet Node Manager the new node classifier which will roll out in the Q1 of 2015 as an add-on
-to Puppet Enterprise. Given that puppet has allowed external node classifiers to be written for a long time now (and there are many open source ones out there)
+to Puppet Enterprise. Given that Puppet has allowed external node classifiers to be written for a long time now (and there are many open source ones out there)
 it is good to see PuppetLabs stepping up and trying to own this more and improve the experience.</p>
 
 <p><a href="http://puppetlabs.com/about/press-releases/puppet-labs-kicks-puppetconf-announcements-major-updates-industrys-most-popular">http://puppetlabs.com/about/press-releases/puppet-labs-kicks-puppetconf-announcements-major-updates-industrys-most-popular</a></p>
 
 <p>Another huge announcement (of which we got a preview at the contributors summit) was Puppet Approved Modules. Luke and the rest of PuppetLabs have the huge
-idea that 80% of what your going to want to configure on your systems should be possible with what is available on the forge. Some of the bigger pieces have
+idea that 80% of what you&rsquo;re going to want to configure on your systems should be possible with what is available on the forge. Some of the bigger pieces have
 been covered by the module engineers at PuppetLabs under the existing Puppet Support Modules program. This has been fantastic in driving for consensus around
 configuration making installation of certain products (like apache) easier for people.</p>
 
-<p>The reality is that if PuppetLabs want to achieve it’s 80% goal they are are not going to be able to do that with the engineers and resources they have
-available to them. Nor do they have the expertise to know about all the software out there. This is where the Puppet Approved program comes in. It’s aim is to
-provide the same standard of quality that you see in the Supported modules but for modules written by the community. It is the easy for users of the forge to
+<p>The reality is that if PuppetLabs want to achieve its 80% goal they are are not going to be able to do that with the engineers and resources they have
+available to them. Nor do they have the expertise to know about all the software out there. This is where the Puppet Approved program comes in. Its aim is to
+provide the same standard of quality that you see in the Supported modules but for modules written by the community. It is easy for users of the forge to
 be able to pick out high quality, actively maintained modules and know what they are getting. As a user this is very exciting and as a module author, while
 there will be plenty of work for me to do, I am glad that the community is moving in this direction.</p>
 
@@ -98,16 +385,16 @@ there will be plenty of work for me to do, I am glad that the community is movin
 </ul>
 
 
-<p>The last part of the keynote was talking about some of the wider thoughts as we look to the next 10 years of Puppet and what come’s next. There is going to be
-more focus on the ubiquity of puppet, on devices more network device partners and solving problems like orchestration. The next 10 years is going to be about
-taking puppet beyond the single node. We are already thinking of machines as cattle and not pets &ndash; puppet should also better reflect that change.</p>
+<p>The last part of the keynote was talking about some of the wider thoughts as we look to the next ten years of Puppet and what comes next. There is going to be
+more focus on the ubiquity of Puppet, on devices more network device partners and solving problems like orchestration. The next ten years is going to be about
+taking Puppet beyond the single node. We are already thinking of machines as cattle and not pets &ndash; Puppet should also better reflect that change.</p>
 
 <p>I for one am very excited by all this and look forward to seeing what comes out over the next few years.</p>
 
 <h4>The Phoenix Project: Lessons Learned &ndash; Gene Kim, IT Revolution Press &ndash; <a href="http://www.slideshare.net/PuppetLabs/keynote-the-phoenix-project-lessons-learned-puppetconf-2014">Slides</a></h4>
 
 <div style="float:right;margin:0 10px 10px 10px;width:50%">
-  <img src="images/posts/puppetconf-gene.jpg">
+  <img src="http://tech.opentable.co.uk/images/posts/puppetconf-gene.jpg">
 </div>
 
 
@@ -120,22 +407,22 @@ out the the survey that he did in joint co-operation with PuppetLabs many of whi
 
 <p>Read that again &ndash; wow.</p>
 
-<p>This talk as one might expect was all about DevOps, it’s history, why and how it works. Even if your full familiar with the whole culture of DevOps there are
-plenty of things to be learnt from this keynote and I look forward to re-watching it when the video lands on youtube.</p>
+<p>This talk as one might expect was all about DevOps, its history, why and how it works. Even if you&rsquo;re fully familiar with the whole culture of DevOps there are
+plenty of things to be learnt from this keynote and I look forward to re-watching it when the video lands on YouTube.</p>
 
 <h4>Trust Me &ndash; Kate Matsudaira, Popforms &ndash; <a href="http://www.slideshare.net/PuppetLabs/keynote-trust-me-puppetconf-2014">Slides</a></h4>
 
 <div style="float:right;margin:0 10px 10px 10px;width:50%">
-  <img src="images/posts/puppetconf-kate.jpg">
+  <img src="http://tech.opentable.co.uk/images/posts/puppetconf-kate.jpg">
 </div>
 
 
-<p>Following the theme of culture, Kate’s talk was a refreshing look on the culture of trust within an organisation. Far from being the usual &ldquo;this is what my
+<p>Following the theme of culture, Kate’s talk was a refreshing look at the culture of trust within an organisation. Far from being the usual &ldquo;this is what my
 company culture looks like&rdquo; sort-of talk, this talk had a lot of practical advice. Discussion of how to build relationships, how to raise your profile within
 the organisation and how to improve yourself as a manger. &ldquo;If you use your 1-on-1 to talk about status, you&rsquo;re wasting time. Get to know your boss, solicit
 feedback on your performance.&rdquo; &ndash; Great advice like this is littered throughout the talk.</p>
 
-<p>She says that Trust is like money and that you need to be wise in how you spend that trust. Most organisations are not a meritocracy and we need to stop thinking that they are. Your relationships within the organisation are just as important as the quality of the work that you do.  There needs to be balance between these two things &ndash; are your relationships as good as the work that you do?</p>
+<p>She says that trust is like money and that you need to be wise in how you spend that trust. Most organisations are not a meritocracy and we need to stop thinking that they are. Your relationships within the organisation are just as important as the quality of the work that you do.  There needs to be balance between these two things &ndash; are your relationships as good as the work that you do?</p>
 
 <p>If you want to improve yourself and advance your career, either as an engineer or as a manager then you should absolutely take the time to listen to this talk.</p>
 
@@ -153,7 +440,7 @@ feedback on your performance.&rdquo; &ndash; Great advice like this is littered 
 <li>oscar is a collection of vagrant plugins</li>
 <li>vagrant-config_builder &ndash;> adds role to share vagrant config  (similar to the beaker nodeset file)</li>
 <li>PDK is a set of oscar roles</li>
-<li>facter / hiera and puppet running off github</li>
+<li>facter / hiera and Puppet running off GitHub</li>
 <li>beaker vs oscar &ndash; oscar is optimised for manual testing. There is room to share stuff here.</li>
 </ul>
 
@@ -161,9 +448,9 @@ feedback on your performance.&rdquo; &ndash; Great advice like this is littered 
 <h4>Cloudy with a Chance of Fireballs: Provisioning and Certificate Management in Puppet &ndash; Eric Sorenson (<a href="https://twitter.com/ahpook">@ahpook</a>), Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/sorenson-fireballspuppet-conf2014">Slides</a></h4>
 
 <ul>
-<li>apple icloud uses puppet + autosign</li>
+<li>Apple iCloud uses Puppet + autosign</li>
 <li>auto sign doesn&rsquo;t work very well for the cloud</li>
-<li>amazon IAM can be applied by machines &ndash; IAM so instance can read it’s own tags (if it has ec2-client-utils installed)</li>
+<li>Amazon IAM can be applied by machines &ndash; IAM so instance can read it’s own tags (if it has ec2-client-utils installed)</li>
 <li>puts instance_id, ami_id and role into /etc/puppet/csr_attriubutes.yaml</li>
 <li>can validate the metadata in the cert using x509</li>
 <li>true_node_data = true &amp; immutable_node_data = true</li>
@@ -174,7 +461,7 @@ feedback on your performance.&rdquo; &ndash; Great advice like this is littered 
 <h4>Beaker: Automated, Cloud-Based Acceptance Testing &ndash; Alice Nodelman (<a href="https://twitter.com/alicenode">@alicenode</a>), Puppet Labs &ndash; <a href="http://www.slideshare.net/PuppetLabs/beaker-automated-cloudbased-acceptance-testing-puppetconf-2014">Slides</a></h4>
 
 <p>Having contributed to this tool, I was a little bias in attending this talk. Still plenty of interesting new things that came up though.
-If you haven’t heard of beaker yet you will also be interested in our <a href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/">previous blog post</a></p>
+If you haven’t heard of beaker yet you will also be interested in our <a href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/">previous blog post</a>.</p>
 
 <ul>
 <li>basic introduction to what beaker is and how to use it.</li>
@@ -189,7 +476,7 @@ If you haven’t heard of beaker yet you will also be interested in our <a href=
 <p>Lots and lots of interesting information here about the new Puppet 4 syntax and jokes about some of the terrible edge cases of the past. It is good to
 know now that with Puppet 4 there is a formal specification for the language so we should no longer see these sorts of weird edge cases of the past.
 There are also lots of new features in the language: some to deal with long standing pain points (interation), some to help in the move away from ruby
-(puppet templates) and some to prevent authors themselves writing buggy manifests (the type system). Puppet 4 is going to be an exciting this to use.</p>
+(Puppet templates) and some to prevent authors themselves writing buggy manifests (the type system). Puppet 4 is going to be an exciting this to use.</p>
 
 <ul>
 <li>pain-points / cleanup (specification)
@@ -200,7 +487,7 @@ There are also lots of new features in the language: some to deal with long stan
 </ul>
 </li>
 <li>heredoc</li>
-<li>puppet templates</li>
+<li>Puppet templates</li>
 <li>iteration (each, map, filter, reduce, slice, with)</li>
 <li>local defaults</li>
 <li>Type system</li>
@@ -223,7 +510,7 @@ foreshadowing of things that may arise if your not careful (or are very unlucky)
 
 <h4>Killer R10K Workflow &ndash; Phil Zimmerman (<a href="https://twitter.com/phil_zimmerman">@phil_zimmerman</a>), Time Warner Cable &ndash; <a href="http://www.slideshare.net/PuppetLabs/killer-r10k-39571913">Slides</a></h4>
 
-<p>This was a good introduction to r10k and the reasons you would want to use it. The workflow is pretty straight forward and I think that for anyway managing puppet at scale this is going to be something to look at.</p>
+<p>This was a good introduction to r10k and the reasons you would want to use it. The workflow is pretty straightforward and I think that for anyone managing Puppet at scale this is going to be something to look at.</p>
 
 <ul>
 <li>some good use cases for r10k
@@ -237,7 +524,7 @@ foreshadowing of things that may arise if your not careful (or are very unlucky)
 <li>workflow
 
 <ul>
-<li> ci per module</li>
+<li>ci per module</li>
 <li>release job per module (tags)</li>
 <li>deploy job per module (cap task to wrap r10k for masters/nodes)</li>
 </ul>
@@ -442,6 +729,50 @@ of questions a little easier in the future.</p>
 very useful to module authors like ourselves. Hopefully you&rsquo;ll find this summary as useful as we do.</p>
 
 <p>Next up Day 1 &ndash; PuppetConf proper..</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Programme Management, making Agile scale]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/02/12/programme-management/"/>
+    <updated>2014-02-12T10:16:00+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/02/12/programme-management</id>
+    <content type="html"><![CDATA[<h2>Popular topic at conferences</h2>
+
+<p>A lot of us were lucky enough to attend NDC London this year, we even sponsored one of the food stalls. I often see one or more real themes coming from talks at conferences. At NDC London I saw three talks around scaling Agile. Indeed Dan North&rsquo;s (<a href="https://twitter.com/tastapod">@tastapod</a>) talk was called exactly that. It is a topic OpenTable is trying to make happen. We are about 100 engineers on three continents which is a lot of teams working together.</p>
+
+<p>I truly believe that the only way to make an individual team successful in an Agile environment is to have ownership of an area, a system or similar. That enables fast feedback, quick decision making and also a sense of pride and responsibility for what people are working on.</p>
+
+<p>However, when you have a big project, you can&rsquo;t give it to just one team. You need many teams working together. You can split it up and get teams to work on the parts of the project affecting the code they own. This will though mean certain parts of the project go faster than others, and if teams are autonomous, who is really responsible for bringing all those pieces together? Also, imagine you are the project owner and need to have a rough handle on when things can actually be delivered, who is going to give you that? None of the individual teams know, everyone is Agile and cool and so everyone hates estimates.</p>
+
+<p>The point made by three speakers at NDC London, <a href="https://twitter.com/tastapod">Dan North</a>, <a href="https://twitter.com/jezhumble">Jez Humble</a> and <a href="https://twitter.com/gojkoadzic">Gojko Adzic</a> came down to the need for the coordination piece across the teams. One thing Dan North (more or less) said is <em>&ldquo;if your team is really fast and all the others are slow, the project is slow and your team haven&rsquo;t achieved their goal&rdquo;</em>. That was not the exact words he used but the sentiment came across.</p>
+
+<p>Indeed we have some big projects at OpenTable and as we have properly embraced Agile in many ways, we still had some pain points in this exact area. We were getting to the same conclusions but since these talks we have had some more solid programme management and in the third cross-team meeting as a result, things starting taking shape. It really is an important piece of the jigsaw.</p>
+
+<p>I would also recommend a <a href="http://www.youtube.com/watch?v=ILP1pJAuT9c&amp;list=PLBMFXMTB7U74NdDghygvBaDcp67owVUUF&amp;feature=c4-overview-vl">DevDay talk</a> from Dariusz Dziuk on this and how Spotify make things scale. Slightly different content but a similar theme.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[NDC Oslo]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2013/06/18/ndcoslo/"/>
+    <updated>2013-06-18T11:59:00+01:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2013/06/18/ndcoslo</id>
+    <content type="html"><![CDATA[<p>Three OpenTable heroes took to Norway last week to attend NDC Oslo. For two of us it was our first major conference and for one, Paul Stack, he had to speak.</p>
+
+<p>Personally, as my first large, multi-discipline conference, I didn&rsquo;t really know what to expect. Being away from the team for three days in a foreign country with major project work going on at the same time was a bit uncomfortable. I was worried that the time and expense needed to be justified. That fear went away after the first night in the bar!</p>
+
+<p>The sessions were great, many things I haven&rsquo;t had a chance to investigate were covered, things like Functional Programming, the latest JavaScript frameworks and tooling. There were also sessions covering things I am more involved with, Agile Process, SOA &amp; Rest, Team Structure and Hiring.</p>
+
+<p>There are other posts around about the individual sessions but I am now much more enthusiastic about functional programming particularly how we could use it and getting back into front end development (even if just in my own time).</p>
+
+<p>The main thing I enjoyed and learnt though is meeting the other delegates. I think staying away from home makes this much more prevalent, something to consider for other conferences. Meeting people at all levels or experience and especially the speakers, most of whom are very generous with their time and ideas, teaches you the most. I probably learnt more over the shuffle board of The Dubliner Pub than reading blog post online in a year (that may be a stretch, but I did learn I was by far the best player on the night).</p>
+
+<p>Watching a colleague speak was also interesting, when you work with a buffoon, however passionate and hard working, to see people actually interested in what he has to say is an eye opener. It makes you realise what you are doing and all its challenges are a step forwards and one to keep pursuing. It also makes you think, &ldquo;if he can do it, I must be able to, what knowledge should I share?&rdquo;. What to share is the hard bit.</p>
+
+<p>My final point is how often I should try to get to these; one a year for sure, any more than that? I need to think that through.</p>
+
+<p>Thanks to the organisers of the conference for a well organised, varied and enjoyable time. And if you have project work on, the wifi was excellent so you need never be too far away from the rest of the team, just do it.</p>
 ]]></content>
   </entry>
   

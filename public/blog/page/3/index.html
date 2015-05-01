@@ -9,7 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="Popular topic at conferences A lot of us were lucky enough to attend NDC London this year, we even sponsored one of the food stalls. I often see one &hellip;">
+  <meta name="description" content="When is acceptance-only testing a good idea, and how can its problems be overcome? In a recent post, I espoused some of the benefits my team enjoyed &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,14 +19,14 @@
 
   
   <link rel="canonical" href="http://tech.opentable.co.uk/blog/page/3/">
-  <link href="/favicon.ico" rel="icon">
+  <link href="/favicon-32.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
-  <script type="text/javascript" src="http://use.typekit.com/syx2vfn.js"></script>
-  <script type="text/javascript">try { Typekit.load(); } catch (e) { }</script>
+  <script src="//fonts.otstatic.com/zys4lfz.js"></script>
+  <script>try{Typekit.load();}catch(e){}</script>
 
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -47,7 +47,6 @@
 
 
 </head>
-
 <body   >
   <header role="banner"><hgroup>
   <h1><a href="/">OpenTable Tech UK Blog</a></h1>
@@ -87,7 +86,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/02/12/programme-management/">Programme Management, making Agile scale</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/05/20/acceptance-now/">Acceptance Now</a></h1>
     
     
       <p class="meta">
@@ -103,923 +102,66 @@
   
 
 
-<time datetime="2014-02-12T10:16:00+00:00" pubdate data-updated="true">Feb 12<span>th</span>, 2014</time>
+<time datetime="2014-05-20T15:00:00+01:00" pubdate data-updated="true">May 20<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><h2>Popular topic at conferences</h2>
+  <div class="entry-content"><p><em>When is acceptance-only testing a good idea, and how can its problems be overcome?</em></p>
 
-<p>A lot of us were lucky enough to attend NDC London this year, we even sponsored one of the food stalls. I often see one or more real themes coming from talks at conferences. At NDC London I saw three talks around scaling Agile. Indeed Dan North&rsquo;s (<a href="https://twitter.com/tastapod">@tastapod</a>) talk was called exactly that. It is a topic OpenTable is trying to make happen. We are about 100 engineers on three continents which is a lot of teams working together.</p>
+<p>In <a href="/blog/2014/04/16/look-ma-no-unit-tests">a recent post</a>, I espoused some of the benefits my team enjoyed by reducing our test-base to a single layer of acceptance tests, with no separate unit or integration tests. It caused <a href="http://www.reddit.com/r/programming/comments/237fr1/look_ma_no_unit_tests/">some minor controversy</a>, which was not to be unexpected. At the time, I knew I had left out some details for brevity&rsquo;s sake. In this post—spurred on by some interesting <a href="https://twitter.com/NathanGloyn/status/456756552092098561">questions</a> and <a href="http://www.reddit.com/r/programming/comments/237fr1/look_ma_no_unit_tests/cgujuv7">commentary</a>—I&rsquo;d like to offer a more constructive view on the subject, and dig a little deeper into the nitty gritty of how we made it work.</p>
 
-<p>I truly believe that the only way to make an individual team successful in an Agile environment is to have ownership of an area, a system or similar. That enables fast feedback, quick decision making and also a sense of pride and responsibility for what people are working on.</p>
+<p>I&rsquo;ll also point out some other hidden benefits of moving to acceptance-only testing, and suggest synergistic practices that can help decide if this is the right approach for your project.</p>
 
-<p>However, when you have a big project, you can&rsquo;t give it to just one team. You need many teams working together. You can split it up and get teams to work on the parts of the project affecting the code they own. This will though mean certain parts of the project go faster than others, and if teams are autonomous, who is really responsible for bringing all those pieces together? Also, imagine you are the project owner and need to have a rough handle on when things can actually be delivered, who is going to give you that? None of the individual teams know, everyone is Agile and cool and so everyone hates estimates.</p>
+<h2>Seams</h2>
 
-<p>The point made by three speakers at NDC London, <a href="https://twitter.com/tastapod">Dan North</a>, <a href="https://twitter.com/jezhumble">Jez Humble</a> and <a href="https://twitter.com/gojkoadzic">Gojko Adzic</a> came down to the need for the coordination piece across the teams. One thing Dan North (more or less) said is <em>&ldquo;if your team is really fast and all the others are slow, the project is slow and your team haven&rsquo;t achieved their goal&rdquo;</em>. That was not the exact words he used but the sentiment came across.</p>
+<p>After-the-fact unit testing requires us to <a href="https://www.youtube.com/watch?v=wEhu57pih5w">find the seams</a> along which code can be isolated and tested. Where those seams don&rsquo;t exist,  the temptation is to refactor code until they do, using patterns like <a href="http://martinfowler.com/articles/injection.html">dependency injection</a>, and following <a href="http://en.wikipedia.org/wiki/Single_responsibility_principle">SRP</a> and other <a href="http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod">SOLID</a> patterns.</p>
 
-<p>Indeed we have some big projects at OpenTable and as we have properly embraced Agile in many ways, we still had some pain points in this exact area. We were getting to the same conclusions but since these talks we have had some more solid programme management and in the third cross-team meeting as a result, things starting taking shape. It really is an important piece of the jigsaw.</p>
+<p><a href="http://en.wikipedia.org/wiki/Test-driven_development">Test-first unit testing</a> aka TDD naturally tends to maximise seams, and results in highly decoupled code with small, specific tests. TDD must result in 100% unit test coverage, if practiced according to <a href="http://en.wikipedia.org/wiki/Test-Driven_Development_by_Example">the gospel</a>. In other words, TDD results in the best kind of code for later <a href="http://sourcemaking.com/refactoring">modification without risk</a>, and the best tests for detailed, granular feedback. Unit tests also tend to run very quickly, sometimes fast enough to <a href="http://misko.hevery.com/2009/05/07/configure-your-ide-to-run-your-tests-automatically/">run every time you hit &ldquo;Save&rdquo;</a>.</p>
 
-<p>I would also recommend a <a href="http://www.youtube.com/watch?v=ILP1pJAuT9c&amp;list=PLBMFXMTB7U74NdDghygvBaDcp67owVUUF&amp;feature=c4-overview-vl">DevDay talk</a> from Dariusz Dziuk on this and how Spotify make things scale. Slightly different content but a similar theme.</p>
-</div>
-  
-  
+<p><strong>Acceptance testing has far fewer seams available.</strong> Typically only one: the application boundary. Yes: <em>Your tests must invoke the entire application each time they are run.</em> Thus running acceptance tests is potentially very slow for even moderately sized projects with few dependencies—let alone large ones with many. Another problem is that, when an acceptance test fails, the failure could be at <em>any</em> layer in the stack. You immediately lose the pinpoint specificity afforded by unit tests.</p>
 
+<p>Why, then, is it sometimes a good idea to forgo unit- in favour of acceptance-tests?</p>
 
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/10/the-adoption-of-configuration-management/">The adoption of Configuration Management</a></h1>
-    
-    
-      <p class="meta">
-        
+<p>As we will see, the first issue, performance, can be mitigated. The second, granularity, is more difficult to overcome. But sometimes <em>that might be okay.</em></p>
 
+<h2>Performance</h2>
 
+<p>In most cases I have seen, acceptance tests are <em>really</em> slow. In some cases, there might be nothing you can do, but usually there is. Front-end automation suites using <a href="http://docs.seleniumhq.org/">Selenium</a> are temporally incorrigible, but they can be parallelised. Complex transactional pieces might be irreducible, but they can be helped with mock data. No matter which box your code is in, there is probably an escape route. Following are some of the techniques we used to overcome performance bottlenecks in our acceptance test suite&hellip;</p>
 
+<h3>Sandbox Data</h3>
 
+<p><em>This is probably a topic that deserves its own post, but I&rsquo;ll try to give a high-level treatment here.</em>
+In our project, we took on the overhead of providing mock &ldquo;sandbox&rdquo; data. For our consumers this was a required feature anyway, so implementing it began early in the project, well before we <a href="/blog/2014/04/16/look-ma-no-unit-tests">deleted all the unit tests</a>. It turned out this was an important enabler in moving to acceptance-only, since it allowed us to run tests much faster by <em>sometimes</em> circumventing data access.</p>
 
+<p>Since this project was written in C# using strict TDD, our data layer already had <a href="http://en.wikipedia.org/wiki/Interface_(computer_science)#Software_interfaces_in_object-oriented_languages">an interface</a> for each data source. In the <em>unit</em> tests this allowed us to easily stub out the data. We reused the same interfaces to build up our sandbox, with dependency injection at runtime to choose between real and mock data. (I like to call this a &lsquo;pseudoseam&rsquo; in that it allows us to isolate data access at runtime, just like an ordinary seam allows you to isolate classes and methods in test.)</p>
 
-
-
-  
-
-
-<time datetime="2014-02-10T13:46:00+00:00" pubdate data-updated="true">Feb 10<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In years gone by, we were a traditional IT company. We had teams of developers and operations. They rarely mixed. Around nine months ago we started to really try and get these teams working together. We introduced a configuration management tool, <a href="http://puppetlabs.com/puppet/what-is-puppet">Puppet</a>, into our ecosystem.</p>
-
-<p>Configuration management is one of the steps of continuous delivery that developers often forget. They feel that systems are magically created for them to deploy their application to. I used to believe this. When I was focused on developing software, I never gave any thought as to the work our operations team had to do to keep the train on the track. So give some respect to your operations teams! We created a repository and started to experiment by configuring some of our applications using Puppet.</p>
-
-<p>This was a major step for both sets of teams. The developers started being in charge of the configuration of their application. This meant that their application would guarantee to be configured the same in our CI environment as it was in production. We, as developers, would be more confident of our applications working as expected.</p>
-
-<p>To contribute to the project, as an engineer, you need to:</p>
+<p><em>Sandbox data is hard to implement. A lot of the effort that would have gone into unit tests and their maintenance was instead pumped into writing good, wholesome, fake data for the sandbox.</em> However, sandbox data, unlike unit tests, solves three problems at once:</p>
 
 <ul>
-<li>fork the project</li>
-<li>make the changes you require</li>
-<li>test the changes in a Vagrant environment (already created with a Windows and Linux system)</li>
-<li>send a PR (pull request)</li>
+<li>It lets your <em>consumers</em> test in a predictable way without making real transactions;</li>
+<li>It enables you to record specific data conditions from The Real World™, increasing your understanding of that data;</li>
+<li>It lets you test internal business logic independently from real data, fast.</li>
 </ul>
 
 
-<p>We have just merged our #847 pull request. The stats of the repository look as follows:</p>
+<p><em>Snip!</em> I went into too much detail on sandbox data here, saving that for a future post.</p>
 
-<p><img class="center" src="/images/posts/puppet-adoption.png"></p>
+<h3>Loosen Isolation</h3>
 
-<p>Our puppet repository has had contributions from over 40% of our engineering / operations teams. We use Puppet to manage our application servers, DHCP servers, provisioning systems and even our MS Sql Server continuous integration infrastructure. The adoption has been fantastic. We started by running our internal QA infrastructure and then scaled it out to our production infrastructure. We now manage 548 nodes (a combination of internal and production) via Puppet.</p>
+<p>Isolation between test runs is really important. If the order you run tests in can ever alter the results, then you have shared state, and you can no longer trust that your tests are testing the same thing each time they are run.</p>
 
-<p>Using a project called <a href="www.fullybaked.co.uk/articles/getting-gource-running-on-osx">Gource</a>, one of our engineering leads, <a href="http://twitter.com/ryantomlinson">Ryan Tomlinson</a>, created a video of the repository vizualization. It&rsquo;s just over two minutes long and shows the activity the repository has taken.</p>
+<p>Usually, in unit testing, we rely on the test runner to respect directives in code that enforce isolation in this way. In NUnit with C# we use attributes for <a href="http://www.nunit.org/index.php?p=setup&amp;r=2.2.10">set-up</a> and <a href="http://www.nunit.org/index.php?p=teardown&amp;r=2.2.10">tear-down</a>, for example. We usually throw away the entire object graph before each test. <em>Sometimes before each assertion.</em> For acceptance testing, where spinning up your test subject tends to take longer, it can be helpful to bend the rules somewhat.</p>
 
-<div class="embed-video-container"><iframe src="http://player.vimeo.com/video/86201508 "></iframe></div>
+<p>In an ideal world, each test run would begin on a new, freshly installed OS, thus eliminating any possibility of differing test results due to environmental issues—the system clock and network state notwithstanding. For unit testing we rarely if ever take this extremist approach. More usual is to rely on the test runner to enforce &ldquo;similar enough&rdquo; initial conditions each time a test is run–commonly relying on the developer to write this set-up and tear-down code correctly.</p>
 
+<p>In acceptance testing it can be very beneficial for performance to loosen this one step further and re-use the same application instance (process) between test runs. Sandboxed data, especially if it is immutable, can help enormously to avoid the pitfalls of shared state. When running your acceptance tests against real data, where shared state is a real concern, you may discover interesting bugs that would otherwise have gone unnoticed if you were using only unit tests. <strong>Upon the discovery of issues with real data, you must implement the same failing condition in your sandbox data so that you don&rsquo;t accidentally introduce regressions later.</strong></p>
 
-<p>Each branch in the tree relates to a directory inside our repository. Green zaps are additions, orange are updates and red deletions. The important thing to take from the video is the evolution of the repository, the amount of changes and the number of people pushing those changes.</p>
+<p>The way we initially achieved this in our acceptance tests was by using the <code>TestFixtureSetup</code> attribute from NUnit to invoke the application, and run it to a point where it had generated an interesting result. Then, each &lsquo;test&rsquo; is in fact a single assertion on the state of the world at that point. Like this:</p>
 
-<p>I&rsquo;m very happy with our configuration management adoption. We are by no means at a point where everyone does it, but we are working towards that. I would like our contributors to rise to over 75% of our engineering / operations team by the end of 2014. Let&rsquo;s see how that goes&hellip;</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/06/20-percent-time/">20% time: Why, as a manager, you should love your engineers to be doing it</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-06T17:12:00+00:00" pubdate data-updated="true">Feb 6<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>We allow all our UK based developers to have some time to explore new technologies, try out prototypes and clean-up things that escape the day-to-day process. Two days out of ten, seems a lot doesn&rsquo;t it?</p>
-
-<h2>How we started</h2>
-
-<p>We started doing our 20% time when we had two week sprints with a release each sprint. We actually had three days of testing, small bug fixing and signing things off. We didn&rsquo;t like starting our new stories for the next sprint as our QAs got behind and never really caught up. We decided to use this time more for clean-up but also for prototyping or trying something out. We had read of other companies doing something similar so were excited to give it a go.</p>
-
-<p>One of the first times we did this we actually decided we wanted to automate all the testing of one of our systems, so that our QAs weren&rsquo;t bogged down for those three days. In our first 20% time, we got most of the team on board as it was painful watching, let alone doing manual testing and we wanted faster feedback on our changes.</p>
-
-<p>We got a lot of the system in a state we could test it. We basically wrote a lot of a page object model and a few features to talk to it. The next 20% time it needed cleaning up, the next we had a lot under test. With a bit of work the three day test cycle was down to about one day. This would never have happened if we were trying in normal sprint time. Major win number one and something no business owner had had to wrestle against other priorities.</p>
-
-<p>After this instance we have had numerous similar examples, albeit on a smaller scale, where each team has been able to try things out, with no consequence in the event of failure, and achieved great prototypes. Much of our new architecture has been tested out in these sessions, new technologies, new approaches, can people work together?</p>
-
-<h2>Failures, not so bad after all</h2>
-
-<p>Of course, we have had many failures, but maybe even that helps, we won&rsquo;t waste our proper sprint time. Some people ask me about rules when I talk about this. I think the key for me is that the engineers are truly given freedom to explore. If on the face of things something they are doing is completely away from what you are doing then it might seem a bit strange.</p>
-
-<p>But what if they are looking to try something new and would have left your company to do so? What if they think it might be a solution but don&rsquo;t know how to say? What if they can use it in nine months on an urgent project? All these things can and have happened.</p>
-
-<h2>Fear, as always, is detrimental</h2>
-
-<p>Another rule, <em>no fear</em>,  applies in many situations of course. But unlike hackathons where you feel the need to present at the end, presenting should be through excitement of the creator, not demand of the manager.</p>
-
-<h2>Better team as a result</h2>
-
-<p>I have seen our whole UK engineering group get a lot stronger through our use of 20% time. We have also been more attractive in interviews and gets very positive responses when discussing our job openings; so many developers just want an opportunity to learn and apply new skills and will leave a job to do so.</p>
-
-<p>I personally now have a child, attempting to try new skills and experiment at home is proving harder and harder. This 20% time becomes more important &ndash; as a team we are trying to really get to grips with the latest trends in the development community. I just don&rsquo;t have anywhere near as much time in the evenings now, it is a way to stop a divide coming between your team, the ones with spare time and the ones without.</p>
-
-<p>I recommend giving it some serious thought for your organisation.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/02/03/coaching-style-over-substance/">Coaching style over substance</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-03T11:12:00+00:00" pubdate data-updated="true">Feb 3<span>rd</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Have you ever been lucky enough to mentor someone who really got it? Maybe you&rsquo;ve had the opposite experience and the session ended up being a failure for both of you?</p>
-
-<p>We are fortunate enough to be in an industry that gives us the chance to coach others and have a direct influence on the learning of individuals around us. But how do we know when we&rsquo;re doing it right, or more importantly what can we do when it starts to go wrong?</p>
-
-<h2>Know your student, find their style</h2>
-
-<p>Let&rsquo;s start with the science behind how we learn.</p>
-
-<p>The first recognised attempt to identify different approaches individuals use in order to learn was David Kolb with the book &lsquo;<a href="http://www.amazon.co.uk/Experiential-Learning-Experience-Source-Development/dp/0132952610">Experimental Learning</a>&rsquo;. Kolb suggested that humans have a range of learning techniques available to us and that we tend to lean on one learning style above all others.</p>
-
-<p>In recent times his research has proved to be inaccurate &ndash; yes people have different learning styles, yes they  show an emphasis in one particular style but Kolb&rsquo;s definition of separate styles was confused.</p>
-
-<p>Enter <a href="http://en.wikipedia.org/wiki/Learning_styles#Peter_Honey_and_Alan_Mumford.27s_model">Honey and Mumford and their 1999 adaptation on Kolb&rsquo;s model</a>. They identified four distinct learning styles which have since grown to be the preferred assessment of human learning styles.</p>
-
-<table style="font-size: 80%;margin-bottom:20px;">
-    <tr>
-        <th style="padding:3px;"></th>
-        <th style="padding:3px;"><b>Description</b></th>
-        <th style="padding:3px;"><b>Learn best</b></th>
-        <th style="padding:3px;"><b>Learn worst</b></th>
-    </tr>
-    <tr style="background-color: #E5E5E5">
-        <td style="padding:3px;vertical-align:top;"><b>Activists</b></td>
-        <td style="padding:3px;vertical-align:top;">Enjoy doing, tend to act first and think later. They like working with others but often hog the limelight.</td>
-        <td style="padding:3px;vertical-align:top;">When involved in new experiences, being thrown in the deep end and leading discussions.</td>
-        <td style="padding:3px;vertical-align:top;">Listening to long lectures, reading or writing on their own. Following precise information to the letter.</td>
-    </tr>
-    <tr>
-        <td style="padding:3px;vertical-align:top;"><b>Reflectors</b></td>
-        <td style="padding:3px;vertical-align:top;">Like to stand back, listen to others, look at the situation, gather data and carefully come to a conclusion.</td>
-        <td style="padding:3px;vertical-align:top;">Observing individuals or teams at work,  reviewing what has happened and what they have learned from it.</td>
-        <td style="padding:3px;vertical-align:top;">Acting as a leader in front of others, doing things without preparation, being rushed by deadlines.</td>
-    </tr>
-    <tr style="background-color: #E5E5E5">
-        <td style="padding:3px;vertical-align:top;"><b>Theorists</b></td>
-        <td style="padding:3px;vertical-align:top;">Able to adapt and integrate observations into complex theories. Tend to be perfectionists. Detached and analytical rather than emotive.</td>
-        <td style="padding:3px;vertical-align:top;">When put into complex and structured situations having to apply their skill and knowledge. Have the chance to question and probe ideas.</td>
-        <td style="padding:3px;vertical-align:top;">With unstructured or poorly briefed activities. Will struggle in situations where emphasise is put on emotion or feelings.</td>
-    </tr>
-    <tr>
-        <td style="padding:3px;vertical-align:top;"><b>Pragmatists</b></td>
-        <td style="padding:3px;vertical-align:top;">Practical and down to earth. Keen to try things out they can be impatient especially with long discussions.</td>
-        <td style="padding:3px;vertical-align:top;">Respond well to demonstrations of techniques that show an obvious advantage.</td>
-        <td style="padding:3px;vertical-align:top;">Learning is all theory. No guidelines on how to accomplish activity. No apparent pay back.</td>
-    </tr>
-</table>
-
-
-<p>The important thing to remember is not all individuals can be pigeon-holed into one group. These characteristics are evident across all industries and teams; I can certainly see myself and others in this list. Can you?</p>
-
-<p>Now we can silo and identify behaviour, we can look deeper into the flow of learning.</p>
-
-<h2>Complete the circle</h2>
-
-<p>Let me introduce you to <a href="http://www.linkedin.com/pub/bernice-mccarthy/15/564/715">Bernice McCarthy</a>. Bernice has been in education for more than 30 years so it&rsquo;s not surprising she has an insight into her field. During her time in education she spotted a pattern and designed a framework that increased the success rate of individual learning.</p>
-
-<p>Research suggests that this framework (<a href="http://www.4mat.eu/">4MAT</a>) is proven to be successful as it follows the thought processes of individuals when they try to learn. It works by explaining not just the WHY? but also the WHAT?, the HOW? and the WHAT IF?</p>
-
-<p><img src="http://www.chowamigo.co.uk/images/4mat.png" alt="image" /></p>
-
-<ol>
-<li><p>WHY? => Convey the meaning and purpose of the change in order to engage people. <strong>Engage the why</strong>.</p></li>
-<li><p>WHAT? => Once it&rsquo;s made relevant provide facts, structure or theory to explain what is going to happen. <strong>Inform the what</strong>.</p></li>
-<li><p>HOW? => Focus on the problems and how best to solve them. <strong>Applying the how</strong>.</p></li>
-<li><p>WHAT IF? => Ask questions and experiment. What else, what&rsquo;s next. <strong>Learn by doing</strong>.</p></li>
-</ol>
-
-
-<p>So how is this helpful?</p>
-
-<p>If we look at the the 4MAT framework and overlay the 4 learning styles from Honey and Mumford we can see some obvious similarites:</p>
-
-<p>PRAGMATISTS = WHY?</p>
-
-<p>ACTIVISTS = WHAT?</p>
-
-<p>THEORISTS = HOW?</p>
-
-<p>ACTIVISTS = WHAT IF?</p>
-
-<p>This is really useful to know, by following the 4MAT framework you are reaching out to each learning style and increasing your chances of being successful in your role as a coach, mentor or teacher.</p>
-
-<h2>Theory schmery, how does this work in practice?</h2>
-
-<p>It&rsquo;s easy enough for us to read this information and take it in, forget about it, move on.</p>
-
-<p>But if we look at a real-world scenario, something that is relevant to our industry and is generally a tough problem to sell it&rsquo;ll make it more tangible. In my world, that can be breaking apart a legacy application that has become too difficult to work with.</p>
-
-<p><strong>WHY?</strong>
-We have a monolithic website right now. The code is too complicated, has no obvious structure and is very tough to change. We need to be able to release solid code, fast.</p>
-
-<p><strong>WHAT?</strong>
-The fact is we are struggling to maintain this application and we can forget about adding new features. Even small updates are causing outages. As a result our site performance has degraded to unacceptable levels.</p>
-
-<p><strong>HOW?</strong>
-The initial thought from the team is to break the monolith into identifiable pieces of functionality. We will try to get each piece behind an API. We hope to abstract the front-end code away so it communicates to these new endpoints.</p>
-
-<p><strong>WHAT IF?</strong>
-What if we refactor with the MVP pattern first and see where the duplication lies? Is there an argument to leave the non-urgent areas of the site until the appetite is there to attack them? We think REST APIs are the way to go, what are your thoughts?</p>
-
-<h2>Do, there is no try</h2>
-
-<p>Outlining and truly grasping these styles can really help push learning in your team further. Try reaching out to different learning styles and see how people respond.</p>
-
-<p>Maybe you are pairing on a tricky feature, struggling to get your point across. Perhaps you have a tough decision that you need to sell to your team. Let&rsquo;s say you are lucky enough to speak at a conference in front of hundreds of delegates &ndash; you could do a lot worse than to remember <strong>WHY?</strong>   <strong>WHAT?</strong> <strong>HOW? </strong> <strong>WHAT IF?</strong></p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">Beginning a journey to chatops with Hubot</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-22T09:34:00+00:00" pubdate data-updated="true">Nov 22<span>nd</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img class="center" src="/images/posts/hubot_pug_me.png"></p>
-
-<p>As a part of our 30% time a few of our team, <a href="https://twitter.com/ajroyle">@ajroyle</a>, <a href="https://twitter.com/stack72">@stack72</a> and I (<a href="https://twitter.com/ryantomlinson">@ryantomlinson</a>) decided to get together and look at <a href="http://hubot.github.com/">Hubot</a> with <a href="https://www.hipchat.com/">Hipchat</a> integration. There are several weird and wonderful scripts that ship with Hubot (see above) but the core concept of driving tooling via chat is one that we see value in.</p>
-
-<h2>What is Chatops?</h2>
-
-<p><a href="https://speakerdeck.com/jnewland/chatops-at-github">Chatops</a> is a term coined by Github to describe their growing culture of “putting tools in the middle of the conversation”. But what does that exactly mean?</p>
-
-<p>To move fast and maintain stability it’s important to have a culture of automation, measurement and sharing (<a href="http://www.opscode.com/blog/2010/07/16/what-devops-means-to-me/">CAMS</a>). Tooling plays a key role in doing so and as your devops toolkit grows with the team there is an inherent learning and maintenance overhead. <a href="http://github.com/">Github</a> made a move to centralise the conversation by driving everything they do into chat. By building tools and executing commands in a chat room that can be automated by a bot, communication doesn’t become an afterthought to operational processes but is core to how you operate. If I want to deploy code, I type a command into chat. If I want to take a server offline, I type a command into chat. If I want to merge a git pull request into master, I type in a command into chat, and so on. Communication is baked in.</p>
-
-<h2>What is Hubot?</h2>
-
-<p>Hubot is a chat bot that sits in your chat room, listens for commands and executes them. It was written by Github in Coffeescript on Node.js and comes with a host of <a href="https://github.com/github/hubot-scripts/tree/master/src/scripts">prewritten scripts</a> to get started with. Hubot also comes with a range of adaptors that allow it to plug-in to chat servers such as Campfire, IRC and Hipchat. We chose the latter.</p>
-
-<h2>How do you get started?</h2>
-
-<p>I won’t re-write the readme because the getting started section <a href="https://github.com/github/hubot/tree/master/docs">here</a> says it all. Using the node package manager it’s so easy to get up and running with <a href="https://github.com/blog/968-say-hello-to-hubot">Hubot</a>. So many other people have documented this process that I won’t attempt to rewrite their <a href="http://net.tutsplus.com/tutorials/javascript-ajax/writing-hubot-plugins-with-coffeescript/">good</a> <a href="https://github.com/blog/968-say-hello-to-hubot">posts</a>.</p>
-
-<h2>How we want to use it and our first scripts</h2>
-
-<p>Although the core scripts that shipped with Hubot are helpful…</p>
-
-<p><img class="center" src="/images/posts/hubot_beer_me.png"></p>
-
-<p>…we started to focus on commands that would be most useful to how we work at <a href="http://www.opentable.co.uk/">OpenTable</a> and the tools and technologies that we employ. Specifically we got together and decided the following would be a useful starting point:</p>
-
-<ul>
-<li>Triggering TeamCity builds to ship to production</li>
-<li>Displaying the status of a JIRA ticket, adding comments and changing their status</li>
-<li>Checking London Underground tube lines for delays via Transport for London API</li>
-<li>Querying the status of our APIs (internal and external)</li>
-<li>Query ElasticSearch node and health cluster</li>
-</ul>
-
-
-<p>Within no time we had some useful scripts written:</p>
-
-<p><img class="center" src="/images/posts/hubot_tube_status.png"></p>
-
-<p><img class="center" src="/images/posts/hubot_jira.png"></p>
-
-<p><img class="center" src="/images/posts/hubot_teamcity.png"></p>
-
-<p>Immediately as we were developing these scripts we realised the potential of what else we could automate into Hubot and we will continue to do so. Some of which are:</p>
-
-<ul>
-<li>Github interaction</li>
-<li>AWS interaction to see host health</li>
-<li>Teamcity integration to trigger builds</li>
-<li>Nagios interaction to trigger status checks</li>
-<li>More JIRA integration to comment on tickets</li>
-<li>Kibana integration to create dashboard URLs</li>
-<li>AppDynamics interaction to query response times etc. (and more)</li>
-</ul>
-
-
-<p>Driving operations in chat has huge benefits for us. Collaboration, deployment and automation of common tasks can be done from anywhere, in the office (UK or US) or remotely for those that work from home. Hipchat has mobile support and their mobile apps are great. We hope it will improve on-call visibility, triaging of issues and resolving them without the need for VPN.</p>
-
-<h2>Resources</h2>
-
-<ul>
-<li>Chatops: Augmented reality for Ops (Video) by Mark Imbriaco &ndash; <a href="http://www.youtube.com/watch?v=pCVvYCjvoZI">http://www.youtube.com/watch?v=pCVvYCjvoZI</a></li>
-<li>ChatOps at Github by Jesse Newland &ndash; <a href="http://www.youtube.com/watch?v=NST3u-GjjFw">http://www.youtube.com/watch?v=NST3u-GjjFw</a></li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/10/21/linking-to-your-app-in-windows-8/">Linking to your app in Windows 8</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-10-21T17:36:00+01:00" pubdate data-updated="true">Oct 21<span>st</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In an effort to raise the visibility of our excellent Windows 8 app we have recently connected <a href="http://www.opentable.com">www.opentable.com</a> to the Windows Store.  This was simply a case of adding two lines of meta data to our site. Or it should have been &ndash; there were several gotchas along the way that are worth sharing.</p>
-
-<h2>The code</h2>
-
-<p>The meta data that we added to the site are an <em>application ID</em>, and what Microsoft have termed the <em>Package Family name</em>.  Once you have these, add the following lines of code to your page &lt;head&gt;.</p>
-
-<pre><code>&lt;meta name="msApplication-ID" content="OpenTable.OpenTable"/&gt; 
-&lt;meta name="msApplication-PackageFamilyName" content="OpenTable.OpenTable_r44en0zefym0a"/&gt;
-</code></pre>
-
-<p><img class="right" src="/images/posts/get-app-for-this-site.png"></p>
-
-<p>This will enable the <strong>&ldquo;Get app for this site&rdquo;</strong> link when you are viewing your page in the full-screen Metro version of Internet Explorer (i.e. launched from the start screen); the desktop version of IE doesn&rsquo;t have this capability.</p>
-
-<p>There are <a href="http://msdn.microsoft.com/en-us/library/ie/hh781489%28v=vs.85%29.aspx#code-snippet-1">three other optional meta values</a> that can also be used to control your link.</p>
-
-<h2>Finding the values</h2>
-
-<p>There are at least two ways of finding the values. If you have your application code and Visual Studio 2012 (or later) then the values can be found in the <strong>package.appxmanifest</strong> file &ndash; open this in VS and it automatically launches the manifest designer view.  Select the Packaging tab and the &ldquo;Package name&rdquo; is the <em>ID</em>, and the <em>Package family name</em> is at the bottom of this screen.</p>
-
-<p><img class="center" src="/images/posts/vs-screenshot.png"></p>
-
-<p>If you don&rsquo;t have the local code with Visual Studio you can still find out these values by other means.</p>
-
-<p>The <strong>msApplication-PackageFamilyName</strong> can be found in the source code of your online Windows 8 app.  For example, <a href="view-source:http://apps.microsoft.com/windows/en-us/app/d7c37fb3-d594-4366-8003-e49c8e953095">viewing the source of the OpenTable app</a> shows a Javascript variable <code>packageFamilyName</code> embedded in the page head.</p>
-
-<pre><code>var packageFamilyName = 'OpenTable.OpenTable_r44en0zefym0a';
-</code></pre>
-
-<p>The <strong>msApplication-ID</strong> is still found in the <code>package.appxmanifest</code> file in your Win8 app, but you don&rsquo;t necessarily need to have the local code or Visual Studio.  We were able to access package.appxmanifest in our GitHub repo (it&rsquo;s an XML file) and the msApplication-ID was the same as the <strong>identity name</strong>.  I don&rsquo;t know if the Application ID and the identity name are always the same, but they were for us.</p>
-
-<pre><code>&lt;Identity Name="OpenTable.OpenTable" Publisher="CN=9C8CE42A-5BD4-4679" Version="1.0.0.1910" /&gt; 
-</code></pre>
-
-<h2>Gotchas</h2>
-
-<p>We tried opening the site in Visual Studio 2012 in Windows 7, but the project containing package.appxmanifest wouldn&rsquo;t open.  We had to open the solution in Windows 8, which finally worked once we&rsquo;d logged into MSDN and installed the suggested updates.</p>
-
-<p>Also, the content values of the meta data are not case sensitive, but the names msApplication-ID and msApplication-PackageFamilyName are.</p>
-
-<p>Finally, having entered what we knew to be the correct values, clicking the &ldquo;Get app for this site&rdquo; link still wouldn&rsquo;t take us to <a href="http://apps.microsoft.com/windows/en-us/app/d7c37fb3-d594-4366-8003-e49c8e953095">the OpenTable app in the Windows store</a>.  After checking with an American colleague the penny dropped that the OpenTable app is only available in the US and Microsoft have unfortunately not provided any visual feedback to explain this.</p>
-
-<p>Luckily instead of just having to take his word that the new code worked there is a way to change your Windows Store settings and fake your location.  <a href="http://www.guidingtech.com/20936/change-windows-8-store-region/">Have a look at this helpful article</a> and you&rsquo;re all set to have your website and Windows app happily talking to each other.</p>
-
-<h3>Further reading</h3>
-
-<ul>
-<li><a href="http://msdn.microsoft.com/en-us/library/ie/hh781489%28v=vs.85%29.aspx">Connect your website to your Windows Store app</a> (Internet Explorer Dev Center)</li>
-<li><a href="http://blogs.msdn.com/b/windowsstore/archive/2012/02/22/linking-to-your-apps-on-the-web.aspx">Linking to your apps on the web</a> (MSDN blog)</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc/">Resolving domains to areas in ASP.NET MVC</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-25T19:28:00+01:00" pubdate data-updated="true">Sep 25<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>When building a previous project, I created an ASP.NET MVC application that would allow subdomains to resolve to different areas of the project and thus show different views. I wanted to be able to extend this functionality. I wanted to allow different domains to point to different areas. This would allow me to deploy the application just once and then have different headers on the web server rather than regional variances. Whilst on a flight to San Francisco, I was able to hack together some code that allows just that. The details of that hackiness are below.</p>
-
-<p>I started with a simple ASP.NET MVC application. I then created an area. The default area registration looks as follows:</p>
-
-<pre><code>public class Domain1AreaRegistration: AreaRegistration   
-{
-    public override void RegisterArea(AreaRegistrationContext context)
-    {
-        context.MapRoute(
-            "Domain_1_default",
-            "Domain1/{controller}/{action}/{id}",
-            new { controller = "Home", action = "Index", id = UrlParameter.Optional },
-            new[] { "WebApplication.Controllers" }
-        );
-    }
-
-    public override string AreaName
-    {
-        get { return "Domain1"; }
-    }
-}
-</code></pre>
-
-<p>The name of the folder in my project corresponds to the AreaName as above. I have approximately six areas in the application that relate to different views. Now is where the hacky magic happens. I build the routing for the application myself. In my global.asax.cs, I have the following declaration:</p>
-
-<pre><code>protected void Application_Start()
-{
-    AreaRegistration.RegisterAllAreas();
-
-    //this is done using my IoC container
-    var routingEngine = new RoutingEngineFactory();
-    routingEngine.RoutingRegistration(RouteTable.Routes);
-}
-</code></pre>
-
-<p>This is the creation of my RoutingEngine. This class is responsible for taking each area in the system in turn and then creating the routes for my application based on these. I am sure you are asking why I am doing that? The answer is simply that I can use a combination of MapRoute and IRouteConstraints to build a sufficient route for the URLs I need to map. The code looks as follows:</p>
-
-<pre><code>public void RoutingRegistration(RouteCollection routes)
-{
-    var areaNames = GetAllAreasRegistered(routes);
-    routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-    routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
-
-    foreach (var area in areaNames.Select(Area.From))
-    {
-        RegisterDefaultRoute(area.Name, routes);
-    }
-}
-
-private void RegisterDefaultRoute(string areaName, RouteCollection routes)
-{
-    var defaultRoute = routes.MapRoute(
-            BuildRouteSegment(areaName, "Default"),
-            "{controller}/{action}/{id}",
-            new { controller = "Home", action = "Index", id = UrlParameter.Optional },
-            BuildUrlConstraint(areaName),
-            new[] { DefaultControllerNameSpace }
-            );
-    defaultRoute.SetAreaDataTokens(areaName);
-}
-</code></pre>
-
-<p>The code works in the following way:</p>
-
-<p>Get a list of all the areas.
-Add the Ignore routes as these are more specific and need to be at the top of the list.
-To this list of areas, add a new area of name string.Empty. This will allow us to register the routes for the non area parts of the site. This is really hacky as denoted by the code above.
-Foreach area in the list, register a route. This route has the same URL for all routes.
-But how do we distinguish which of the routes match to a specific domain?</p>
-
-<p>routes.MapRoute in MVC has a number of overloads. The overload we will be using has the following signature:</p>
-
-<p>public static Route MapRoute(this RouteCollection routes, string name, string url, object defaults, object constraints, string[] namespaces)
-Notice that is has a parameter for constraints. All I need to do is to build the correct constraint and I will be able to give my system a way to match a specific domain. There is another overload that has no parameter for constraints and that passes null down the stack &ndash; so I can pass a null constraint for the non areas based part of the site. There is only a need to pass a constraint to the route if there is an area specified. The code to create the correct constraint looks as following:</p>
-
-<pre><code>private static object BuildUrlConstraint(string areaName)
-{
-    object constraint = null;
-    if (!string.IsNullOrWhiteSpace(areaName))
-    {
-        var constraintType = new DomainConstraintFactory(areaName).GetConstraint();
-        constraint = new {controller = constraintType};
-    }
-    return constraint;
-}
-</code></pre>
-
-<p>The domain constraint factory does all the work for me here. It can be as simple or as complex as you need it to be. Here is a snippet of code to show you:</p>
-
-<pre><code>public class DomainConstraintFactory
-{
-    private readonly string _areaName;
-    public DomainConstraintFactory(string areaName)
-    {
-        _areaName = areaName;
-    }
-
-    public IRouteConstraint GetConstraint()
-    {
-        switch (_areaName.ToLower())
-        {
-            case "domain1":
-                return new Domain1Constraint();
-            case "domain2":
-                return new Domain2Constraint();
-        }
-        return null;
-    }
-}
-</code></pre>
-
-<p>The correct constraint will now be able to be passed to the route. The constraints are very simple:</p>
-
-<pre><code>public class Domain1Constraint : IRouteConstraint
-{
-    public bool Match(HttpContextBase httpContext, Route route, string parameterName, RouteValueDictionary values, RouteDirection routeDirection)
-    {
-        if (httpContext != null &amp;&amp; httpContext.Request != null &amp;&amp; httpContext.Request.Url != null)
-        {
-            if (httpContext.Request.Url.Host == "www.mydomain.com")
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-}
-</code></pre>
-
-<p>If we register Domain1 and Domain2 areas with the system, MVC will take each route in turn and test the constraint. It will return the Area to show based on the first match on the system.</p>
-
-<p>I can now pass in www.mydomain1.com and show the specific styling of the views in the Domain1 areas folder. By passing www.mydomain2.com, I can show a completely different set of views and let the user believe that they are on a completely different version of the site.</p>
-
-<p>The code needs to be cleaned up a lot. I will be doing this over the coming weeks. I wouldn’t quite class this as the best practice way of doing this, but it certainly shows that there is no need to have different versions of a website deployed just to show a different version of an application on a different URL. The biggest usecase here for me is deploying the same application to different countries without the need for separate deployments.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/09/23/quick-look-at-rethinkdb/">Quick look at RethinkDB</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-23T16:16:00+01:00" pubdate data-updated="true">Sep 23<span>rd</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Someone in the office mentioned <a href="http://www.rethinkdb.com">RethinkDb</a> and I was impressed by the rhetoric on the site, so I decided to spend a couple of hours spiking one of our existing nodejs apps with RethinkDb. The app currently uses MongoDb so inevitably I&rsquo;m comparing the two.</p>
-
-<h1>Things I liked:</h1>
-
-<p><strong>Nodejs Driver</strong></p>
-
-<p>The api on the nodejs driver is pretty nice, it makes a concerted effort to reduce &ldquo;pyramid code&rdquo; by allowing you to build your query by method-chaining and then call a <code>.run()</code> extension to execute the query.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>
-</span><span class='line'>r.db('Comics')
-</span><span class='line'> .table('Superheroes')
-</span><span class='line'> .getAll('Marvel', {index: 'universe'})
-</span><span class='line'> .filter({ hasSidekick: true })
-</span><span class='line'> .run(connection, function(err, cursor){
-</span><span class='line'>    cursor.toArray(function(err, items){
-</span><span class='line'>        callback(items);
-</span><span class='line'>    });
-</span><span class='line'> });
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong>Interface</strong>
-The management interface is very good, incredibly friendly, and has guided access to things like sharding and replication settings (as well as the usual array of other things to tinker with).</p>
-
-<p><strong>Sharding, Replication and Clustering</strong></p>
-
-<p>It&rsquo;s all there, up front in the web UI, written in plain English and with friendly guides to help. The health and performance monitoring is available up-front in clear and concise graphics.</p>
-
-<p><strong>Writes are non-locking operations</strong></p>
-
-<p>A major bugbear for us with mongoDb is that writes require a database-level lock. RethinkDb allows block-level locks for write operations, and furthermore, reads can still proceed while write locks are in effect. <a href="http://en.wikipedia.org/wiki/Multiversion_concurrency_control">MVCC ftw!</a></p>
-
-<h1>Things I didn&rsquo;t like:</h1>
-
-<p><strong>Cannot query on unindexed fields</strong></p>
-
-<p>Meaning ad-hoc queries can be a pain-in-the-arse, especially if you have a large data set.</p>
-
-<p><strong>Performance</strong></p>
-
-<p>RethinkDb readily admit that their current release (v1.9.0) has taken a performance hit after implementing their clustering layer. They are hopeful that they can bring the performance back in the next few versions. My very simple, somewhat unscientific testing found it to be about 5 times slower than mongo, for a simple document read (20ms vs 120ms).</p>
-
-<p><strong>Joins</strong></p>
-
-<p>Don&rsquo;t get me wrong, it&rsquo;s a nice feature, it just makes me feel dirty to do joins on a document database.</p>
-
-<h1>Conclusion</h1>
-
-<p>RethinkDb is a good looking database. It&rsquo;s feature-full and dead simple to use. Would I use it in production? Not yet. The performance issues are still a sticking point for me, but I have no doubt that once these are fixed RethinkDb will be a big contender.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/09/11/counting-in-elastic-search/">Counting in Elastic Search</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-11T15:48:00+01:00" pubdate data-updated="true">Sep 11<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><blockquote><p>Counting is the religion of this generation it is its hope and its salvation.
-Gertrude Stein</p></blockquote>
-
-<p>In our NeverEnding quest to provide better experience to the users we utilise user behaviour logs to influence future results. One particular case is restaurant popularity, which is indicated by many factors, for example how often it is searched and viewed.</p>
-
-<p>In this blog post we will look into multiple ways of counting documents in Elastic Search which is crucial for this kind of activity. All examples here are provided using Elastic Search HTTP interface and code examples implemented with <a href="https://github.com/Yegoroff/PlainElastic.Net">PlainElastic.NET</a> are <a href="https://gist.github.com/gondar/6320578">available here</a></p>
-
-<p>Before we make a deep dive into Elastic Search Counting options let&rsquo;s define our expectations:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>So that I can order restaurants by those that are most searched
-</span><span class='line'>As a potential diner
-</span><span class='line'>I want the most searched statistics from the logs to be part of the search database</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Okay, that&rsquo;s not exactly how our story was defined but as we don&rsquo;t want to discuss the whole search infrastructure here, let&rsquo;s assume this is sufficient.</p>
-
-<p>Because we are eager engineers, we will quickly build some mock data against which to test our assumptions. Our restaurant name search logs look something like this:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>{
-</span><span class='line'>  "RestaurantId" : 2,
-</span><span class='line'>  "RestaurantName" : "Restaurant Brian",
-</span><span class='line'>  "DateTime" : "2013-08-16T15:13:47.4833748+01:00"
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So we will populate our mock database with appropriate commands and check that all is in place:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>curl http://localhost:9200/store/item/ -XPOST -d '{"RestaurantId":2,"RestaurantName":"Restaurant Brian","DateTime":"2013-08-16T15:13:47.4833748+01:00"}'
-</span><span class='line'>curl http://localhost:9200/store/item/ -XPOST -d '{"RestaurantId":1,"RestaurantName":"Restaurant Cecil","DateTime":"2013-08-16T15:13:47.4833748+01:00"}'
-</span><span class='line'>curl http://localhost:9200/store/item/ -XPOST -d '{"RestaurantId":1,"RestaurantName":"Restaurant Cecil","DateTime":"2013-08-16T15:13:47.4833748+01:00"}'
-</span><span class='line'>curl http://localhost:9200/store/item/_search?q=*\&pretty</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Our expected output is a count of documents for each restaurant. For example:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>{
-</span><span class='line'>  "Restaurant Brian" : 1
-</span><span class='line'>  "Restaurant Cecil" : 2
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>There are three ways this can be achieved in Elastic Search; using count API (which seems like the most obvious way), a search with type set to count, or using facets to generate counts of all objects grouped by given property. Let&rsquo;s compare them:</p>
-
-<h3>Count API</h3>
-
-<p>(<a href="http://www.elasticsearch.org/guide/reference/api/count/">See documentation here</a>)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>curl -XPOST http://localhost:9200/store/item/_count -d '{
-</span><span class='line'>  "field": {
-</span><span class='line'>      "RestaurantName": {
-</span><span class='line'>          "query": "Restaurant Cecil",
-</span><span class='line'>          "default_operator": "AND"
-</span><span class='line'>      }
-</span><span class='line'>  }
-</span><span class='line'>}'
-</span><span class='line'>{
-</span><span class='line'>  "count":2,
-</span><span class='line'>  "_shards":{"total":5,"successful":5,"failed":0}
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Count is nice little feature which solves our problem. However, if we need count for multiple restaurants we need to execute similar queries multiple times, which may hugely influence both performance of our query and usage of our ElasticSeach cluster.</p>
-
-<h3>Search</h3>
-
-<p>(<a href="http://www.elasticsearch.org/guide/reference/api/search/search-type/">See documentation here</a>)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>curl -XPOST http://localhost:9200/store/item/_search?search_type=count -d ' {
-</span><span class='line'>  "query": {
-</span><span class='line'>      "field": {
-</span><span class='line'>          "RestaurantName": {
-</span><span class='line'>              "query": "Restaurant Cecil",
-</span><span class='line'>              "default_operator": "AND"
-</span><span class='line'>          }
-</span><span class='line'>      }
-</span><span class='line'>  }
-</span><span class='line'>}'
-</span><span class='line'>{
-</span><span class='line'>  "took":5,"timed_out":false,"_shards":{"total":5,"successful":5,"failed":0},
-</span><span class='line'>  "hits": {
-</span><span class='line'>      "total": 2,
-</span><span class='line'>      "max_score": 0.0,
-</span><span class='line'>      "hits":[]
-</span><span class='line'>  }
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Using search type set to count is the same as executing a search request with size set to zero, but it&rsquo;s internally optimised for performance. The nice thing about search is that we can use multi_search interface to execute many count queries at once.</p>
-
-<p>On the other hand, the query still will be executed multiple times, so it is only feasible if we want to get popularity for a small subset of all the restaurants we have.</p>
-
-<p>Comparing two previous requests highlights that the query language is slightly different. The DSL for <em>count API</em> is basically the same as for the <em>search API</em>, but you are immediately inside the &lsquo;query&rsquo; part. That inconsistency on the ElasticSearch side is only a minor inconvenience.</p>
-
-<h3>Facets</h3>
-
-<p>(<a href="http://www.elasticsearch.org/guide/reference/api/search/facets/">See documentation here</a>)</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1041,63 +183,90 @@ Gertrude Stein</p></blockquote>
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
 <span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>curl -XPOST http://localhost:9200/store/item/_search?search_type=count -d '
-</span><span class='line'>{
-</span><span class='line'>  "query": {
-</span><span class='line'>      "match_all": {
-</span><span class='line'>           
-</span><span class='line'>      }
-</span><span class='line'>  },
-</span><span class='line'>  "facets": {
-</span><span class='line'>      "ItemsPerCategoryCount": {
-</span><span class='line'>          "terms": {
-</span><span class='line'>              "field": "RestaurantId",
-</span><span class='line'>              "size": 100
-</span><span class='line'>          }
-</span><span class='line'>      }
-</span><span class='line'>  }
-</span><span class='line'>}'
-</span><span class='line'>{
-</span><span class='line'>  "took":1,"timed_out":false,"_shards":{"total":5,"successful":5,"failed":0},"hits":{"total":132,"max_score":0.0,"hits":[]},
-</span><span class='line'>  "facets": {
-</span><span class='line'>      "ItemsPerCategoryCount": {
-</span><span class='line'>          "_type": "terms",
-</span><span class='line'>          "missing":0,
-</span><span class='line'>          "total":3,
-</span><span class='line'>          "other":0,
-</span><span class='line'>          "terms": [
-</span><span class='line'>              {"term": 2, "count": 1},
-</span><span class='line'>              {"term": 1, "count":2}
-</span><span class='line'>          ]
-</span><span class='line'>      }
-</span><span class='line'>  }
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="na">[TestFixture]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">my_acceptance_tests</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="na">    [TestFixtureSetUp]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">void</span> <span class="nf">do_stuff</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">_result</span> <span class="p">=</span> <span class="n">InvokeTheApplicationsWithSomeGivenParams</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="na">    [Test]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">void</span> <span class="nf">it_is_cool</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">Assert</span><span class="p">.</span><span class="n">That</span><span class="p">(</span><span class="n">_result</span><span class="p">.</span><span class="n">Coolness</span><span class="p">,</span> <span class="n">Is</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="m">1337</span><span class="p">));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="na">    [Test]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">void</span> <span class="nf">it_has_2_bananas</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">Assert</span><span class="p">.</span><span class="n">That</span><span class="p">(</span><span class="n">_result</span><span class="p">.</span><span class="n">Bananas</span><span class="p">,</span> <span class="n">Is</span><span class="p">.</span><span class="n">EqualTo</span><span class="p">(</span><span class="m">2</span><span class="p">));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">.</span>
+</span><span class='line'>    <span class="p">.</span>
+</span><span class='line'>    <span class="p">.</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Facets is a means to obtain grouping by a given field together with count in a group. It is designed to ease creation of filters which are often naturally part of search results interface.</p>
+<p>We eventually refined this to use constructors to set up the initial state, and did some other not-necessarily-normal things to coax our acceptance tests into a reasonably elegant suite. More on this in an upcoming post on sandbox data.</p>
 
-<p>This is nice feature which grabs for us all counts grouped by given field. That&rsquo;s more then we need if we only care for a count of single type, but it&rsquo;s invaluable if you want to have counts for all terms in a field. Also note that we are using search type count again, but facets work equally well for all types of searches including those which actually return results.</p>
+<h2>Granularity</h2>
 
-<p>In the example above we used &lsquo;RestaurantId&rsquo; field instead of restaurant name, as this field is not analysed. If we used restaurant name it would give us facets for each term e.g. [{&ldquo;term&rdquo;: &ldquo;Restaurant&rdquo;, &ldquo;count&rdquo;: 3}, {&ldquo;term&rdquo;:&ldquo;Cecil&rdquo;, &ldquo;count&rdquo;:2},{&ldquo;term&rdquo;:&ldquo;Brian&rdquo;, &ldquo;count&rdquo;:1}], which is not what we exactly want.</p>
+<p>Granularity, in this case, refers to the level of detail revealed by a failing test. When a <em>unit</em> test fails, if it&rsquo;s written correctly, you should immediately know which method in which class went wrong. Often, the call stack in the exception message will tell you exactly which line of code was at fault. You can immediately jump to the offending code.</p>
 
-<h3>Conclusion</h3>
+<p>With acceptance tests, when something goes wrong, it could be anywhere in your program. Any of the tens, hundreds, thousands, or even millions of lines of code in your program could be at fault. This is clearly less than ideal, however there are ways to mitigate the pain:</p>
 
-<p>It&rsquo;s hard to discuss which one is better. Count API is slightly faster then Search of type count. On the other hand search is more flexible, and its queries are consistent with normal search queries. Facets is a different beast altogether as it always grabs all the results. Still, it&rsquo;s fun that ElasticSearch is elastic in this aspect giving us variety of approaches.</p>
+<h3>Minimise Code, Maximise Seams</h3>
 
-<p>We are really curious about your experiences in ElasticSearch. If you have any questions, proposals or comments feel free to <a href="mailto:mbazydlo@opentable.com">email me</a>.</p>
+<p>Clearly, the fewer lines of code in your app, the easier it will be to hunt down obscure test failures. However some problems are too big to be solved with few lines of code. What then to do? One answer, which we are beginning to explore in a new project, may be to write many small programs, each of which solves only a small part of the problem domain. This approach is known as <a href="http://martinfowler.com/articles/microservices.html">microservices</a>, and certainly has its own complexities in threading together many small pieces at OS or network level. However, a microservices architecture has additional potential benefits tangential to its affinity with acceptance-only testing. I&rsquo;m planning a blog post on this subject soon, once we have more data.</p>
 
-<h3>Acknowledgement</h3>
+<h3>Debugfu</h3>
 
-<p>This blog post benefited thanks to invaluable comments from my team (Andrew Metcalfe, Michael Wallett and Tom Harvey), <a href="https://github.com/Yegoroff/PlainElastic.Net">PlainElastic.Net</a> author (Yegoroff) and <a href="https://github.com/pbazydlo">my brother</a>.</p>
+<p>This isn&rsquo;t really a way to make your tests more granular, but it can help mitigate the problems of low granularity in acceptance tests. If the test won&rsquo;t tell you which line of code went wrong, attach a debugger to find out! If you&rsquo;re using Visual Studio, you are blessed with a best-of-breed debugger. Use it, trace through the execution and try to spot what went wrong. Use bookmarks and breakpoints to index your code. Does one area of code cause problems time and time again? There is probably something wrong with it, see if it can be rewritten more clearly. Users of  IntelliJ IDEA, Eclipse, or a myriad other IDEs, will also have access to usable debuggers.</p>
+
+<h3>Sandbox Data (Again)</h3>
+
+<p>Sandbox data allows you to run your tests against very specific data conditions. Often your code will have a different execution path depending on data, and this is really valuable knowledge when trying to nail down the cause of a test failure. Sandbox data, that can be selected by your tests, will improve the percieved granularity of such, by limiting the potential execution paths.</p>
+
+<h2>Benefits</h2>
+
+<p>I mentioned a few of the benefits of moving to acceptance-only testing in my last post. However, a few more have come to light since then which are worth mentioning.</p>
+
+<h3>Acceptance Tests Are Language-Agnostic</h3>
+
+<p>After writing v1 of our API, and acceptance-testing the living daylights out of it, we realised that we were still probably maintaining too much code, this time in the application itself. We decided to port the whole thing to JavaScript using Node to see what it would be like.</p>
+
+<p>It worked, and <em>we didn&rsquo;t have to touch a single test,</em> even though those tests were written in C#, and the application was in JavaScript.</p>
+
+<p>Just imagine the overhead of porting hundreds of unit tests over to a different language, along with the application. If that had been a requirement of our experiment, it would not have happened, and we would not have learned what we did. <em>(In the end we did keep using the C# implementation in production, but the speedy rewrite was still a valuable learning aid.)</em></p>
+
+<h3>Acceptance Tests Behave Exactly Like Your Users</h3>
+
+<p>When an acceptance-level test passes, you can be confident that a whole user journey using your application is working correctly. That&rsquo;s a huge win. When one fails, you can be pretty confident that something important to your users is not working properly and needs attention. Also, very valuable knowledge. This contrasts somewhat with unit-level tests that might tell you something internal is awry with your application, but its real impact to consumers will still often be unknown. Should you fix it? If there are multiple failures, which are the most important? Unit tests will rarely answer these questions for you.</p>
+
+<p>Of course, you will fix it, or else be unable to confidently release your software–but surely, at times, you will be fixing something that does not matter, or is no longer relevant to your consumers. Unit tests in this way can encourage code rot, making it very difficult to unpick dependencies that are no longer needed. With acceptance tests, you only need to unpick the dependencies in your application, not also in the tests.</p>
+
+<h2>Synergy</h2>
+
+<p>Much of this is new to me, and certainly isn&rsquo;t without contention. However, the problems with acceptance-only testing, and specifically the solutions to those problems, indicate certain synergistic practices that may improve its viability:</p>
+
+<h3>Thin Layers</h3>
+
+<p>The project we first tried moving to acceptance-only testing on was a very thin layer–a facade over a collection of internal services. It had minimal business logic, and thus few potential execution paths. This certainly allowed us to keep the number of acceptance tests lower than might be expected for a large, complex application, that might branch off into numerous modes of operation. Of course one should probably try to minimise the <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity">cyclomatic complexity</a> of a code-base anyway, for one&rsquo;s own sanity.</p>
+
+<h3>Statelessness</h3>
+
+<p>If your system maintains a lot of state, acceptance testing can be much harder. This is because you will likely have to set-up much of that state for each test, increasing both developer effort and execution time. Both of which are bad. However, my new favourite thing, immutable sandbox data, may well be your friend in this case.</p>
+
+<h3>Microservices</h3>
+
+<p>We have only just begun experimenting with microservices ourselves, however I think it stands to reason that if each application is small overall, then the number of test cases for each will be small as well. This means the whole suite will run faster, and give you more granular feedback. I differentiate microservices from &lsquo;thin layers&rsquo; in that a microservice may well do data access, input parsing, validation, HTTP handling, and a bit of business logic–but over a very narrow domain–i.e. a thin vertical. A thin layer, on the other hand will perform only one kind of function–e.g. HTTP handling–but across multiple facets of the system. If thin layers are the lines of latitude, then microservices can be sections of the lines of longitude.</p>
+
+<h2>Too Short; Read Also</h2>
+
+<p>I hope this article has been a little more useful than the previous one. I have tried to explain more specifically what we actually did, from end-to-end, and how we overcame problems along the way. However, I&rsquo;ve really only scratched the surface. I will hopefully get the chance flesh out some of the ideas here in the coming months. In the mean time, there are plenty of <a href="http://www.shino.de/2012/07/02/atdd-by-example/">books</a> and <a href="http://jonkruger.com/blog/2012/02/20/when-acceptance-tests-are-better-than-unit-tests/">blog posts</a> on the subject of acceptance testing. In addition, Martin Fowler has writen <a href="http://martinfowler.com/articles/microservices.html">a great primer on microservices</a> that&rsquo;s really got me thinking about their utility alongside acceptance-only testing and sandbox data.</p>
+
+<p>Thanks for reading :)</p>
 </div>
   
   
@@ -1110,7 +279,7 @@ Gertrude Stein</p></blockquote>
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">Grunt + Vagrant = Acceptance Test Heaven</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/05/19/continuous-delivery-automating-deployment-visibility/">Continuous Delivery: Automating Deployment Visibility</a></h1>
     
     
       <p class="meta">
@@ -1126,166 +295,916 @@ Gertrude Stein</p></blockquote>
   
 
 
-<time datetime="2013-08-16T15:32:00+01:00" pubdate data-updated="true">Aug 16<span>th</span>, 2013</time>
+<time datetime="2014-05-19T17:17:40+01:00" pubdate data-updated="true">May 19<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>My continued love affair with Grunt reached a new high the other day, when I combined <a href="http://www.vagrantup.com">Vagrant</a> with my <a href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">Grunt deployment tasks</a> and test runners.</p>
+  <div class="entry-content"><p>In our continued effort to drive towards a service oriented architecture each of our teams are continuously improving their deployment processes. Recently our team has focussed on automating as much as possible, putting as much into chat as we can and improving our logging/metrics.</p>
 
-<p>I&rsquo;m not going to bang on about how great Vagrant is, because better people than me have already soliloquised at length on that subject. Let&rsquo;s just take it as writ that <strong>Vagrant is awesome</strong>.</p>
+<p>The image below shows at a high level what our teams current deployment pipeline looks like and this post will attempt to summarise some recent changes that have allowed us to automate visibility.</p>
 
-<p>The objective is simple, we want to have a virtualised environment to run our acceptance tests against, that we can create and provision on demand, to ensure that our acceptance tests only deal with functional-correctness, not data- or environment-correctness.</p>
+<p><img src="/images/posts/release-pipeline.png" width="900" height="350" title="image" alt="images"></p>
 
-<p>I created a set of Grunt tasks which were able to do the following:</p>
+<h2>Kicking off a deployment</h2>
+
+<p>I wrote previously that we started <a href="http://tech.opentable.co.uk/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">using chatops</a> to increase visibility operationally. Hubot is central to this and we wrote a small script to kick off deployments within <a href="https://www.hipchat.com/">Hipchat</a></p>
+
+<p><img src="/images/posts/hubot-deploy-restaurant.png" width="350" height="350" title="image" alt="images"></p>
+
+<p>We have two TeamCity instances. The first is used as a build and deployment system to our pre-production servers. The second is used as a deployment system to our production servers. Artifacts from our non-production instance are stored in <a href="http://www.jfrog.com/home/v_artifactory_opensource_overview">Artifactory</a> and our production deployment makes an API call to non-production TeamCity to ask for the last successfully pinned build. Pinning a build only occurs when we&rsquo;re happy that the build is ready to be shipped (passing unit and acceptance tests). The above Hubot command will pin the non-production build, given that the build succeeded, and add a build to the queue in production.</p>
+
+<p>To configure Hubot to do this we wrote a command to setup aliases providing the build id of the build to pin (non-production) and the build id of the build to kick off (production).</p>
+
+<p><img src="/images/posts/hubot-deploy-alias.png" width="350" height="350" title="image" alt="images"></p>
+
+<h2>Deployment visibility</h2>
+
+<p>Our production deployments must be auditable and it&rsquo;s important that we know what went out with each release and keep a log of this for our Risk Management team. We do this by creating a ticket in <a href="https://www.atlassian.com/software/jira">JIRA</a>, internally known as a CCB, and this gives us a central store of all deployments by all teams.</p>
+
+<p>In the past these tickets were manually created for each release. We soon realised that this was something we could automate. To do so we created a new &ldquo;deployment-info&rdquo; endpoint for our service. This simply contains the SHA of the last commit released along with a time stamp. The first step of our production deploy is to query this endpoint and then using the Github API to get all the commits since that last SHA. These commits are then logged to JIRA to create a CCB ticket using the JIRA API. Each of these steps are automated from TeamCity using grunt tasks. You can find information of the grunt tasks on github as follows:</p>
 
 <ul>
-<li>Spin up an provision a Vagrant instance</li>
-<li>Deploy the project code</li>
-<li>Start the server</li>
-<li>Run the acceptance tests</li>
-<li>Tear it all down</li>
+<li><a href="https://github.com/opentable/grunt-ccb">https://github.com/opentable/grunt-ccb</a></li>
+<li><a href="https://github.com/opentable/grunt-github-manifest">https://github.com/opentable/grunt-github-manifest</a></li>
+<li><a href="https://github.com/opentable/grunt-package-github">https://github.com/opentable/grunt-package-github</a></li>
 </ul>
 
 
-<p>All from a single command: <code>grunt acceptance</code></p>
+<h2>Build Notifications to Kibana</h2>
 
-<p>The price of this magic? About ten lines of Bash script, a six line Vagrantfile and some Grunt glue.</p>
+<p>Once we have a CCB we fire a start and end event from TeamCity containing the build number to Redis which is then piped into <a href="http://logstash.net/">Logstash</a>. An event is sent before and after deploying the code to all nodes. This is hugely beneficial because it allows us to plot releases against our graphs in <a href="http://www.elasticsearch.org/overview/kibana/">Kibana</a>. Kibana recently added a new feature called Markers. Essentially these are tags that display at the bottom of a graph.</p>
 
-<h2>Diving in</h2>
+<p><img src="/images/posts/kibana-tags.png" width="350" height="350" title="image" alt="images"></p>
 
-<p>Assuming you&rsquo;ve got Vagrant installed, you can create a Vagrantfile in the root of your project, which looks like this:</p>
+<p>You can find information on this Markers module on github &ndash; <a href="https://github.com/opentable/grunt-deployment-logger">https://github.com/opentable/grunt-deployment-logger</a></p>
 
-<pre><code>Vagrant.configure("2") do |config|
-    config.vm.box = "Ubuntu precise 64 VMWare"
-    config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
-    config.vm.network :forwarded_port, guest: 3000, host: 3000
-    config.vm.provision :shell, :path =&gt; "setup/bootstrap.sh"
+<p>This has already proved incredibly useful for the team and has allowed us to visually correlate issues or changes in key metrics (response times/requests per second) to releases. The following image shows how these look over several graphs.</p>
+
+<p><img src="/images/posts/kibana-dashboard.png" width="900" height="900" title="image" alt="images"></p>
+
+<h2>Hipchat build complete notification</h2>
+
+<p><img src="/images/posts/hubot-notification.png" width="350" height="200" title="image" alt="images"></p>
+
+<p>Once our deployment pipeline has completed we send a notification to our teams room in Hipchat (as a final step in TeamCity) to inform the team that the release has completed. It&rsquo;s great to see a deployment start and end in chat. Having a central log of key operations in our team means that we don&rsquo;t have to go and find information when it&rsquo;s baked into chat.</p>
+
+<h2>Conclusion</h2>
+
+<p>We&rsquo;ve come along way with improving our pipeline and automating visibility. Our team is made up of 4 members; 3 in the office and 1 remote. The ultimate goal is to improve speed of deployment and visibility of events not just within the team but for everyone who is interested. Equally we want to continue to open source by as much as possible, allowing us to share our process with teams inside and outside of our organization. We can release code anywhere in the world and the process is completely centralised in chat. We want to continue to move fast and fix faster.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/15/managing-windows-features-with-puppet/">Managing Windows Features with Puppet</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-15T16:12:38+01:00" pubdate data-updated="true">May 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Back in June 2013, I wrote about <a href="http://tech.opentable.co.uk/blog/2013/06/14/windows-feature-management-with-powershell/">Windows Feature Management with PowerShell</a>. We have since released a Puppet module that will do this for us. We originally wrote PowerShell:</p>
+
+<pre><code>Import-Module ServerManager
+Add-WindowsFeature Web-Asp-Net
+</code></pre>
+
+<p>The Puppet module now wraps this code as follows:</p>
+
+<pre><code>windowsfeature { 'Web-Asp-Net': }
+</code></pre>
+
+<p>The declaration windowsfeature is a specific Puppet type called a <a href="http://docs.puppetlabs.com/learning/definedtypes.html">define</a>. In developer terms, this is the equivalent of a helper method that can be reused. We can also make sure that Windows Features are <em>not</em> installed on the server as follows:</p>
+
+<pre><code>windowsfeature { 'Telnet-Server': 
+  ensure =&gt; absent 
+}
+</code></pre>
+
+<p>In the backing code for the module, we do a check before we install / uninstall any windows features. This means that we will only make the changes we really need to. This ensures idempotency of the script. By using this class, we can build up a list of what features a server should have enabled / installed on it. As example manifest would look as follows:</p>
+
+<pre><code>class my_windows_features {
+  windowsfeature { 'Web-Asp-Net': }
+  windowsfeature { 'Web-Net-Ext': }
+  windowsfeature { 'Web-ISAPI-Ext': }
+  windowsfeature { 'Web-ISAPI-Filter': }
+  windowsfeature { 'Web-Mgmt-Tools': }
+  windowsfeature { 'Web-Mgmt-Console': }
+  windowsfeature { 'Telnet-Server': ensure =&gt; absent }
+}
+</code></pre>
+
+<p>The server will have it&rsquo;s shipping list of Windows Features checked every 30 minutes by Puppet. We are sure that any changes encountered during that time will be applied as expected.  You can find more about our WindowsFeature module on the <a href="http://github.com/opentable/puppet-windowsfeature">github repo</a>. If you want to use the module, then you can install it using the Puppet Module tool via the <a href="http://forge.puppetlabs.com/opentable/windowsfeature">Puppet Forge</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/05/13/managing-windows-web-applications-with-puppet/">Managing Windows Web Applications with Puppet</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-13T15:25:16+01:00" pubdate data-updated="true">May 13<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>As part of our move towards a configuration management tool, we really wanted to start automating as much of our infrastructure as possible. This included our application configuration stack. IIS management is pretty easy with PowerShell. It would look something like this</p>
+
+<pre><code>Import-Module WebAdministration
+New-WebSite -Name "DemoSite" -Port 80 -IP * -PhysicalPath "c:\inetpub\wwwroot" -ApplicationPool "MyAppPool"
+</code></pre>
+
+<p>This would of course set up a website called &lsquo;DemoSite&rsquo; running on port 80 on the local machine. The cmdlets that come with PowerShell make this pretty easy. This is great if it is a one-off job to set up a site. We run our websites from a number of webservers, therefore, it would be silly to have to RDP into each webserver and run a script on it. This is why tools like Puppet, Chef, Ansible etc. exist. We needed a configuration management tool to do this work for us. It has a number of benefits:</p>
+
+<ul>
+<li>Orchestration</li>
+<li>Idempotency</li>
+<li>Makes sure that each server is configured in &lsquo;exactly&rsquo; the same way as no human intervention is needed</li>
+<li>Developers can help the operations team by creating the scripts needed. This is great for collaboration between teams</li>
+</ul>
+
+
+<p>On investigating how we would do this with Puppet, we noticed that there were not many other people managing their site in this way. Therefore, we would have to turn our PowerShell scripts into Puppet modules to manage our system.</p>
+
+<p>We have since created a Puppet module to manage IIS. To manage IIS with Puppet, we can now write the following code:</p>
+
+<pre><code>iis::manage_site { 'DemoSite:
+   site_path     =&gt; 'c:\inetpub\wwwroot',
+   port          =&gt; '80',
+   ip_address    =&gt; '*',
+   app_pool      =&gt; 'MyAppPool'
+}
+</code></pre>
+
+<p>This would produce <strong>exactly</strong> the same results as the code from above. But it has 1 difference. There are checks in the code behind this module that will mean the code will only execute when it is needed, i.e. when the site_path isn&rsquo;t correct or the app_pool isn&rsquo;t correct. This is idempotency. The script can be run again and again and again&hellip;.</p>
+
+<p>To create an application binding, we used to do this in PowerShell:</p>
+
+<pre><code>Import-Module WebAdministration
+New-WebBinding -Name 'DemoSite' -Port '8080' -IPAddress '*'
+</code></pre>
+
+<p>This would set up an extra binding on port 8080 for the site, DemoSite. We replaced this code with our puppet equivalent:</p>
+
+<pre><code>iis::manage_binding { 'DemoSite-8080':
+  site_name   =&gt; 'DemoSite',
+  protocol    =&gt; 'http',
+  port        =&gt; '8080',
+  ip_address  =&gt; '*',
+}
+</code></pre>
+
+<p>To create a virtual application, we would write the PowerShell:</p>
+
+<pre><code>Import-Module WebAdministration
+New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub\wwwroot\MyVirtualApp' -ApplicationPool 'MyAppPool'
+</code></pre>
+
+<p>This will create a VirtualApp folder on the DemoSite, use the same application pool and then set the path of the folder. I can do the same thing in Puppet as follows:</p>
+
+<pre><code>iis::manage_virtual_application {'VirtualApp':
+  site_name   =&gt; 'DemoSite',
+  site_path   =&gt; 'C:\inetpub\wwwroot\MyVirtualApplication',
+  app_pool    =&gt; 'MyAppPool'
+ }  
+</code></pre>
+
+<p>We can therefore, chain a manifest together that does all this for us in 1 go. It would look as follows:</p>
+
+<pre><code>class mywebsite {
+  iis::manage_app_pool {'MyAppPool':
+    enable_32_bit           =&gt; true,
+    managed_runtime_version =&gt; 'v4.0',
+  } -&gt;
+
+  iis::manage_site {'DemoSite':
+    site_path   =&gt; 'C:\inetpub\wwwroot',
+    port        =&gt; '80',
+    ip_address  =&gt; '*',
+    app_pool    =&gt; 'MyAppPool'
+  } -&gt;
+
+  iis::manage_virtual_application {'VirtualApp':
+    site_name  =&gt; 'DemoSite',
+    site_path  =&gt; 'C:\inetpub\wwwroot\MyVirtualApp',
+    app_pool   =&gt; 'MyAppPool'
+  } -&gt; 
+
+  iis::manage_binding {'DemoSite-8080':
+    site_name  =&gt; 'DemoSite',
+    protocol   =&gt; 'http',
+    port       =&gt; '8080',
+    ip_address =&gt; '*'
+  }
+}
+</code></pre>
+
+<p>The module does more than just these tasks and I could give more and more examples of what we wrote, but you can find more about our IIS module on the <a href="http://github.com/opentable/puppet-iis">github repo</a>. If you want to use the module, then you can install it using the Puppet Module tool via the <a href="http://forge.puppetlabs.com/opentable/iis">Puppet forge</a>.</p>
+
+<p>We love to hear feedback on things that the module should support. We like Pull Requests even more :)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/29/remote-worker-notes-tools-and-setup/">Remote Worker Notes &ndash; Tools and Setup</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-29T10:56:49+01:00" pubdate data-updated="true">Apr 29<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>For the last couple months I&rsquo;ve been working remotely with our search team at OpenTable. Let me share our remote working setup and some rationale for our choices. I will shy away from judging how it&rsquo;s all worked out and leave that for subsequent blog posts.</p>
+
+<h2>The deal</h2>
+
+<p>I started as an on-site engineer and subsequently became a remote worker and my challenge was to make remote working as similar to on-site working as possible. Thus it is natural that <strong>I work the same working hours</strong> as my colleagues in the office (despite the time difference) and I take <strong>public holidays</strong> at the same time that there are bank holidays in UK (even though in Poland they are different).</p>
+
+<p>We also decided that every two months I will <strong>visit the office for a week</strong> as well as arranging visits to coincide with other office guests (like contractors, overseas colleagues and so on). All this is to try to keep me as close to the team as possible and disrupt the normal work-flow as little as possible.</p>
+
+<h2>The workplace setup</h2>
+
+<p>Once home in Poland I had to carefully consider my options for a workplace. I tried three obvious possibilities:</p>
+
+<ul>
+<li>Dining room in my own one bedroom flat</li>
+<li>Co-working space</li>
+<li>Private room in my parents&#8217; house</li>
+</ul>
+
+
+<p>The <strong>dining room</strong> worked pretty well, for a time&hellip;  I would &lsquo;arrive&rsquo; really early in the office (just after taking a shower), and then be &lsquo;home&rsquo; straight after the laptop lid was closed. My wife kindly respected that I am focused at work and distracted me only to share lunch (or to kick me out of house to bring the lunch in).</p>
+
+<p>A couple of things made it only a short-term solution &ndash; the first being my back complaining about working on a chair that&rsquo;s nice for a dinner, but awful for working on computer. Then I realised that I really miss a second monitor and separate keyboard &ndash; I guess anybody who coded in the middle of summer on a laptop knows the pain of a hot computer under your fingers.  Finally, my child was born, and that was it &ndash; a crying child in the same room when you are trying to pair with somebody is a deal-breaker.</p>
+
+<p>In the meantime I evaluated a local <strong>co-working space</strong>. The problem was that it was quiet, <em>really quiet</em>, up to the point that I was embarrassed to pair with somebody remotely. The way we work fluctuates over time; there are weeks when I do stuff alone and in silence, there are weeks when I spend whole days on conversations or pairing. I just cannot be too quiet. For that matter I tried also a coffee shop, but it failed me for exactly the same reasons as the dining room table.</p>
+
+<p><strong>My little own office is currently the winner</strong> and the only way it could be better is if behind the closed doors there was my house, not my parents&#8217; one. But even this one is pretty good &ndash; I have access to an always full fridge and a decent coffee machine. I can bring my family with me and it is not awkward.</p>
+
+<p>Finally, I can share a lunch with whoever is at home. With a decent chair and desk I cannot complain about anything. Actually, I found that even after work if we stay for a coffee or dinner I am tempted to pop in into the office and look at our dashboards or chat room.</p>
+
+<h2>The tools setup</h2>
+
+<p>To facilitate continuous communication <em>you first need a good attitude, and then good tools</em>. With the attitude two things matter the most:</p>
+
+<ul>
+<li>A quick response</li>
+<li>Patience</li>
+</ul>
+
+
+<p>By nature all remote communication channels are asynchronous, which is hugely different to face-to-face communication. It is much easier this way for an important question to go unnoticed by you. Conversely it is easy to get annoyed that somebody is not responding, when in fact they may just be talking to the person at the desk next to them.</p>
+
+<p>Our primary tool is <strong>Google Hangout</strong>. It works quite well for a team, being nice for stand-ups, though it fails miserably as a constant communication tool. There are two reasons for that; the first is that its messages often get lost and the second is it makes our MacBook radiators spin like crazy when open for too long. <em>Unfortunately we had to rule out an online window to the office after a couple of days trying</em>.</p>
+
+<p>We also extensively use <a href="http://www.hipchat.com"><strong>HipChat</strong></a>, and that brought one of best breakthroughs in our communication patterns. It has a few features which make it great as a team collaboration tool:</p>
+
+<ol>
+<li>You get messages whether you pay attention or not</li>
+<li>You can interrupt other people by mentioning them</li>
+<li>It makes sharing links and images really easy</li>
+<li>When you type you can collaborate with multiple persons at the same time</li>
+</ol>
+
+
+<p>I also mentioned that pairing is a big part of our daily work. I have to admit that I haven&rsquo;t yet found a tool that would make the experience seamless. There is always a bit of delay on the line, or shortcuts not working, or problems of mismatch between screen resolutions that would never appear when pairing on the same machine.</p>
+
+<p>On the other hand when you have a keyboard just under your fingers it is much easier to swap sides and while discussing actually write code constructs. For this we use combination of <strong>Hangout</strong> screen share feature (for quick debug help) and <strong>RDP</strong>.</p>
+
+<p>One last tool that I like to use quite extensively is <strong>Google Drive</strong> as a shared whiteboard. It has proved to be especially useful for retrospectives or architecture discussion. The nice thing about the Drive draw tool is that it forces you to use shapes, lines and text. Those three primitives allow for an unlimited number of possible drawings. Being vector means you can easily move stuff around (nothing will fall on the floor), you never run out of space and you have an immediate and lasting backup of your board. I also found that a distributed retrospective facilitates a more equal participation of those attending.</p>
+
+<p>The best feature of the most of those tools is that they allow to <strong>easily save and store the outcomes of your conversations.</strong> Hangouts can be recorded, HipChat naturally creates history of chats and Google Drive&rsquo;s drawings become a persistent track of team discussions.</p>
+
+<h2>Get Involved</h2>
+
+<p>If you have a different setup or tools that help with having a distributed team member, or you want to share your experiences be sure to tweet us <a href="http://www.twitter.com/OpenTableTechUK">@OpenTableTechUK</a> or me personally <a href="http://www.twitter.com/mbazydlo">@mbazydlo</a>.​</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/28/effective-prioritisation/">Effective prioritisation</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-28T14:51:51+01:00" pubdate data-updated="true">Apr 28<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Prioritisation is a huge part of modern life.</p>
+
+<p>No.</p>
+
+<p>Prioritisation is an ESSENTIAL part of modern life.</p>
+
+<p>I&rsquo;m not talking solely about Agile here either. Yes we plan stories, yes we prioritise them to get them into the backlog but I&rsquo;m aiming at a higher level. Life lessons that are useful to all of us.</p>
+
+<p>How do we know what to do next? Perhaps you lean on your gut feeling to order your to-do list. Maybe it is real-time cost and budget implications that influence your priorities or does it come down to who shouts loudest?</p>
+
+<h2>Why is prioritisation important?</h2>
+
+<p>The experts would have us believe we are living through the Digital Age, also know as the Computer Age. Increasingly this has been more accurately redefined as the Information Age.</p>
+
+<p>The society we live in today truly bombardes us with information. Whether it be TV, mobile, emails, blog posts, status updates, tweets, likes and check-in&rsquo;s we are rarely unconnected to modern day life and have a vast amount of data and information at our disposal.</p>
+
+<p>This flood of information leads to a problem: we often confuse the importance of everyday tasks and activities.</p>
+
+<p>For instance how many times have we said &ldquo;I don&rsquo;t have time to read&rdquo; or &ldquo;I&rsquo;d love to be able to go to the gym more&rdquo;. Perhaps a more honest way to say this is &ldquo;reading is not a high priority for me&rdquo; or &ldquo;I prioritise other activities higher than going to the gym&rdquo;.</p>
+
+<p>The decision not to spend time reading or working-out in the gym means you are spending time on other activities you consider more important. Consciously or unconsciously, we prioritise our life. The key is to prioritise effectively.</p>
+
+<h2>The Focus Quadrant</h2>
+
+<p>I&rsquo;ve been introduced to a framework that helped me to grab this idea of effective prioritisation and certainly opened my eyes to some of the mistakes I made previously.</p>
+
+<p>Stephen Covey, a sadly deceased educator, author and businessman, designed a matrix called The Focus Quadrant that categorises activities and helps us deal with the struggle of prioritisation by clearly outlining the conflicts involved.</p>
+
+<p><img src="http://www.chowamigo.co.uk/images/focus.jpg" alt="image" /></p>
+
+<table style="font-size: 80%;margin-bottom:20px;">
+    <tr>
+        <th style="padding:3px;"></th>
+        <th style="padding:3px;"><b>Description</b></th>
+        <th style="padding:3px;"><b>Examples</b></th>
+    </tr>
+<tr style="background-color: #E5E5E5">
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">A. Important/Urgent</td>
+    <td style="padding:3px;vertical-align:top;">Tasks that are necessary usually deadline driven or time sensitive. This usually this means panic and problems.</td>
+    <td style="padding:3px;vertical-align:top;">Fixing the server crash, firefighting a site outage, entering expenses before a deadline</td>
+</tr>
+<tr>
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">B. Important/Not urgent</td>
+    <td style="padding:3px;vertical-align:top;">Activities in direct alignment to your goals. Typically these tasks involve planning ahead. Prevention rather than cure.</td>
+    <td style="padding:3px;vertical-align:top;">Relationship building, researching your next API, learning a new coding language, taking time out to exercise</td>
+</tr>
+<tr style="background-color: #E5E5E5">
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">C. Not important/Urgent</td>
+    <td style="padding:3px;vertical-align:top;">Activities that seem important but in reality are not. It&#8217;s thought these tasks will make you popular as you are responding to requests for your time.</td>
+    <td style="padding:3px;vertical-align:top;">Going to a meeting, answering the phone, replying instantly on IMs or email</td>
+</tr>
+<tr>
+    <td style="white-space:nowrap;padding:3px;vertical-align:top;">D. Not important/Not urgent</td>
+    <td style="padding:3px;vertical-align:top;">While it would seem pleasant enough to live here permentantly, in reality these activities are time wasters that should be eliminated as much as possible.</td>
+    <td style="padding:3px;vertical-align:top;">Playing video games, surfing the net, getting a tea or coffee, flicking through the magazine on your desk</td>
+</tr>
+</table>
+
+
+<h2>How does this help?</h2>
+
+<p>Covey&rsquo;s point is that if we have a long list of items and activities and we are struggling to prioritise them, spending 20 minutes writing the list down and assigning each task A, B, C or D can help clarify importance.</p>
+
+<p>For me the interesting part is that we should not be spending too much time in A. This goes against our natural reaction that A is good &ndash; probably the fault of our education system. In fact category A is considered beneficial only in the short term. We are not overly productive even if we spend a lot of time on A category tasks. We really want to shift our attention to more longer term plans.</p>
+
+<p>Category B on the other hand is considered the sweet spot. This is where we are doing our best work. It is where we will be ticking off a lot of our important long term goals. Yes we all have different goals but the majority of the goals we want to achieve fit into B &ndash; non urgent and important.</p>
+
+<p>For category C there is a great saying &lsquo;The quadrant of deception&rsquo;. These are tasks we THINK are urgent but in reality they are not. Considered to be a distraction, get used to politely saying no to any activities in the C category. We should look to regain control of our time and not be forced to respond when it suits others.</p>
+
+<p>Finally category D is the worst place to spend your time. It&rsquo;s okay to roam across each of these four quadrants but if we identify we are spending too much time in quadrant D we need to step back, reassess and pick up a task more aligned to our goals &ndash; ideally something from category B.</p>
+
+<h2>Money => mouth</h2>
+
+<p>While this is useful in theory, we of course need to be realistic. You should factor in time for impromptu interruptions &ndash; saying no to every meeting isn&rsquo;t possible and this isn&rsquo;t an excuse to push back difficult tasks. However, the next time your to-do list gets unmanageable, take time out to clarify your priorities.</p>
+
+<p>Now my current my to-do list looks like this&hellip;</p>
+
+<ol>
+<li>Investigate a blip in our API performance <strong><code>(A)</code></strong></li>
+<li>Scope out our next API <strong><code>(B)</code></strong></li>
+<li>Improve the way our current API deploys to production <strong><code>(B)</code></strong></li>
+<li>Send out a team update to interested parties <strong><code>(C)</code></strong></li>
+<li>Go and grab a cup of tea :) <strong><code>(D)</code></strong></li>
+</ol>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/16/look-ma-no-unit-tests/">Look ma, no unit tests!</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-16T17:00:00+01:00" pubdate data-updated="true">Apr 16<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><em><strong>UPDATE:</strong> I&rsquo;ve written a <a href="/blog/2014/05/19/acceptance-now">follow-up to this post</a> with a bit more detail into how we made acceptance-only testing work in practice.</em></p>
+
+<p>At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for <a href="/blog/2014/02/28/api-benchmark/">new</a> <a href="/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">tools</a> <a href="/blog/2014/04/07/upgrading-puppet-with-puppet/">and</a> <a href="/blog/2014/02/10/the-adoption-of-configuration-management/">methods</a> that allow us, the developers, to respond quickly and accurately to changing requirements and environments.</p>
+
+<p>There are a number of practices that we already make use of, helping us to be the most effective team I&rsquo;ve ever worked in:</p>
+
+<ul>
+<li>We operate in small teams who each own <em>most</em> of their own vertical.</li>
+<li>We use continuous delivery to ship code to production within minutes.</li>
+<li>We have a high degree of high-quality test coverage.</li>
+<li>We are getting better and better at monitoring All The Things.</li>
+<li><a href="/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">We use Chatops</a>, so communication is central to our work, and keeps remote workers/teams in the loop.</li>
+</ul>
+
+
+<p>All of the above are truly empowering for the dev team, and are conducive to an amazingly stress-free working environment. However, these practices only address the infrastructure, culture, and ceremony surrounding our work. What if there was something else? Something about the way we write the code itself, that could increase our velocity yet further, without compromising our integrity&hellip;</p>
+
+<blockquote><p>There are a number of practices that we already make use of, helping us to be the most effective team I&rsquo;ve ever worked in&hellip; What if there was something else?</p></blockquote>
+
+<p>Well, on a recent project, we found one such way: <em><em>we decided to delete all of the unit and integration tests</em></em>.</p>
+
+<p><em>What?! Are we quite mad?</em> You may be thinking&hellip; Well, it took me a little time to get used to this idea as well, but read on and you&rsquo;ll see that it was actually the most sane thing we could have possibly done  .</p>
+
+<h2>Survival of the testedest</h2>
+
+<p>In the beginning, the project had 100% unit test coverage, there were no external dependencies, and the world was Good.</p>
+
+<p>Soon afterwards, a tall shadow appeared in the glorious unit-tested sunset. External dependencies had arrived. Like good little developers we added integration tests. It hurt, our codebase grew, we had occasional false-failures, but we were travelling the path well trodden. We had evaded the First Menace, and surrounded ourselves with heavy armour, we were safe. Things seemed to be Good.</p>
+
+<p><em>Meanwhile&hellip;</em></p>
+
+<p>We realised that some of the things that would be important to our consumers were still not covered by our tests. Things like actual HTTP responses, serialisation, and the like. These are things that don&rsquo;t always need to be tested explicitly, but since this was a third-party-developer-facing system, we really wanted to be sure that the interface worked exactly as we wanted, HTTP headers, character encoding, date formatting, the lot.</p>
+
+<p>So, playing the role of our consumers, we engineered high-level acceptance tests, behaving byte-for-byte as we expected our customers to do.</p>
+
+<p>Now, with the triple-action protection of three layers of tests, we felt our project was the most minty-fresh piece of haute engineering we had ever laid keyboards on.</p>
+
+<p>We were wrong.</p>
+
+<h2>Tests, tests, tests, duplication.</h2>
+
+<p>Up to this point, we had operated in a near-vacuum. That was fine, we had been working quickly to implement a sub-set of an existing and well-used API, so we knew which were the most important features that needed porting. We continued, largely happy with our creation, for some time.</p>
+
+<p><em>Then, gazing up from the receding tide of the third trimester were the hungry eyes of the Second Menace. Our users were upon us!</em></p>
+
+<p>Our early adopters were great, giving us a lot of helpful feedback and helping us shape the API into a genuinely usable v1. However, responding to this change required a greater degree of flexibility in the code than we had required up to this point. Our triple-chocolate-crunch of pithy tests was starting to really slow us down, and rot our teeth. The main reason for this: duplication.</p>
+
+<p>We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can&rsquo;t test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic for that call. Code which was already covered by unit tests, and often integration tests as well. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith and a very heavy boulder&mdash;and had a hoarde of features we still wanted to smash, who were freely bounding over the mountain tops, and out of reach.</p>
+
+<p>It was time to cut ourselves free.</p>
+
+<h2>Ripping off the plaster</h2>
+
+<p>The idea that we might not need all these layers of tests was first mooted by fellow OpenTable engineer Arnold Zokas. My initial reaction was one of slight incredulity. Delete all those tests that we&rsquo;ve so carefully caressed and cajoled into a thing of beauty?! Strip off the armour?! I wasn&rsquo;t immediately convinced. However, the pain of implementing new features was starting to burn, so I was interested.</p>
+
+<blockquote><p>I wasn&rsquo;t immediately convinced.</p></blockquote>
+
+<p>We talked about it&mdash;what was necessary about the unit tests? What was their real worth? We had to test many of those things from the outside-in anyway, with the acceptance tests, so why test them twice? The logic started to stack up. I was convinced this was the right thing to do.</p>
+
+<p>Take a deep breath. <em>RIP!</em> Aah, there, done.</p>
+
+<p>There was a little bleeding, some gaps in our acceptance tests that had to be filled, some complex set-up logic from the integration tests that had to be ported to work with the acceptance tests. A few days&#8217; worth of cleanup and patching in the background, and&hellip; tentatively&hellip; we were done.</p>
+
+<p>For me at least, this was a bold move. But it shouldn&rsquo;t have seemed so, we knew all of our endpoints were acceptance-tested, including every supported API call. My primary worry was how we were going to nail down the exact cause of bugs with no code-level testing. This turned out to be nowhere near as bad as I expected.</p>
+
+<blockquote><p>We knew all of our endpoints were acceptance-tested, including every supported API call.</p></blockquote>
+
+<h2>What just happened?</h2>
+
+<p>I like to visualise this as if we were building <a href="http://en.wikipedia.org/wiki/Gateway_Arch">a giant arch</a>. At first, you build a temporary structure with scaffolding (the unit and integration tests). As time goes on you construct a hardened permanent structure (the software). On top of the software, you layer your <a href="http://en.wikipedia.org/wiki/Structural_health_monitoring">structural integrity monitors</a> (acceptance tests). Eventually, there is no need for the scaffolding any more; the structure is self-supporting, and future modifications can rely on this&mdash;time to punch out the middle!</p>
+
+<p><em>Of course, there are other considerations, like logging, monitoring, and providing sandbox data, which all contributed to making this feasable&mdash;but that&rsquo;s for another post.</em></p>
+
+<h2>Was it worth it?</h2>
+
+<p>Unequivocally, yes. Since making this decision, we have been unhindered by our tests, and they are back to being a much loved part of the project. We have had no problems that would have been caught by unit tests, and we can still do TDD with our acceptance tests. In addition, I think removing the crutch of unit tests may have improved our discipline somewhat: <em>it keeps us thinking in the context of the end-user at all times, so we never spend time working on a feature that isn&rsquo;t directly useful to our consumers.</em></p>
+
+<blockquote><p>It keeps us thinking in the context of the end-user at all times, so we never spend time working on a feature that isn&rsquo;t directly useful to our consumers.</p></blockquote>
+
+<h2>YMWMCV</h2>
+
+<p>Of course, every project is unique (just like every other project), so <em>your mileage will most certainly vary.</em> We were working on a stateless facade over a small but crucial subset of the business&mdash;making reservations. For relatively small, stateless projects, this approach has worked brilliantly. However, when things do go wrong at development time, they could be at any layer in the stack, and you often need to attach a debugger to find out what happened. This is less than ideal, but in our case was a very cost-effective compromise.</p>
+
+<p>The upshot, for me at least, is that you shouldn&rsquo;t be afraid to shirk convention when the project demands it. By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster <em>without</em> breaking stuff.</p>
+
+<blockquote><p>By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster <em>without</em> breaking stuff.</p></blockquote>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/07/upgrading-puppet-with-puppet/">Upgrading Puppet with Puppet</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-07T13:23:00+01:00" pubdate data-updated="true">Apr 7<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>As part of one of our recent <a href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
+
+<p>This should be a very straightforward task to complete because this is one of the core resources that Puppet manages &ndash; the upgrading of packages. With that in mind, putting <code>package { ‘puppet’: ensure =&gt; $version }</code> in one of our base profiles would be all that was needed but alas it was not. In this blog I want to take you through the history, the bugs, the platforms and the edge-cases that make performing an in-place upgrade of Puppet a more complex task that it ought to be.</p>
+
+<h2>Debian</h2>
+
+<p>Like many, Ubuntu is our Debian derivative of choice for much of our newer production infrastructure. Debian, has the apt package management system and PuppetLabs provide the required deb packages as well as hosting their own apt repository to point our systems to. The main point of package management systems is that they take care of the dependency hell and the awkward upgrade paths all from within the confines of the package itself, and that is what happens with the PuppetLabs packages &ndash; great.</p>
+
+<p>The problem that we had in some of our systems was that they had been built without the PuppetLabs apt repository. This means that they picked up a slightly older version of the Puppet packages from the main Ubuntu distribution repositories and didn’t have access to the newer versions of the Puppet packages. Ok, so we solved that with the following code:</p>
+
+<pre><code>  exec { 'rm_duplicate_puppet_source':
+    path    =&gt; '/usr/local/bin:/bin:/usr/bin',
+    command =&gt; 'sed -i \'s:deb\ http\:\/\/apt.puppetlabs.com\/ precise main::\' /etc/apt/sources.list',
+    onlyif  =&gt; 'grep \'deb http://apt.puppetlabs.com/ precise main\' /etc/apt/sources.list',
+  }
+
+  apt::source { 'puppetlabs':
+    location    =&gt; 'http://apt.puppetlabs.com',
+    repos       =&gt; 'main dependencies',
+    key         =&gt; '4BD6EC30',
+    key_content =&gt; template('puppetversion/puppetlabs.gpg'),
+    require     =&gt; Exec['rm_duplicate_puppet_source']
+  }
+</code></pre>
+
+<p>We&rsquo;re making use of the <a href="http://forge.puppetlabs.com/puppetlabs/apt">puppetlabs/apt</a> module here. This removes the old reference and adding in the new apt source. Then we just add the package and ensure the version we’re upgrading. Perfect.</p>
+
+<h2>RedHat</h2>
+
+<p>Same problem different OS family &ndash; this time we had some older CentOS machines that needed fixing. Thankfully there is also a module <a href="http://forge.puppetlabs.com/stahnma/puppetlabs_yum">stahnma/puppetlabs_yum</a> for the yum repositories. Add that in, add the package resource and start upgrading. Phew! This seems like it’s getting easier.</p>
+
+<h2>Windows</h2>
+
+<p>Many of you will be following the work of OpenTable closely because of our work with Puppet on Windows. We have a pretty large Windows infrastructure, with a wide range of client and server versions deployed ranging from 2012 R2 all the way back to the historic times of 2003. Windows also has its own package format, the msi, and PuppetLabs also provides all versions of Puppet packaged as msi files.</p>
+
+<p>This is where it gets a little tricky. The big problem we had was that the Windows provider, prior to 3.4.0 was not versionable (<a href="http://projects.puppetlabs.com/issues/21133">issues/21133</a>) that means that <code>package { ‘puppet’: ensure =&gt; installed }</code> would work but <code>package { ‘puppet’: ensure =&gt; $version }</code> would not &ndash; the exact thing we were trying to do! The only way to resolve that problem is to uninstall and reinstall the package with the correct version.</p>
+
+<p>Now there are a lot of problems with the uninstall/reinstall approach. Firstly we had to script the process because Windows only allows one installer to run at any one time meaning that you had to wait for the uninstall to finish before that subsequent install takes place. Secondly we have to deal with Puppet runs and make sure that when the upgrade script runs that we wait for any active Puppet runs to complete before trying to uninstall Puppet. Next we have to trigger our script using a scheduled task.</p>
+
+<p>Our experience with scheduled tasks has been painful. We attempted using the <a href="http://docs.puppetlabs.com/references/latest/type.html#scheduledtask">scheduled_task</a> resource type but soon realised that this wasn’t going to work for us. The resource type is good if you want to create a task to run at a fixed point in time but there is no way to provide a relative time e.g. “in five mins from now”. Also on occasion the task would not run or would silently fail &ndash; this was almost certainly due to another Puppet issue we discovered (<a href="https://tickets.puppetlabs.com/browse/PUP-1368">PUP-1368</a>). Without being able to use the scheduled task resource we were again back in the land of Powershell using a script to create the scheduled task that would call our upgrade script.</p>
+
+<p>So if you&rsquo;re keeping up we now have something like this:</p>
+
+<p>Puppet &ndash;> calls script to create scheduled task &ndash;> scheduled task calls upgrade script &ndash;> upgrade script upgrade Puppet and triggers next Puppet run &ndash;> Puppet</p>
+
+<p>Nice little cycle there, but it works.</p>
+
+<p>One final issue worth mentioning is that for Windows 2003 servers you’ll need to actually have Powershell installed. Luckily, we also have a module for that <a href="http://forge.puppetlabs.com/dcharleston/powershell">dcharleston/powershell</a></p>
+
+<h2>Summary</h2>
+
+<p>Well we’ve discussed some of the pain points, and we’ve discussed them in detail with PuppetLabs themselves. The advice here is to upgrade to Puppet 3.4.3 as soon as you can as many of these issues are resolved in that version. For those of you not on that version yet then we have you covered with our puppetversion module.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/04/testing-puppet-with-beaker/">Testing Puppet with Beaker</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-04T17:30:00+01:00" pubdate data-updated="true">Apr 4<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>One afternoon I got asked to write a new Puppet module to manage local users on our Linux boxes. Not a contrived example but a real-world need as we begin to move our infrastructure from Windows to Linux. Managing users is one of those tasks that is at the core of the Puppet ecosystem and I thought this would be pretty easy as I had done this sort of thing many times before. What added to the complexity was that we needed to support Ubuntu, Centos and FreeBSD machines that we had in our stack and we wanted to make it something that was open source and on the Forge &ndash; so lots of testing was required.</p>
+
+<p>This was not the first module that I had written for the Forge but it was the first that I had written since PuppetLabs had introduced their new acceptance testing framework <a href="https://github.com/puppetlabs/beaker">Beaker</a> and so I wanted to spend some time getting the module working with this new tool.</p>
+
+<h2>Beaker</h2>
+
+<p>The purpose of Beaker is to allow you to write acceptance tests for your modules, that is to write some manifests that use your module and test them out on a virtual machine. Some of you may remember <a href="https://github.com/puppetlabs/rspec-system-puppet">rspec-system-puppet</a> was previously used to accomplish this, well PuppetLabs has since deprecated that in favour of Beaker but the premise is very much the same.</p>
+
+<p>Using rspec-puppet for unit testing your manifests really only goes so far. If you&rsquo;re just using the standard Puppet resources then it pretty safe to assume that it does what it says on the tin (I mean PuppetLabs really test their stuff!) but as soon as you start doing things that are a little more complex, using exec statements, custom facts, custom functions or targeting multiple operating systems then you&rsquo;re really going to want to make sure that once the catalogs compile that they are doing what they are meant to be doing and this is where your acceptance test suite will come in.</p>
+
+<p>With Beaker you can spin up a virtual machine, install modules, apply a manifest and then test what really happened.</p>
+
+<p>Beaker works with many different hypervisor technologies but most people will be using <a href="http://www.vagrantup.com/">Vagrant</a> so that is what I will cover here.</p>
+
+<h3>Configuring Beaker</h3>
+
+<p>The first thing in configuring your existing project to use Beaker is to add “beaker” and “beaker_rspec” to you Gemfile. You&rsquo;re then going to want to create a new spec_helper file called spec_helper_acceptence.rb that should look something like this:</p>
+
+<pre><code>require 'beaker-rspec/spec_helper'
+require 'beaker-rspec/helpers/serverspec'
+
+hosts.each do |host|
+  install_puppet
+end
+
+UNSUPPORTED_PLATFORMS = ['Suse','windows','AIX','Solaris']
+
+RSpec.configure do |c|
+  proj_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
+
+  c.formatter = :documentation
+
+  # Configure all nodes in nodeset
+  c.before :suite do
+    puppet_module_install(:source =&gt; proj_root, :module_name =&gt; 'homes')
+    hosts.each do |host|
+      on host, puppet('module','install','puppetlabs-stdlib'), { :acceptable_exit_codes =&gt; [0,1] }
+      on host, puppet('module', 'install', 'opentable-altlib'), { :acceptable_exit_codes =&gt; [0,1] }
+    end
+  end
 end
 </code></pre>
 
-<p>Notice the last line &lsquo;config.vm.provision&rsquo;, this tells Vagrant that there is a shell script at setup/bootstrap.sh which is going to provision your vm. You can provision the box with Puppet, Chef or a variety of other tools, but for the purposes of this simple testing machine, I&rsquo;m happy to use a shell script.</p>
+<p>This contains quite a bit of new setup that you won’t have seen before. Beaker contains lots of useful helper methods for doing all the things that you&rsquo;re going to want to do when running Puppet against a virtual machine; install Puppet (so your boxes don’t have to have it pre-baked), installing local modules and installing modules from the Forge. We also specify the platforms that we don’t support &ndash; we’ll make use of this later.</p>
 
-<p>Let&rsquo;s have a look at the bootstrap file:</p>
+<p>The next step is to define some machines that we want to set against. Beaker calls these nodesets because while in most cases you’ll only want to test one host machine at a time, Beaker does support testing multi-node configurations for more complex scenarios. Looking at the homes project your directory structure will look something like this:</p>
 
-<pre><code>apt-get update -y -q
-apt-get install build-essential mongodb -y -q
-
-cp /vagrant/tests/acceptance-tests/mongodb.conf /etc/mongodb.conf
-service mongodb restart
-
-wget --quiet http://nodejs.org/dist/v0.10.15/node-v0.10.15-linux-x64.tar.gz
-
-tar -zxf node-v0.10.15-linux-x64.tar.gz
-
-mv node-v0.10.15-linux-x64/ /opt/node/
-ln -s /opt/node/bin/node /usr/bin/node
-ln -s /opt/node/bin/npm /usr/bin/npm
+<pre><code>puppet-homes
+  manifests
+  spec
+    acceptance
+      nodesets
+        centos-64-x64.yml
+        default.yml
+        ubuntu-server-12042-x64.yml
+      homes_spec.rb 
+    defines
+    fixtures
+    spec_helper.rb
+    spec_helper_acceptance.rb
+  tests 
 </code></pre>
 
-<p>After booting the VM, Vagrant will run this script, which will can do anything you need it to. All the commands run as root, so there&rsquo;s very little restriction as to what you can achieve.</p>
+<p>A nodeset is simply a yaml file that specifies the box name, where it downloads it from, its platform and the hypervisor you are using. A example from the homes module below:</p>
 
-<p>We&rsquo;re installing Node.js (downloading the binaries manually because the version of Node in the Ubuntu repository is really old), and MongoDB (which our app depends on).</p>
-
-<p>Note this line: <code>cp /vagrant/tests/acceptance-tests/mongodb.conf /etc/mongodb.conf</code> which installs a custom config for MongoDB.</p>
-
-<p>By default, Vagrant will mount a share in /vagrant to the current directory (i.e. the directory on the host machine from which you executed <code>vagrant up</code>), you can map additional folders by adding <code>config.vm.synced_folder "path/on/host", "/path/on/guest"</code> to your Vagrantfile.</p>
-
-<p>Now that we&rsquo;ve got our Vagrant config sorted, we can hook this into Grunt, using a bit of glue code.</p>
-
-<pre><code>var shell = require('shelljs');
-
-grunt.registerTask('vagrant-up', function(){
-    shell.exec('vagrant up');
-});
-
-grunt.registerTask('vagrant-destroy', function(){
-    shell.exec('vagrant destroy -f');
-});
+<pre><code>HOSTS:
+  ubuntu-server-12042-x64:
+  roles:
+    - master
+  platform: ubuntu-12.04-amd64
+  box : ubuntu-server-12042-x64-vbox4210-nocm
+  box_url : http://puppet-vagrant-boxes.puppetlabs.com/ubuntu-server-12042-x64-vbox4210-nocm.box
+  hypervisor : vagrant
+CONFIG:
+  log_level: verbose
+  type: git
 </code></pre>
 
-<p>So now that we&rsquo;ve got our machine provisioned and booted, we can use Grunt to <a href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">deploy our code and start our service</a>.</p>
+<p>More detail about how to configure these yaml files can be found on the Beaker wiki, <a href="https://github.com/puppetlabs/beaker/wiki/Creating-A-Test-Environment">Creating A Test Environment</a></p>
 
-<p>Assuming that we&rsquo;ve got all that going on, we can move on to the next step, getting Grunt to deploy the code to the Vagrant box.</p>
-
-<p>What I&rsquo;m going to do here is hook the deployment step into the &lsquo;vagrant-up&rsquo; task.</p>
-
-<pre><code>grunt.registerTask('vagrant-up', function(){
-    shell.exec('vagrant up');
-    grunt.option('config', 'vagrant');
-    grunt.task.run('deploy');
-});
-</code></pre>
-
-<p>The reason for this is so that <code>grunt vagrant-up</code> will spin me up a provisioned box <em>and</em> install the code.</p>
-
-<p>You&rsquo;ll notice that I set the &lsquo;config&rsquo; option inside the task, this option is required by the deploy task. I could specify it on the command line, but this is just friendlier and makes for a cleaner syntax of the command.</p>
-
-<p>Now, when we run <code>grunt acceptance</code>, it&rsquo;ll do the following:</p>
+<p>In the above example I am using Vagrant boxes provided by PuppetLabs but there are a few other sources to discover already pre-built boxes:</p>
 
 <ul>
-<li>Spin up the Vagrant box</li>
-<li>Deploy the code</li>
-<li>Tear it down again</li>
+<li><a href="http://puppet-vagrant-boxes.puppetlabs.com/">http://puppet-vagrant-boxes.puppetlabs.com/</a></li>
+<li><a href="http://www.vagrantbox.es/">http://www.vagrantbox.es/</a></li>
+<li><a href="https://vagrantcloud.com">https://vagrantcloud.com</a></li>
 </ul>
 
 
-<p>The only step remaining is to run our acceptance tests. For our app, we&rsquo;re using mocha, you can use anything so long as you&rsquo;ve got a Grunt task to drop in.</p>
+<h3>Writing tests in Beaker</h3>
 
-<pre><code>var shell = require('shelljs');
+<p>So now that we have our environment set up let’s look at actually writing some tests. Here is an example from the homes project:</p>
 
-grunt.initConfig({
-    ...
-    mochaTest: {
-        options: {
-            reporter: 'spec'
-        },
-        AcceptanceTests:{
-            src: ['tests/acceptance-tests/**/*.js']
-        }
-    }
-});
+<pre><code>require ‘spec_helper_acceptance'
 
-grunt.registerTask('deploy', [
-    'sshexec:stop',
-    'sshexec:make-release-dir',
-    'sshexec:update-symlinks',
-    'sftp:deploy',
-    'sshexec:npm-update',
-    'sshexec:set-config',
-    'sshexec:start'
-]);
+describe 'homes defintion', :unless =&gt; UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
 
-grunt.registerTask('vagrant-up', function(){
-    shell.exec('vagrant up');
-    grunt.option('config', 'vagrant');
-    grunt.task.run('deploy');
-});
+  context 'valid user parameter’ do
 
-grunt.registerTask('vagrant-test', [ 'mochaTest:AcceptanceTests' ]);
+    it 'should work with no errors’ do
+      pp = &lt;&lt;-EOS
+        $myuser = {
+        'testuser' =&gt; { 'shell' =&gt; '/bin/bash' }
+      }
 
-grunt.registerTask('vagrant-destroy', function(){
-    shell.exec('vagrant destroy -f');
-});
+      homes { 'testuser':
+        user =&gt; $myuser
+      }
+      EOS
 
-grunt.registerTask('acceptance', [
-    'vagrant-up',
-    'vagrant-test',
-    'vagrant-destroy'
-]);
+      apply_manifest(pp, :catch_failures =&gt; true)
+      expect(apply_manifest(pp, :catch_failures =&gt; true).exit_code).to be_zero
+   end
+
+   describe user('testuser') do
+     it { should exist }
+   end
+
+   describe file('/home/testuser') do
+     it { should be_directory }
+   end
+ end
+
+end
 </code></pre>
 
-<p>Ta-Da! Wasn&rsquo;t that painless?</p>
+<p>In this case we are writing a test to make sure that when our module runs, it creates the user and its home directory as it expects. Using the UNSUPPORTED_PLATFORMS that we defined earlier we can also skip groups of tests if they are not supported on the current node.</p>
 
-<p>The key part here is that everything is now in source control. So whenever someone checks out the project, it takes precisely <strong><em>one</em></strong> command to get the project going. No more time wasted configuring your dev machine to be able to run this, or that.</p>
+<p>The idea here is that we define a manifest (using Heredoc &ndash; but please don’t make them too long!) and then we want to apply that manifest to the node. Beaker provides a nice helper methods that: apply_manifest. In our case we run it once, which will cause the changes and then we run it a second time with the scope of a test to check for idempotency. We can then make use of Beaker’s resource based helpers to actually test the functionality on the node itself. Their many helper methods will allow you to do almost everything that you need to do, either for setup purposes or for actually testing the node:</p>
 
-<p>The machine is brand-new every time, with its own spangly MongoDB instance ready for use.</p>
+<ul>
+<li><a href="https://github.com/puppetlabs/beaker/wiki/The-Beaker-DSL-API">The-Beaker-DSL-API</a></li>
+<li><a href="https://github.com/puppetlabs/beaker/blob/master/lib/beaker/dsl/helpers.rb">beaker/dsl/helpers.rb</a></li>
+</ul>
 
-<p>What&rsquo;s that I hear you whine? &ldquo;<em>My application depends on shared data, I can&rsquo;t use an empty database</em>&rdquo;. Not true. If you need it, set it up or mock it out. The acceptance tests should set-up and tear-down all their own data, if you rely on shared data sources for acceptance tests then you&rsquo;re going to have a painful time. Script it once and it&rsquo;ll forever be your friend. It&rsquo;s time to enter the dynamic era, no more false failures on your CI build because a shared datasource is missing and/or has been changed.</p>
 
-<p>What&rsquo;s more you can now run <code>grunt acceptance</code> from anywhere and <strong><em>know</em></strong> that it&rsquo;ll be the same. No more environment pains!</p>
+<p>It’s actually worth noting that Beaker makes heavy use of <a href="https://github.com/serverspec/serverspec">serverspec</a> which you should go and take a look at.</p>
+
+<h2>Summary</h2>
+
+<p>So now you know a little about testing Beaker with Puppet go forth and test all your modules against everything that you expect your users to be running it on.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday - our commitment to the Puppet Forge</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-04T15:30:00+01:00" pubdate data-updated="true">Apr 4<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Those of you that read this blog on a regular basis will be aware that here at OpenTable we take our commitment to Open Source very seriously. As part of the infrastructure team at OpenTable we are begining a process of being open-first. That means that everything we write will be open-sourced unless it contains a significant amount of internal information but we will architect to limit this.</p>
+
+<p>As part of that commitment we are trying to release all our Puppet configuration. The key to maintaining any good habit is to do little and often and with that in mind we wanted to let you know about ForgeFriday.</p>
+
+<p>Every Friday we will be releasing our Puppet code onto the <a href="http://forge.puppetlabs.com/opentable">PuppetLabs Forge</a> (until we run out of modules). That means all our Windows modules, all our forks, our experiments, our custom facts and functions &ndash; anything and everything will start rolling out on Fridays.</p>
+
+<p>It&rsquo;s not just forge and forget either, we will continue to support all of our modules and those that use them. We will blog about some of the bigger, more important ones and continue to engage with the community as much as possible. If you&rsquo;re using our modules (even if you have no issues) then let us know &ndash; we&rsquo;d love to hear from you.</p>
+
+<p>In the meantime go and check out what we have already released:</p>
+
+<p><a href="http://forge.puppetlabs.com/opentable/windowsfeature">opentable/windowsfeature</a> &ndash; Module that will turn Windows features on or off<br/>
+<a href="http://forge.puppetlabs.com/opentable/iis_rewrite">opentable/iis_rewrite</a> &ndash; Module that will install the IIS Rewrite 2.0 Module on Windows <br/>
+<a href="http://forge.puppetlabs.com/opentable/remaster">opentable/remaster</a> &ndash; Module for managing the remaster of agent nodes <br/>
+<a href="http://forge.puppetlabs.com/opentable/puppetversion">opentable/puppetversion</a> &ndash; Module for managing the installation and upgrade of Puppet<br/>
+<a href="http://forge.puppetlabs.com/opentable/altlib">opentable/altlib</a> &ndash; Module providing some additional useful functions <br/></p>
+
+<p>Keep an eye on Twitter for the latest ForgeFriday updates.</p>
 </div>
   
   
@@ -1310,23 +1229,23 @@ grunt.registerTask('acceptance', [
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2014/10/06/puppetconf-2014-part-2/">PuppetConf 2014 - Part 2</a>
+        <a href="/blog/2015/03/05/the-dns-abc/">The DNS ABC</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/10/06/puppetconf-2014-part-1/">PuppetConf 2014 - Part 1</a>
+        <a href="/blog/2015/02/16/hapi-js-and-sigterm/">Hapi.js and SIGTERM</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/09/04/introducing-hobknob-feature-toggling-with-etcd/">Introducing Hobknob: Feature toggling with etcd</a>
+        <a href="/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">Dismantling the monolith - Microsites at Opentable</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-3-testing-roles/">Testing Puppet with Beaker pt.3 - Testing Roles</a>
+        <a href="/blog/2015/02/02/a-beginners-guide-to-rest-services/">A Beginner&#8217;s guide to REST services</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-2-the-windows-story/">Testing Puppet with Beaker pt.2 - The Windows story</a>
+        <a href="/blog/2015/01/23/on-strongly-typed-logging/">On Strongly Typed Logging</a>
       </li>
     
   </ul>
@@ -1373,7 +1292,7 @@ grunt.registerTask('acceptance', [
 
     </div>
   </div>
-  <footer role="contentinfo"><p>Copyright &copy; 2014 - OpenTable</p></footer>
+  <footer role="contentinfo"><p>Copyright &copy; 2015 - OpenTable</p></footer>
   
 
 

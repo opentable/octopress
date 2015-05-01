@@ -4,7 +4,7 @@ title: "Performance testing our Search API"
 date: 2014-03-19 15:53
 comments: true
 author: ametcalfe
-categories: [Benchmarks, API, REST, Performance, Being a numpty]
+categories: [Benchmarks, API, REST, Performance]
 ---
 
 

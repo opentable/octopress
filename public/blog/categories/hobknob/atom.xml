@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Hobknob | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/hobknob/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-08T11:14:33+01:00</updated>
+  <updated>2015-03-05T14:36:34+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -12,6 +12,155 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Hobknob v2.0: A new dimension]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/11/26/hobknob-v2-dot-0-a-new-dimension/"/>
+    <updated>2014-11-26T10:11:37+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/11/26/hobknob-v2-dot-0-a-new-dimension</id>
+    <content type="html"><![CDATA[<p>Sometimes there is the requirement for more granularity when toggling a feature switch.
+Version 2.0 of <a href="https://github.com/opentable/hobknob">Hobknob</a> hopes to address this with feature categories.</p>
+
+<h3>TL;DR.</h3>
+
+<p>Hobknob now allows you to define categories of features that have multiple toggles per feature.</p>
+
+<p>For example, you can define the &lsquo;Domain Features&rsquo; category which allows you to toggle a feature OFF in <code>your-website.com</code>, but ON in <code>your-website.co.uk</code>.</p>
+
+<p><img src="/images/posts/hobknob-domain-features.png" alt="Domain Features" /></p>
+
+<h2>Categories</h2>
+
+<p>Feature categories are configured with a few pieces of information. For example:</p>
+
+<p>```json
+{
+  &ldquo;categories&rdquo;: [</p>
+
+<pre><code>{
+  "id": 0,
+  "name": "Simple Features",
+  "description": "Use when you want your feature to be either on or off"
+},
+{
+  "id": 1,
+  "name": "Domain Features",
+  "description": "Use when you want your features to be toggled separately for different domains",
+  "values": ["com", "couk", "de", "commx", "jp", "ca"]
+},
+{
+  "id": 2,
+  "name": "Locale Features",
+  "description": "Use when you want your features to be toggled separately for different locales",
+  "values": ["en-GB", "en-US", "fr-CA", "de-DE", "ja-JP", "es-MX"]
+}
+</code></pre>
+
+<p>  ]
+}
+```
+Notice that each category (except the simple feature category) provides an array of accepted toggle values.</p>
+
+<p>All non-simple feature toggles will have the key <code>application-name/feature-name/toggle-name</code>.
+For example, <code>main-website/show-user-section/com</code>.</p>
+
+<p>Simple features will continue to have the key <code>application-name/feature-name</code>.</p>
+
+<h2>Setting Toggles</h2>
+
+<p>Both simple and non-simple features are added via the application view (which is accessed via the left-hand navigation menu). Simple features are automatically set to false, this value can be changed in the feature view (by clicking the feature name).</p>
+
+<p>A newly added non-simple feature will be initialised with no toggles values. You can add a toggle by clicking the Add Toggle button in the feature view, and choosing which toggle to add.</p>
+
+<p><img src="/images/posts/hobknob-adding-toggle.png" alt="Adding a toggle" /></p>
+
+<p>New toggles are initially set to OFF. The toggle can be switched in the usual way by clicking the toggle button. You should also see an audit of the change in the panel below.</p>
+
+<h2>Getting Toggles</h2>
+
+<p>All of the Hobknob <a href="https://github.com/opentable/hobknob#hobknob-clients">clients</a> now support getting non-simple features toggles. The only requirement is to pass the name of the toggle, so for example in node:</p>
+
+<p><code>javascript
+var nonSimpleFeatureInCom = hobknobClient.getOrDefault('feature-name', 'com', false);
+</code></p>
+
+<p>It is highly reccommended that you use the get or default methods when accessing non-simple features. Getting a toggle that does not exist for a non-simple feature could be a likely scenario, since you might want to only set a feature for a few toggles explicitly (e.g. com and couk) and then use the default value for the rest (e.g. jp and de).</p>
+
+<p>The behaviour for simple features has not changed, and is backwards compatible in all client libraries.</p>
+
+<p><code>javascript
+var simpleFeature = hobknobClient.getOrDefault('simple-feature', true);
+</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Hobknob v1.0: Now with authorization]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/10/22/hobknob-v1-dot-0-now-with-authorization/"/>
+    <updated>2014-10-22T14:00:31+01:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/10/22/hobknob-v1-dot-0-now-with-authorization</id>
+    <content type="html"><![CDATA[<p>We are pleased to announce the version 1.0 release of <a href="https://github.com/opentable/hobknob">Hobknob</a>, our open-source feature toggle management system. With it comes a few additions and several improvements.</p>
+
+<p>This post will expand on some of the changes, in particular, authorisation via access control lists.
+For an introduction to Hobknob, see our previous post: <a href="http://tech.opentable.co.uk/blog/2014/09/04/introducing-hobknob-feature-toggling-with-etcd/">Introducing Hobknob: Feature toggling with etcd</a>.</p>
+
+<h2>Authorisation with ACLs</h2>
+
+<p>A much requested feature was the ability to control who can add/update/delete toggles on an application by application basis. We achieve this via the use if an Access Control List for each application. Users that are part of the ACL for an application are known as application owners.</p>
+
+<p><img src="/images/posts/hobknob-owners.png" alt="Hobknob Owner List" /></p>
+
+<p>Application owners can (for an owned application):</p>
+
+<ul>
+<li>Add toggles</li>
+<li>Set the value of a toggle</li>
+<li>Delete toggles</li>
+<li>Add additional owners</li>
+<li>Remove owners</li>
+</ul>
+
+
+<p>Everyone can:</p>
+
+<ul>
+<li>Add an application</li>
+<li>See toggles</li>
+<li>See application owners</li>
+<li>See the audit trail for a toggle</li>
+</ul>
+
+
+<p>When a user creates an new application, they are automatically added as an owner for that application.
+The user can then add other application owners by clicking the &lsquo;Add user&rsquo; button in the Owners panel and entering the users email address.</p>
+
+<p><strong>Note:</strong> this feature is only available when authentication is enabled. If Hobknob is not configured to require authentication, everyone has owner permissions to all applications. See the <a href="https://github.com/opentable/hobknob#configuring-authentication">readme</a> for more information on how to configure authentication.</p>
+
+<h2>Deleting Toggles</h2>
+
+<p>Feature toggles can now be deleted. This ability is available on the toggle view (get there by clicking a toggle name in the application view).</p>
+
+<p><img src="/images/posts/hobknob-delete.png" alt="Hobknob Toggle Delete" /></p>
+
+<p>You&rsquo;ll notice the delete toggle button in the Danger Zone panel (we didn&rsquo;t steal that idea from Github, honest). You&rsquo;ll need to confirm the delete by clicking the delete button a second time.</p>
+
+<p><strong>Warning:</strong> Deleting a toggle will perform a &lsquo;hard&rsquo; delete, that is, the key is deleted in etcd. The audit will persist however, and can be accessed via this route: <code>/#!/applications/app-name/toggle-name</code>. You are also allowed to re-add a toggle, and the audit will be appended to an existing audit for that toggle name.</p>
+
+<p><strong>Note:</strong> If authentication is enabled, you must be an application owner to delete a toggle.</p>
+
+<h2>Makeover</h2>
+
+<p>Gone is the &lsquo;Add Toggle&rsquo; modal dialog from the previous version. This is replaced by two separate inline forms.</p>
+
+<p>Applications are now added by clicking &lsquo;Add&rsquo; in the sidebar.</p>
+
+<p><img src="/images/posts/hobknob-newapplication.png" alt="Hobknob New Application" /></p>
+
+<p>Toggles are added by clicking &lsquo;New Toggle&rsquo; in the Toggles panel for an application.</p>
+
+<p><img src="/images/posts/hobknob-newtoggle-v2.png" alt="Hobknob New Toggle" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Introducing Hobknob: Feature toggling with etcd]]></title>
@@ -101,11 +250,11 @@ vagrant up
 
 <p>You should now be able to open the dashboard on <a href="http://127.0.0.1:3006">http://127.0.0.1:3006</a></p>
 
-<p><img src="https://github.com/opentable/hobknob/raw/master/screenshots/dashboard.png" alt="Hobknob dashboard" /></p>
+<p><img src="/images/posts/hobknob-dashboard.png" alt="Hobknob dashboard" /></p>
 
 <p>All actions in the dashboard are audited. So when you create or update a toggle by turning it on/off an audit is written for that toggle. Clicking on a toggle in the dashboard takes you to the audit view:</p>
 
-<p><img src="https://github.com/opentable/hobknob/raw/master/screenshots/audit.png" alt="Hobknob audit" /></p>
+<p><img src="/images/posts/hobknob-audit.png" alt="Hobknob audit" /></p>
 
 <h3>Authentication</h3>
 

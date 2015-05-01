@@ -17,7 +17,7 @@ There are a number of practices that we already make use of, helping us to be th
 - We use continuous delivery to ship code to production within minutes.
 - We have a high degree of high-quality test coverage.
 - We are getting better and better at monitoring All The Things.
-- [We use ChatOps](/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/), so communication is central to our work, and keeps remote workers/teams in the loop.
+- [We use Chatops](/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/), so communication is central to our work, and keeps remote workers/teams in the loop.
 
 All of the above are truly empowering for the dev team, and are conducive to an amazingly stress-free working environment. However, these practices only address the infrastructure, culture, and ceremony surrounding our work. What if there was something else? Something about the way we write the code itself, that could increase our velocity yet further, without compromising our integrity...
 

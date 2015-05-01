@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Styleguide | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/styleguide/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2015-03-05T14:36:34+00:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
+  <author>
+    <name><![CDATA[OpenTable]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Building a living styleguide at OpenTable]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2015/01/19/building-a-living-styleguide-at-opentable/"/>
+    <updated>2015-01-19T17:00:00+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2015/01/19/building-a-living-styleguide-at-opentable</id>
+    <content type="html"><![CDATA[<p>If you&rsquo;re reading this you&rsquo;ve probably built yourself a website.  A site &ndash; large or small &ndash; that&rsquo;s thrown together or crafted over many months.  And if you have, you’ve probably kept all your CSS class names in your head, or at least been able to go straight to the relevant stylesheets to retrieve them.</p>
+
+<p>Well OpenTable is unsurprisingly built by many engineering teams across multiple continents, and was completely redesigned last year.  And as soon as you have more than a handful of people working on your front-end you will quickly find a well-intentioned developer causing one or both of these problems:</p>
+
+<ul>
+<li>Well-intentioned developer adds a new submission form but, like the design Philistine he is, his buttons are <span style="font-family:verdana;font-size:18px;color:#E40000;">18px Verdana #E40000</span>, not the correct <span style="font-family:arial;font-size:16px;color:#DA3743;">16px Arial #DA3743</span></li>
+<li>Your good old developer knows which font size and colour it should be, but bungs a duplicate class into a random stylesheet (or worse still, inline)</li>
+</ul>
+
+
+<p>Despite these risks, a single front-end dev (or a team of them) cannot check every new piece of code or they will quickly become a bottleneck.</p>
+
+<h3>You need some guidelines</h3>
+
+<p>Offline designers regularly create ‘brand guidelines’ or ‘design standards' to document the precise way their brand or product should be recreated when outside of their control.  Online, such guidelines are similarly invaluable for maintaining brand and code consistency with multiple engineers and designers, but it is blindingly obvious that a printed or ‘static’ set of guidelines is completely unsuitable for a constantly changing website.</p>
+
+<p>Step forward a ‘living’ styleguide.</p>
+
+<p>A living styleguide gives a visual representation of a site’s UI elements using <strong>the exact same code</strong> as on the website, in most cases via the live CSS.  A living styleguide may also provide reusable CSS and HTML code examples and they are not just for engineers new to the code; I frequently use ours at OpenTable and I wrote the stylesheets in the first place (I can’t be expected to remember everything).</p>
+
+<p>Providing reusable code improves collaboration, consistency and standards, and reduces design and development time &ndash; but like most documentation it is essential your guide is always up-to-date and trustworthy.  So if a living styleguide is (theoretically) always up-to-date, how did we build ours?</p>
+
+<h2>How we built our styleguide</h2>
+
+<p>Living styleguides are not new (although they were <a href="http://sideproject.io/an-exhaustive-look-at-the-year-in-web-design/#styleguides">one of the trends of 2014</a>) and as such many frameworks have been built over the years.  We chose to use <a href="http://kaleistyleguide.com/">Kalei</a> by <a href="https://github.com/thomasdavis">Thomas Davis</a> &ndash; I forget the exact reasons why but it was probably the easiest at the time to set up and customise.</p>
+
+<p>Generating a Kalei styleguide is as simple as adding comments to your stylesheet; Kalei uses a variety of frameworks, including <a href="http://backbonejs.org/">Backbone.js</a>, <a href="http://www.glazman.org/JSCSSP/">JSCSSP</a> and <a href="https://github.com/chjj/marked">Marked</a> to convert these comments into HTML mark-up, generate a list of your individual stylesheets as navigation and present these as a single page web app.</p>
+
+<p>For example in your <code>buttons.css</code> file it is as simple as adding the following comments:</p>
+
+<pre><code>/*!
+# Primary buttons
+Primary buttons are only used when there is an exceedingly distinct and clear call-to-action.
+```
+&lt;a href="#" class="button"&gt;Button&lt;/a&gt;
+&lt;a href="#" class="button secondary"&gt;Button secondary&lt;/a&gt;
+&lt;a href="#" class="button success"&gt;Button success&lt;/a&gt;
+&lt;a href="#" class="button alert"&gt;Button alert&lt;/a&gt;
+```
+*/
+</code></pre>
+
+<p>Which, by using the CSS in the file itself, Kalei would visually render like so:</p>
+
+<p><img src="/images/posts/styleguide-buttons-screenshot.png" alt="styleguide-buttons-screenshot" /></p>
+
+<h3>Customising Kalei</h3>
+
+<p>Kalei works well out-of-the-box but we had to make a few customisations.  These were mostly cosmetic changes, but a fundamental changes was to <strong>add support for Sass</strong>.  For this we wrote a Grunt task imaginatively called <code>grunt styleguide</code> in which we combined <em>Clean</em>, <em>Copy</em>, <em>Scss</em> and <em>Replace</em> tasks.  Unsatisfactorily it took a little while to set up and involved a number of steps, but below is simplification of the process.</p>
+
+<ol>
+<li>Clean all CSS files from the styleguide, excluding Kalei specific stylesheets</li>
+<li>Copy our partial scss files into a temporary folder and rename them to remove the underscore (partial scss files begin with an underscore are are <a href="http://sass-lang.com/documentation/file.SASS_REFERENCE.html#partials">not compiled by default</a>)</li>
+<li>Compile the scss files into CSS in the styleguide directory</li>
+<li>Copy across dependent fonts and images, using <em>Replace</em> to update the relative paths</li>
+<li>Delete the temporary directory</li>
+</ol>
+
+
+<p>This task is run as a deployment step and can be run locally when developing the guide.</p>
+
+<p>Other that a few small UI tweaks we made one significant changes to the look and feel.  By default the navigation lists stylesheets using their full file name, e.g. <strong>breadcrumbs.css</strong> and <strong>buttons.css</strong>.  Using a regex function in the <code>menu.js</code> file and <code>text-transform: capitalize</code> in the Kalei stylesheet we modify the navigation to display the more attractive headings <strong>Breadcrumbs</strong> and <strong>Buttons</strong>.</p>
+
+<p>View our styleguide at <a href="http://www.opentable.com/styleguide" target="_blank">opentable.com/styleguide</a>.</p>
+
+<h2>What&rsquo;s next?</h2>
+
+<p>Our living styleguide is intended to be an organic resource that we will grow and refine into an integral part of our software development.  We have many ideas for how we want to develop the guide &ndash; at the very least it is currently incomplete insomuch as we have not documented every one of our stylesheets.</p>
+
+<p>There is also a fundamental weakness to this type of styleguide, which is duplication of code.  Whilst we use the exact same CSS as our live site, we are copying and pasting mark-up into these files and this content can go out of date without deliberate upkeep.  At OpenTable we have a <em>site resource service</em> which serves HTML snippets to different internal microsites so one option could be to use this service to integrate these snippets into the styleguide.  We may also investigate a solution using <a href="http://webcomponents.org/">web components</a> as cross-browser support is not a concern.</p>
+
+<p>We are also interested to see whether it would be useful to run UI tests against the styleguide. We have used <a href="http://pdiff.sourceforge.net/">pDiff</a> in the past for visual regression on specific microsites, but the styleguide could be an opportunity to catch accidental, global UI changes.  We are going to look at running <a href="https://garris.github.io/BackstopJS/">BackstopJS</a> against each section of the guide to see if this increases its usefulness.</p>
+
+<p>Finally, as one of the developers who created the styleguide I want it to be widely adopted across OpenTable. I want designers and engineers to contribute to the code and use it for their day-to-day designing and developing, and I want product owners and marketing folks to use it when creating promotional material and A/B tests.  My ultimate goal is for it to be an integral tool enabling everyone to work faster, avoid duplication and maintain a consistent brand identity.</p>
+
+<h2>Read more</h2>
+
+<ul>
+<li>View an online directory <a href="http://styleguides.io/">of styleguide articles and examples</a></li>
+</ul>
+
+
+<!-- - Join us - [apply for our senior front-end engineer role at OpenTable, London.](https://hire.jobvite.com/Jobvite/Job.aspx?b=nlsWXpwA&j=oXeiYfwb) -->
+
+]]></content>
+  </entry>
+  
+</feed>

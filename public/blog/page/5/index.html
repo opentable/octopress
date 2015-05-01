@@ -1,0 +1,1904 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
+
+  
+  <meta name="description" content="When building a previous project, I created an ASP.NET MVC application that would allow subdomains to resolve to different areas of the project and &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.opentable.co.uk/blog/page/5/">
+  <link href="/favicon-32.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
+  <script src="//fonts.otstatic.com/zys4lfz.js"></script>
+  <script>try{Typekit.load();}catch(e){}</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
+  
+    <h2>The technology blog for OpenTable UK.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/authors">Authors</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/09/25/resolving-domains-to-areas-in-asp-dot-net-mvc/">Resolving domains to areas in ASP.NET MVC</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-25T19:28:00+01:00" pubdate data-updated="true">Sep 25<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>When building a previous project, I created an ASP.NET MVC application that would allow subdomains to resolve to different areas of the project and thus show different views. I wanted to be able to extend this functionality. I wanted to allow different domains to point to different areas. This would allow me to deploy the application just once and then have different headers on the web server rather than regional variances. Whilst on a flight to San Francisco, I was able to hack together some code that allows just that. The details of that hackiness are below.</p>
+
+<p>I started with a simple ASP.NET MVC application. I then created an area. The default area registration looks as follows:</p>
+
+<pre><code>public class Domain1AreaRegistration: AreaRegistration   
+{
+    public override void RegisterArea(AreaRegistrationContext context)
+    {
+        context.MapRoute(
+            "Domain_1_default",
+            "Domain1/{controller}/{action}/{id}",
+            new { controller = "Home", action = "Index", id = UrlParameter.Optional },
+            new[] { "WebApplication.Controllers" }
+        );
+    }
+
+    public override string AreaName
+    {
+        get { return "Domain1"; }
+    }
+}
+</code></pre>
+
+<p>The name of the folder in my project corresponds to the AreaName as above. I have approximately six areas in the application that relate to different views. Now is where the hacky magic happens. I build the routing for the application myself. In my global.asax.cs, I have the following declaration:</p>
+
+<pre><code>protected void Application_Start()
+{
+    AreaRegistration.RegisterAllAreas();
+
+    //this is done using my IoC container
+    var routingEngine = new RoutingEngineFactory();
+    routingEngine.RoutingRegistration(RouteTable.Routes);
+}
+</code></pre>
+
+<p>This is the creation of my RoutingEngine. This class is responsible for taking each area in the system in turn and then creating the routes for my application based on these. I am sure you are asking why I am doing that? The answer is simply that I can use a combination of MapRoute and IRouteConstraints to build a sufficient route for the URLs I need to map. The code looks as follows:</p>
+
+<pre><code>public void RoutingRegistration(RouteCollection routes)
+{
+    var areaNames = GetAllAreasRegistered(routes);
+    routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+    routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
+
+    foreach (var area in areaNames.Select(Area.From))
+    {
+        RegisterDefaultRoute(area.Name, routes);
+    }
+}
+
+private void RegisterDefaultRoute(string areaName, RouteCollection routes)
+{
+    var defaultRoute = routes.MapRoute(
+            BuildRouteSegment(areaName, "Default"),
+            "{controller}/{action}/{id}",
+            new { controller = "Home", action = "Index", id = UrlParameter.Optional },
+            BuildUrlConstraint(areaName),
+            new[] { DefaultControllerNameSpace }
+            );
+    defaultRoute.SetAreaDataTokens(areaName);
+}
+</code></pre>
+
+<p>The code works in the following way:</p>
+
+<p>Get a list of all the areas.
+Add the Ignore routes as these are more specific and need to be at the top of the list.
+To this list of areas, add a new area of name string.Empty. This will allow us to register the routes for the non area parts of the site. This is really hacky as denoted by the code above.
+Foreach area in the list, register a route. This route has the same URL for all routes.
+But how do we distinguish which of the routes match to a specific domain?</p>
+
+<p>routes.MapRoute in MVC has a number of overloads. The overload we will be using has the following signature:</p>
+
+<p>public static Route MapRoute(this RouteCollection routes, string name, string url, object defaults, object constraints, string[] namespaces)
+Notice that is has a parameter for constraints. All I need to do is to build the correct constraint and I will be able to give my system a way to match a specific domain. There is another overload that has no parameter for constraints and that passes null down the stack &ndash; so I can pass a null constraint for the non areas based part of the site. There is only a need to pass a constraint to the route if there is an area specified. The code to create the correct constraint looks as following:</p>
+
+<pre><code>private static object BuildUrlConstraint(string areaName)
+{
+    object constraint = null;
+    if (!string.IsNullOrWhiteSpace(areaName))
+    {
+        var constraintType = new DomainConstraintFactory(areaName).GetConstraint();
+        constraint = new {controller = constraintType};
+    }
+    return constraint;
+}
+</code></pre>
+
+<p>The domain constraint factory does all the work for me here. It can be as simple or as complex as you need it to be. Here is a snippet of code to show you:</p>
+
+<pre><code>public class DomainConstraintFactory
+{
+    private readonly string _areaName;
+    public DomainConstraintFactory(string areaName)
+    {
+        _areaName = areaName;
+    }
+
+    public IRouteConstraint GetConstraint()
+    {
+        switch (_areaName.ToLower())
+        {
+            case "domain1":
+                return new Domain1Constraint();
+            case "domain2":
+                return new Domain2Constraint();
+        }
+        return null;
+    }
+}
+</code></pre>
+
+<p>The correct constraint will now be able to be passed to the route. The constraints are very simple:</p>
+
+<pre><code>public class Domain1Constraint : IRouteConstraint
+{
+    public bool Match(HttpContextBase httpContext, Route route, string parameterName, RouteValueDictionary values, RouteDirection routeDirection)
+    {
+        if (httpContext != null &amp;&amp; httpContext.Request != null &amp;&amp; httpContext.Request.Url != null)
+        {
+            if (httpContext.Request.Url.Host == "www.mydomain.com")
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+</code></pre>
+
+<p>If we register Domain1 and Domain2 areas with the system, MVC will take each route in turn and test the constraint. It will return the Area to show based on the first match on the system.</p>
+
+<p>I can now pass in www.mydomain1.com and show the specific styling of the views in the Domain1 areas folder. By passing www.mydomain2.com, I can show a completely different set of views and let the user believe that they are on a completely different version of the site.</p>
+
+<p>The code needs to be cleaned up a lot. I will be doing this over the coming weeks. I wouldn’t quite class this as the best practice way of doing this, but it certainly shows that there is no need to have different versions of a website deployed just to show a different version of an application on a different URL. The biggest usecase here for me is deploying the same application to different countries without the need for separate deployments.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/09/23/quick-look-at-rethinkdb/">Quick look at RethinkDB</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-23T16:16:00+01:00" pubdate data-updated="true">Sep 23<span>rd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Someone in the office mentioned <a href="http://www.rethinkdb.com">RethinkDb</a> and I was impressed by the rhetoric on the site, so I decided to spend a couple of hours spiking one of our existing nodejs apps with RethinkDb. The app currently uses MongoDb so inevitably I&rsquo;m comparing the two.</p>
+
+<h1>Things I liked:</h1>
+
+<p><strong>Nodejs Driver</strong></p>
+
+<p>The api on the nodejs driver is pretty nice, it makes a concerted effort to reduce &ldquo;pyramid code&rdquo; by allowing you to build your query by method-chaining and then call a <code>.run()</code> extension to execute the query.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>r.db('Comics')
+</span><span class='line'> .table('Superheroes')
+</span><span class='line'> .getAll('Marvel', {index: 'universe'})
+</span><span class='line'> .filter({ hasSidekick: true })
+</span><span class='line'> .run(connection, function(err, cursor){
+</span><span class='line'>    cursor.toArray(function(err, items){
+</span><span class='line'>        callback(items);
+</span><span class='line'>    });
+</span><span class='line'> });
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Interface</strong>
+The management interface is very good, incredibly friendly, and has guided access to things like sharding and replication settings (as well as the usual array of other things to tinker with).</p>
+
+<p><strong>Sharding, Replication and Clustering</strong></p>
+
+<p>It&rsquo;s all there, up front in the web UI, written in plain English and with friendly guides to help. The health and performance monitoring is available up-front in clear and concise graphics.</p>
+
+<p><strong>Writes are non-locking operations</strong></p>
+
+<p>A major bugbear for us with mongoDb is that writes require a database-level lock. RethinkDb allows block-level locks for write operations, and furthermore, reads can still proceed while write locks are in effect. <a href="http://en.wikipedia.org/wiki/Multiversion_concurrency_control">MVCC ftw!</a></p>
+
+<h1>Things I didn&rsquo;t like:</h1>
+
+<p><strong>Cannot query on unindexed fields</strong></p>
+
+<p>Meaning ad-hoc queries can be a pain-in-the-arse, especially if you have a large data set.</p>
+
+<p><strong>Performance</strong></p>
+
+<p>RethinkDb readily admit that their current release (v1.9.0) has taken a performance hit after implementing their clustering layer. They are hopeful that they can bring the performance back in the next few versions. My very simple, somewhat unscientific testing found it to be about 5 times slower than mongo, for a simple document read (20ms vs 120ms).</p>
+
+<p><strong>Joins</strong></p>
+
+<p>Don&rsquo;t get me wrong, it&rsquo;s a nice feature, it just makes me feel dirty to do joins on a document database.</p>
+
+<h1>Conclusion</h1>
+
+<p>RethinkDb is a good looking database. It&rsquo;s feature-full and dead simple to use. Would I use it in production? Not yet. The performance issues are still a sticking point for me, but I have no doubt that once these are fixed RethinkDb will be a big contender.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/09/11/counting-in-elastic-search/">Counting in ElasticSearch</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-11T15:48:00+01:00" pubdate data-updated="true">Sep 11<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>Counting is the religion of this generation it is its hope and its salvation.
+Gertrude Stein</p></blockquote>
+
+<p>In our NeverEnding quest to provide better experience to the users we utilise user behaviour logs to influence future results. One particular case is restaurant popularity, which is indicated by many factors, for example how often it is searched and viewed.</p>
+
+<p>In this blog post we will look into multiple ways of counting documents in Elastic Search which is crucial for this kind of activity. All examples here are provided using Elastic Search HTTP interface and code examples implemented with <a href="https://github.com/Yegoroff/PlainElastic.Net">PlainElastic.NET</a> are <a href="https://gist.github.com/gondar/6320578">available here</a></p>
+
+<p>Before we make a deep dive into Elastic Search Counting options let&rsquo;s define our expectations:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>So that I can order restaurants by those that are most searched
+</span><span class='line'>As a potential diner
+</span><span class='line'>I want the most searched statistics from the logs to be part of the search database</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Okay, that&rsquo;s not exactly how our story was defined but as we don&rsquo;t want to discuss the whole search infrastructure here, let&rsquo;s assume this is sufficient.</p>
+
+<p>Because we are eager engineers, we will quickly build some mock data against which to test our assumptions. Our restaurant name search logs look something like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{
+</span><span class='line'>  "RestaurantId" : 2,
+</span><span class='line'>  "RestaurantName" : "Restaurant Brian",
+</span><span class='line'>  "DateTime" : "2013-08-16T15:13:47.4833748+01:00"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So we will populate our mock database with appropriate commands and check that all is in place:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>curl http://localhost:9200/store/item/ -XPOST -d '{"RestaurantId":2,"RestaurantName":"Restaurant Brian","DateTime":"2013-08-16T15:13:47.4833748+01:00"}'
+</span><span class='line'>curl http://localhost:9200/store/item/ -XPOST -d '{"RestaurantId":1,"RestaurantName":"Restaurant Cecil","DateTime":"2013-08-16T15:13:47.4833748+01:00"}'
+</span><span class='line'>curl http://localhost:9200/store/item/ -XPOST -d '{"RestaurantId":1,"RestaurantName":"Restaurant Cecil","DateTime":"2013-08-16T15:13:47.4833748+01:00"}'
+</span><span class='line'>curl http://localhost:9200/store/item/_search?q=*\&pretty</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Our expected output is a count of documents for each restaurant. For example:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{
+</span><span class='line'>  "Restaurant Brian" : 1
+</span><span class='line'>  "Restaurant Cecil" : 2
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There are three ways this can be achieved in Elastic Search; using count API (which seems like the most obvious way), a search with type set to count, or using facets to generate counts of all objects grouped by given property. Let&rsquo;s compare them:</p>
+
+<h3>Count API</h3>
+
+<p>(<a href="http://www.elasticsearch.org/guide/reference/api/count/">See documentation here</a>)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>curl -XPOST http://localhost:9200/store/item/_count -d '{
+</span><span class='line'>  "field": {
+</span><span class='line'>      "RestaurantName": {
+</span><span class='line'>          "query": "Restaurant Cecil",
+</span><span class='line'>          "default_operator": "AND"
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}'
+</span><span class='line'>{
+</span><span class='line'>  "count":2,
+</span><span class='line'>  "_shards":{"total":5,"successful":5,"failed":0}
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Count is nice little feature which solves our problem. However, if we need count for multiple restaurants we need to execute similar queries multiple times, which may hugely influence both performance of our query and usage of our ElasticSeach cluster.</p>
+
+<h3>Search</h3>
+
+<p>(<a href="http://www.elasticsearch.org/guide/reference/api/search/search-type/">See documentation here</a>)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>curl -XPOST http://localhost:9200/store/item/_search?search_type=count -d ' {
+</span><span class='line'>  "query": {
+</span><span class='line'>      "field": {
+</span><span class='line'>          "RestaurantName": {
+</span><span class='line'>              "query": "Restaurant Cecil",
+</span><span class='line'>              "default_operator": "AND"
+</span><span class='line'>          }
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}'
+</span><span class='line'>{
+</span><span class='line'>  "took":5,"timed_out":false,"_shards":{"total":5,"successful":5,"failed":0},
+</span><span class='line'>  "hits": {
+</span><span class='line'>      "total": 2,
+</span><span class='line'>      "max_score": 0.0,
+</span><span class='line'>      "hits":[]
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Using search type set to count is the same as executing a search request with size set to zero, but it&rsquo;s internally optimised for performance. The nice thing about search is that we can use multi_search interface to execute many count queries at once.</p>
+
+<p>On the other hand, the query still will be executed multiple times, so it is only feasible if we want to get popularity for a small subset of all the restaurants we have.</p>
+
+<p>Comparing two previous requests highlights that the query language is slightly different. The DSL for <em>count API</em> is basically the same as for the <em>search API</em>, but you are immediately inside the &lsquo;query&rsquo; part. That inconsistency on the ElasticSearch side is only a minor inconvenience.</p>
+
+<h3>Facets</h3>
+
+<p>(<a href="http://www.elasticsearch.org/guide/reference/api/search/facets/">See documentation here</a>)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>curl -XPOST http://localhost:9200/store/item/_search?search_type=count -d '
+</span><span class='line'>{
+</span><span class='line'>  "query": {
+</span><span class='line'>      "match_all": {
+</span><span class='line'>           
+</span><span class='line'>      }
+</span><span class='line'>  },
+</span><span class='line'>  "facets": {
+</span><span class='line'>      "ItemsPerCategoryCount": {
+</span><span class='line'>          "terms": {
+</span><span class='line'>              "field": "RestaurantId",
+</span><span class='line'>              "size": 100
+</span><span class='line'>          }
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}'
+</span><span class='line'>{
+</span><span class='line'>  "took":1,"timed_out":false,"_shards":{"total":5,"successful":5,"failed":0},"hits":{"total":132,"max_score":0.0,"hits":[]},
+</span><span class='line'>  "facets": {
+</span><span class='line'>      "ItemsPerCategoryCount": {
+</span><span class='line'>          "_type": "terms",
+</span><span class='line'>          "missing":0,
+</span><span class='line'>          "total":3,
+</span><span class='line'>          "other":0,
+</span><span class='line'>          "terms": [
+</span><span class='line'>              {"term": 2, "count": 1},
+</span><span class='line'>              {"term": 1, "count":2}
+</span><span class='line'>          ]
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Facets is a means to obtain grouping by a given field together with count in a group. It is designed to ease creation of filters which are often naturally part of search results interface.</p>
+
+<p>This is nice feature which grabs for us all counts grouped by given field. That&rsquo;s more then we need if we only care for a count of single type, but it&rsquo;s invaluable if you want to have counts for all terms in a field. Also note that we are using search type count again, but facets work equally well for all types of searches including those which actually return results.</p>
+
+<p>In the example above we used &lsquo;RestaurantId&rsquo; field instead of restaurant name, as this field is not analysed. If we used restaurant name it would give us facets for each term e.g. [{&ldquo;term&rdquo;: &ldquo;Restaurant&rdquo;, &ldquo;count&rdquo;: 3}, {&ldquo;term&rdquo;:&ldquo;Cecil&rdquo;, &ldquo;count&rdquo;:2},{&ldquo;term&rdquo;:&ldquo;Brian&rdquo;, &ldquo;count&rdquo;:1}], which is not what we exactly want.</p>
+
+<h3>Conclusion</h3>
+
+<p>It&rsquo;s hard to discuss which one is better. Count API is slightly faster then Search of type count. On the other hand search is more flexible, and its queries are consistent with normal search queries. Facets is a different beast altogether as it always grabs all the results. Still, it&rsquo;s fun that ElasticSearch is elastic in this aspect giving us variety of approaches.</p>
+
+<p>We are really curious about your experiences in ElasticSearch. If you have any questions, proposals or comments feel free to <a href="mailto:mbazydlo@opentable.com">email me</a>.</p>
+
+<h3>Acknowledgement</h3>
+
+<p>This blog post benefited thanks to invaluable comments from my team (Andrew Metcalfe, Michael Wallett and Tom Harvey), <a href="https://github.com/Yegoroff/PlainElastic.Net">PlainElastic.Net</a> author (Yegoroff) and <a href="https://github.com/pbazydlo">my brother</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">Grunt + Vagrant = Acceptance Test Heaven</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-16T15:32:00+01:00" pubdate data-updated="true">Aug 16<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>My continued love affair with Grunt reached a new high the other day, when I combined <a href="http://www.vagrantup.com">Vagrant</a> with my <a href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">Grunt deployment tasks</a> and test runners.</p>
+
+<p>I&rsquo;m not going to bang on about how great Vagrant is, because better people than me have already soliloquised at length on that subject. Let&rsquo;s just take it as writ that <strong>Vagrant is awesome</strong>.</p>
+
+<p>The objective is simple, we want to have a virtualised environment to run our acceptance tests against, that we can create and provision on demand, to ensure that our acceptance tests only deal with functional-correctness, not data- or environment-correctness.</p>
+
+<p>I created a set of Grunt tasks which were able to do the following:</p>
+
+<ul>
+<li>Spin up an provision a Vagrant instance</li>
+<li>Deploy the project code</li>
+<li>Start the server</li>
+<li>Run the acceptance tests</li>
+<li>Tear it all down</li>
+</ul>
+
+
+<p>All from a single command: <code>grunt acceptance</code></p>
+
+<p>The price of this magic? About ten lines of Bash script, a six line Vagrantfile and some Grunt glue.</p>
+
+<h2>Diving in</h2>
+
+<p>Assuming you&rsquo;ve got Vagrant installed, you can create a Vagrantfile in the root of your project, which looks like this:</p>
+
+<pre><code>Vagrant.configure("2") do |config|
+    config.vm.box = "Ubuntu precise 64 VMWare"
+    config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
+    config.vm.network :forwarded_port, guest: 3000, host: 3000
+    config.vm.provision :shell, :path =&gt; "setup/bootstrap.sh"
+end
+</code></pre>
+
+<p>Notice the last line &lsquo;config.vm.provision&rsquo;, this tells Vagrant that there is a shell script at setup/bootstrap.sh which is going to provision your vm. You can provision the box with Puppet, Chef or a variety of other tools, but for the purposes of this simple testing machine, I&rsquo;m happy to use a shell script.</p>
+
+<p>Let&rsquo;s have a look at the bootstrap file:</p>
+
+<pre><code>apt-get update -y -q
+apt-get install build-essential mongodb -y -q
+
+cp /vagrant/tests/acceptance-tests/mongodb.conf /etc/mongodb.conf
+service mongodb restart
+
+wget --quiet http://nodejs.org/dist/v0.10.15/node-v0.10.15-linux-x64.tar.gz
+
+tar -zxf node-v0.10.15-linux-x64.tar.gz
+
+mv node-v0.10.15-linux-x64/ /opt/node/
+ln -s /opt/node/bin/node /usr/bin/node
+ln -s /opt/node/bin/npm /usr/bin/npm
+</code></pre>
+
+<p>After booting the VM, Vagrant will run this script, which will can do anything you need it to. All the commands run as root, so there&rsquo;s very little restriction as to what you can achieve.</p>
+
+<p>We&rsquo;re installing Node.js (downloading the binaries manually because the version of Node in the Ubuntu repository is really old), and MongoDB (which our app depends on).</p>
+
+<p>Note this line: <code>cp /vagrant/tests/acceptance-tests/mongodb.conf /etc/mongodb.conf</code> which installs a custom config for MongoDB.</p>
+
+<p>By default, Vagrant will mount a share in /vagrant to the current directory (i.e. the directory on the host machine from which you executed <code>vagrant up</code>), you can map additional folders by adding <code>config.vm.synced_folder "path/on/host", "/path/on/guest"</code> to your Vagrantfile.</p>
+
+<p>Now that we&rsquo;ve got our Vagrant config sorted, we can hook this into Grunt, using a bit of glue code.</p>
+
+<pre><code>var shell = require('shelljs');
+
+grunt.registerTask('vagrant-up', function(){
+    shell.exec('vagrant up');
+});
+
+grunt.registerTask('vagrant-destroy', function(){
+    shell.exec('vagrant destroy -f');
+});
+</code></pre>
+
+<p>So now that we&rsquo;ve got our machine provisioned and booted, we can use Grunt to <a href="http://tech.opentable.co.uk/blog/2013/08/08/grunt-your-deployments-too/">deploy our code and start our service</a>.</p>
+
+<p>Assuming that we&rsquo;ve got all that going on, we can move on to the next step, getting Grunt to deploy the code to the Vagrant box.</p>
+
+<p>What I&rsquo;m going to do here is hook the deployment step into the &lsquo;vagrant-up&rsquo; task.</p>
+
+<pre><code>grunt.registerTask('vagrant-up', function(){
+    shell.exec('vagrant up');
+    grunt.option('config', 'vagrant');
+    grunt.task.run('deploy');
+});
+</code></pre>
+
+<p>The reason for this is so that <code>grunt vagrant-up</code> will spin me up a provisioned box <em>and</em> install the code.</p>
+
+<p>You&rsquo;ll notice that I set the &lsquo;config&rsquo; option inside the task, this option is required by the deploy task. I could specify it on the command line, but this is just friendlier and makes for a cleaner syntax of the command.</p>
+
+<p>Now, when we run <code>grunt acceptance</code>, it&rsquo;ll do the following:</p>
+
+<ul>
+<li>Spin up the Vagrant box</li>
+<li>Deploy the code</li>
+<li>Tear it down again</li>
+</ul>
+
+
+<p>The only step remaining is to run our acceptance tests. For our app, we&rsquo;re using mocha, you can use anything so long as you&rsquo;ve got a Grunt task to drop in.</p>
+
+<pre><code>var shell = require('shelljs');
+
+grunt.initConfig({
+    ...
+    mochaTest: {
+        options: {
+            reporter: 'spec'
+        },
+        AcceptanceTests:{
+            src: ['tests/acceptance-tests/**/*.js']
+        }
+    }
+});
+
+grunt.registerTask('deploy', [
+    'sshexec:stop',
+    'sshexec:make-release-dir',
+    'sshexec:update-symlinks',
+    'sftp:deploy',
+    'sshexec:npm-update',
+    'sshexec:set-config',
+    'sshexec:start'
+]);
+
+grunt.registerTask('vagrant-up', function(){
+    shell.exec('vagrant up');
+    grunt.option('config', 'vagrant');
+    grunt.task.run('deploy');
+});
+
+grunt.registerTask('vagrant-test', [ 'mochaTest:AcceptanceTests' ]);
+
+grunt.registerTask('vagrant-destroy', function(){
+    shell.exec('vagrant destroy -f');
+});
+
+grunt.registerTask('acceptance', [
+    'vagrant-up',
+    'vagrant-test',
+    'vagrant-destroy'
+]);
+</code></pre>
+
+<p>Ta-Da! Wasn&rsquo;t that painless?</p>
+
+<p>The key part here is that everything is now in source control. So whenever someone checks out the project, it takes precisely <strong><em>one</em></strong> command to get the project going. No more time wasted configuring your dev machine to be able to run this, or that.</p>
+
+<p>The machine is brand-new every time, with its own spangly MongoDB instance ready for use.</p>
+
+<p>What&rsquo;s that I hear you whine? &ldquo;<em>My application depends on shared data, I can&rsquo;t use an empty database</em>&rdquo;. Not true. If you need it, set it up or mock it out. The acceptance tests should set-up and tear-down all their own data, if you rely on shared data sources for acceptance tests then you&rsquo;re going to have a painful time. Script it once and it&rsquo;ll forever be your friend. It&rsquo;s time to enter the dynamic era, no more false failures on your CI build because a shared datasource is missing and/or has been changed.</p>
+
+<p>What&rsquo;s more you can now run <code>grunt acceptance</code> from anywhere and <strong><em>know</em></strong> that it&rsquo;ll be the same. No more environment pains!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/08/grunt-your-deployments-too/">Grunt your deployments too</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-08T15:27:00+01:00" pubdate data-updated="true">Aug 8<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>We&rsquo;ve been using <a href="http://www.gruntjs.com">Grunt</a> as a build tool for our nodejs apps, and it&rsquo;s brilliant. It lints, it configures, it minifies, it tests and it packages.</p>
+
+<p>As we move towards getting our first node app into production, we were looking at ways to deploy it. First we thought of <a href="http://www.capistranorb.com">Capistrano</a>.</p>
+
+<p><strong><em>Capistrano</em></strong> is a fully featured deployment framework written in ruby and levering rake style tasks. It&rsquo;s extremely powerful and very robust, plus there is a <a href="https://github.com/loopj/capistrano-node-deploy">gem for node deployments</a>. Alas, it was not to be. After half a day of tail chasing and hoop jumping, it occurred to me that there must be an easier way. Capistrano was encouraging me to make my project fit their template, rather than allowing me to configure the deployment to match my project. When I dug down into the Capistrano source, I found that it was just using ssh and sftp to run remote commands and copy files. But we can simplify this process.</p>
+
+<p><strong><em>Grunt</em></strong> has been great so far, so I started looking at deploying directly through grunt. We would be deploying to Ubuntu server boxes, so the only tools necessary are ssh and sftp.</p>
+
+<p>There are Grunt modules for nearly <a href="https://npmjs.org/search?q=grunt">everything</a> (linting, minifying, testing, waiting, packaging, shell-exec&#8217;ing, tagging, etc.), and rather predictably, sshing (with sftp).</p>
+
+<p><a href="https://github.com/andrewrjones/grunt-ssh">Grunt-ssh</a> provides tasks for executing remote ssh commands, and for copying files using ssh. Let&rsquo;s dive into some code.</p>
+
+<p><strong><em>SSH commands</em></strong></p>
+
+<p>This is going to go over some old ground (available on the Grunt-ssh <a href="https://github.com/andrewrjones/grunt-ssh">readme</a>), but we can build up the commands pretty quick.</p>
+
+<p>This is the basic config for executing ssh commands from your Gruntfile:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>module.exports = function(grunt) {
+</span><span class='line'>      grunt.initConfig({
+</span><span class='line'>      sshexec: {
+</span><span class='line'>      uptime: {
+</span><span class='line'>        command: "uptime",
+</span><span class='line'>        options: {
+</span><span class='line'>          host: "127.0.0.1",
+</span><span class='line'>          port: 22
+</span><span class='line'>          username: "myuser",
+</span><span class='line'>          password: "mypass"
+</span><span class='line'>        }
+</span><span class='line'>      }
+</span><span class='line'>    }  
+</span><span class='line'>  });
+</span><span class='line'>
+</span><span class='line'>  // Load the plugin that provides the "sshexec" task.
+</span><span class='line'>  grunt.loadNpmTasks('grunt-ssh');
+</span><span class='line'>
+</span><span class='line'>  // Default task.
+</span><span class='line'>  grunt.registerTask('default', ['sshexec:uptime']);
+</span><span class='line'>
+</span><span class='line'>};</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We&rsquo;ve registered a command, which we can invoke with:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grunt sshexec:uptime</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The Grunt-ssh module also provides the ability to specify multiple host configurations (shared between commands), and to select one at runtime:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grunt.initConfig({
+</span><span class='line'>    sshconfig: {
+</span><span class='line'>      qa: {
+</span><span class='line'>        host: "my.qa.server",
+</span><span class='line'>        port: 22,
+</span><span class='line'>        username: "user", 
+</span><span class='line'>        password: "password"
+</span><span class='line'>      },
+</span><span class='line'>      staging: {
+</span><span class='line'>        host: "my.staging.server",
+</span><span class='line'>        port: 22,
+</span><span class='line'>        username: "user",
+</span><span class='line'>        password: "password"
+</span><span class='line'>      }    
+</span><span class='line'>    },
+</span><span class='line'>    sshexec: {
+</span><span class='line'>      uptime: {
+</span><span class='line'>        command: "uptime"
+</span><span class='line'>      }
+</span><span class='line'>    }  
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So when we invoke the grunt task, we can specify a config:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grunt sshexec:uptime --config qa</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Or we can set it programmatically (inside the Gruntfile)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grunt.option('config', 'qa');</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong><em>SFTP Tasks</em></strong></p>
+
+<p>Grunt-ssh allows you to upload files via S<a href="FTP:">FTP:</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grunt.initConfig({
+</span><span class='line'>    sshconfig: {
+</span><span class='line'>      qa: {
+</span><span class='line'>        host: "my.qa.server",
+</span><span class='line'>        port: 22,
+</span><span class='line'>        username: "user", 
+</span><span class='line'>        password: "password",
+</span><span class='line'>        path: "/path/on/server"
+</span><span class='line'>      },
+</span><span class='line'>      staging: {
+</span><span class='line'>        host: "my.staging.server",
+</span><span class='line'>        port: 22,
+</span><span class='line'>        username: "user",
+</span><span class='line'>        password: "password",
+</span><span class='line'>        path: "/path/on/server"
+</span><span class='line'>      }    
+</span><span class='line'>    },
+</span><span class='line'>    sshexec: {
+</span><span class='line'>      uptime: {
+</span><span class='line'>        command: "uptime"
+</span><span class='line'>      }
+</span><span class='line'>    }
+</span><span class='line'>    sftp: {
+</span><span class='line'>      deploy: {
+</span><span class='line'>        files: {
+</span><span class='line'>          "./": "package/**"
+</span><span class='line'>        },
+</span><span class='line'>        options: {
+</span><span class='line'>          srcBasePath: "package/",
+</span><span class='line'>          createDirectories: true
+</span><span class='line'>        }
+</span><span class='line'>      }
+</span><span class='line'>    }  
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There are a couple of options here, so let&rsquo;s break it down:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>files: {
+</span><span class='line'>  "./": "package/**"
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will copy all files from the &ldquo;package/&rdquo; folder locally. If you want to specify only certain types of files, you can use grunt&rsquo;s standard <a href="https://github.com/gruntjs/grunt/wiki/grunt.file#globbing-patterns">file globbing</a>.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>srcBasePath: "package/"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Optionally strip off an initial part of the path (without it, files would upload to &ldquo;/path/on/server/package/&rdquo;).</p>
+
+<p><strong><em>Putting it all together</em></strong>
+We&rsquo;ve got all the component parts, now lets put it together (plus a few other cool bits).</p>
+
+<p><em>Note: at the time of writing, there is a bug in Grunt-ssh where the sftp task does not use the shared sshconfig, so if you want the fixed code, use <a href="https://github.com/andyroyle/grunt-ssh">my fork</a> (there is a pull request outstanding)</em></p>
+
+<p>This snippet assumes that:</p>
+
+<ul>
+<li>You can connect to your deployment server using ssh</li>
+<li>You are deploying to /var/www/myapp</li>
+<li>You are using <a href="https://github.com/nodejitsu/forever">forever</a> to run your app</li>
+<li>Your application files are copied to ./package/</li>
+</ul>
+
+
+<p>(but, since we&rsquo;re just using bash commands, this is easily configurable)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var dirname = (new Date()).toISOString();
+</span><span class='line'>
+</span><span class='line'>module.exports = function(grunt){
+</span><span class='line'>  grunt.initConfig({
+</span><span class='line'>    // our shared sshconfig
+</span><span class='line'>    sshconfig: {
+</span><span class='line'>      qa: {
+</span><span class='line'>        host: "my.qa.server",
+</span><span class='line'>        port: 22,
+</span><span class='line'>        username: "user",
+</span><span class='line'>        password: "password",
+</span><span class='line'>        path: "/path/on/server"
+</span><span class='line'>      },
+</span><span class='line'>      staging: {
+</span><span class='line'>        host: "my.staging.server",
+</span><span class='line'>        port: 22,
+</span><span class='line'>        username: "user",
+</span><span class='line'>        password: "password",
+</span><span class='line'>        path: "/path/on/server"
+</span><span class='line'>      },
+</span><span class='line'>      production: {
+</span><span class='line'>        host: "&lt;%= grunt.option('server') %&gt;",
+</span><span class='line'>        port: 22,
+</span><span class='line'>        username: "&lt;%= grunt.option('username') %&gt;",
+</span><span class='line'>        password: "&lt;%= grunt.option('password') %&gt;",
+</span><span class='line'>        path: "/path/on/server"
+</span><span class='line'>      }
+</span><span class='line'>    },
+</span><span class='line'>    // define our ssh commands
+</span><span class='line'>    sshexec: {
+</span><span class='line'>      start: {
+</span><span class='line'>        command: "cd /var/www/myapp/current && forever start -o /var/www/myapp/current/logs/forever.out -e /var/www/myapp/current/logs/forever.err --append app.js"
+</span><span class='line'>      },
+</span><span class='line'>      stop: {
+</span><span class='line'>        command: "forever stop app.js",
+</span><span class='line'>        options: {
+</span><span class='line'>          ignoreErrors: true
+</span><span class='line'>       }
+</span><span class='line'>      },
+</span><span class='line'>      'make-release-dir': {
+</span><span class='line'>        command: "mkdir -m 777 -p /var/www/myapp/releases/" + dirname + "/logs"
+</span><span class='line'>      },
+</span><span class='line'>      'update-symlinks': {
+</span><span class='line'>        command: "rm -rf /var/www/myapp/current && ln -s /var/www/myapp/releases/" + dirname + " /var/www/myapp/current"
+</span><span class='line'>      },
+</span><span class='line'>      'npm-update': {
+</span><span class='line'>        command: "cd /var/www/myapp/current && npm update"
+</span><span class='line'>      },
+</span><span class='line'>      'set-config': {
+</span><span class='line'>        command: "mv -f /var/www/myapp/current/config/&lt;%= grunt.option('config') %&gt;.yml /var/www/myapp/current/config/default.yml"
+</span><span class='line'>      }
+</span><span class='line'>    },
+</span><span class='line'>    // our sftp file copy config
+</span><span class='line'>    sftp: {
+</span><span class='line'>      deploy: {
+</span><span class='line'>        files: {
+</span><span class='line'>          "./": "package/**"
+</span><span class='line'>        },
+</span><span class='line'>        options: {
+</span><span class='line'>          srcBasePath: "package/",
+</span><span class='line'>          createDirectories: true
+</span><span class='line'>        }
+</span><span class='line'>      }
+</span><span class='line'>    }
+</span><span class='line'>  });
+</span><span class='line'>
+</span><span class='line'>  grunt.loadNpmTasks('grunt-ssh');
+</span><span class='line'>  grunt.registerTask('deploy', [
+</span><span class='line'>    'sshexec:stop',
+</span><span class='line'>    'sshexec:make-release-dir',
+</span><span class='line'>    'sshexec:update-symlinks',
+</span><span class='line'>    'sftp:deploy',
+</span><span class='line'>    'sshexec:npm-update',
+</span><span class='line'>    'sshexec:set-config',
+</span><span class='line'>    'sshexec:start'
+</span><span class='line'>  ]);
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It should all make sense, the sshexec is just running remote ssh commands (making directories, starting and stopping using forever etc). Let&rsquo;s just re-iterate what this is doing:</p>
+
+<ol>
+<li><code>sshexec:stop</code>: stops the app (assumes you&rsquo;re using forever)</li>
+<li><code>sshexec:make-release-dir</code>: this will create the folder /var/www/myapp/releases/[current-date-time]</li>
+<li><code>sshexec:update-symlinks</code>: this will create a symlink from /var/www/myapp/current to the release folder we just created (this means that rolling back is just a case of changing the symlink back).</li>
+<li><code>sftp:deploy</code>: copy the files into place</li>
+<li><code>sshexec:npm-update</code>: installs any missing node modules</li>
+<li><code>sshexec:set-config</code>: copy the environment configuration into place</li>
+<li><code>sshexec:start</code>: start the application using forever, pointing the logs to /var/www/myapp/current/logs/</li>
+</ol>
+
+
+<p><strong><em>Deploying with one command</em></strong></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grunt deploy --config qa</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Also, if you noticed the <em>production</em> config I specified in that snippet, you&rsquo;ll see that I didn&rsquo;t include any host, username or password configs. The <code>grunt.option('value')</code> allows us to access the command line switches, which means we don&rsquo;t have to keep any sensitive passwords in source control; we can specify them on the command line.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grunt deploy --config production --server my.production.server --username user --password password</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There are lots of other solutions to the problem of credentials, but this is by far the simplest. It&rsquo;s worth remembering the Grunt-ssh uses the ssh2 module, so by default it will look to <code>~/.ssh/</code> for keys when connecting without a password.</p>
+
+<p><strong>But wait, there&rsquo;s more</strong></p>
+
+<p>Basically any task you can think of is scriptable using grunt (and some combination of tools). Extra things that we&rsquo;ve added to our deployment process include:</p>
+
+<ul>
+<li>Removing the application server from the load-balancer before deploying (and pushing it back when the deployment is complete).</li>
+<li>Making a http request to check the health of the service before going live.</li>
+<li>Rollback from a single command</li>
+</ul>
+
+
+<p><strong>Oink, Oink &hellip;..</strong></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/07/mapreduce-in-mongodb/">MapReduce in MongoDB</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-07T10:40:00+01:00" pubdate data-updated="true">Aug 7<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>One of the first things I took on when joining OpenTable was building a new endpoint in our reviews API to aggregate and summarise restaurant review data. Thankfully, at the time, all the data I needed was cached in memory so building the response object was a simple set of linq queries over the cached reviews.</p>
+
+<h2>The problem</h2>
+
+<p>Over time the number of reviews grow, and grow, and grow!  In fact it is inevitable that, in time, it will reach a point where caching all this data in memory would be madness.  One option to mitigate this would be to limit the cache to a fixed date range but this won&rsquo;t work in this instance because the summary logic supports custom date ranges.  Another option would be to pull the data from the persistence store each and every time it&rsquo;s required however this would seriously impact load on the infrastructure and degrade performance of the API.</p>
+
+<p>We like to be proactive at OpenTable, so during innovation time (yes! we get time to innovate on our development) I looked at finding an alternate solution that would meet the requirements of the logic and wouldn&rsquo;t drastically increase load or degrade performance.</p>
+
+<h2>The solution</h2>
+
+<p>MongoDB supports <a href="http://en.wikipedia.org/wiki/MapReduce">MapReduce</a> which allows processing large volumes of data (Map), running arbitrary logic to summarise (Reduce) and producing some results.  In MongoDB the MapReduce functionality uses JavaScript functions to perform the map and reduce steps and the syntax is relatively simple to understand:&ndash;</p>
+
+<pre><code>db.largeDataset.mapReduce(mapFunction, 
+                          reduceFunction, 
+                          { out: "summary" }
+</code></pre>
+
+<p>In the above example the largeDataset collection is mapped using the predefined mapFunction, the results are passed to the reduceFunction and the reduced data is finally stored in the summary collection. On top of this you can specify queries as well as a finalize function to &ldquo;tweak&rdquo; the reduce results.</p>
+
+<p>Because map, reduce &amp; finalize are functions that only operate on their inputs the workload can be parallelized although the final results would be stored in one location.</p>
+
+<h4>Map</h4>
+
+<p>The key purpose of the map function is to take the complex documents and produce a structure conducive to summarising whilst at the same time defining the granularity of the results using grouping.</p>
+
+<p>For example if you wanted to get the number of reviews by restaurant then you&rsquo;d group by the restaurant&rsquo;s unique identifier meaning that the reduce function would produce a single result for each restaurant:&ndash;</p>
+
+<pre><code>var mapFunction = function() {
+                    emit(this.RestaurantId, 1);
+                  };
+</code></pre>
+
+<p>This function, called on each review, maps the review to the value 1 and groups by the RestaurantId.  The value 1 was chosen because, as you will see in the continuation of this example below, it&rsquo;s the easiest way to calculate the count of reviews per restaurant.</p>
+
+<h4>Reduce</h4>
+
+<p>The key purpose of the reduce function is to take a batch of mapped values for a given group and return a single result.  All values emited from the map function are passed to the reduce function although since the batch size is decided by MongoDB there may be multiple calls to reduce.  In fact given a sufficiently large source dataset the reduce function will be passed results from previous reduce function calls as well.  For example if there were 250 mapped results in a group and batches of 100 were reduced by each call then four calls would be needed, three to reduce the initial 250 results and a final call to reduce these results into the final value for the group.</p>
+
+<p>To continue the example from above:&ndash;</p>
+
+<pre><code>var reduceFunction = function(group, values) {
+                       return Array.sum(values);
+                     };
+</code></pre>
+
+<p>The results from this function would be stored in the collection defined in the mapReduce call with an <em>id and value.  The </em>id property is populated with the group id and the value property will contain the final reduce result for that group.</p>
+
+<h2>Getting Started in C#</h2>
+
+<p>The following are a list of projects/resources to look at if you want to implement Mongo MapReduce in your scenario with emphasis on C#:&ndash;</p>
+
+<ul>
+<li><a href="http://docs.mongodb.org/manual/tutorial/map-reduce-examples">Mongo Map-Reduce Examples</a> is a useful primer document.</li>
+<li><a href="http://cookbook.mongodb.org">Mongo Cookbook</a> has a number of &ldquo;real world&rdquo; examples of MapReduce</li>
+<li><a href="http://docs.mongodb.org/ecosystem/drivers/csharp">Mongo C# driver</a> has some logic to perform MapReduce however it is only a thin layer over the underlying syntax and uses JavaScript functions passed as strings.</li>
+<li><a href="http://github.com/craiggwilson/fluent-mongo/wiki/Map-Reduce">Fluent-Mongo</a> provides a linq syntax over simple map reduce functions.  Interestingly it can perform multiple calculations on a set of data although at present it doesn&rsquo;t support more complex logic.</li>
+<li><a href="http://twitter.com/odetocode">K.Scott Allen</a> has written two articles on MapReduce, <a href="http://odetocode.com/blogs/scott/archive/2012/03/19/a-simple-mapreduce-with-mongodb-and-c.aspx">A Simple MapReduce&hellip;</a> and <a href="http://odetocode.com/blogs/scott/archive/2012/03/29/a-simpler-mapreduce-with-mongodb-and-c.aspx">A Simpler MapReduce&hellip;</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine/">Using Vagrant to work with ElasticSearch on your local machine</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-05T08:45:00+01:00" pubdate data-updated="true">Aug 5<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Recently, I have started to work a lot more with <a href="http://www.vagrantup.com/">Vagrant</a> as a tool for creating a standard development environment across my team. This essentially means that regardless what the developers&#8217; machine is set up or running as, they can still reproduce the same environment as their colleagues just by entering a command.</p>
+
+<p>Configuration managgement is something we have had to embrace to help us maintain an ever changing world of technologies. The hardest thing is knowing what we actually have to build in these environments. We use Vagrant to help us understand this. The simple flow is as follows:</p>
+
+<ul>
+<li>Developer starts a new project</li>
+<li>Developer creates a Vagrantfile to spin up a local VM</li>
+<li>Vagrantfile gets iterated on as the development process goes forward</li>
+</ul>
+
+
+<p>Once the developer understands what they need to actually run their software, we would then go about creating an environment to which this software will actually be deployed for end-to-end testing. I won&rsquo;t go any further into the details of our Vagrant flow in this post, if you want to read more about how to get started with Vagrant, then I would suggest reading <a href="http://shop.oreilly.com/product/0636920026358.do">Vagrant Up and Running</a> by <a href="https://twitter.com/mitchellh">Mitchell Hashimoto</a>.</p>
+
+<h2>Vagrant and ElasticSearch</h2>
+
+<p>Whilst reviewing a book on <a href="http://www.elasticsearch.org/">ElasticSearch</a>, I noticed how simple the instructions were to get up and running with ElasticSearch. Please note, that there are already lots of Puppet modules for configuring ElasticSearch on <a href="http://forge.puppetlabs.com/modules?q=elasticsearch">Puppetlabs Forge</a>. This post only talks about how I was able to quickly spin up some local instances. I didn&rsquo;t want to manually do this, so I decided to use Vagrant (and Puppet) to take care of it for me. The instructions can be summarised as follows:</p>
+
+<ul>
+<li>Download and install the JavaSDK</li>
+<li>Download the specific ElasticSearch package</li>
+<li>Install ElasticSearch</li>
+<li>Download and install curl (to be able to interact with ElasticSearch)</li>
+<li>Make sure the service is started</li>
+</ul>
+
+
+<p>I hate doing this manually. Luckily, with the correct script, I am able to automate all of this as follows:</p>
+
+<pre><code>Vagrant.configure("2") do |config|
+    config.vm.box = "Ubuntu precise 64 VMWare"
+    config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
+    config.vm.network :forwarded_port, guest: 9200, host: 9200
+    config.vm.provision :puppet do |puppet|
+        puppet.module_path = '../setup/modules'
+        puppet.manifests_path = '../setup/manifests'
+        puppet.manifest_file = 'default.pp'
+        puppet.options = '--verbose --debug'
+    end
+end
+</code></pre>
+
+<p>Essentially, this script says to create a clone of a VM from a predefined box, forward port 9200 on the vm to 9200 on my local machine and then provision the server using Puppet. The Puppet script works as follows:</p>
+
+<pre><code>exec { "apt-get-update":
+    command =&gt; "/usr/bin/apt-get update",
+}
+
+package {'curl':
+    provider =&gt; apt,
+    ensure   =&gt; latest,
+    require  =&gt; Exec['apt-get-update']
+}
+
+class {'elasticsearch':
+    version =&gt; '0.90.0',
+    require =&gt; Exec['apt-get-update'],
+}
+</code></pre>
+
+<p>This defines that the command apt-get-update gets applied (due to both the class and the package requiring it) and then will install curl and ElasticSearch in no particular order. Once the script runs, I will be able to open a browser on my local machine, go to <a href="http://localhost:9200">http://localhost:9200</a> and see the newly provisioned ElasticSearch node. The result of the JSON was something similar to this:</p>
+
+<pre><code>{
+    "ok" : true,
+    "status" : 200,
+    "name" : "Gibborim",
+    "version" : {
+        "number" : "0.90.0",
+        "snapshot_build" : false,
+    },
+    "tagline" : "You Know, for Search"
+}
+</code></pre>
+
+<p>By entering the URL, &lsquo;**<a href="http://localhost:9200/_cluster/health?pretty**">http://localhost:9200/_cluster/health?pretty**</a>&rsquo;, you can see the state of the ElasticSearch cluster. It should show something like this:</p>
+
+<pre><code>{
+    "cluster_name" : "elasticsearch",
+    "status" : "yellow",
+    "timed_out" : false,
+    "number_of_nodes" : 1,              
+    "number_of_data_nodes" : 1,         
+    "active_primary_shards" : 5,        
+    "active_shards" : 5,                
+    "relocating_shards" : 0,            
+    "initializing_shards" : 0,          
+    "unassigned_shards" : 5             
+}
+</code></pre>
+
+<p>I wanted to be able to provision multiple nodes and then let them create a cluster. I was able to take the existing Vagrantfile and then using the multi-environment features of Vagrant. This created a new Vagrantfile as follows:</p>
+
+<pre><code>Vagrant::Config.run do |config|
+    config.vm.box = "Ubuntu precise 64 VMWare"
+    config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
+
+    config.vm.define "es1" do |es1|
+        es1.vm.network :hostonly, "192.168.1.10"
+        es1.vm.provision :puppet do |puppet|
+            puppet.module_path = '../setup/modules'
+            puppet.manifests_path = '../setup/manifests'
+            puppet.manifest_file = 'default.pp'
+            puppet.options = '--verbose --debug'
+        end
+    end
+
+    config.vm.define "es2" do |es2|
+        es2.vm.network :hostonly, "192.168.1.11"
+        es2.vm.provision :puppet do |puppet|
+            puppet.module_path = '../setup/modules'
+            puppet.manifests_path = '../setup/manifests'
+            puppet.manifest_file = 'default.pp'
+            puppet.options = '--verbose --debug'
+        end
+    end
+
+    config.vm.define "es3" do |es3|
+        es3.vm.network :hostonly, "192.168.1.12"
+        es3.vm.provision :puppet do |puppet|
+            puppet.module_path = '../setup/modules'
+            puppet.manifests_path = '../setup/manifests'
+            puppet.manifest_file = 'default.pp'
+            puppet.options = '--verbose --debug'
+        end
+    end
+end
+</code></pre>
+
+<p>This effectively tells Vagrant to create three instances of ElasticSearch using the Puppet configuration (as above). Each ElasticSearch node is given its own IP. Thanks to ElasticSearch using Multicast and Unicast discovery, it is able to find other nodes on the network and create a cluster. By running a similar url as before, &lsquo;**<a href="http://192.168.1.10:9200/_cluster/health?pretty**">http://192.168.1.10:9200/_cluster/health?pretty**</a>&rsquo;, we can now see that the cluster looks as follows:</p>
+
+<pre><code>{
+    "cluster_name" : "elasticsearch",
+    "status" : "green",
+    "timed_out" : false,
+    "number_of_nodes" : 3,              
+    "number_of_data_nodes" : 3,         
+    "active_primary_shards" : 5,        
+    "active_shards" : 15,                
+    "relocating_shards" : 0,            
+    "initializing_shards" : 0,          
+    "unassigned_shards" : 0             
+}
+</code></pre>
+
+<p>Using this method, we can continue to spin up as many instances as we need to replicate different scenarios or testing conditions. Vagrant has made this very easy to do. If you want a copy of the Vagrantfiles and Puppet modules to try this yourself, then you can find them on my <a href="https://github.com/stack72/vagrant-examples/tree/master/elasticsearch">github repository</a>. The scripts are available under the <a href="http://opensource.org/licenses/MIT">MIT</a> license.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/24/one-gun-many-enemies/">One Gun - Many Enemies</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-24T14:32:00+01:00" pubdate data-updated="true">Jul 24<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I spent some time, re-investigating Javascript. After a few months of intensive TDD and SOLID training at OpenTable I was curious how those principles apply in a slightly different environment. Guess what, they do not differ that much&hellip; I planned to write about all this sometime in the future after gaining more experience from real battles ahead, however <a href="http://watirmelon.com/2013/02/09/why-i-dont-like-Jasmine/">Watirmelon post</a> invited me to attack this subject immediately.</p>
+
+<p>I went through the available testing frameworks for Javascript and decided on Jasmine. Why? Mainly because of its BDD syntax which is fashionable this season. The second reason is that it has really cool documentation. Finally, the basic set up of just running an HTML file in a browser got me up and running fast.</p>
+
+<p>Let&rsquo;s look at the basics &ndash; what I expect from different types of tests and how Jasmine fits into those requirements:</p>
+
+<h2>Unit Testing</h2>
+
+<h3>Advice from senior craftsman</h3>
+
+<ul>
+<li>Shoot them one by one
+(structure your code so that it is easier to maintain)</li>
+<li>Be sure you kill with every shot
+(verify small bits of code to nail down issues)</li>
+<li>Kill them all
+(verify edge cases)</li>
+<li>Kill them quick
+(provide fast feedback on issues)</li>
+<li>Choose a fast shooting gun &ndash; the faster you shoot, the more enemies you will kill
+(unit tests must be blazing fast)</li>
+<li>Choose the most reliable gun &ndash; if it is stuck then you are dead
+(when unit tests are brittle you will stop depending on them)</li>
+<li>Your gun needs to be light enough to carry everywhere
+(unit tests are your gun, so you must be able to run them all locally)</li>
+</ul>
+
+
+<p>Jasmine works great for all those aims, as it is really fast and it allows you to stub both objects and DOM elements (especially combined with a Jasmine-jQuery plugin). Keep in mind that Unit Testing is useful only if you either write new code or refactor old code. Do not ever try to write Unit Tests for existing code which you don&rsquo;t intend to refactor. It&rsquo;s like shooting the dead. You simply cannot kill them with another bullet.</p>
+
+<h2>Integration Testing</h2>
+
+<h3>Advice from senior craftsman</h3>
+
+<ul>
+<li>Beware of the hidden sniper
+(test against external dependencies like files, databases, network services)</li>
+<li>You are part of your squad
+(verify that components of the application work well together)</li>
+<li>Observe the environment
+(try to use depenedencies as close to the real problem as possible e.g. example file, database with test data, test version of an external service)</li>
+<li>Point in the right direction
+(do not try to test your stack top-down, instead concentrate on interfaces and adapters that you could not test in unit tests)</li>
+</ul>
+
+
+<p>Integration tests will naturally be harder to quickly setup &ndash; they might break due to configuration problems or inaccessible external services. That&rsquo;s why you don&rsquo;t want to have that many of them. Still, you want to know that all your problems are due to your partner changing protocol. Once again nothing stops us from using Jasmine here.</p>
+
+<p>Jasmine just executes your tests, so the tests that point towards external services, send example files to your code etc. will all be a breeze to implement with Jasmine.</p>
+
+<h2>Acceptance Testing</h2>
+
+<h3>Aims</h3>
+
+<ul>
+<li>Confirm you are fighting the right war
+(show specification to your product owner/manager/client)</li>
+<li>Keep clean supply routes
+(test the functionality of your app with full set up and all dependencies)</li>
+<li>Find hidden mines
+(test your application in all environments to which you deploy)</li>
+</ul>
+
+
+<h3>Advice from senior craftsman</h3>
+
+<ul>
+<li>Speak in their language
+(use a tool which allows writing tests in natural language such as Cucumber or SpecFlow)</li>
+<li>Take your time
+(those tests will be slower, so accept that you will not always run them locally and that you will not run them every minute)</li>
+<li>Spend your resources wisely
+(acceptance tests are naturally much more brittle then other types of tests, so try to keep their number reasonably small)</li>
+</ul>
+
+
+<p>This is where I would not recommend Jasmine, simply because it doesn&rsquo;t fit this job. Its syntax is based on programming language, so it is harder to read by non-engineers. Jasmine allows you to execute events and call your code. However, your users will be most likely be using a browser to interact with your code, so it is much better to use a tool that also uses a browser to test your web page.</p>
+
+<h2>Conclusion</h2>
+
+<p>I find Jasmine extremely well suited for unit and integration testing. I wouldn&rsquo;t use it for acceptance tests as there are quite few better tools for that job. And I guess that is the issue that Alister Scott has with Jasmine on his blog &ndash; he tried to use it for acceptance testing. In that case I wouldn&rsquo;t choose Jasmine either. On the other hand I don&rsquo;t like using a screwdriver to hammer a nail.</p>
+
+<h2>Post Scriptum (on DOM dependency)</h2>
+
+<p>Alister also complains about integration issues between his server-side code and client-side code. His experience is that changes to IDs and classes in MVC applications result in failing Javascript. The issue is serious and shows one important mistake, which is hardcoding dependencies. IDs and class names are configurable details and Javascript code should be agnostic of them. To illustrate let&rsquo;s look at a simple test case from my pet-project:</p>
+
+<pre><code>describe("GameController", function(){
+  describe("During Initialize", function() {
+    var view;
+    var subject;
+
+    beforeEach(function() {    
+        setFixtures("&lt;div id="myid"&gt;&lt;/div&gt;");
+        subject = new GameView();
+
+        subject.CreateFabricInDiv("#myid");
+    });
+
+    it("creates fabric in div", function(){
+        expect($("#myid")).not.toBeEmpty();
+    });
+
+    it("holds pointer to canvas", function(){
+        expect(subject._canvas).not.toBe(undefined);
+    });
+ }); 
+</code></pre>
+
+<p>Do you see how &ldquo;#myid&rdquo; parameter is passed into the method call? We moved the configuration detail out from the Javascript code, which in my opinion it is the simplest solution to Alister&rsquo;s problem.</p>
+
+<p>If code is designed in such a way that IDs/class names are not embedded all around the codebase you can figure out quite few nice ways to keep them consistent between Javascript and server-side code.</p>
+
+<p>It also helps with code re-usability as you can use the same code on two separate pages with differing IDs!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/08/managing-windows-certificates-with-powershell/">Managing Windows Certificates with PowerShell</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-08T18:51:00+01:00" pubdate data-updated="true">Jul 8<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Managing certificates on Windows is <em>really</em> painful. There is no easy way to do it. The general way to install a certificate to a Windows Server 2008 machine is as follows:</p>
+
+<ul>
+<li>Open the Certificates snap-in for a user, computer, or service.</li>
+<li>In the console tree, click the logical store where you want to import the certificate.</li>
+<li>On the Action menu, point to All Tasks, and then click Import to start the Certificate Import Wizard.</li>
+<li>Type the file name containing the certificate to be imported.</li>
+<li>If you want to specify where the certificate is stored, select Place all certificates in the following store, click Browse, and choose the certificate store to use. OR</li>
+<li>If the certificate should be automatically placed in a certificate store based on the type of certificate, click Automatically select the certificate store based on the type of certificate.</li>
+</ul>
+
+
+<p>The first time I ran this process, I felt as though this was just wrong to not be able to automate. The goal of our team is to automate everything we are currently doing manually. PowerShell is a better option for this import process as it allows you to write code to do it. As we all know, code is better for a number of reasons, I won&rsquo;t go into the infrastructure as code argument in this post (but it is coming soon….). Using PowerShell, I can write a simple function as follows:</p>
+
+<pre><code>function Import-PfxCertificate($certName, $CertLocaton, $certRootStore, $certStore) {    
+     $pfx = new-object System.Security.Cryptography.X509Certificates.X509Certificate2    
+
+     $pfxPass = convertto-securestring $CertPassword -asplaintext -force
+
+     $certPath = $CertLocaton + "\" + $certName   
+     $pfx.import($certPath,$pfxPass,"Exportable,PersistKeySet")    
+
+     $store = new-object System.Security.Cryptography.X509Certificates.X509Store($certStore,$certRootStore)    
+     $store.open("MaxAllowed")    
+     $store.add($pfx)    
+     $store.close()    
+}
+</code></pre>
+
+<p>This makes certificate management easier. To manage certificates in this way, I just need to invoke a script similar to this:</p>
+
+<pre><code>.\import-certificate.ps1 -CertificateName "mycert.pfx" -CertLocation "c:\ssl\mycerts"
+</code></pre>
+
+<p>Much simpler! You can download a <a href="https://gist.github.com/opentable-devops/5951108">gist</a> of this script should you wish to use it. Please note that the license that this script is available under can be read from our <a href="https://github.com/opentable/licensing/blob/master/LICENSE">github repository</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/06/18/ndcoslo/">NDC Oslo</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-18T11:59:00+01:00" pubdate data-updated="true">Jun 18<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Three OpenTable heroes took to Norway last week to attend NDC Oslo. For two of us it was our first major conference and for one, Paul Stack, he had to speak.</p>
+
+<p>Personally, as my first large, multi-discipline conference, I didn&rsquo;t really know what to expect. Being away from the team for three days in a foreign country with major project work going on at the same time was a bit uncomfortable. I was worried that the time and expense needed to be justified. That fear went away after the first night in the bar!</p>
+
+<p>The sessions were great, many things I haven&rsquo;t had a chance to investigate were covered, things like Functional Programming, the latest JavaScript frameworks and tooling. There were also sessions covering things I am more involved with, Agile Process, SOA &amp; Rest, Team Structure and Hiring.</p>
+
+<p>There are other posts around about the individual sessions but I am now much more enthusiastic about functional programming particularly how we could use it and getting back into front end development (even if just in my own time).</p>
+
+<p>The main thing I enjoyed and learnt though is meeting the other delegates. I think staying away from home makes this much more prevalent, something to consider for other conferences. Meeting people at all levels or experience and especially the speakers, most of whom are very generous with their time and ideas, teaches you the most. I probably learnt more over the shuffle board of The Dubliner Pub than reading blog post online in a year (that may be a stretch, but I did learn I was by far the best player on the night).</p>
+
+<p>Watching a colleague speak was also interesting, when you work with a buffoon, however passionate and hard working, to see people actually interested in what he has to say is an eye opener. It makes you realise what you are doing and all its challenges are a step forwards and one to keep pursuing. It also makes you think, &ldquo;if he can do it, I must be able to, what knowledge should I share?&rdquo;. What to share is the hard bit.</p>
+
+<p>My final point is how often I should try to get to these; one a year for sure, any more than that? I need to think that through.</p>
+
+<p>Thanks to the organisers of the conference for a well organised, varied and enjoyable time. And if you have project work on, the wifi was excellent so you need never be too far away from the rest of the team, just do it.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/6/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/4/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/05/the-dns-abc/">The DNS ABC</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/16/hapi-js-and-sigterm/">Hapi.js and SIGTERM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">Dismantling the monolith - Microsites at Opentable</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/02/a-beginners-guide-to-rest-services/">A Beginner&#8217;s guide to REST services</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/23/on-strongly-typed-logging/">On Strongly Typed Logging</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2015 - OpenTable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

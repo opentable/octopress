@@ -1,0 +1,349 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Building a living styleguide at OpenTable - OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
+
+  
+  <meta name="description" content="If you&rsquo;re reading this you&rsquo;ve probably built yourself a website. A site &ndash; large or small &ndash; that&rsquo;s thrown together or &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.opentable.co.uk/blog/2015/01/19/building-a-living-styleguide-at-opentable/">
+  <link href="/favicon-32.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
+  <script src="//fonts.otstatic.com/zys4lfz.js"></script>
+  <script>try{Typekit.load();}catch(e){}</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
+  
+    <h2>The technology blog for OpenTable UK.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/authors">Authors</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Building a living styleguide at OpenTable</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/blog/authors/jcatterfeld.html">John Catterfeld</a></span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-19T17:00:00+00:00" pubdate data-updated="true">Jan 19<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>If you&rsquo;re reading this you&rsquo;ve probably built yourself a website.  A site &ndash; large or small &ndash; that&rsquo;s thrown together or crafted over many months.  And if you have, you’ve probably kept all your CSS class names in your head, or at least been able to go straight to the relevant stylesheets to retrieve them.</p>
+
+<p>Well OpenTable is unsurprisingly built by many engineering teams across multiple continents, and was completely redesigned last year.  And as soon as you have more than a handful of people working on your front-end you will quickly find a well-intentioned developer causing one or both of these problems:</p>
+
+<ul>
+<li>Well-intentioned developer adds a new submission form but, like the design Philistine he is, his buttons are <span style="font-family:verdana;font-size:18px;color:#E40000;">18px Verdana #E40000</span>, not the correct <span style="font-family:arial;font-size:16px;color:#DA3743;">16px Arial #DA3743</span></li>
+<li>Your good old developer knows which font size and colour it should be, but bungs a duplicate class into a random stylesheet (or worse still, inline)</li>
+</ul>
+
+
+<p>Despite these risks, a single front-end dev (or a team of them) cannot check every new piece of code or they will quickly become a bottleneck.</p>
+
+<h3>You need some guidelines</h3>
+
+<p>Offline designers regularly create ‘brand guidelines’ or ‘design standards&#8217; to document the precise way their brand or product should be recreated when outside of their control.  Online, such guidelines are similarly invaluable for maintaining brand and code consistency with multiple engineers and designers, but it is blindingly obvious that a printed or ‘static’ set of guidelines is completely unsuitable for a constantly changing website.</p>
+
+<p>Step forward a ‘living’ styleguide.</p>
+
+<p>A living styleguide gives a visual representation of a site’s UI elements using <strong>the exact same code</strong> as on the website, in most cases via the live CSS.  A living styleguide may also provide reusable CSS and HTML code examples and they are not just for engineers new to the code; I frequently use ours at OpenTable and I wrote the stylesheets in the first place (I can’t be expected to remember everything).</p>
+
+<p>Providing reusable code improves collaboration, consistency and standards, and reduces design and development time &ndash; but like most documentation it is essential your guide is always up-to-date and trustworthy.  So if a living styleguide is (theoretically) always up-to-date, how did we build ours?</p>
+
+<h2>How we built our styleguide</h2>
+
+<p>Living styleguides are not new (although they were <a href="http://sideproject.io/an-exhaustive-look-at-the-year-in-web-design/#styleguides">one of the trends of 2014</a>) and as such many frameworks have been built over the years.  We chose to use <a href="http://kaleistyleguide.com/">Kalei</a> by <a href="https://github.com/thomasdavis">Thomas Davis</a> &ndash; I forget the exact reasons why but it was probably the easiest at the time to set up and customise.</p>
+
+<p>Generating a Kalei styleguide is as simple as adding comments to your stylesheet; Kalei uses a variety of frameworks, including <a href="http://backbonejs.org/">Backbone.js</a>, <a href="http://www.glazman.org/JSCSSP/">JSCSSP</a> and <a href="https://github.com/chjj/marked">Marked</a> to convert these comments into HTML mark-up, generate a list of your individual stylesheets as navigation and present these as a single page web app.</p>
+
+<p>For example in your <code>buttons.css</code> file it is as simple as adding the following comments:</p>
+
+<pre><code>/*!
+# Primary buttons
+Primary buttons are only used when there is an exceedingly distinct and clear call-to-action.
+```
+&lt;a href="#" class="button"&gt;Button&lt;/a&gt;
+&lt;a href="#" class="button secondary"&gt;Button secondary&lt;/a&gt;
+&lt;a href="#" class="button success"&gt;Button success&lt;/a&gt;
+&lt;a href="#" class="button alert"&gt;Button alert&lt;/a&gt;
+```
+*/
+</code></pre>
+
+<p>Which, by using the CSS in the file itself, Kalei would visually render like so:</p>
+
+<p><img src="/images/posts/styleguide-buttons-screenshot.png" alt="styleguide-buttons-screenshot" /></p>
+
+<h3>Customising Kalei</h3>
+
+<p>Kalei works well out-of-the-box but we had to make a few customisations.  These were mostly cosmetic changes, but a fundamental changes was to <strong>add support for Sass</strong>.  For this we wrote a Grunt task imaginatively called <code>grunt styleguide</code> in which we combined <em>Clean</em>, <em>Copy</em>, <em>Scss</em> and <em>Replace</em> tasks.  Unsatisfactorily it took a little while to set up and involved a number of steps, but below is simplification of the process.</p>
+
+<ol>
+<li>Clean all CSS files from the styleguide, excluding Kalei specific stylesheets</li>
+<li>Copy our partial scss files into a temporary folder and rename them to remove the underscore (partial scss files begin with an underscore are are <a href="http://sass-lang.com/documentation/file.SASS_REFERENCE.html#partials">not compiled by default</a>)</li>
+<li>Compile the scss files into CSS in the styleguide directory</li>
+<li>Copy across dependent fonts and images, using <em>Replace</em> to update the relative paths</li>
+<li>Delete the temporary directory</li>
+</ol>
+
+
+<p>This task is run as a deployment step and can be run locally when developing the guide.</p>
+
+<p>Other that a few small UI tweaks we made one significant changes to the look and feel.  By default the navigation lists stylesheets using their full file name, e.g. <strong>breadcrumbs.css</strong> and <strong>buttons.css</strong>.  Using a regex function in the <code>menu.js</code> file and <code>text-transform: capitalize</code> in the Kalei stylesheet we modify the navigation to display the more attractive headings <strong>Breadcrumbs</strong> and <strong>Buttons</strong>.</p>
+
+<p>View our styleguide at <a href="http://www.opentable.com/styleguide" target="_blank">opentable.com/styleguide</a>.</p>
+
+<h2>What&rsquo;s next?</h2>
+
+<p>Our living styleguide is intended to be an organic resource that we will grow and refine into an integral part of our software development.  We have many ideas for how we want to develop the guide &ndash; at the very least it is currently incomplete insomuch as we have not documented every one of our stylesheets.</p>
+
+<p>There is also a fundamental weakness to this type of styleguide, which is duplication of code.  Whilst we use the exact same CSS as our live site, we are copying and pasting mark-up into these files and this content can go out of date without deliberate upkeep.  At OpenTable we have a <em>site resource service</em> which serves HTML snippets to different internal microsites so one option could be to use this service to integrate these snippets into the styleguide.  We may also investigate a solution using <a href="http://webcomponents.org/">web components</a> as cross-browser support is not a concern.</p>
+
+<p>We are also interested to see whether it would be useful to run UI tests against the styleguide. We have used <a href="http://pdiff.sourceforge.net/">pDiff</a> in the past for visual regression on specific microsites, but the styleguide could be an opportunity to catch accidental, global UI changes.  We are going to look at running <a href="https://garris.github.io/BackstopJS/">BackstopJS</a> against each section of the guide to see if this increases its usefulness.</p>
+
+<p>Finally, as one of the developers who created the styleguide I want it to be widely adopted across OpenTable. I want designers and engineers to contribute to the code and use it for their day-to-day designing and developing, and I want product owners and marketing folks to use it when creating promotional material and A/B tests.  My ultimate goal is for it to be an integral tool enabling everyone to work faster, avoid duplication and maintain a consistent brand identity.</p>
+
+<h2>Read more</h2>
+
+<ul>
+<li>View an online directory <a href="http://styleguides.io/">of styleguide articles and examples</a></li>
+</ul>
+
+
+<!-- - Join us - [apply for our senior front-end engineer role at OpenTable, London.](https://hire.jobvite.com/Jobvite/Job.aspx?b=nlsWXpwA&j=oXeiYfwb) -->
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/blog/authors/jcatterfeld.html">John Catterfeld</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-19T17:00:00+00:00" pubdate data-updated="true">Jan 19<span>th</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/css/'>CSS</a>, <a class='category' href='/blog/categories/design/'>Design</a>, <a class='category' href='/blog/categories/opentable/'>OpenTable</a>, <a class='category' href='/blog/categories/styleguide/'>Styleguide</a>, <a class='category' href='/blog/categories/ui/'>UI</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.opentable.co.uk/blog/2015/01/19/building-a-living-styleguide-at-opentable/" data-via="opentabletechuk" data-counturl="http://tech.opentable.co.uk/blog/2015/01/19/building-a-living-styleguide-at-opentable/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/01/01/explaining-flux-architecture-with-macgyver-dot-js/" title="Previous Post: Explaining Flux architecture with macgyver.js">&laquo; Explaining Flux architecture with macgyver.js</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/01/23/on-strongly-typed-logging/" title="Next Post: On Strongly Typed Logging">On Strongly Typed Logging &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/05/the-dns-abc/">The DNS ABC</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/16/hapi-js-and-sigterm/">Hapi.js and SIGTERM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">Dismantling the monolith - Microsites at Opentable</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/02/a-beginners-guide-to-rest-services/">A Beginner's guide to REST services</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/23/on-strongly-typed-logging/">On Strongly Typed Logging</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2015 - OpenTable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Chatops | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/chatops/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-08T11:14:33+01:00</updated>
+  <updated>2015-03-05T14:36:34+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -12,6 +12,104 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Interacting with ElasticSearch using Hubot]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/11/08/interacting-with-elasticsearch-using-hubot/"/>
+    <updated>2014-11-08T10:32:42+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/11/08/interacting-with-elasticsearch-using-hubot</id>
+    <content type="html"><![CDATA[<p>At OpenTable, we use a few <a href="">ElasticSearch</a> clusters. Our aim was to be able to interact with our ElasticSearch clusters via <a href="http://www.hipchat.com">HipChat</a> so that we could troubleshoot easily and without having to log into our VPN. We already use <a href="http://hubot.github.com">Hubot</a> as part of our systems workflow, so it made sense to be able to interact with ElasticSearch with it.</p>
+
+<h3>Setting a cluster alias</h3>
+
+<p>When a pager wakes me at 3am, I really do not want to have to try and type the cluster URL into my mobile hipchat client. So the first thing that was added to the script was the ability to give a cluster an alias.</p>
+
+<p><code>
+elasticsearch add alias my-test-alias http://my-cluster.com:9200
+</code></p>
+
+<p><img src="/images/posts/elasticsearch-add-alias.png" alt="add-alias" /></p>
+
+<p>This allows us to use that alias for all commands going forward. Please note that you can remove and query aliases as well:</p>
+
+<p><code>
+elasticsearch show aliases
+</code></p>
+
+<p><img src="/images/posts/elasticsearch-show-aliases.png" alt="show-alias" /></p>
+
+<p><code>
+elasticsearch clear alias my-test-alias
+</code></p>
+
+<p><img src="/images/posts/elasticsearch-clear-alias.png" alt="clear-alias" /></p>
+
+<h3>Using the ElasticSearch Cat API</h3>
+
+<p>A lot of what we do with ElasticSearch can be done via the <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat.html">cat</a> API. This has proved extremely useful to get node status, cluster health and index status.</p>
+
+<h4>Cat Health</h4>
+
+<p>As documented <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-health.html#cat-health">here</a></p>
+
+<p><code>
+elasticsearch cluster health my-test-alias
+</code></p>
+
+<h4>Cat Nodes</h4>
+
+<p>As documented <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-nodes.html">here</a></p>
+
+<p><code>
+elasticsearch cat nodes my-test-alias
+</code></p>
+
+<h4>Cat Indices</h4>
+
+<p>As documented <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cat-indices.html">here</a></p>
+
+<p><code>
+elasticsearch cat indexes my-test-alias
+</code></p>
+
+<h4>Cat Allocation</h4>
+
+<p>As documented <a href="">here</a></p>
+
+<p><code>
+elasticsearch cat allocation my-test-alias
+</code></p>
+
+<h3>Getting the Cluster Settings</h3>
+
+<p>Sometimes when we are rebalancing shards or recycling nodes, we want to be able to control the cluster settings. By using the cluster settings API, can have some insight into the settings currently set on the cluster:</p>
+
+<p><code>
+elasticsearch cluster settings my-test-alias
+</code>
+More information about the cluster settings API can be found <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-update-settings.html#cluster-settings">here</a></p>
+
+<h3>Getting the Settings for an Index</h3>
+
+<p>Should we want to start to understand the actual settings that are attributed to an index, we can use the Cat Indices settings API. More information can be found <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-settings.html">here</a></p>
+
+<p><code>
+elasticsearch index settings my-test-alias my-index-name-2014-11-07
+</code></p>
+
+<h3>Clearing the cluster Cache</h3>
+
+<p>The last piece of the puzzle we are able to do, is to clear the cache of the ElasticSearch cluster. This can be done as follows:</p>
+
+<p><code>
+hubot elasticsearch clear cache my-test-alias
+</code></p>
+
+<h3>Where can I find the code?</h3>
+
+<p>The code is available on <a href="https://github.com/stack72/hubot-elasticsearch">github</a> or also as an <a href="https://www.npmjs.org/package/hubot-elasticsearch">NPM package</a>. Please feel free to send PRs or create issues on our repository. All feedback is useful.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Continuous Delivery: Automating Deployment Visibility]]></title>
@@ -140,7 +238,7 @@
 
 <ul>
 <li>Chatops: Augmented reality for Ops (Video) by Mark Imbriaco &ndash; <a href="http://www.youtube.com/watch?v=pCVvYCjvoZI">http://www.youtube.com/watch?v=pCVvYCjvoZI</a></li>
-<li>ChatOps at Github by Jesse Newland &ndash; <a href="http://www.youtube.com/watch?v=NST3u-GjjFw">http://www.youtube.com/watch?v=NST3u-GjjFw</a></li>
+<li>Chatops at Github by Jesse Newland &ndash; <a href="http://www.youtube.com/watch?v=NST3u-GjjFw">http://www.youtube.com/watch?v=NST3u-GjjFw</a></li>
 </ul>
 
 ]]></content>

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Microservices | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/microservices/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2015-03-05T14:36:34+00:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
+  <author>
+    <name><![CDATA[OpenTable]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hapi.js and SIGTERM]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2015/02/16/hapi-js-and-sigterm/"/>
+    <updated>2015-02-16T10:32:42+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2015/02/16/hapi-js-and-sigterm</id>
+    <content type="html"><![CDATA[<p>When we first stood up our hapi.js APIs, we wrote init scripts to start/stop them. Stopping the server, was simply a case of sending SIGKILL (causing the app to immediately exit).</p>
+
+<p>Whilst this is fine for most cases, if we want our apps to be good Linux citizens, then they should terminate gracefully. Hapi.js has the handy <code>server.stop(...)</code> command (see docs <a href="http://hapijs.com/api#serverstopoptions-callback">here</a>) which will terminate the server gracefully. It will cause the server to respond to new connections with a 503 (server unavailable), and wait for existing connections to terminate (up to some specified timeout), before stopping the server and allowing the node.js process to exit. Perfect.</p>
+
+<p>This makes our graceful shutdown code really simple:</p>
+
+<p>```javascript
+process.on(&lsquo;SIGTERM&rsquo;, function(){
+  server.stop({ timeout: 5 * 1000}, function(){</p>
+
+<pre><code>process.exit(0);
+</code></pre>
+
+<p>  });
+});
+```</p>
+
+<p>When we see a SIGTERM, call <code>server.stop()</code>, then once the server has stopped, call <code>process.exit(0)</code>. Easy peasy.</p>
+
+<h3>Throw a spanner in the works</h3>
+
+<p>Whilst <code>server.stop()</code> is really useful, it has the problem that it immediately prevents the server from responding to new requests. In our case, that isn&rsquo;t particularly desirable. We use service-discovery, which means that the graceful termination of our app should run like this:</p>
+
+<ul>
+<li>SIGTERM</li>
+<li>Unannounce from Service-Discovery</li>
+<li><code>server.stop(...)</code></li>
+<li><code>process.exit(0)</code></li>
+</ul>
+
+
+<p>Ideally we want the unannounce to happen before the server starts rejecting connections, in order to reduce the likelihood that clients will hit a server that is shutting down.</p>
+
+<h3>Plugins to the rescue!</h3>
+
+<p>Thanks to hapi.js&rsquo;s awesome plugin interface (<a href="http://t.co/GDw44SETfS">shameless self promotion</a>), we can do some magic to make the above possible.</p>
+
+<p>I created a really simple plugin called <a href="https://www.npmjs.com/package/hapi-shutdown">hapi-shutdown</a> which will handle SIGTERM and then run triggers before calling <code>server.stop(...)</code>.</p>
+
+<p>The idea is that it allows us to run the &lsquo;unannounce&rsquo; step, before <code>server.stop(...)</code> is called.</p>
+
+<h3>How to use hapi-shutdown</h3>
+
+<p>```javascript
+server.register([
+  {</p>
+
+<pre><code>plugin: require('hapi-shutdown'),
+options: {
+  serverSpindownTime: 5000 // the timeout passed to server.stop(...)
+}
+</code></pre>
+
+<p>  }],
+  function(err){</p>
+
+<pre><code>server.start(function(){
+
+  server.plugins['hapi-shutdown'].register({
+    taskname: 'do stuff',
+    task: function(done){ 
+      console.log('doing stuff before server.stop is called'); 
+      done(); 
+    },
+    timeout: 2000 // time to wait before forcibly returning
+  })
+});
+</code></pre>
+
+<p>  });
+```</p>
+
+<p>The plugin exposes a <code>.register()</code> function which allows you to register your shutdown tasks. The tasks are named (to prevent multiple registrations), and each task must call the <code>done()</code> function. The <code>timeout</code> parameter is provided so that a task which never completes won&rsquo;t block the shutdown of the server.</p>
+
+<p> Neat, huh?</p>
+
+<h3>Hooking up unannounce using hapi-shutdown</h3>
+
+<p>We now have a place to register our &lsquo;unannounce&rsquo; task. Our service-discovery code is wrapped in another plugin, which means we can use <code>server.dependency(...)</code>.</p>
+
+<p>```javascript
+// inside the plugin&rsquo;s register function</p>
+
+<p>server.dependency(&lsquo;hapi-shutdown&rsquo;, function(_, cb){
+  var err = server.plugins[&lsquo;hapi-shutdown&rsquo;].register({</p>
+
+<pre><code>taskname: 'discovery-unannounce',
+task: function(done){
+  discovery.unannounce(function(){
+    done();
+  });
+},
+timeout: 10 * 1000
+</code></pre>
+
+<p>  });</p>
+
+<p>  cb(err);
+});
+```</p>
+
+<p><code>server.dependency(...)</code> allows us to specify that this plugin relies on another plugin (or list of plugins). If the dependent plugin is not registered before the server starts, then an exception is thrown.</p>
+
+<p>Handily, <code>server.dependency(...)</code> also takes a callback function, which is invoked after all the dependencies have been registered, which means that you don&rsquo;t need to worry about ordering inside your <code>server.register(...)</code> code.</p>
+
+<p>This allows our unannounce code to be decoupled from the actual business of shutting down the server.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Dismantling the monolith - Microsites at Opentable]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/"/>
+    <updated>2015-02-09T09:43:03+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable</id>
+    <content type="html"><![CDATA[<p>A couple of years ago we started to break-up the code-base behind our consumer site <a href="http://www.opentable.com">opentable.com</a>, to smaller units of code, in order to improve our productivity. New teams were created with the goal of splitting up the logic that was powering the back-end and then bring to life new small services. Then, we started working on what we call <em>Microsites</em>.</p>
+
+<h3>Microsites</h3>
+
+<p>A microsite is a very small set of web-pages, or even a single one, that takes care of handling a very specific part of the system&rsquo;s domain logic. Examples are the <em>Search Results</em> page or the <em>Restaurant&rsquo;s Profile</em> page. Every microsite is an independently deployable unit of code, so it is easier to test, to deploy, and in consequence more resilient. Microsites are then all connected by a front-door service that handles the routing.</p>
+
+<h3>Not a free ride</h3>
+
+<p>When we deployed some microsites to production we immediately discovered a lot of pros:</p>
+
+<ul>
+<li>Bi-weekly deployments of the monolith became hundreds of deployments every week.</li>
+<li>Not anymore a shared codebase for hundreds of engineers. Pull requests accepted, merged, and often deployed on the same day.</li>
+<li>Teams experimenting and reiterating faster: product was happy.</li>
+<li><em>Diversity</em> on tech stacks: teams were finally able to pick their own favourite web-stack, as soon as they were capable of deploying their code and taking care of it in terms of reliability and performance.</li>
+<li>Robustness: when something was wrong with a microsite, everything else was fine.</li>
+</ul>
+
+
+<p>On the other hand, we soon realised that we introduced new problems on the system:</p>
+
+<ul>
+<li>Duplication: teams started duplicating a lot of code, specifically front-end components such as the header, the footer, etc.</li>
+<li>Coordination: when we needed to change something on the header, for example, we were expecting to see the change live in different time frames, resulting in inconsistencies.</li>
+<li>Performance: every microsite was hosting its own duplicated css, javascript libraries, and static resources; resulting as a big disadvantage for the end-user in terms of performance.</li>
+</ul>
+
+
+<h3>SRS &ndash; aka Site Resources Service</h3>
+
+<p>To solve some of these problems we created a REST api to serve html snippets, that soon we started to call <em>components</em>. Main characteristics of the system are:</p>
+
+<ul>
+<li>We have components for shared parts of the website such as the header, the footer, and the adverts. When a change has to go live, we apply the change, we deploy, and we see the change live everywhere.</li>
+<li>Output is in HTML format, so the integration is possible if the microsite is either a .NET MVC site or a node.js app.</li>
+<li>We have components for the core CSS and the JS common libraries, so that all the microsites use the same resources and the browser can cache them making the navigation smooth.</li>
+<li>The service takes care of hosting all the static resources in a separate CDN, so microsites don&rsquo;t have to host that resources.</li>
+</ul>
+
+
+<p>This is an example of a request to the <em>core</em> css component:
+```sh
+curl <a href="http://srs-sc.otenv.com/v1/com-2014/resource-includes/css">http://srs-sc.otenv.com/v1/com-2014/resource-includes/css</a></p>
+
+<p>{
+  &ldquo;href&rdquo;: &ldquo;<a href="http://srs-sc.otenv.com/v1/com-2014/resource-includes/css">http://srs-sc.otenv.com/v1/com-2014/resource-includes/css</a>&rdquo;,
+  &ldquo;html&rdquo;: &ldquo;<link rel=\"stylesheet\" href=\"//na-srs.opentable.com/content/static-1.0.1388.0/css-new-min/app.css\" /><!--[if lte IE 8]><link rel=\"stylesheet\" href=\"//na-srs.opentable.com/content/static-1.0.1388.0/css-new-min/app_ie8.css\" /> &lt;![endif]&mdash;>&rdquo;,
+  &ldquo;type&rdquo;:&ldquo;css&rdquo;
+}
+```</p>
+
+<p>The downside of this approach is that there is a strict dependency with SRS for each microsite. On every request, a call to SRS has to be made, so <strong>we had to work hard to guarantee reliability and good performance</strong>.</p>
+
+<h2>Conclusions</h2>
+
+<p>When we tried the microsite approach we “traded” some of our code problems with some new cultural problems. We became more agile and we were working in a new different way, with the downside of having the <strong>need to more effectively coordinate more people</strong>. The consequence is that the <strong>way we were approaching the code</strong> evolved over time.</p>
+
+<p>One year later, with the front-end (almost completely) living on micro-sites, and with the help of SRS, we are experimenting more effective ways to be resilient and robust, with the specific goal to allow teams to create their own components and share them with other teams in order to be independent, and use them to easily approach to A/B experiments.</p>
+
+<p>In the next post I&rsquo;ll write about <a href="https://github.com/opentable/oc">OpenComponents</a>, an experimental framework we just open-sourced that is trying to address some of this needs.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Proxying Services With Hapi.js]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/11/28/proxying-with-hapi/"/>
+    <updated>2014-11-28T10:32:42+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/11/28/proxying-with-hapi</id>
+    <content type="html"><![CDATA[<p>I&rsquo;ve raved in the past about how awesome <a href="http://hapijs.com">hapi.js</a> is, but I&rsquo;m going to talk about just a specific case today.</p>
+
+<p>We started off with just a couple of hapi.js apis. This was at a time when standing up new infrastructure was still a bit painful, so inevitably those apis ended up having more functionality in them than they should have. Now it&rsquo;s easy for us to get infrastructure, so we want to do more of it.</p>
+
+<p>Our goal is to have lots of small(er) apis that just look after one specific piece (skillfully avoiding using the buzzword &lsquo;microservices&rsquo;).</p>
+
+<p>When you want to split out functionality from one api to another, it can be a pain, especially if you have a lot of consumers who aren&rsquo;t particularly fast-moving or communicative. Or maybe you don&rsquo;t know all your consumers up front.</p>
+
+<p>You&rsquo;ve got a couple of options here:</p>
+
+<ul>
+<li><p>Maintain the functionality in two places and slowly migrate consumers across</p></li>
+<li><p>Use a proxy or routing layer in-front of the api to rewrite or redirect requests</p></li>
+<li><p>Write code in your api to proxy requests to a different server</p></li>
+</ul>
+
+
+<p>The first two options are pretty icky, and frankly the third isn&rsquo;t all that great either. It all depends on you having the right framework. Do you see where I&rsquo;m going here?</p>
+
+<h3>Enter Hapi.js</h3>
+
+<p>Hapi.js has the concept of a &lsquo;proxy&rsquo; handler, which can transparently proxy requests to a different server.</p>
+
+<p>```javascript
+server.route([
+  {</p>
+
+<pre><code>method: 'GET',
+path: '/foo',
+handler: {
+  proxy: {
+    host: 'my-other-service.mydomain.com',
+    port: 80,
+    protocol: 'http',
+    passThrough: true,
+    xforward: true
+  }
+}
+</code></pre>
+
+<p>  }
+]);
+```</p>
+
+<p>And boom, you&rsquo;re done. You can now safely delete <em>all</em> of that code from your api and move it. The <em>only</em> thing you need to have kicking about is that proxy handler code.</p>
+
+<p>The <code>passthrough</code> setting specifies whether or not to preserve headers on the original request, and <code>xforward</code> tells hapi to add (or append) an &lsquo;x-forwarded-for&rsquo; header to the request.</p>
+
+<p>The proxy handler is really powerful. It can rewrite the request (using <code>mapUri</code>), pass local-state (from the hapi instance) along, reject unauthorised requests, you can even hook into the response and monkey about with it if you want (using <code>onResponse</code>).</p>
+
+<p>For full details, see the <a href="http://hapijs.com/api/v7.5.2#route-options">proxy section</a> of the route options.</p>
+]]></content>
+  </entry>
+  
+</feed>

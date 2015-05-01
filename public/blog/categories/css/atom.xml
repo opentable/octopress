@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: CSS | OpenTable Tech UK Blog]]></title>
+  <link href="http://tech.opentable.co.uk/blog/categories/css/atom.xml" rel="self"/>
+  <link href="http://tech.opentable.co.uk/"/>
+  <updated>2015-03-05T14:36:34+00:00</updated>
+  <id>http://tech.opentable.co.uk/</id>
+  <author>
+    <name><![CDATA[OpenTable]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Building a living styleguide at OpenTable]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2015/01/19/building-a-living-styleguide-at-opentable/"/>
+    <updated>2015-01-19T17:00:00+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2015/01/19/building-a-living-styleguide-at-opentable</id>
+    <content type="html"><![CDATA[<p>If you&rsquo;re reading this you&rsquo;ve probably built yourself a website.  A site &ndash; large or small &ndash; that&rsquo;s thrown together or crafted over many months.  And if you have, you’ve probably kept all your CSS class names in your head, or at least been able to go straight to the relevant stylesheets to retrieve them.</p>
+
+<p>Well OpenTable is unsurprisingly built by many engineering teams across multiple continents, and was completely redesigned last year.  And as soon as you have more than a handful of people working on your front-end you will quickly find a well-intentioned developer causing one or both of these problems:</p>
+
+<ul>
+<li>Well-intentioned developer adds a new submission form but, like the design Philistine he is, his buttons are <span style="font-family:verdana;font-size:18px;color:#E40000;">18px Verdana #E40000</span>, not the correct <span style="font-family:arial;font-size:16px;color:#DA3743;">16px Arial #DA3743</span></li>
+<li>Your good old developer knows which font size and colour it should be, but bungs a duplicate class into a random stylesheet (or worse still, inline)</li>
+</ul>
+
+
+<p>Despite these risks, a single front-end dev (or a team of them) cannot check every new piece of code or they will quickly become a bottleneck.</p>
+
+<h3>You need some guidelines</h3>
+
+<p>Offline designers regularly create ‘brand guidelines’ or ‘design standards' to document the precise way their brand or product should be recreated when outside of their control.  Online, such guidelines are similarly invaluable for maintaining brand and code consistency with multiple engineers and designers, but it is blindingly obvious that a printed or ‘static’ set of guidelines is completely unsuitable for a constantly changing website.</p>
+
+<p>Step forward a ‘living’ styleguide.</p>
+
+<p>A living styleguide gives a visual representation of a site’s UI elements using <strong>the exact same code</strong> as on the website, in most cases via the live CSS.  A living styleguide may also provide reusable CSS and HTML code examples and they are not just for engineers new to the code; I frequently use ours at OpenTable and I wrote the stylesheets in the first place (I can’t be expected to remember everything).</p>
+
+<p>Providing reusable code improves collaboration, consistency and standards, and reduces design and development time &ndash; but like most documentation it is essential your guide is always up-to-date and trustworthy.  So if a living styleguide is (theoretically) always up-to-date, how did we build ours?</p>
+
+<h2>How we built our styleguide</h2>
+
+<p>Living styleguides are not new (although they were <a href="http://sideproject.io/an-exhaustive-look-at-the-year-in-web-design/#styleguides">one of the trends of 2014</a>) and as such many frameworks have been built over the years.  We chose to use <a href="http://kaleistyleguide.com/">Kalei</a> by <a href="https://github.com/thomasdavis">Thomas Davis</a> &ndash; I forget the exact reasons why but it was probably the easiest at the time to set up and customise.</p>
+
+<p>Generating a Kalei styleguide is as simple as adding comments to your stylesheet; Kalei uses a variety of frameworks, including <a href="http://backbonejs.org/">Backbone.js</a>, <a href="http://www.glazman.org/JSCSSP/">JSCSSP</a> and <a href="https://github.com/chjj/marked">Marked</a> to convert these comments into HTML mark-up, generate a list of your individual stylesheets as navigation and present these as a single page web app.</p>
+
+<p>For example in your <code>buttons.css</code> file it is as simple as adding the following comments:</p>
+
+<pre><code>/*!
+# Primary buttons
+Primary buttons are only used when there is an exceedingly distinct and clear call-to-action.
+```
+&lt;a href="#" class="button"&gt;Button&lt;/a&gt;
+&lt;a href="#" class="button secondary"&gt;Button secondary&lt;/a&gt;
+&lt;a href="#" class="button success"&gt;Button success&lt;/a&gt;
+&lt;a href="#" class="button alert"&gt;Button alert&lt;/a&gt;
+```
+*/
+</code></pre>
+
+<p>Which, by using the CSS in the file itself, Kalei would visually render like so:</p>
+
+<p><img src="/images/posts/styleguide-buttons-screenshot.png" alt="styleguide-buttons-screenshot" /></p>
+
+<h3>Customising Kalei</h3>
+
+<p>Kalei works well out-of-the-box but we had to make a few customisations.  These were mostly cosmetic changes, but a fundamental changes was to <strong>add support for Sass</strong>.  For this we wrote a Grunt task imaginatively called <code>grunt styleguide</code> in which we combined <em>Clean</em>, <em>Copy</em>, <em>Scss</em> and <em>Replace</em> tasks.  Unsatisfactorily it took a little while to set up and involved a number of steps, but below is simplification of the process.</p>
+
+<ol>
+<li>Clean all CSS files from the styleguide, excluding Kalei specific stylesheets</li>
+<li>Copy our partial scss files into a temporary folder and rename them to remove the underscore (partial scss files begin with an underscore are are <a href="http://sass-lang.com/documentation/file.SASS_REFERENCE.html#partials">not compiled by default</a>)</li>
+<li>Compile the scss files into CSS in the styleguide directory</li>
+<li>Copy across dependent fonts and images, using <em>Replace</em> to update the relative paths</li>
+<li>Delete the temporary directory</li>
+</ol>
+
+
+<p>This task is run as a deployment step and can be run locally when developing the guide.</p>
+
+<p>Other that a few small UI tweaks we made one significant changes to the look and feel.  By default the navigation lists stylesheets using their full file name, e.g. <strong>breadcrumbs.css</strong> and <strong>buttons.css</strong>.  Using a regex function in the <code>menu.js</code> file and <code>text-transform: capitalize</code> in the Kalei stylesheet we modify the navigation to display the more attractive headings <strong>Breadcrumbs</strong> and <strong>Buttons</strong>.</p>
+
+<p>View our styleguide at <a href="http://www.opentable.com/styleguide" target="_blank">opentable.com/styleguide</a>.</p>
+
+<h2>What&rsquo;s next?</h2>
+
+<p>Our living styleguide is intended to be an organic resource that we will grow and refine into an integral part of our software development.  We have many ideas for how we want to develop the guide &ndash; at the very least it is currently incomplete insomuch as we have not documented every one of our stylesheets.</p>
+
+<p>There is also a fundamental weakness to this type of styleguide, which is duplication of code.  Whilst we use the exact same CSS as our live site, we are copying and pasting mark-up into these files and this content can go out of date without deliberate upkeep.  At OpenTable we have a <em>site resource service</em> which serves HTML snippets to different internal microsites so one option could be to use this service to integrate these snippets into the styleguide.  We may also investigate a solution using <a href="http://webcomponents.org/">web components</a> as cross-browser support is not a concern.</p>
+
+<p>We are also interested to see whether it would be useful to run UI tests against the styleguide. We have used <a href="http://pdiff.sourceforge.net/">pDiff</a> in the past for visual regression on specific microsites, but the styleguide could be an opportunity to catch accidental, global UI changes.  We are going to look at running <a href="https://garris.github.io/BackstopJS/">BackstopJS</a> against each section of the guide to see if this increases its usefulness.</p>
+
+<p>Finally, as one of the developers who created the styleguide I want it to be widely adopted across OpenTable. I want designers and engineers to contribute to the code and use it for their day-to-day designing and developing, and I want product owners and marketing folks to use it when creating promotional material and A/B tests.  My ultimate goal is for it to be an integral tool enabling everyone to work faster, avoid duplication and maintain a consistent brand identity.</p>
+
+<h2>Read more</h2>
+
+<ul>
+<li>View an online directory <a href="http://styleguides.io/">of styleguide articles and examples</a></li>
+</ul>
+
+
+<!-- - Join us - [apply for our senior front-end engineer role at OpenTable, London.](https://hire.jobvite.com/Jobvite/Job.aspx?b=nlsWXpwA&j=oXeiYfwb) -->
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Supporting IE8 in the OpenTable redesign]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2014/12/08/supporting-ie8-in-the-opentable-redesign/"/>
+    <updated>2014-12-08T21:14:57+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2014/12/08/supporting-ie8-in-the-opentable-redesign</id>
+    <content type="html"><![CDATA[<p>We&rsquo;re really <a href="http://blog.opentable.com/2014/opentables-website-re-designed-re-architected-re-imagined/">proud to have released</a> last week our redesigned <a href="http://www.opentable.co.uk">OpenTable</a> site, the culmination of months of hard work from many talented people here in London and in San Francisco.</p>
+
+<p>However despite killing off our old site and its 2004 design, 2.8% of our visitors could have been crying into their keyboard as a far worse opentable.co.uk filled their screen.</p>
+
+<p>That version of OpenTable was our new responsive site viewed in Internet Explorer 8.</p>
+
+<p><img src="/images/posts/redesign-ie8.png" alt="Our redesign before we optimised for IE8" /></p>
+
+<p>The fundamental issue is that IE8 doesn&rsquo;t support media queries so the age-old browser would try to stretch our <em>mobile-first</em> responsive design as wide as it could go &ndash; not great across a 27" Thunderbolt.</p>
+
+<p>To solve the problem we first tried the <a href="https://github.com/scottjehl/Respond">Respond.js</a> polyfill but this didn&rsquo;t work as we&rsquo;d hoped.  The main issue appeared to be that because we serve our CSS and JS on a separate sub-domain we fell foul of the browser&rsquo;s cross-domain security.  We followed the Respond.js instructions to solve this but having no luck we looked for alternatives.</p>
+
+<h2>Legacssy</h2>
+
+<p>Further Googling lead us to <a href="https://github.com/robinpokorny/grunt-legacssy">Legacssy</a>. With this Grunt task we could create a IE8-only stylesheet and not have to serve extra JS and cross-domain proxy files to all visitors.</p>
+
+<p>Our existing process is to create our core CSS with an <code>app.scss</code> file and <a href="https://github.com/sindresorhus/grunt-sass">grunt-sass</a>.  Our additional step was to create an <code>app_ie8.scss</code> file, parse it with <code>grunt-sass</code> like before, but then also run it through Legacssy.</p>
+
+<h3>Our app.scss file</h3>
+
+<pre><code>@import 'normalize';
+
+@import 'components/global';
+
+@import
+  'components/icons',
+  'components/buttons',
+  'components/calendar',
+  'components/forms',
+  'components/pagination',
+  'components/star-rating';
+
+@import
+  'partials/footer',
+  'partials/header',
+  'partials/location-picker';
+</code></pre>
+
+<h3>And our app_ie8.scss file</h3>
+
+<pre><code>@import ‘app';
+@import 'browsers/_ie8.scss';
+</code></pre>
+
+<p>This process left us with a duplicate of the main site CSS that would be IE8 friendly &ndash; and as you can see we are also able to merge in an IE8 specific stylesheet with further overrides.  All we now needed to was serve this inside conditional comments after the main stylesheet, and CSS specificity would ensure our IE rules overwrite the media queries.</p>
+
+<p>```</p>
+
+<p><!--[if lte IE 8]>
+<link rel="stylesheet" href="//eu-srs.opentable.com/content/static/css/app_ie8.css" />
+&lt;![endif]—>
+```</p>
+
+<h2>Drawbacks</h2>
+
+<p>We are very happy with this solution as it generates the IE8 fixes as part of our automated build with no extra effort.  The only obvious negative is for the IE8 visitors who will effectively be downloading the same stylesheet twice, but if they are routinely browsing the web with IE8 this could be the least of their worries.</p>
+
+<h2>Conclusion</h2>
+
+<p>We&rsquo;re really proud of our new site; we&rsquo;re still ironing out some kinks but we hope that it&rsquo;s good enough for those of you who visit us with Internet Explorer 8 (probably through no fault of your own).</p>
+
+<p>For the record, here a couple of other issues we found which may help other intrepid developers with their IE debugging in 2015 and beyond.</p>
+
+<h3>Other IE8 issues</h3>
+
+<ul>
+<li>The other unsupported CSS values were rem units and RGBA colours.  After running Legacssy we used <a href="https://github.com/robwierzbowski/grunt-pixrem">pixrem.js</a> to replace rems with pixels and a custom task to replace RGBA values with their HEX equivalents.</li>
+<li>IE11&rsquo;s F12 developer tools don&rsquo;t render identically to native IE8. We used Microsoft&rsquo;s excellent <a href="http://www.modern.ie">modern.ie</a> site to download virtual machines with Windows 7 and IE8.</li>
+<li>We only tested on Windows 7 as this makes up 66% of our IE8 visitors. The remainder are on different operating systems which collectively only make up 0.95% of our total visitors; this is below our threshold for support.</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

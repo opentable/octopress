@@ -20,7 +20,11 @@ footer: false
 
 [Richard Hopton]
 
+[Federico Maffei]
+
 [Andy Metcalfe]
+
+[Chris Riddle]
 
 [Andy Royle]
 
@@ -42,3 +46,5 @@ footer: false
 [Matteo Figus]:/blog/authors/mfigus.html
 [Liam Bennett]:/blog/authors/lbennett.html
 [Sam Salisbury]:/blog/authors/ssalisbury.html
+[Chris Riddle]:/blog/authors/criddle.html
+[Federico Maffei]:/blog/authors/fmaffei.html

@@ -1,0 +1,399 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Hapi.js and SIGTERM - OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
+
+  
+  <meta name="description" content="When we first stood up our hapi.js APIs, we wrote init scripts to start/stop them. Stopping the server, was simply a case of sending SIGKILL (causing &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.opentable.co.uk/blog/2015/02/16/hapi-js-and-sigterm/">
+  <link href="/favicon-32.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
+  <script src="//fonts.otstatic.com/zys4lfz.js"></script>
+  <script>try{Typekit.load();}catch(e){}</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
+  
+    <h2>The technology blog for OpenTable UK.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/authors">Authors</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Hapi.js and SIGTERM</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/blog/authors/aroyle.html">Andy Royle</a></span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-02-16T10:32:42+00:00" pubdate data-updated="true">Feb 16<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>When we first stood up our hapi.js APIs, we wrote init scripts to start/stop them. Stopping the server, was simply a case of sending SIGKILL (causing the app to immediately exit).</p>
+
+<p>Whilst this is fine for most cases, if we want our apps to be good Linux citizens, then they should terminate gracefully. Hapi.js has the handy <code>server.stop(...)</code> command (see docs <a href="http://hapijs.com/api#serverstopoptions-callback">here</a>) which will terminate the server gracefully. It will cause the server to respond to new connections with a 503 (server unavailable), and wait for existing connections to terminate (up to some specified timeout), before stopping the server and allowing the node.js process to exit. Perfect.</p>
+
+<p>This makes our graceful shutdown code really simple:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">process</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;SIGTERM&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>  <span class="nx">server</span><span class="p">.</span><span class="nx">stop</span><span class="p">({</span> <span class="nx">timeout</span><span class="o">:</span> <span class="mi">5</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">},</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>    <span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When we see a SIGTERM, call <code>server.stop()</code>, then once the server has stopped, call <code>process.exit(0)</code>. Easy peasy.</p>
+
+<h3>Throw a spanner in the works</h3>
+
+<p>Whilst <code>server.stop()</code> is really useful, it has the problem that it immediately prevents the server from responding to new requests. In our case, that isn&rsquo;t particularly desirable. We use service-discovery, which means that the graceful termination of our app should run like this:</p>
+
+<ul>
+<li>SIGTERM</li>
+<li>Unannounce from Service-Discovery</li>
+<li><code>server.stop(...)</code></li>
+<li><code>process.exit(0)</code></li>
+</ul>
+
+
+<p>Ideally we want the unannounce to happen before the server starts rejecting connections, in order to reduce the likelihood that clients will hit a server that is shutting down.</p>
+
+<h3>Plugins to the rescue!</h3>
+
+<p>Thanks to hapi.js&rsquo;s awesome plugin interface (<a href="http://t.co/GDw44SETfS">shameless self promotion</a>), we can do some magic to make the above possible.</p>
+
+<p>I created a really simple plugin called <a href="https://www.npmjs.com/package/hapi-shutdown">hapi-shutdown</a> which will handle SIGTERM and then run triggers before calling <code>server.stop(...)</code>.</p>
+
+<p>The idea is that it allows us to run the &lsquo;unannounce&rsquo; step, before <code>server.stop(...)</code> is called.</p>
+
+<h3>How to use hapi-shutdown</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">server</span><span class="p">.</span><span class="nx">register</span><span class="p">([</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>    <span class="nx">plugin</span><span class="o">:</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;hapi-shutdown&#39;</span><span class="p">),</span>
+</span><span class='line'>    <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">serverSpindownTime</span><span class="o">:</span> <span class="mi">5000</span> <span class="c1">// the timeout passed to server.stop(...)</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}],</span>
+</span><span class='line'>  <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">){</span>
+</span><span class='line'>    <span class="nx">server</span><span class="p">.</span><span class="nx">start</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nx">server</span><span class="p">.</span><span class="nx">plugins</span><span class="p">[</span><span class="s1">&#39;hapi-shutdown&#39;</span><span class="p">].</span><span class="nx">register</span><span class="p">({</span>
+</span><span class='line'>        <span class="nx">taskname</span><span class="o">:</span> <span class="s1">&#39;do stuff&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">task</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+</span><span class='line'>          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;doing stuff before server.stop is called&#39;</span><span class="p">);</span>
+</span><span class='line'>          <span class="nx">done</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="nx">timeout</span><span class="o">:</span> <span class="mi">2000</span> <span class="c1">// time to wait before forcibly returning</span>
+</span><span class='line'>      <span class="p">})</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The plugin exposes a <code>.register()</code> function which allows you to register your shutdown tasks. The tasks are named (to prevent multiple registrations), and each task must call the <code>done()</code> function. The <code>timeout</code> parameter is provided so that a task which never completes won&rsquo;t block the shutdown of the server.</p>
+
+<p> Neat, huh?</p>
+
+<h3>Hooking up unannounce using hapi-shutdown</h3>
+
+<p>We now have a place to register our &lsquo;unannounce&rsquo; task. Our service-discovery code is wrapped in another plugin, which means we can use <code>server.dependency(...)</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// inside the plugin&#39;s register function</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">server</span><span class="p">.</span><span class="nx">dependency</span><span class="p">(</span><span class="s1">&#39;hapi-shutdown&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">_</span><span class="p">,</span> <span class="nx">cb</span><span class="p">){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">err</span> <span class="o">=</span> <span class="nx">server</span><span class="p">.</span><span class="nx">plugins</span><span class="p">[</span><span class="s1">&#39;hapi-shutdown&#39;</span><span class="p">].</span><span class="nx">register</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">taskname</span><span class="o">:</span> <span class="s1">&#39;discovery-unannounce&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">task</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">done</span><span class="p">){</span>
+</span><span class='line'>      <span class="nx">discovery</span><span class="p">.</span><span class="nx">unannounce</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="nx">done</span><span class="p">();</span>
+</span><span class='line'>      <span class="p">});</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">timeout</span><span class="o">:</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">1000</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">cb</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>server.dependency(...)</code> allows us to specify that this plugin relies on another plugin (or list of plugins). If the dependent plugin is not registered before the server starts, then an exception is thrown.</p>
+
+<p>Handily, <code>server.dependency(...)</code> also takes a callback function, which is invoked after all the dependencies have been registered, which means that you don&rsquo;t need to worry about ordering inside your <code>server.register(...)</code> code.</p>
+
+<p>This allows our unannounce code to be decoupled from the actual business of shutting down the server.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/blog/authors/aroyle.html">Andy Royle</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-02-16T10:32:42+00:00" pubdate data-updated="true">Feb 16<span>th</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/hapi-dot-js/'>Hapi.js</a>, <a class='category' href='/blog/categories/microservices/'>Microservices</a>, <a class='category' href='/blog/categories/sigterm/'>SIGTERM</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.opentable.co.uk/blog/2015/02/16/hapi-js-and-sigterm/" data-via="opentabletechuk" data-counturl="http://tech.opentable.co.uk/blog/2015/02/16/hapi-js-and-sigterm/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/" title="Previous Post: Dismantling the monolith - Microsites at Opentable">&laquo; Dismantling the monolith - Microsites at Opentable</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/03/05/the-dns-abc/" title="Next Post: The DNS ABC">The DNS ABC &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/05/the-dns-abc/">The DNS ABC</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/16/hapi-js-and-sigterm/">Hapi.js and SIGTERM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">Dismantling the monolith - Microsites at Opentable</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/02/a-beginners-guide-to-rest-services/">A Beginner's guide to REST services</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/23/on-strongly-typed-logging/">On Strongly Typed Logging</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2015 - OpenTable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

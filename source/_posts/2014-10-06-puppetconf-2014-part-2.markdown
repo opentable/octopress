@@ -4,7 +4,7 @@ title: "PuppetConf 2014 - Part 2"
 date: 2014-10-06 12:30:58 +0100
 comments: true
 author: lbennett
-categories: puppet, puppetconf2014, conferences
+categories: [Puppet, PuppetConf 2014, Conferences]
 ---
 
 ## Day 1
@@ -26,7 +26,7 @@ we did attend and links to those we didn't.
 The big keynote of the event to kick off the first day from the author of Puppet himself. This was obviously going to be a tweet worthy affair full of photos
 and big announcements and it did not disappoint.
 
-Native Clients (CFactor + C++ rewrite of agents) are coming in very near future. This is not only a matter of improving the performance for existing users part
+Native Clients (CFactor + C++ rewrite of agents) are coming in the very near future. This is not only a matter of improving the performance for existing users part
 of philosophy of PuppetLabs to become ubiquitous across as many devices and platforms as possible. This is one of those improvements that is really setting up
 PuppetLabs for the future.
 
@@ -45,23 +45,23 @@ There have been plenty of follow-ups on this that you might be interested in rea
  * [http://www.informationweek.com/cloud/software-as-a-service/puppet-servers-big-revamp/d/d-id/1315934](http://www.informationweek.com/cloud/software-as-a-service/puppet-servers-big-revamp/d/d-id/1315934)
 
 Puppet Apps was the next big announcement. Puppet Apps is actually a fantastic piece of marketing around the idea that they are refactoring to a more micro-services
-style approach - splitting up the monolith that is currently the puppet master into smaller applications that have there own release cadence and can be scaled
+style approach - splitting up the monolith that is currently the Puppet master into smaller applications that have their own release cadence and can be scaled
 separately.
 
 The first announcement from the "Apps" initiative is Puppet Node Manager the new node classifier which will roll out in the Q1 of 2015 as an add-on
-to Puppet Enterprise. Given that puppet has allowed external node classifiers to be written for a long time now (and there are many open source ones out there)
+to Puppet Enterprise. Given that Puppet has allowed external node classifiers to be written for a long time now (and there are many open source ones out there)
 it is good to see PuppetLabs stepping up and trying to own this more and improve the experience.
 
 [http://puppetlabs.com/about/press-releases/puppet-labs-kicks-puppetconf-announcements-major-updates-industrys-most-popular](http://puppetlabs.com/about/press-releases/puppet-labs-kicks-puppetconf-announcements-major-updates-industrys-most-popular)
 
 Another huge announcement (of which we got a preview at the contributors summit) was Puppet Approved Modules. Luke and the rest of PuppetLabs have the huge
-idea that 80% of what your going to want to configure on your systems should be possible with what is available on the forge. Some of the bigger pieces have
+idea that 80% of what you're going to want to configure on your systems should be possible with what is available on the forge. Some of the bigger pieces have
 been covered by the module engineers at PuppetLabs under the existing Puppet Support Modules program. This has been fantastic in driving for consensus around
 configuration making installation of certain products (like apache) easier for people.
 
-The reality is that if PuppetLabs want to achieve it’s 80% goal they are are not going to be able to do that with the engineers and resources they have
-available to them. Nor do they have the expertise to know about all the software out there. This is where the Puppet Approved program comes in. It’s aim is to
-provide the same standard of quality that you see in the Supported modules but for modules written by the community. It is the easy for users of the forge to
+The reality is that if PuppetLabs want to achieve its 80% goal they are are not going to be able to do that with the engineers and resources they have
+available to them. Nor do they have the expertise to know about all the software out there. This is where the Puppet Approved program comes in. Its aim is to
+provide the same standard of quality that you see in the Supported modules but for modules written by the community. It is easy for users of the forge to
 be able to pick out high quality, actively maintained modules and know what they are getting. As a user this is very exciting and as a module author, while
 there will be plenty of work for me to do, I am glad that the community is moving in this direction.
 
@@ -77,9 +77,9 @@ Winner
 
  * Erik Dalén ([@erik_dalen]((https://twitter.com/erik_dalen))
 
-The last part of the keynote was talking about some of the wider thoughts as we look to the next 10 years of Puppet and what come’s next. There is going to be
-more focus on the ubiquity of puppet, on devices more network device partners and solving problems like orchestration. The next 10 years is going to be about
-taking puppet beyond the single node. We are already thinking of machines as cattle and not pets - puppet should also better reflect that change.
+The last part of the keynote was talking about some of the wider thoughts as we look to the next ten years of Puppet and what comes next. There is going to be
+more focus on the ubiquity of Puppet, on devices more network device partners and solving problems like orchestration. The next ten years is going to be about
+taking Puppet beyond the single node. We are already thinking of machines as cattle and not pets - Puppet should also better reflect that change.
 
 I for one am very excited by all this and look forward to seeing what comes out over the next few years.
 
@@ -98,8 +98,8 @@ I think the one that stands out and often tweeted is the following:
 
 Read that again - wow.
 
-This talk as one might expect was all about DevOps, it’s history, why and how it works. Even if your full familiar with the whole culture of DevOps there are
-plenty of things to be learnt from this keynote and I look forward to re-watching it when the video lands on youtube.
+This talk as one might expect was all about DevOps, its history, why and how it works. Even if you're fully familiar with the whole culture of DevOps there are
+plenty of things to be learnt from this keynote and I look forward to re-watching it when the video lands on YouTube.
 
 #### Trust Me - Kate Matsudaira, Popforms - [Slides](http://www.slideshare.net/PuppetLabs/keynote-trust-me-puppetconf-2014)
 
@@ -107,12 +107,12 @@ plenty of things to be learnt from this keynote and I look forward to re-watchin
   <img src="/images/posts/puppetconf-kate.jpg">
 </div>
 
-Following the theme of culture, Kate’s talk was a refreshing look on the culture of trust within an organisation. Far from being the usual "this is what my
+Following the theme of culture, Kate’s talk was a refreshing look at the culture of trust within an organisation. Far from being the usual "this is what my
 company culture looks like" sort-of talk, this talk had a lot of practical advice. Discussion of how to build relationships, how to raise your profile within
 the organisation and how to improve yourself as a manger. "If you use your 1-on-1 to talk about status, you're wasting time. Get to know your boss, solicit
 feedback on your performance." - Great advice like this is littered throughout the talk.
 
-She says that Trust is like money and that you need to be wise in how you spend that trust. Most organisations are not a meritocracy and we need to stop thinking that they are. Your relationships within the organisation are just as important as the quality of the work that you do.  There needs to be balance between these two things - are your relationships as good as the work that you do?
+She says that trust is like money and that you need to be wise in how you spend that trust. Most organisations are not a meritocracy and we need to stop thinking that they are. Your relationships within the organisation are just as important as the quality of the work that you do.  There needs to be balance between these two things - are your relationships as good as the work that you do?
 
 If you want to improve yourself and advance your career, either as an engineer or as a manager then you should absolutely take the time to listen to this talk.
 
@@ -130,14 +130,14 @@ Interesting tool, has some cross-over with the Beaker testing tool. PDK is more 
  * oscar is a collection of vagrant plugins
  * vagrant-config_builder -> adds role to share vagrant config  (similar to the beaker nodeset file)
  * PDK is a set of oscar roles
- * facter / hiera and puppet running off github
+ * facter / hiera and Puppet running off GitHub
  * beaker vs oscar - oscar is optimised for manual testing. There is room to share stuff here.
 
 #### Cloudy with a Chance of Fireballs: Provisioning and Certificate Management in Puppet - Eric Sorenson ([@ahpook](https://twitter.com/ahpook)), Puppet Labs - [Slides](http://www.slideshare.net/PuppetLabs/sorenson-fireballspuppet-conf2014)
 
- * apple icloud uses puppet + autosign
+ * Apple iCloud uses Puppet + autosign
  * auto sign doesn't work very well for the cloud
- * amazon IAM can be applied by machines - IAM so instance can read it’s own tags (if it has ec2-client-utils installed)
+ * Amazon IAM can be applied by machines - IAM so instance can read it’s own tags (if it has ec2-client-utils installed)
  * puts instance_id, ami_id and role into /etc/puppet/csr_attriubutes.yaml
  * can validate the metadata in the cert using x509
  * true_node_data = true & immutable_node_data = true
@@ -146,7 +146,7 @@ Interesting tool, has some cross-over with the Beaker testing tool. PDK is more 
 #### Beaker: Automated, Cloud-Based Acceptance Testing - Alice Nodelman ([@alicenode](https://twitter.com/alicenode)), Puppet Labs - [Slides](http://www.slideshare.net/PuppetLabs/beaker-automated-cloudbased-acceptance-testing-puppetconf-2014)
 
 Having contributed to this tool, I was a little bias in attending this talk. Still plenty of interesting new things that came up though.
-If you haven’t heard of beaker yet you will also be interested in our [previous blog post](http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/)
+If you haven’t heard of beaker yet you will also be interested in our [previous blog post](http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/).
 
  * basic introduction to what beaker is and how to use it.
  * rspec vs test dsl - both are still supported methods of writing tests.
@@ -159,13 +159,13 @@ If you haven’t heard of beaker yet you will also be interested in our [previou
 Lots and lots of interesting information here about the new Puppet 4 syntax and jokes about some of the terrible edge cases of the past. It is good to
 know now that with Puppet 4 there is a formal specification for the language so we should no longer see these sorts of weird edge cases of the past.
 There are also lots of new features in the language: some to deal with long standing pain points (interation), some to help in the move away from ruby
-(puppet templates) and some to prevent authors themselves writing buggy manifests (the type system). Puppet 4 is going to be an exciting this to use.
+(Puppet templates) and some to prevent authors themselves writing buggy manifests (the type system). Puppet 4 is going to be an exciting this to use.
 
  * pain-points / cleanup (specification)
      - numbers are numbers (and not strings)
      - Type references
  * heredoc
- * puppet templates
+ * Puppet templates
  * iteration (each, map, filter, reduce, slice, with)
  * local defaults
  * Type system
@@ -184,14 +184,14 @@ foreshadowing of things that may arise if your not careful (or are very unlucky)
 
 #### Killer R10K Workflow - Phil Zimmerman ([@phil_zimmerman](https://twitter.com/phil_zimmerman)), Time Warner Cable - [Slides](http://www.slideshare.net/PuppetLabs/killer-r10k-39571913)
 
-This was a good introduction to r10k and the reasons you would want to use it. The workflow is pretty straight forward and I think that for anyway managing puppet at scale this is going to be something to look at.
+This was a good introduction to r10k and the reasons you would want to use it. The workflow is pretty straightforward and I think that for anyone managing Puppet at scale this is going to be something to look at.
 
 * some good use cases for r10k
     - upgrading modules
     - not having to wait for all role tests to run
     - deploying everything to all masters (even hiera)
 * workflow
-    -  ci per module
+    - ci per module
     - release job per module (tags)
     - deploy job per module (cap task to wrap r10k for masters/nodes)
 

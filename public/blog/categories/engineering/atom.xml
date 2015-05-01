@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Engineering | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/engineering/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2014-10-08T11:14:33+01:00</updated>
+  <updated>2015-03-05T14:36:34+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -12,6 +12,308 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[The DNS ABC]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2015/03/05/the-dns-abc/"/>
+    <updated>2015-03-05T15:00:00+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2015/03/05/the-dns-abc</id>
+    <content type="html"><![CDATA[<h2>Introduction to DNS</h2>
+
+<p>Before joining OpenTable I was looking for a software engineer job and I&rsquo;ve done my fair share of interviews. A question that has popped out a lot, and when I say a lot I mean <em>always</em>, is:</p>
+
+<p><em>Could you tell me what happens when I type an URL in a web browser on my computer and press enter?</em></p>
+
+<p>Of course the possible answers could range from &ldquo;MMMHHH, wellll, I&rsquo;m not sure where to start&hellip;&rdquo; to a whole book on computer networks.</p>
+
+<p>After a number of attempts to answer briefly and correctly, I&rsquo;ve concluded that mentioning <strong>DNS</strong> can make a reasonable start.</p>
+
+<p>Let&rsquo;s think about it. When we type the address of the resource we want to browse, we use the alphabet, right? With letters and names easily readable and retainable by a human being.</p>
+
+<p>But a machine needs an <strong>IP address</strong> to recognize another machine connected to a network. An IP address is numerical, for example 192.168.0.1. Less readable, it seems.</p>
+
+<p>And here is where DNS comes to play. DNS stands for <strong>Domain Name System</strong>, and that represents exactly what it is: a system that translates <strong>domain names</strong> (e.g <em>www.opentable.co.uk</em>), into IP addresses. I think of it as a phone book. It is queried with a domain name and, after a lookup, returns an IP.</p>
+
+<p>How does the magic happen? Let&rsquo;s look into it.</p>
+
+<h2>The ABC</h2>
+
+<h3>Some definitions</h3>
+
+<p>So we can define a domain name as a string composed by one or more parts, called <strong>labels</strong>, concatenated and delimited by dots with a <strong>hierarchical</strong> logic.</p>
+
+<p>In the case of www.opentable.co.uk, for instance, we have four labels:</p>
+
+<ul>
+<li><p><em>uk</em> is the <strong>top-level</strong> domain. This should sound familiar. Famous top-level domains are also <em>.net</em>, <em>.org</em>, <em>.uk</em>, <em>.it</em>, <em>.gov</em>, etc.</p></li>
+<li><p><em>co</em> is the <strong>second level</strong> domain, which in this case specifies the commercial nature of the company.</p></li>
+<li><p>Hierarchy goes from right to left, so then we can say that <em>opentable</em> is a <strong>subdomain</strong> of <em>co</em>. And so on.</p></li>
+<li><p>A name that can be associated to a specific machine connected to a network with an IP address is called <strong>hostname</strong>. Let&rsquo;s say it&rsquo;s the leftmost label in the domain name.</p></li>
+</ul>
+
+
+<h3>Questions that pop out at this point</h3>
+
+<p>Q: So all the host names reachable via a specific domain have a specific IP address! There must be BILLIONS of them. How do we make sure everyone is unique?</p>
+
+<p>A: There are entities that have the authority to assign and register names under one or more top-level domain, called <strong>registrars</strong>. The registered name then becomes part of a central database known as the <em>whois database</em>.</p>
+
+<p>Q: Now, how do we retrieve this infamous IP address by just knowing a domain name? Who can <strong>resolve</strong> this request?</p>
+
+<p>A: Well, the domain name is resolved into an IP address by querying <strong>authoritative name servers</strong>. These machines are the endpoints of a database that can map domain names to IPs. The authoritative name servers of the top level domain are also called <a href="https://www.iana.org/domains/root/servers"><strong>root level servers</strong></a>.</p>
+
+<p>Q: OK, but wait a second. How in the heavens does my machine know the address of the name server to query? I thought I just entered an address in the browser!</p>
+
+<p>A: Every client machine has a default <strong>DNS resolver</strong>, which is responsible of initiating the sequence of queries that will ultimately lead to the resolution.
+It is very important to note that the system&rsquo;s DNS setting can be also overridden by the <a href="http://www.ispreview.co.uk/list.shtml"><strong>Internet Service Provider</strong></a> (ISP) settings, so the DNS lookup process can be very OS-specific and ISP-specific. This would deserve a whole post apart.</p>
+
+<h3>How to resolve an address (ideally)</h3>
+
+<p>Resolving an address via DNS is also called <strong>lookup</strong>, and it is a recursive process. Now that we know the purpose of DNS, and the concepts involved in the process, we can dig a little deeper into its basic mechanism, which is roughly:</p>
+
+<ol>
+<li><p>The resolver has knowledge of the addresses of root name servers, from where the search can start.</p></li>
+<li><p>The root name server will return a name server which is authoritative for the top-level domain.</p></li>
+<li><p>This server will give the address of the name server authoritative for the second level domain.</p></li>
+<li><p>If the hostname is resolved, an IP address is returned. Otherwise step 3) is repeated for all the labels of the domain name in sequence, until a result is reached.</p></li>
+</ol>
+
+
+<p>I made a diagram that shows that.</p>
+
+<p><img src="http://federicomaffei.github.io/public/images/dnsbasic.jpg" class="center-image"></img></p>
+
+<h3>Real life problems</h3>
+
+<p>The mechanism explained above is great, but if applied in a real life application, it will lead to a bottleneck. Every lookup would involve root servers and authoritative servers, which would be hit by gazillions of queries every day, putting a huge burden on the system since the start.</p>
+
+<p>To solve this, of course a <a href="http://blog.catchpoint.com/2014/07/15/world-dns-cache-king/"><strong>caching</strong></a> system comes to help. Yes, DNS allows and encourages caching. This way another class of DNS servers comes into play, the <strong>recursive name servers</strong>. They can perform recursive lookups and cache results, returning them when queried even if they don&rsquo;t have the authority to generate the results themselves.</p>
+
+<p>Caching recursive DNS server are usually managed by Internet Service Providers, and are able to resolve addresses without waiting for the &ldquo;authorities&rdquo;. This means that a query will rarely have to hit the root name servers, since there is a very high likelihood that the hostname/IP request is already cached by one of the delegated DNS servers that are called by recursion.</p>
+
+<p>We could say that in reality a root server will be hit as a last resort to track down an authoritative server for a given domain.</p>
+
+<p>The amount of time for which a lookup result is stored on a server is called <a href="http://en.wikipedia.org/wiki/Time_to_live"><strong>time-to-live (TTL)</strong></a> and can vary with the configuration.</p>
+
+<p>One side effect of the heavy caching that involves the DNS is that when a new domain is registered, or there is a change in any domain-related settings, there will be a time lag for the propagation of it to all the cached results.</p>
+
+<p>It is noteworthy that cached DNS results from your browsing could be stored in your router, or somewhere within you browser memory as well. These IP addresses seem to be everywhere these days!</p>
+
+<h2>Conclusion</h2>
+
+<p>I barely scratched the surface of the Domain Name System topic, and that alone took a good day of research and writing.</p>
+
+<p>So I decided to avoid making this post too long, so that beginners that are going to find it will profit, and be encouraged to research on these key concepts. This will allow me to decide which part of DNS is worth more digging, and maybe write a sequel. Stay tuned!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[A Beginner's guide to REST services]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2015/02/02/a-beginners-guide-to-rest-services/"/>
+    <updated>2015-02-02T11:53:25+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2015/02/02/a-beginners-guide-to-rest-services</id>
+    <content type="html"><![CDATA[<h2>Why this post?</h2>
+
+<p>As a junior, I always find it easier to just sit and write code than actually stop to think about the theoretical basis that lie under the applications I work on. <strong>REST</strong>  is one of those terms I heard a lot about, so I decided to try to sum up what it means and how it affects the choices we make everyday as software engineers.</p>
+
+<h2>Introduction to REST</h2>
+
+<p>REST stands for Representational State Transfer, and it can be defined as an architectural style used to build Web Services that are lightweight, maintainable, and scalable. A service that is designed by REST principles can be called a <strong>RESTful service</strong>.</p>
+
+<p>It has been described first in 2000 by Roy Fielding, in a <a href="http://www.ics.uci.edu/~fielding/pubs/webarch_icse2000.pdf">dissertation</a> called &ldquo;Architectural Styles and the Design of Network-based Software Architectures&rdquo;. The basic idea was to describe the interactions between the components of a distributed system, putting constraints on them and emphasizing the importance of an uniform interface, that is abstracted from the single components.</p>
+
+<p>REST is often applied to the design and development of web services, which is the scenario I&rsquo;ll try to address in this post.</p>
+
+<p>The purpose of a web service can be summed up as follows: it exposes <strong>resources</strong> to a <strong>client</strong> so that it can have access to them (examples of typical resources include pictures, video files, web pages and business data).</p>
+
+<p>Common features of a service that is built in a REST style are:</p>
+
+<ul>
+<li>Representations</li>
+<li>Messages</li>
+<li>URIs</li>
+<li>Uniform Interface</li>
+<li>Statelessness</li>
+<li>Links between resources</li>
+<li>Caching</li>
+</ul>
+
+
+<h2>Representations &ndash; what are they?</h2>
+
+<p>REST style does not put a constraint into the way resources are represented, as long as their format is understandable by the client.</p>
+
+<p>Good examples of data formats in which a resource could be returned from a service are <a href="http://www.json.org/"><strong>JSON</strong></a> (JavaScript Object Notation, which nowadays is the coolest one) and <a href="http://www.w3.org/XML/"><strong>XML</strong></a> (Extensible Markup Language, used for more complex data structures). Say for instance a REST service has to expose the data related to a song, with its attributes. A way of doing it in JSON could be:</p>
+
+<p>```json
+{</p>
+
+<pre><code>"ID": 1,
+"title": "(You gotta) Fight for your right (To party)",
+"artist": "Beastie Boys",
+"album": "Licensed To Ill",
+"year": 1986,
+"genre": "Hip-Hop"
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Easy, huh?</p>
+
+<p>Anyway, a service can represent a resource in a number of ways at the same time, leaving the client to choose which one is better suited for its needs. The important thing is that there is agreement on what format to send/expect.</p>
+
+<p>The format that the client needs will be part of the <strong>request</strong> sent by the client.</p>
+
+<p>The resource will be eventually sent by the service as part of what we call a <strong>response</strong>.</p>
+
+<p>It has to be kept in mind that a resource should be completely described by the representation, since this is the only information the client will have. It has to be exaustive, but without exposing classified or useless information about the entity at the same time.</p>
+
+<h2>Messages A.K.A. client and service chatting</h2>
+
+<p>Q: So, how exactly do client and service exchange requests and responses?</p>
+
+<p>A: They send messages.</p>
+
+<p>In fact, to be more specific, the client will send an <strong>HTTP request</strong> to the service, specifying the following details:</p>
+
+<ul>
+<li>The <strong>method</strong> that is called on the resource. It can correspond to a <em>GET</em>, a <em>POST</em>, a <em>PUT</em>, a <em>DELETE</em>, an <em>OPTIONS</em> or a <em>HEAD</em> operation.</li>
+<li>The <strong>URI</strong> of the request. It identifies what is the resource on which the client wants to use the method. More on that later. For now let&rsquo;s say it is the only way the client knows how to call the needed resource.</li>
+<li>The <strong>HTTP version</strong>, which is usually <a href="http://tools.ietf.org/html/rfc2616"><em>HTTP/1.1</em></a>.</li>
+<li>The <strong>request headers</strong>, which are the additional information passed, with the request, to the service. These fields are basically request modifiers, similar to the parameters sent to a programming language method, and they depend on the type of request sent. More on that later.</li>
+<li>The <strong>request body</strong>: is the actual content of a message. In a RESTful service, it’s where the representation of resources sit. A body will not be present in a GET request, for instance, since it is a request to retrieve a resource rather than to create one, whereas a POST request will most likely have one.</li>
+</ul>
+
+
+<p>The request will then generate an <strong>HTTP response</strong> to the client, that will contain the following elements:</p>
+
+<ul>
+<li>The <strong>HTTP version</strong>, same as above.</li>
+<li>The <strong>response code</strong>: which is a three-digit status code sent back to the client. Can be of the <strong>1xx</strong> format (informational), <strong>2xx</strong> (success), <strong>3xx</strong> (redirect), <strong>4xx</strong> (client error), <strong>5xx</strong> (server error).</li>
+<li>The <strong>response header</strong>, which contains metadata and settings related to the message.</li>
+<li>The <strong>response body</strong>: contains the representation (if the request was successful).</li>
+</ul>
+
+
+<h2>URIs, home of the resources</h2>
+
+<p>A requirement of REST is that each resource has to correspond to an <a href="http://en.wikipedia.org/wiki/Uniform_resource_identifier">URI</a> address, which unsurprisingly stands for Uniform Resource Identifier. Having URIs associated to resources is key, because they are the addresses on which the client is allowed to perform the operations on the resources. It is important to stress that according to REST an URI should describe a resource, but never the operation performed on it.</p>
+
+<p>The addresses are usually constructed hierarchically, to allow readability. A typical resource URL could be written as: <code>http://serviceName/resourceName/resourceID</code></p>
+
+<p>Basic guidelines to build well-structured URIs are:</p>
+
+<ul>
+<li>Resources should be named with plural nouns, no verbs, using conventions throughout the whole service.</li>
+<li>Query URIs <code>http://serviceName/resourceName?id=resourceID</code> should be used only when really necessary. They are not deprecated by REST style, but they are less readable than the normal URIs, and are ignored by search engines. On the upside, they allow the client to send parameters to the service, to refine the request for a specific subset of resources, or resources in a specific format.</li>
+</ul>
+
+
+<h2>Uniform interface, various operations</h2>
+
+<p>Ok, so now that a client knows where a resource is reachable, how is it going to handle the resource? What are the operations that it can perform?</p>
+
+<p>HTTP provides a set of methods that allow the client to perform standard operations on the service:</p>
+
+<table style="margin-bottom:16px;">
+    <tr>
+        <th style="font-weight:bold;padding:5px 10px;border-bottom:1px solid #ccc;">Method</th>
+        <th style="font-weight:bold;padding:5px 10px;border-bottom:1px solid #ccc;">Operation performed</th> 
+        <th style="font-weight:bold;padding:5px 10px;border-bottom:1px solid #ccc;">Quality</th>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">GET</td>
+        <td style="padding:5px 10px;">Read a resource</td> 
+        <td style="padding:5px 10px;">Safe</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">POST</td>
+        <td style="padding:5px 10px;">Insert a new resource, or update an existing one</td> 
+        <td style="padding:5px 10px;">Not idempotent</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">PUT</td>
+        <td style="padding:5px 10px;">Insert a new resource, or update an existing one</td> 
+        <td style="padding:5px 10px;">Idempotent (see below)</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">DELETE</td>
+        <td style="padding:5px 10px;">Delete a resource</td> 
+        <td style="padding:5px 10px;">Idempotent</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">OPTIONS</td>
+        <td style="padding:5px 10px;">List allowed operations on a resource</td> 
+        <td style="padding:5px 10px;">Safe</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">HEAD</td>
+        <td style="padding:5px 10px;">Return only the response header, no body</td> 
+        <td style="padding:5px 10px;">Safe</td>
+    </tr>
+</table>
+
+
+<p>The key difference between <em>POST</em> and <em>PUT</em> is that no matter how many times a <em>PUT</em> operation is performed, the result will be the same (this is what <em>idempotent</em> means), whereas with a <em>POST</em> operation a resource will be added or updated multiple times.</p>
+
+<p>Another difference is that a client that sends a <em>PUT</em> request always need to know the exact URI to operate on, I.E. assigning a name or an ID to a resource. If the client is not able to do so, it has no choice but to use a POST request.</p>
+
+<p>Finally, if the resource already exists, <em>POST</em> and <em>PUT</em> will update it in an identical fashion.</p>
+
+<p>These operations, according to REST, should be available to the client as hyperlinks to the above described URIs, and that is how the client/service interface is constrained to be <em>uniform</em>.</p>
+
+<h2>Statelessness of the client side</h2>
+
+<p>A RESTful service does not maintain the application state client-side. This only allows the client to perform requests that are resource specific, and does not allow the client to perform operations that assume prior knowledge of past requests. The client only knows what to do based on the ability to read the hypertext it receives, knowing its media type.</p>
+
+<p>This leads me to mention an important constraint of REST, that was also <a href="http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven">enforced by Fielding</a> after publishing his dissertation: hyperlinks within hypertext are the only way for the client to make state transitions and perform operations on resources. This constraint is also known as <strong>HATEOAS</strong> (Hypermedia As The Engine Of Application State).</p>
+
+<h2>Links between resources</h2>
+
+<p>In the case of a resource that contains a list of resources, REST suggests to include links to the single resources on the representation, to keep it compact and avoid redundant data.</p>
+
+<h2>Caching to optimize time and efficiency</h2>
+
+<p>Allows to store responses and return them if the same request is performed again. It has to be handled carefully to avoid returning stale results. The headers that allow us to perform controls over caching are:</p>
+
+<table style="margin-bottom:16px;">
+    <tr>
+        <th style="font-weight:bold;padding:5px 10px;border-bottom:1px solid #ccc;">Header</th>
+        <th style="font-weight:bold;padding:5px 10px;border-bottom:1px solid #ccc;">Application</th>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">Date</td>
+        <td style="padding:5px 10px;">Finding out when this representation was generated</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">Last Modified</td>
+        <td style="padding:5px 10px;">Date and time when the server modified the representation</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">Cache-Control</td>
+        <td style="padding:5px 10px;">HTTP 1.1 header used to control caching, can contain directives</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">Expires</td>
+        <td style="padding:5px 10px;">Expiration date (supports HTTP 1.0)</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">Age</td>
+        <td style="padding:5px 10px;">Duration since the resource was fetched from server</td>
+    </tr>
+</table>
+
+
+<p>Cache-Control values can be tweaked to control if a cached result is still valid or stale. For example, the <em>max-age</em> value indicates for how many seconds from the moment expressed by the Date header a cached result will be valid.</p>
+
+<h2>Conclusion</h2>
+
+<p>REST is a language-agnostic style that abstracts over components and allows to build scalable, reusable and relatively lightweight web services. Thinking about it, it seems that REST is very close to an accurate description of the characteristics that made the World Wide Web so popular.</p>
+
+<p>That of course is encouraging developers from all over the world to comply to these very basic ideas, owned by no one but at the same time used by everyone. Fascinating!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Acceptance Now]]></title>
@@ -176,7 +478,7 @@ public void it_has_2_bananas()
 <li>We use continuous delivery to ship code to production within minutes.</li>
 <li>We have a high degree of high-quality test coverage.</li>
 <li>We are getting better and better at monitoring All The Things.</li>
-<li><a href="/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">We use ChatOps</a>, so communication is central to our work, and keeps remote workers/teams in the loop.</li>
+<li><a href="/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">We use Chatops</a>, so communication is central to our work, and keeps remote workers/teams in the loop.</li>
 </ul>
 
 

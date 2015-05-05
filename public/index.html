@@ -9,7 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="Introduction to DNS Before joining OpenTable I was looking for a software engineer job and I&rsquo;ve done my fair share of interviews. A question &hellip;">
+  <meta name="description" content="Puppet is an important tool to us at OpenTable; we couldn’t operate as efficiently without it but Puppet is more than a tool or a vendor, it is a &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,6 +80,97 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/05/06/puppet-community/">Puppet-Community</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-06T09:00:00+01:00" pubdate data-updated="true">May 6<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Puppet is an important tool to us at OpenTable; we couldn’t operate as efficiently without it but Puppet is more than a tool or a vendor, it is a community of people trying to help
+each other operate increasing complex and sophisticated infrastructures.</p>
+
+<p>The Puppet community and the open source efforts that drive that community have always been important to us which is why we want to take a step further in our efforts and introduce
+you to the &ldquo;Puppet-community&rdquo; project.</p>
+
+<h2>What is Puppet-community</h2>
+
+<p>Puppet-community is a GitHub organisation of like-minded individuals from across the wider Puppet ecosystem and from a diverse set of companies. Its principle aims are to allow the community to synchronise its efforts and to provide a GitHub organisation and Puppet Forge namespace not affiliated with any company.</p>
+
+<p>Its wider aims are to provide a place for module and tool authors to share their code and the burden of maintaining it.</p>
+
+<p>I would like to say that this was our idea, as it’s an excellent one, but actually all credit goes to its founders: <a href="https://github.com/igalic">Igor Galić</a>, <a href="https://github.com/daenney">Daniele Sluijters</a> and <a href="https://github.com/nibalizer">Spencer Krum</a></p>
+
+<h2>Why communities matter</h2>
+
+<p>So why all the fuss about this? Why does it even matter where your code lives?</p>
+
+<p>Well these are the some questions that I asked myself when I first heard about this project at PuppetConf 2014. The answer is that is really does matter and it’s a pattern that is
+developing elsewhere (see: <a href="https://github.com/packer-community">packer-community</a>, <a href="https://github.com/terraform-community-modules">terraform-community-modules</a>,
+<a href="https://github.com/cloudfoundry-community">cloudfoundry-community</a>) to deal with the problems you’ll face with a large amount of open source code.</p>
+
+<p>Stepping back slightly, if you look at open source then there are three types: product-based (think open-core), corporate/individual sponsored,  and community-driven.</p>
+
+<p>The first is common for businesses (like PuppetLabs) who’s product is a open source product. They make great efforts to build a community, fix bugs and accept changes. They make  their money through extras (add-ons and/or professional services). They control what they will/won’t accept and are driven by the need to build that community as well as support those big paying customers who pay the bills &ndash; it’s a tough balancing act.</p>
+
+<p>The second is what you probably mean when you think about open source. It’s a individual or company that dumps some code they have been working on to GitHub and that’s it &ndash; they own it, they control it, it they don&rsquo;t like your changes they don’t even have to give a reason. They can also choose to close or delete the project whenever they want or more likely they will just let it sit on GitHub and move onto the next thing.</p>
+
+<p>The third is the community approach. Create a GitHub organisation, move your projects and add some new people in there with commit access. This is a different approach because it means
+that you don’t own it any more, you don’t have that tight control over the codebase because there are other people with other opinions that you have to take into account. It also means
+that on long weeks when you&rsquo;re on-call or on holiday that there is someone else to pick up the slack and merge those pull requests for you. It has massive benefits if you can keep that
+ego in check.</p>
+
+<h2>Why we’re moving our modules there</h2>
+
+<p>So why is OpenTable moving its modules there? It is because we care about the community (particularly those using Puppet on Windows) and want to make sure there is good long term
+support for the modules that we authored. OpenTable isn’t a company that authors Puppet modules, it is a company that seats diners in restaurants so from time to time we are going
+to work on other things.</p>
+
+<p>By being part of the community there will be other people who can help discuss and diagnose bugs, merge pull requests and generally help with any problems that arise when using
+the modules we created.</p>
+
+<p>Sometimes when writing a module it’s not about being the best, sometimes it’s just about being first &ndash; we got a bit lucky. What that means though is that we need to recognise that there
+are plenty of people out there in the community that have better knowledge than us about a tool or application and might be better suited to guide the project forward &ndash; heck we might
+even learn from them in the process.</p>
+
+<p>So let’s lose our egos, loosen that grip and let those modules be free &hellip;</p>
+
+<h2>What that means for you</h2>
+
+<p>Ok, so let’s get practical for a second. What’s happening here? What our support of Puppet-community means is that our code has moved into a new organisation
+(<a href="https://github.com/puppet-community">github.com/puppet-community</a>) and our modules have been re-released under the community namespace on the forge
+(<a href="https://forge.puppetlabs.com/puppet">forge.puppetlabs.com/puppet</a>). So if you are using our modules then you should go and have a look on the forge and update to the latest versions.
+We will continue to provide lots of support to these modules but so will lots of others (including some PuppetLabs employees) so expect the quality of the modules to also start increasing.</p>
+
+<p>If you have any thoughts or questions about this you can reach out to me personally on twitter: <a href="twitter.com/liamjbennett">@liamjbennett</a> or via email at: <a href="mailto:liamjbennett@gmail.com">liamjbennett@gmail.com</a></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1335,135 +1426,6 @@ Primary buttons are only used when there is an exceedingly distinct and clear ca
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/11/26/hobknob-v2-dot-0-a-new-dimension/">Hobknob v2.0: A new dimension</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-11-26T10:11:37+00:00" pubdate data-updated="true">Nov 26<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Sometimes there is the requirement for more granularity when toggling a feature switch.
-Version 2.0 of <a href="https://github.com/opentable/hobknob">Hobknob</a> hopes to address this with feature categories.</p>
-
-<h3>TL;DR.</h3>
-
-<p>Hobknob now allows you to define categories of features that have multiple toggles per feature.</p>
-
-<p>For example, you can define the &lsquo;Domain Features&rsquo; category which allows you to toggle a feature OFF in <code>your-website.com</code>, but ON in <code>your-website.co.uk</code>.</p>
-
-<p><img src="/images/posts/hobknob-domain-features.png" alt="Domain Features" /></p>
-
-<h2>Categories</h2>
-
-<p>Feature categories are configured with a few pieces of information. For example:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="nt">&quot;categories&quot;</span><span class="p">:</span> <span class="p">[</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Simple Features&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Use when you want your feature to be either on or off&quot;</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Domain Features&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Use when you want your features to be toggled separately for different domains&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;com&quot;</span><span class="p">,</span> <span class="s2">&quot;couk&quot;</span><span class="p">,</span> <span class="s2">&quot;de&quot;</span><span class="p">,</span> <span class="s2">&quot;commx&quot;</span><span class="p">,</span> <span class="s2">&quot;jp&quot;</span><span class="p">,</span> <span class="s2">&quot;ca&quot;</span><span class="p">]</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Locale Features&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Use when you want your features to be toggled separately for different locales&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;en-GB&quot;</span><span class="p">,</span> <span class="s2">&quot;en-US&quot;</span><span class="p">,</span> <span class="s2">&quot;fr-CA&quot;</span><span class="p">,</span> <span class="s2">&quot;de-DE&quot;</span><span class="p">,</span> <span class="s2">&quot;ja-JP&quot;</span><span class="p">,</span> <span class="s2">&quot;es-MX&quot;</span><span class="p">]</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">]</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Notice that each category (except the simple feature category) provides an array of accepted toggle values.</p>
-
-<p>All non-simple feature toggles will have the key <code>application-name/feature-name/toggle-name</code>.
-For example, <code>main-website/show-user-section/com</code>.</p>
-
-<p>Simple features will continue to have the key <code>application-name/feature-name</code>.</p>
-
-<h2>Setting Toggles</h2>
-
-<p>Both simple and non-simple features are added via the application view (which is accessed via the left-hand navigation menu). Simple features are automatically set to false, this value can be changed in the feature view (by clicking the feature name).</p>
-
-<p>A newly added non-simple feature will be initialised with no toggles values. You can add a toggle by clicking the Add Toggle button in the feature view, and choosing which toggle to add.</p>
-
-<p><img src="/images/posts/hobknob-adding-toggle.png" alt="Adding a toggle" /></p>
-
-<p>New toggles are initially set to OFF. The toggle can be switched in the usual way by clicking the toggle button. You should also see an audit of the change in the panel below.</p>
-
-<h2>Getting Toggles</h2>
-
-<p>All of the Hobknob <a href="https://github.com/opentable/hobknob#hobknob-clients">clients</a> now support getting non-simple features toggles. The only requirement is to pass the name of the toggle, so for example in node:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">nonSimpleFeatureInCom</span> <span class="o">=</span> <span class="nx">hobknobClient</span><span class="p">.</span><span class="nx">getOrDefault</span><span class="p">(</span><span class="s1">&#39;feature-name&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>It is highly reccommended that you use the get or default methods when accessing non-simple features. Getting a toggle that does not exist for a non-simple feature could be a likely scenario, since you might want to only set a feature for a few toggles explicitly (e.g. com and couk) and then use the default value for the rest (e.g. jp and de).</p>
-
-<p>The behaviour for simple features has not changed, and is backwards compatible in all client libraries.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">simpleFeature</span> <span class="o">=</span> <span class="nx">hobknobClient</span><span class="p">.</span><span class="nx">getOrDefault</span><span class="p">(</span><span class="s1">&#39;simple-feature&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1479,6 +1441,10 @@ For example, <code>main-website/show-user-section/com</code>.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/05/06/puppet-community/">Puppet-Community</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/05/the-dns-abc/">The DNS ABC</a>
       </li>
     
@@ -1492,10 +1458,6 @@ For example, <code>main-website/show-user-section/com</code>.</p>
     
       <li class="post">
         <a href="/blog/2015/02/02/a-beginners-guide-to-rest-services/">A Beginner&#8217;s guide to REST services</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/01/23/on-strongly-typed-logging/">On Strongly Typed Logging</a>
       </li>
     
   </ul>

@@ -1,0 +1,319 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Puppet-Community - OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
+
+  
+  <meta name="description" content="Puppet is an important tool to us at OpenTable; we couldn’t operate as efficiently without it but Puppet is more than a tool or a vendor, it is a &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.opentable.co.uk/blog/2015/05/06/puppet-community/">
+  <link href="/favicon-32.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
+  <script src="//fonts.otstatic.com/zys4lfz.js"></script>
+  <script>try{Typekit.load();}catch(e){}</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
+  
+    <h2>The technology blog for OpenTable UK.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/authors">Authors</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Puppet-Community</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/blog/authors/lbennett.html">Liam Bennett</a></span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-06T09:00:00+01:00" pubdate data-updated="true">May 6<span>th</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Puppet is an important tool to us at OpenTable; we couldn’t operate as efficiently without it but Puppet is more than a tool or a vendor, it is a community of people trying to help
+each other operate increasing complex and sophisticated infrastructures.</p>
+
+<p>The Puppet community and the open source efforts that drive that community have always been important to us which is why we want to take a step further in our efforts and introduce
+you to the &ldquo;Puppet-community&rdquo; project.</p>
+
+<h2>What is Puppet-community</h2>
+
+<p>Puppet-community is a GitHub organisation of like-minded individuals from across the wider Puppet ecosystem and from a diverse set of companies. Its principle aims are to allow the community to synchronise its efforts and to provide a GitHub organisation and Puppet Forge namespace not affiliated with any company.</p>
+
+<p>Its wider aims are to provide a place for module and tool authors to share their code and the burden of maintaining it.</p>
+
+<p>I would like to say that this was our idea, as it’s an excellent one, but actually all credit goes to its founders: <a href="https://github.com/igalic">Igor Galić</a>, <a href="https://github.com/daenney">Daniele Sluijters</a> and <a href="https://github.com/nibalizer">Spencer Krum</a></p>
+
+<h2>Why communities matter</h2>
+
+<p>So why all the fuss about this? Why does it even matter where your code lives?</p>
+
+<p>Well these are the some questions that I asked myself when I first heard about this project at PuppetConf 2014. The answer is that is really does matter and it’s a pattern that is
+developing elsewhere (see: <a href="https://github.com/packer-community">packer-community</a>, <a href="https://github.com/terraform-community-modules">terraform-community-modules</a>,
+<a href="https://github.com/cloudfoundry-community">cloudfoundry-community</a>) to deal with the problems you’ll face with a large amount of open source code.</p>
+
+<p>Stepping back slightly, if you look at open source then there are three types: product-based (think open-core), corporate/individual sponsored,  and community-driven.</p>
+
+<p>The first is common for businesses (like PuppetLabs) who’s product is a open source product. They make great efforts to build a community, fix bugs and accept changes. They make  their money through extras (add-ons and/or professional services). They control what they will/won’t accept and are driven by the need to build that community as well as support those big paying customers who pay the bills &ndash; it’s a tough balancing act.</p>
+
+<p>The second is what you probably mean when you think about open source. It’s a individual or company that dumps some code they have been working on to GitHub and that’s it &ndash; they own it, they control it, it they don&rsquo;t like your changes they don’t even have to give a reason. They can also choose to close or delete the project whenever they want or more likely they will just let it sit on GitHub and move onto the next thing.</p>
+
+<p>The third is the community approach. Create a GitHub organisation, move your projects and add some new people in there with commit access. This is a different approach because it means
+that you don’t own it any more, you don’t have that tight control over the codebase because there are other people with other opinions that you have to take into account. It also means
+that on long weeks when you&rsquo;re on-call or on holiday that there is someone else to pick up the slack and merge those pull requests for you. It has massive benefits if you can keep that
+ego in check.</p>
+
+<h2>Why we’re moving our modules there</h2>
+
+<p>So why is OpenTable moving its modules there? It is because we care about the community (particularly those using Puppet on Windows) and want to make sure there is good long term
+support for the modules that we authored. OpenTable isn’t a company that authors Puppet modules, it is a company that seats diners in restaurants so from time to time we are going
+to work on other things.</p>
+
+<p>By being part of the community there will be other people who can help discuss and diagnose bugs, merge pull requests and generally help with any problems that arise when using
+the modules we created.</p>
+
+<p>Sometimes when writing a module it’s not about being the best, sometimes it’s just about being first &ndash; we got a bit lucky. What that means though is that we need to recognise that there
+are plenty of people out there in the community that have better knowledge than us about a tool or application and might be better suited to guide the project forward &ndash; heck we might
+even learn from them in the process.</p>
+
+<p>So let’s lose our egos, loosen that grip and let those modules be free &hellip;</p>
+
+<h2>What that means for you</h2>
+
+<p>Ok, so let’s get practical for a second. What’s happening here? What our support of Puppet-community means is that our code has moved into a new organisation
+(<a href="https://github.com/puppet-community">github.com/puppet-community</a>) and our modules have been re-released under the community namespace on the forge
+(<a href="https://forge.puppetlabs.com/puppet">forge.puppetlabs.com/puppet</a>). So if you are using our modules then you should go and have a look on the forge and update to the latest versions.
+We will continue to provide lots of support to these modules but so will lots of others (including some PuppetLabs employees) so expect the quality of the modules to also start increasing.</p>
+
+<p>If you have any thoughts or questions about this you can reach out to me personally on twitter: <a href="twitter.com/liamjbennett">@liamjbennett</a> or via email at: <a href="mailto:liamjbennett@gmail.com">liamjbennett@gmail.com</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/blog/authors/lbennett.html">Liam Bennett</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-06T09:00:00+01:00" pubdate data-updated="true">May 6<span>th</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/puppet/'>Puppet</a>, <a class='category' href='/blog/categories/puppet-community/'>Puppet-community</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.opentable.co.uk/blog/2015/05/06/puppet-community/" data-via="opentabletechuk" data-counturl="http://tech.opentable.co.uk/blog/2015/05/06/puppet-community/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/03/05/the-dns-abc/" title="Previous Post: The DNS ABC">&laquo; The DNS ABC</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/05/06/puppet-community/">Puppet-Community</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/05/the-dns-abc/">The DNS ABC</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/16/hapi-js-and-sigterm/">Hapi.js and SIGTERM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">Dismantling the monolith - Microsites at Opentable</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/02/a-beginners-guide-to-rest-services/">A Beginner's guide to REST services</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2015 - OpenTable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -34,6 +34,8 @@ footer: false
 
 [Ryan Tomlinson]
 
+[Chris Cartlidge]
+
 [Paul Harrington]:/blog/authors/pharrington.html
 [Mark Barrett]:/blog/authors/mbarrett.html
 [Richard Hopton]:/blog/authors/rhopton.html
@@ -48,3 +50,4 @@ footer: false
 [Sam Salisbury]:/blog/authors/ssalisbury.html
 [Chris Riddle]:/blog/authors/criddle.html
 [Federico Maffei]:/blog/authors/fmaffei.html
+[Chris Cartlidge]:/blog/authors/ccartlidge.html

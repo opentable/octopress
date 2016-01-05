@@ -1,0 +1,14 @@
+---
+layout: author
+author: ccartlidge
+title: Posts by Chris Cartlidge
+twitter: F1Cartlidge
+---
+
+<ul>
+{% for p in site.posts do %}
+  {% if p.author == page.author %}
+    <li><a href="{{ p.url }}">{{ p.title }}</a></li>
+  {% endif %}
+{% endfor %}
+</ul>

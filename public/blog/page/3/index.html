@@ -9,7 +9,8 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="The ability to dynamically turn features on/off in software without the need to redeploy code is extremely beneficial. Whether you are trialing a new &hellip;">
+  <meta name="description" content="In part one we discussed our first steps into the world of acceptance testing our Puppet manifests.
+By using Beaker we able to test managing local &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,574 +81,6 @@
     <div id="content">
       <div class="blog-index">
   
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/09/04/introducing-hobknob-feature-toggling-with-etcd/">Introducing Hobknob: Feature toggling with etcd</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-09-04T20:09:52+01:00" pubdate data-updated="true">Sep 4<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>The ability to dynamically turn features on/off in software without the need to redeploy code is extremely beneficial. Whether you are trialing a new feature or using branch by abstraction to avoid creating feature branches, the use of feature toggles can aid continuous delivery and provide a mechanism to reduce mean time to resolution when an issue occurs.</p>
-
-<p>With a relatively large engineering department with multiple teams spread across the US and UK the need to manage feature toggles has evolved to the point whereby individual teams have developed their own implementations. Most of these are simple config files.</p>
-
-<p>We decided to unify this effort by providing a central place to store feature toggles, provide a dashboard to be able to turn these toggles on/off and provide language specific clients to integrate into our software components.</p>
-
-<p>The results of this was <a href="https://github.com/opentable/hobknob">Hobknob</a>.</p>
-
-<h2>Why etcd?</h2>
-
-<p>We made the decision to use <a href="https://github.com/coreos/etcd">etcd</a>. Etcd is &ldquo;a highly-available key value store for shared configuration&rdquo; (<a href="https://github.com/coreos/etcd#etcd">https://github.com/coreos/etcd#etcd</a>). It provides a HTTP API to store and retrieve data. This is what makes it perfect for a feature toggling solution used by multiple components. It means that we didn&rsquo;t have to write an intermediate API on top of a data store for consumers.</p>
-
-<p>So, for example, to store a feature toggle in etcd:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>curl -L http://127.0.0.1:4001/v2/keys/v1/toggles/restaurant-api/testtoggle -XPUT -d value="true"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>To retrieve a feature toggle:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>curl -L http://127.0.0.1:4001/v2/keys/v1/toggles/restaurant-api/testtoggle</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>The Hobknob Clients</h2>
-
-<p>To aid adoption we created, and open sourced, several hobknob clients in multiple languages:</p>
-
-<ul>
-<li>NodeJs (NPM) &ndash; <a href="https://github.com/opentable/hobknob-client-nodejs">https://github.com/opentable/hobknob-client-nodejs</a></li>
-<li>.NET (Nuget) &ndash; <a href="https://github.com/opentable/hobknob-client-net">https://github.com/opentable/hobknob-client-net</a></li>
-<li>Go &ndash; <a href="https://github.com/opentable/hobknob-client-go">https://github.com/opentable/hobknob-client-go</a></li>
-<li>Java (Maven) &ndash; <a href="https://github.com/opentable/hobknob-client-java">https://github.com/opentable/hobknob-client-java</a></li>
-</ul>
-
-
-<p>The clients all store a configurable in-memory cache that is periodically updated on a polling interval. They are all read-only and updates only occur on the dashboard where they can be audited.</p>
-
-<p>We decided to create a simple <a href="https://github.com/opentable/hobknob-demo">demo application</a> to show off how easy it is to use Hobknob in your applications. In order to try the demo you will need to start up Hobknob (see instructions below). The demo app uses the NodeJS client which is as simple as:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>var client = new Client("hobknob-demo", {
-</span><span class='line'>  etcdHost: etcdHost,
-</span><span class='line'>  etcdPort: etcdPort,
-</span><span class='line'>  cacheIntervalMs: 5000
-</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In the route definition it uses the client to request the toggle named <em>show-first-and-last-name-input</em> and passes the toggle value through to the view:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>var result = hobknobClient.getOrDefault('show-first-and-last-name-input', true);
-</span><span class='line'>res.render('server', {
-</span><span class='line'>                  page: 'server',
-</span><span class='line'>              useTwoFieldNameInput: value
-</span><span class='line'>              });</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The view then uses the value to decide whether to display one or two textboxes on the page:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>if useTwoFieldNameInput
-</span><span class='line'>  input.form-control.demo-input-small(type='text', placeholder='First name', name='firstname')
-</span><span class='line'>  input.form-control.demo-input-small(type='text', placeholder='Last name', name='lastname')
-</span><span class='line'>else
-</span><span class='line'>  input.form-control.demo-input-large(type='text', placeholder='Full name', name='fullname')</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>The Hobknob Dashboard</h2>
-
-<p>Hobknob is a NodeJS/AngularJS app. If you want to play with Hobknob the simplest way to get started is to use Vagrant. If you don&rsquo;t have it installed then get it from <a href="http://www.vagrantup.com/">http://www.vagrantup.com/</a>.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>git clone https://github.com/opentable/hobknob
-</span><span class='line'>cd hobknob
-</span><span class='line'>vagrant up</span></code></pre></td></tr></table></div></figure>
-
-
-<p>You should now be able to open the dashboard on <a href="http://127.0.0.1:3006">http://127.0.0.1:3006</a></p>
-
-<p><img src="/images/posts/hobknob-dashboard.png" alt="Hobknob dashboard" /></p>
-
-<p>All actions in the dashboard are audited. So when you create or update a toggle by turning it on/off an audit is written for that toggle. Clicking on a toggle in the dashboard takes you to the audit view:</p>
-
-<p><img src="/images/posts/hobknob-audit.png" alt="Hobknob audit" /></p>
-
-<h3>Authentication</h3>
-
-<p>By default Hobknob ships with authentication disabled. As a result all auditing will be recorded as &ldquo;Anonymous&rdquo;. Currently, we only support Google OAuth. To enable this follow the instructions <a href="https://github.com/opentable/hobknob/blob/master/README.md#configuring-authentication">here</a></p>
-
-<h3>Session Storage</h3>
-
-<p>By default Hobknob ships using in-memory session storage. You don&rsquo;t want to use this when you have a load balanced infrastructure. Hobknob supports both redis and etcd itself as a session store. To use either of these simply npm install the relevent connect middleware (<a href="https://github.com/visionmedia/connect-redis">connect-redis</a> or <a href="https://github.com/opentable/connect-etcd">connect-etcd</a>). To learn more follow the instructions <a href="https://github.com/opentable/hobknob/blob/master/README.md#configuring-session">here</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-3-testing-roles/">Testing Puppet with Beaker pt.3 - Testing Roles</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-09-01T13:09:05+01:00" pubdate data-updated="true">Sep 1<span>st</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In the first two parts of this blog series we have focusing on testing puppet <em>modules</em> with beaker. As an open source contributor there is always
-a large test matrix so this makes absolute sense. But what about the other large use-case for beaker &ndash; what about our day-to-day internal code base?
-Not all of this is modules, in fact a large portion of it is other puppet code &ndash; roles, profiles, facts, hiera data etc. All of this needs testing
-as well.</p>
-
-<p>In this blog post I will be showing how we have started using beaker to test our puppet roles and profiles for both Linux and Windows.</p>
-
-<h2>Master-vs-Masterless</h2>
-
-<p>Prior to this post all our beaker testing has been master-less i.e. using using puppet agent apply. This is perfectly adequate for most use cases when
-testing modules in isolation but doesn&rsquo;t always work when testing an internal code base (unless you are masterless there as well then please skip to the next section).</p>
-
-<p>At OpenTable we do use a central puppet master to compile our catalogs. So when testing our puppet roles we wanted to make sure that we were also testing
-with a master-agent configuration. It is worth mentioning here that if (like us) you are testing windows agents then you are going to need to test with master-agent
-approach due to the lack of a windows master.</p>
-
-<p>Testing the master-agent configuration means configuring multi-node sets in beaker. There are not many examples of this but the principle is very much
-the same as the single-node nodeset. Here is an example:</p>
-
-<pre><code>HOSTS:
-  ubuntu-server-12042-x64-master:
-    roles:
-      - master
-    platform: ubuntu-12.04-amd64
-    box: ubuntu-server-12042-x64-vbox4210-nocm
-    box_url: http://puppet-vagrant-boxes.puppetlabs.com/ubuntu-server-12042-x64-vbox4210-nocm.box
-    hypervisor: vagrant
-    ip: '10.255.33.135'
-  win-2008R2-std:
-    roles:
-      - default
-      - agent
-    platform: windows-server-amd64
-    box: opentable/win-2008r2-standard-amd64-nocm
-    box_version: = 1.0.0
-    box_check_update: false
-    hypervisor: vagrant
-    user: vagrant
-    ip: '10.255.33.129'
-    communicator: bitvise
-CONFIG:
-  log_level: verbose
-  type: git
-</code></pre>
-
-<p>In this example you will see that we are specifying different &lsquo;roles&rsquo; for each host in the nodeset. What a role is in in this context is a tag for that node that allows
-us to reference it directly later when running commands on the host. To avoid any further confusion, from this point onwards if I am referring to the role defined in the
-nodeset file I will call it the &lsquo;nodeset role&rsquo; otherwise I am referring the the puppet role provided in the manifest. There are a couple of build-in nodeset roles that
-Beaker already knows about: master, agent and default. The first two are pretty self explanatory but the last nodeset role &ndash; default &ndash; is the location where the tests
-themselves run. In you don&rsquo;t specify the &lsquo;default&rsquo; nodeset role on any of your host definitions then the tests will run on the first host that you specified in in the
-nodeset file (which in the case of the example above would be wrong).</p>
-
-<p>You may have a more complicated configuration that you wish to test and this allows you to specify arbitrary tags which can be very useful.</p>
-
-<p>We can now use these nodeset roles to configure our master and agent.</p>
-
-<p>In parts <a href="http://tech.opentable.co.uk/blog/2014/04/04/testing-puppet-with-beaker/">[1]</a> and <a href="http://tech.opentable.co.uk/blog/2014/09/01/testing-puppet-with-beaker-pt-dot-2-the-windows-story">[2]</a> of this series we saw what a basic spec_acceptence file looks like. So let&rsquo;s start with that:</p>
-
-<pre><code>require 'beaker-rspec/spec_helper'
-require 'beaker-rspec/helpers/serverspec'
-require 'winrm'
-
-hosts.each do |host|
-
-  if host['platform'] =~ /windows/
-    include Serverspec::Helper::Windows
-    include Serverspec::Helper::WinRM
-  end
-
-  version = ENV['PUPPET_VERSION'] || '3.5.1'
-  install_puppet(:version =&gt; version)
-
-  if host['roles'].include?('master')
-
-    ... # Install a master
-
-  else
-
-    ... # Install an agent
-
-  end
-end
-
-RSpec.configure do |c|
-
-  c.before :suite do
-
-    hosts.each do |host|
-      c.host = host
-
-      if host['platform'] =~ /windows/
-        endpoint = "http://127.0.0.1:5985/wsman"
-        c.winrm = ::WinRM::WinRMWebService.new(endpoint, :ssl, :user =&gt; 'vagrant', :pass =&gt; 'vagrant', :basic_auth_only =&gt; true)
-        c.winrm.set_timeout 300
-      end
-    end
-  end
-end
-</code></pre>
-
-<p>We can see here how we use the host[&lsquo;roles&rsquo;] in order to select the appropriate code-path for configurting each nodeset role. Now let&rsquo;s
-move onto how we configure each of those nodeset roles.</p>
-
-<h2>Configuring the master</h2>
-
-<p>There are a lot of things that go into building a puppetmaster:
- &ndash; puppetmaster packages
- &ndash; hiera backends
- &ndash; gems for addditional dependencies (eyaml + puppetdbquery)
- &ndash; downloading external modules</p>
-
-<p>Now let&rsquo;s step through our new spec_acceptence file that supports this multi-node environment:</p>
-
-<h3>Deploying the codebase</h3>
-
-<p>Stage one is getting our puppet codebase onto the master, which includes all the files, internal modules and anything else we need to get the master up and
-running. We do this like follows:</p>
-
-<pre><code>files = [ 'environments','facts','hiera','roles', 'profiles', 'keys', 'app_modules', 'auth.conf','autosign.conf',
-          'fileserver.conf', 'Gemfile','hiera.yaml','Puppetfile'
-        ]
-
-files.each do |file|
-  scp_to master, File.expand_path(File.join(File.dirname(__FILE__), '..', file)), "/etc/puppet/#{file}"
-end
-
-# scp dist modules folder (this excludes stuff like spec and test folders)
-dist_modules = Dir["#{dist_modules_root}/*/"].map { |a| File.basename(a) }
-dist_modules.each do |module_name|
-  dist_module_dir = "#{dist_modules_root}/#{module_name}"
-  copy_module_to(master, :source =&gt; dist_module_dir, :module_name =&gt; module_name)
-end
-</code></pre>
-
-<p>Here we are selecting all the files that we want and calling the scp_to method which will scp any file or directory to the host of choice, in this case our
-master.</p>
-
-<h3>The puppetmaster:</h3>
-
-<pre><code>...
-
-on master, "apt-get install -y rubygems git"
-on master, "apt-get install -y puppet-common=#{version}-1puppetlabs1 puppetmaster-common=#{version}-1puppetlabs1 puppetmaster=#{version}-1puppetlabs1 "
-on master, "echo '*' &gt; /etc/puppet/autosign.conf"
-
-...
-</code></pre>
-
-<p>So we have already installed puppet at a previous stage in our script. At this point we are performing all the steps required to install the
-puppetmaster: git, rubygems (if on an older distro) and the puppetmaster packages. We also making sure that we auto-signing if configured to
-save us some pain later on. This step should really be configured as another beaker method that we can just call but for now it is still manual.
-It is at this point that we have first introduced the &ldquo;on master&rdquo; this does what you think it might, it executes the command you pass it onto
-the host with the nodeset role on &lsquo;master&rsquo;.</p>
-
-<h3>Set the puppet.conf file:</h3>
-
-<pre><code>...
-
-config = {
-  'main' =&gt; {
-    'server'   =&gt; master_name,
-    'certname' =&gt; master_name,
-    'logdir'   =&gt; '/var/log/puppet',
-    'vardir'   =&gt; '/var/lib/puppet',
-    'ssldir'   =&gt; '/var/lib/puppet/ssl',
-    'rundir'   =&gt; '/var/run/puppet'
-  },
-  'agent' =&gt; {
-    'environment' =&gt; 'vagrant'
-  }
-}
-
-configure_puppet(master, config)
-
-...
-</code></pre>
-
-<p>Here we are configuring out puppet.conf file, making sure that it includes any customization we might need. This uses a configure_puppet method
-that we have added to beaker to allow us to do this customization and in this case it is taking the hash to modify the puppet.conf file on the master
-host.</p>
-
-<h3>Install the required ruby gems:</h3>
-
-<pre><code>...
-
-on master, "gem install bundler"
-on master, "gem install hiera-eyaml"
-on master, "cd /etc/puppet &amp;&amp; bundle install --without development"
-
-...
-</code></pre>
-
-<p>The average production-ready puppetmaster also requires a number of gems to function such as hiera-eyaml, deep_merge any many others
-depending upon what backends and other custom puppet extensions you have implemented. Here we are installing all our dependencies from
-the Gemfile we have already put onto the host.</p>
-
-<h3>Installing modules:</h3>
-
-<pre><code>...
-
-on master, "cd /etc/puppet &amp;&amp; bundle exec librarian-puppet install"
-
-...
-</code></pre>
-
-<p>The last major step is installing any external modules you have. You may be using librarian-puppet or r10k to do this. In our case it
-is the former so we go ahead and make sure that our modules directory is full of all the modules we require.</p>
-
-<h3>Networking:</h3>
-
-<pre><code>...
-
-master_name = "#{master}.test.local"
-on master, "echo '10.255.33.135   #{master_name}' &gt;&gt; /etc/hosts"
-on master, "hostname #{master_name}"
-on master, "/etc/init.d/puppetmaster restart"
-
-...
-</code></pre>
-
-<p>This last step is a small hack that you will probably require if you are running on vagrant. It just configures the host file to make
-sure that it&rsquo;s hostname if configured correctly from certificate signing to work as expected. This might not be required in your
-environment and I would try it without first but it&rsquo;s worth noting anyway.</p>
-
-<h2>Configuring the agent</h2>
-
-<p>So if you&rsquo;ve got to this point well done &ndash; most of the hard work is done. Configuring the agent(s) is pretty straightforward in comparison
-to a puppetmaster and some of the steps are similiar:</p>
-
-<h3>Set the puppet.conf file:</h3>
-
-<pre><code>if host['roles'].include?('master')
-  ...
-else
-  agent = host
-  master = only_host_with_role(hosts, 'master')
-  agent_name = agent.to_s.downcase
-  master_fqdn = "#{master}.test.local"
-  agent_fqdn = "#{agent_name}.test.local"
-
-  if agent['platform'] =~ /windows/
-    config = {
-      'main' =&gt; {
-        'server'   =&gt; master_fqdn,
-        'certname' =&gt; agent_name,
-        'logdir'   =&gt; 'C:\\ProgramData\\PuppetLabs\\puppet\\var\\log',
-        'vardir'   =&gt; 'C:\\ProgramData\\PuppetLabs\\puppet\\var\\lib',
-        'ssldir'   =&gt; 'C:\\ProgramData\\PuppetLabs\\puppet\\var\\lib\\ssl',
-        'rundir'   =&gt; 'C:\\ProgramData\\PuppetLabs\\puppet\\var\\run'
-      },
-      'agent' =&gt; {
-        'environment' =&gt; 'vagrant'
-      }
-    }
-  else
-    config = {
-      'main' =&gt; {
-        'server'   =&gt; master_fqdn,
-        'certname' =&gt; agent_fqdn,
-        'logdir'   =&gt; '/var/log/puppet',
-        'vardir'   =&gt; '/var/lib/puppet',
-        'ssldir'   =&gt; '/var/lib/puppet/ssl',
-        'rundir'   =&gt; '/var/run/puppet'
-      },
-      'agent' =&gt; {
-        'environment' =&gt; 'vagrant'
-      }
-    }
-  end
-  ...
-
-  configure_puppet(agent, config)
-end
-
-...
-</code></pre>
-
-<p>Again here we are again using the configure_puppet method, this time change the puppe.conf file on the agent.</p>
-
-<p>As you can see we are catering for both windows and linux hosts here. We are also making sure that the certname
-and server are defined properly and match what we set-up for the master so that auto-signing works correctly.</p>
-
-<h2>Testing the Role</h2>
-
-<p>At this point we have now does all our prerequisites and we can spin up two machines to test against &ndash; 1 master and
-1 agent. But when we are testing a role what is it that we actually want to test and why is this not covered in
-earlier less-expensive puppet-rspec unit tests?</p>
-
-<p>Well there are 3 key things that we wanted to test:
-1. Idempotence <br/> This is pretty straight forward to test. Beaker provides a method run_agent_on that will run the puppet agent on a
-  given host. This means we can test idempotency like this:</p>
-
-<pre><code>   run_agent_on(agent, :catch_failures =&gt; true)
-   expect(run_agent_on(agent, :catch_failures =&gt; true).exit_code).to be_zero
-</code></pre>
-
-<ol>
-<li><p>Interaction of multiple modules and profiles <br/> This is the big motivator &ndash; we want to test that and make sure that the combinations
-of profiles that we are applying work together and do not either break the catalog or operate in a non-idempotent way. We are also gaining
-the ability to test that updates in modules (many of which are external from the puppet forge) do not break our roles in any way.</p></li>
-<li><p>Postivie/Negative testing &ndash; do we clean up after ourselves if we remove something. <br/> This is not something that is often considered
-very often, particularly in a world where machines are torn down and re-build so often but there still exists a use-case where this is not
-always possible and we want to make sure that our roles and manifests are not littering our machines unnecessarily.</p></li>
-</ol>
-
-
-<p>Below is a full example of one of our linux profiles:</p>
-
-<pre><code>require 'spec_helper_acceptance'
-
-describe 'linux_base_profile', :if =&gt; fact('osfamily').eql?('Debian') do
-  context 'linux base profile' do
-    it 'should should run successfully' do
-
-      agent = only_host_with_role(hosts, 'agent')
-      master = only_host_with_role(hosts, 'master')
-
-      pp = "node \"#{agent}\" { include profiles::linux::base }"
-      on master, "echo '#{pp}' &gt;&gt; /etc/puppet/manifests/site.pp"
-
-      run_agent_on(agent, :catch_failures =&gt; true)
-      expect(run_agent_on(agent, :catch_failures =&gt; true).exit_code).to be_zero
-    end
-
-    context 'installation of ops tools' do
-
-      describe package('sysstat') do
-        it { should be_installed }
-      end
-
-      describe package('iotop') do
-        it { should be_installed }
-      end
-
-      describe package('ngrep') do
-        it { should be_installed }
-      end
-
-      describe package('lsof') do
-        it { should be_installed }
-      end
-
-      describe package('unzip') do
-        it { should be_installed }
-      end
-    end
-
-    context 'managing puppet version' do
-
-      describe file('/etc/apt/sources.list.d/puppetlabs.list') do
-        it { should be_file }
-        it { should be_owned_by 'root' }
-        it { should be_mode 644 }
-      end
-
-      describe package('puppet') do
-        it { should be_installed.by('apt').with_version('3.6.1-1puppetlabs1') }
-      end
-    end
-
-    context 'manage sshd configuration' do
-
-      describe process("sshd") do
-        it { should be_running }
-      end
-
-      describe port(22) do
-        it { should be_listening }
-      end
-
-      describe file('/etc/ssh/sshd_config') do
-        its(:content) { should match /PermitRootLogin no/ }
-        its(:content) { should match /PasswordAuthentication yes/ }
-        its(:content) { should match /UseDNS no/ }
-      end
-    end
-  end
-end
-</code></pre>
-
-<p>We have a lot of roles and profiles that we would like to test. As you might imagine this could get quite verbose and repetitive pretty quickly. We are currently building
-up <a href="https://www.relishapp.com/rspec/rspec-core/docs/example-groups/shared-context">shared_contexts</a> for each of our profiles which we can
-then wrap up into roles to easily reflect our roles/profiles structure in the main codebase.</p>
-
-<h2>Summary</h2>
-
-<p>We are just at the very beginning of this journey with Beaker. As well as testing all our modules we are looking to scale our to test the roles and profiles in our whole
-code base. These examples here are how we are doing it at the moment for our mixed-platform environment. We will continue to expand upon it and build it into our pipeline.
-At this moment we are looking to expand beyond vagrant and run these against AWS instances but perhaps that is for the next post &hellip;</p>
-
-<p>As usual for any questions or comments then please reach out to me on twitter <a href="https://twitter.com/liamjbennett">@liamjbennett</a></p>
-</div>
-  
-  
-
-
-    </article>
   
   
     <article>
@@ -1729,6 +1162,214 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
 
     </article>
   
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/16/look-ma-no-unit-tests/">Look ma, no unit tests!</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-16T17:00:00+01:00" pubdate data-updated="true">Apr 16<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><em><strong>UPDATE:</strong> I&rsquo;ve written a <a href="/blog/2014/05/19/acceptance-now">follow-up to this post</a> with a bit more detail into how we made acceptance-only testing work in practice.</em></p>
+
+<p>At OpenTable we strive to deliver change as quickly and correctly as possible. To do this effectively we are always looking for <a href="/blog/2014/02/28/api-benchmark/">new</a> <a href="/blog/2013/08/16/grunt-plus-vagrant-equals-acceptance-test-heaven/">tools</a> <a href="/blog/2014/04/07/upgrading-puppet-with-puppet/">and</a> <a href="/blog/2014/02/10/the-adoption-of-configuration-management/">methods</a> that allow us, the developers, to respond quickly and accurately to changing requirements and environments.</p>
+
+<p>There are a number of practices that we already make use of, helping us to be the most effective team I&rsquo;ve ever worked in:</p>
+
+<ul>
+<li>We operate in small teams who each own <em>most</em> of their own vertical.</li>
+<li>We use continuous delivery to ship code to production within minutes.</li>
+<li>We have a high degree of high-quality test coverage.</li>
+<li>We are getting better and better at monitoring All The Things.</li>
+<li><a href="/blog/2013/11/22/beginning-a-journey-to-chatops-with-hubot/">We use Chatops</a>, so communication is central to our work, and keeps remote workers/teams in the loop.</li>
+</ul>
+
+
+<p>All of the above are truly empowering for the dev team, and are conducive to an amazingly stress-free working environment. However, these practices only address the infrastructure, culture, and ceremony surrounding our work. What if there was something else? Something about the way we write the code itself, that could increase our velocity yet further, without compromising our integrity&hellip;</p>
+
+<blockquote><p>There are a number of practices that we already make use of, helping us to be the most effective team I&rsquo;ve ever worked in&hellip; What if there was something else?</p></blockquote>
+
+<p>Well, on a recent project, we found one such way: <em><em>we decided to delete all of the unit and integration tests</em></em>.</p>
+
+<p><em>What?! Are we quite mad?</em> You may be thinking&hellip; Well, it took me a little time to get used to this idea as well, but read on and you&rsquo;ll see that it was actually the most sane thing we could have possibly done  .</p>
+
+<h2>Survival of the testedest</h2>
+
+<p>In the beginning, the project had 100% unit test coverage, there were no external dependencies, and the world was Good.</p>
+
+<p>Soon afterwards, a tall shadow appeared in the glorious unit-tested sunset. External dependencies had arrived. Like good little developers we added integration tests. It hurt, our codebase grew, we had occasional false-failures, but we were travelling the path well trodden. We had evaded the First Menace, and surrounded ourselves with heavy armour, we were safe. Things seemed to be Good.</p>
+
+<p><em>Meanwhile&hellip;</em></p>
+
+<p>We realised that some of the things that would be important to our consumers were still not covered by our tests. Things like actual HTTP responses, serialisation, and the like. These are things that don&rsquo;t always need to be tested explicitly, but since this was a third-party-developer-facing system, we really wanted to be sure that the interface worked exactly as we wanted, HTTP headers, character encoding, date formatting, the lot.</p>
+
+<p>So, playing the role of our consumers, we engineered high-level acceptance tests, behaving byte-for-byte as we expected our customers to do.</p>
+
+<p>Now, with the triple-action protection of three layers of tests, we felt our project was the most minty-fresh piece of haute engineering we had ever laid keyboards on.</p>
+
+<p>We were wrong.</p>
+
+<h2>Tests, tests, tests, duplication.</h2>
+
+<p>Up to this point, we had operated in a near-vacuum. That was fine, we had been working quickly to implement a sub-set of an existing and well-used API, so we knew which were the most important features that needed porting. We continued, largely happy with our creation, for some time.</p>
+
+<p><em>Then, gazing up from the receding tide of the third trimester were the hungry eyes of the Second Menace. Our users were upon us!</em></p>
+
+<p>Our early adopters were great, giving us a lot of helpful feedback and helping us shape the API into a genuinely usable v1. However, responding to this change required a greater degree of flexibility in the code than we had required up to this point. Our triple-chocolate-crunch of pithy tests was starting to really slow us down, and rot our teeth. The main reason for this: duplication.</p>
+
+<p>We had tried from the start to avoid any duplication in our tests, but this was all but impossible to achieve. You just can&rsquo;t test an API call end-to-end in an acceptance-test style, without inadvertently testing all of the underlying logic for that call. Code which was already covered by unit tests, and often integration tests as well. Therefore each move we made came with the burden of updating multiple tests. Often materially very similar tests, but written to test a different layer of the same cake. We were between an immovable monolith and a very heavy boulder&mdash;and had a hoarde of features we still wanted to smash, who were freely bounding over the mountain tops, and out of reach.</p>
+
+<p>It was time to cut ourselves free.</p>
+
+<h2>Ripping off the plaster</h2>
+
+<p>The idea that we might not need all these layers of tests was first mooted by fellow OpenTable engineer Arnold Zokas. My initial reaction was one of slight incredulity. Delete all those tests that we&rsquo;ve so carefully caressed and cajoled into a thing of beauty?! Strip off the armour?! I wasn&rsquo;t immediately convinced. However, the pain of implementing new features was starting to burn, so I was interested.</p>
+
+<blockquote><p>I wasn&rsquo;t immediately convinced.</p></blockquote>
+
+<p>We talked about it&mdash;what was necessary about the unit tests? What was their real worth? We had to test many of those things from the outside-in anyway, with the acceptance tests, so why test them twice? The logic started to stack up. I was convinced this was the right thing to do.</p>
+
+<p>Take a deep breath. <em>RIP!</em> Aah, there, done.</p>
+
+<p>There was a little bleeding, some gaps in our acceptance tests that had to be filled, some complex set-up logic from the integration tests that had to be ported to work with the acceptance tests. A few days&#8217; worth of cleanup and patching in the background, and&hellip; tentatively&hellip; we were done.</p>
+
+<p>For me at least, this was a bold move. But it shouldn&rsquo;t have seemed so, we knew all of our endpoints were acceptance-tested, including every supported API call. My primary worry was how we were going to nail down the exact cause of bugs with no code-level testing. This turned out to be nowhere near as bad as I expected.</p>
+
+<blockquote><p>We knew all of our endpoints were acceptance-tested, including every supported API call.</p></blockquote>
+
+<h2>What just happened?</h2>
+
+<p>I like to visualise this as if we were building <a href="http://en.wikipedia.org/wiki/Gateway_Arch">a giant arch</a>. At first, you build a temporary structure with scaffolding (the unit and integration tests). As time goes on you construct a hardened permanent structure (the software). On top of the software, you layer your <a href="http://en.wikipedia.org/wiki/Structural_health_monitoring">structural integrity monitors</a> (acceptance tests). Eventually, there is no need for the scaffolding any more; the structure is self-supporting, and future modifications can rely on this&mdash;time to punch out the middle!</p>
+
+<p><em>Of course, there are other considerations, like logging, monitoring, and providing sandbox data, which all contributed to making this feasable&mdash;but that&rsquo;s for another post.</em></p>
+
+<h2>Was it worth it?</h2>
+
+<p>Unequivocally, yes. Since making this decision, we have been unhindered by our tests, and they are back to being a much loved part of the project. We have had no problems that would have been caught by unit tests, and we can still do TDD with our acceptance tests. In addition, I think removing the crutch of unit tests may have improved our discipline somewhat: <em>it keeps us thinking in the context of the end-user at all times, so we never spend time working on a feature that isn&rsquo;t directly useful to our consumers.</em></p>
+
+<blockquote><p>It keeps us thinking in the context of the end-user at all times, so we never spend time working on a feature that isn&rsquo;t directly useful to our consumers.</p></blockquote>
+
+<h2>YMWMCV</h2>
+
+<p>Of course, every project is unique (just like every other project), so <em>your mileage will most certainly vary.</em> We were working on a stateless facade over a small but crucial subset of the business&mdash;making reservations. For relatively small, stateless projects, this approach has worked brilliantly. However, when things do go wrong at development time, they could be at any layer in the stack, and you often need to attach a debugger to find out what happened. This is less than ideal, but in our case was a very cost-effective compromise.</p>
+
+<p>The upshot, for me at least, is that you shouldn&rsquo;t be afraid to shirk convention when the project demands it. By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster <em>without</em> breaking stuff.</p>
+
+<blockquote><p>By really analysing what each part of your project is doing, you can cut the cruft, helping you move faster <em>without</em> breaking stuff.</p></blockquote>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/07/upgrading-puppet-with-puppet/">Upgrading Puppet with Puppet</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-07T13:23:00+01:00" pubdate data-updated="true">Apr 7<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>As part of one of our recent <a href="http://tech.opentable.co.uk/blog/2014/04/04/forgefriday-our-commitment-to-the-puppet-forge/">ForgeFriday</a> efforts we released a new module puppetversion with the purpose of managing the installation and upgrade of Puppet in a platform agnostic way.</p>
+
+<p>This should be a very straightforward task to complete because this is one of the core resources that Puppet manages &ndash; the upgrading of packages. With that in mind, putting <code>package { ‘puppet’: ensure =&gt; $version }</code> in one of our base profiles would be all that was needed but alas it was not. In this blog I want to take you through the history, the bugs, the platforms and the edge-cases that make performing an in-place upgrade of Puppet a more complex task that it ought to be.</p>
+
+<h2>Debian</h2>
+
+<p>Like many, Ubuntu is our Debian derivative of choice for much of our newer production infrastructure. Debian, has the apt package management system and PuppetLabs provide the required deb packages as well as hosting their own apt repository to point our systems to. The main point of package management systems is that they take care of the dependency hell and the awkward upgrade paths all from within the confines of the package itself, and that is what happens with the PuppetLabs packages &ndash; great.</p>
+
+<p>The problem that we had in some of our systems was that they had been built without the PuppetLabs apt repository. This means that they picked up a slightly older version of the Puppet packages from the main Ubuntu distribution repositories and didn’t have access to the newer versions of the Puppet packages. Ok, so we solved that with the following code:</p>
+
+<pre><code>  exec { 'rm_duplicate_puppet_source':
+    path    =&gt; '/usr/local/bin:/bin:/usr/bin',
+    command =&gt; 'sed -i \'s:deb\ http\:\/\/apt.puppetlabs.com\/ precise main::\' /etc/apt/sources.list',
+    onlyif  =&gt; 'grep \'deb http://apt.puppetlabs.com/ precise main\' /etc/apt/sources.list',
+  }
+
+  apt::source { 'puppetlabs':
+    location    =&gt; 'http://apt.puppetlabs.com',
+    repos       =&gt; 'main dependencies',
+    key         =&gt; '4BD6EC30',
+    key_content =&gt; template('puppetversion/puppetlabs.gpg'),
+    require     =&gt; Exec['rm_duplicate_puppet_source']
+  }
+</code></pre>
+
+<p>We&rsquo;re making use of the <a href="http://forge.puppetlabs.com/puppetlabs/apt">puppetlabs/apt</a> module here. This removes the old reference and adding in the new apt source. Then we just add the package and ensure the version we’re upgrading. Perfect.</p>
+
+<h2>RedHat</h2>
+
+<p>Same problem different OS family &ndash; this time we had some older CentOS machines that needed fixing. Thankfully there is also a module <a href="http://forge.puppetlabs.com/stahnma/puppetlabs_yum">stahnma/puppetlabs_yum</a> for the yum repositories. Add that in, add the package resource and start upgrading. Phew! This seems like it’s getting easier.</p>
+
+<h2>Windows</h2>
+
+<p>Many of you will be following the work of OpenTable closely because of our work with Puppet on Windows. We have a pretty large Windows infrastructure, with a wide range of client and server versions deployed ranging from 2012 R2 all the way back to the historic times of 2003. Windows also has its own package format, the msi, and PuppetLabs also provides all versions of Puppet packaged as msi files.</p>
+
+<p>This is where it gets a little tricky. The big problem we had was that the Windows provider, prior to 3.4.0 was not versionable (<a href="http://projects.puppetlabs.com/issues/21133">issues/21133</a>) that means that <code>package { ‘puppet’: ensure =&gt; installed }</code> would work but <code>package { ‘puppet’: ensure =&gt; $version }</code> would not &ndash; the exact thing we were trying to do! The only way to resolve that problem is to uninstall and reinstall the package with the correct version.</p>
+
+<p>Now there are a lot of problems with the uninstall/reinstall approach. Firstly we had to script the process because Windows only allows one installer to run at any one time meaning that you had to wait for the uninstall to finish before that subsequent install takes place. Secondly we have to deal with Puppet runs and make sure that when the upgrade script runs that we wait for any active Puppet runs to complete before trying to uninstall Puppet. Next we have to trigger our script using a scheduled task.</p>
+
+<p>Our experience with scheduled tasks has been painful. We attempted using the <a href="http://docs.puppetlabs.com/references/latest/type.html#scheduledtask">scheduled_task</a> resource type but soon realised that this wasn’t going to work for us. The resource type is good if you want to create a task to run at a fixed point in time but there is no way to provide a relative time e.g. “in five mins from now”. Also on occasion the task would not run or would silently fail &ndash; this was almost certainly due to another Puppet issue we discovered (<a href="https://tickets.puppetlabs.com/browse/PUP-1368">PUP-1368</a>). Without being able to use the scheduled task resource we were again back in the land of Powershell using a script to create the scheduled task that would call our upgrade script.</p>
+
+<p>So if you&rsquo;re keeping up we now have something like this:</p>
+
+<p>Puppet &ndash;> calls script to create scheduled task &ndash;> scheduled task calls upgrade script &ndash;> upgrade script upgrade Puppet and triggers next Puppet run &ndash;> Puppet</p>
+
+<p>Nice little cycle there, but it works.</p>
+
+<p>One final issue worth mentioning is that for Windows 2003 servers you’ll need to actually have Powershell installed. Luckily, we also have a module for that <a href="http://forge.puppetlabs.com/dcharleston/powershell">dcharleston/powershell</a></p>
+
+<h2>Summary</h2>
+
+<p>Well we’ve discussed some of the pain points, and we’ve discussed them in detail with PuppetLabs themselves. The advice here is to upgrade to Puppet 3.4.3 as soon as you can as many of these issues are resolved in that version. For those of you not on that version yet then we have you covered with our puppetversion module.</p>
+</div>
+  
+  
+
+
+    </article>
+  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -1750,19 +1391,19 @@ New-WebApplication -Name 'VirtualApp' -Site 'DemoSite' -PhysicalPath 'c:\inetpub
       </li>
     
       <li class="post">
-        <a href="/blog/2015/08/11/were-going-global/">Were Going Global</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/08/04/international/">International</a>
-      </li>
-    
-      <li class="post">
         <a href="/blog/2015/05/06/puppet-community/">Puppet-Community</a>
       </li>
     
       <li class="post">
         <a href="/blog/2015/03/05/the-dns-abc/">The DNS ABC</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/16/hapi-js-and-sigterm/">Hapi.js and SIGTERM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">Dismantling the monolith - Microsites at Opentable</a>
       </li>
     
   </ul>

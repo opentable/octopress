@@ -12,6 +12,8 @@ footer: false
 
 [Liam Bennett]
 
+[Chris Cartlidge]
+
 [John Catterfeld]
 
 [Matteo Figus]
@@ -34,7 +36,6 @@ footer: false
 
 [Ryan Tomlinson]
 
-[Chris Cartlidge]
 
 [Paul Harrington]:/blog/authors/pharrington.html
 [Mark Barrett]:/blog/authors/mbarrett.html

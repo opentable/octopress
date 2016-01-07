@@ -9,7 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="Three OpenTable heroes took to Norway last week to attend NDC Oslo. For two of us it was our first major conference and for one, Paul Stack, he had &hellip;">
+  <meta name="description" content="Recently, I have started to work a lot more with Vagrant as a tool for creating a standard development environment across my team. This essentially &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,6 +80,403 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/05/using-vagrant-to-work-with-elasticsearch-on-your-local-machine/">Using Vagrant to work with ElasticSearch on your local machine</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-05T08:45:00+01:00" pubdate data-updated="true">Aug 5<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Recently, I have started to work a lot more with <a href="http://www.vagrantup.com/">Vagrant</a> as a tool for creating a standard development environment across my team. This essentially means that regardless what the developers&#8217; machine is set up or running as, they can still reproduce the same environment as their colleagues just by entering a command.</p>
+
+<p>Configuration managgement is something we have had to embrace to help us maintain an ever changing world of technologies. The hardest thing is knowing what we actually have to build in these environments. We use Vagrant to help us understand this. The simple flow is as follows:</p>
+
+<ul>
+<li>Developer starts a new project</li>
+<li>Developer creates a Vagrantfile to spin up a local VM</li>
+<li>Vagrantfile gets iterated on as the development process goes forward</li>
+</ul>
+
+
+<p>Once the developer understands what they need to actually run their software, we would then go about creating an environment to which this software will actually be deployed for end-to-end testing. I won&rsquo;t go any further into the details of our Vagrant flow in this post, if you want to read more about how to get started with Vagrant, then I would suggest reading <a href="http://shop.oreilly.com/product/0636920026358.do">Vagrant Up and Running</a> by <a href="https://twitter.com/mitchellh">Mitchell Hashimoto</a>.</p>
+
+<h2>Vagrant and ElasticSearch</h2>
+
+<p>Whilst reviewing a book on <a href="http://www.elasticsearch.org/">ElasticSearch</a>, I noticed how simple the instructions were to get up and running with ElasticSearch. Please note, that there are already lots of Puppet modules for configuring ElasticSearch on <a href="http://forge.puppetlabs.com/modules?q=elasticsearch">Puppetlabs Forge</a>. This post only talks about how I was able to quickly spin up some local instances. I didn&rsquo;t want to manually do this, so I decided to use Vagrant (and Puppet) to take care of it for me. The instructions can be summarised as follows:</p>
+
+<ul>
+<li>Download and install the JavaSDK</li>
+<li>Download the specific ElasticSearch package</li>
+<li>Install ElasticSearch</li>
+<li>Download and install curl (to be able to interact with ElasticSearch)</li>
+<li>Make sure the service is started</li>
+</ul>
+
+
+<p>I hate doing this manually. Luckily, with the correct script, I am able to automate all of this as follows:</p>
+
+<pre><code>Vagrant.configure("2") do |config|
+    config.vm.box = "Ubuntu precise 64 VMWare"
+    config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
+    config.vm.network :forwarded_port, guest: 9200, host: 9200
+    config.vm.provision :puppet do |puppet|
+        puppet.module_path = '../setup/modules'
+        puppet.manifests_path = '../setup/manifests'
+        puppet.manifest_file = 'default.pp'
+        puppet.options = '--verbose --debug'
+    end
+end
+</code></pre>
+
+<p>Essentially, this script says to create a clone of a VM from a predefined box, forward port 9200 on the vm to 9200 on my local machine and then provision the server using Puppet. The Puppet script works as follows:</p>
+
+<pre><code>exec { "apt-get-update":
+    command =&gt; "/usr/bin/apt-get update",
+}
+
+package {'curl':
+    provider =&gt; apt,
+    ensure   =&gt; latest,
+    require  =&gt; Exec['apt-get-update']
+}
+
+class {'elasticsearch':
+    version =&gt; '0.90.0',
+    require =&gt; Exec['apt-get-update'],
+}
+</code></pre>
+
+<p>This defines that the command apt-get-update gets applied (due to both the class and the package requiring it) and then will install curl and ElasticSearch in no particular order. Once the script runs, I will be able to open a browser on my local machine, go to <a href="http://localhost:9200">http://localhost:9200</a> and see the newly provisioned ElasticSearch node. The result of the JSON was something similar to this:</p>
+
+<pre><code>{
+    "ok" : true,
+    "status" : 200,
+    "name" : "Gibborim",
+    "version" : {
+        "number" : "0.90.0",
+        "snapshot_build" : false,
+    },
+    "tagline" : "You Know, for Search"
+}
+</code></pre>
+
+<p>By entering the URL, &lsquo;**<a href="http://localhost:9200/_cluster/health?pretty**">http://localhost:9200/_cluster/health?pretty**</a>&rsquo;, you can see the state of the ElasticSearch cluster. It should show something like this:</p>
+
+<pre><code>{
+    "cluster_name" : "elasticsearch",
+    "status" : "yellow",
+    "timed_out" : false,
+    "number_of_nodes" : 1,              
+    "number_of_data_nodes" : 1,         
+    "active_primary_shards" : 5,        
+    "active_shards" : 5,                
+    "relocating_shards" : 0,            
+    "initializing_shards" : 0,          
+    "unassigned_shards" : 5             
+}
+</code></pre>
+
+<p>I wanted to be able to provision multiple nodes and then let them create a cluster. I was able to take the existing Vagrantfile and then using the multi-environment features of Vagrant. This created a new Vagrantfile as follows:</p>
+
+<pre><code>Vagrant::Config.run do |config|
+    config.vm.box = "Ubuntu precise 64 VMWare"
+    config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
+
+    config.vm.define "es1" do |es1|
+        es1.vm.network :hostonly, "192.168.1.10"
+        es1.vm.provision :puppet do |puppet|
+            puppet.module_path = '../setup/modules'
+            puppet.manifests_path = '../setup/manifests'
+            puppet.manifest_file = 'default.pp'
+            puppet.options = '--verbose --debug'
+        end
+    end
+
+    config.vm.define "es2" do |es2|
+        es2.vm.network :hostonly, "192.168.1.11"
+        es2.vm.provision :puppet do |puppet|
+            puppet.module_path = '../setup/modules'
+            puppet.manifests_path = '../setup/manifests'
+            puppet.manifest_file = 'default.pp'
+            puppet.options = '--verbose --debug'
+        end
+    end
+
+    config.vm.define "es3" do |es3|
+        es3.vm.network :hostonly, "192.168.1.12"
+        es3.vm.provision :puppet do |puppet|
+            puppet.module_path = '../setup/modules'
+            puppet.manifests_path = '../setup/manifests'
+            puppet.manifest_file = 'default.pp'
+            puppet.options = '--verbose --debug'
+        end
+    end
+end
+</code></pre>
+
+<p>This effectively tells Vagrant to create three instances of ElasticSearch using the Puppet configuration (as above). Each ElasticSearch node is given its own IP. Thanks to ElasticSearch using Multicast and Unicast discovery, it is able to find other nodes on the network and create a cluster. By running a similar url as before, &lsquo;**<a href="http://192.168.1.10:9200/_cluster/health?pretty**">http://192.168.1.10:9200/_cluster/health?pretty**</a>&rsquo;, we can now see that the cluster looks as follows:</p>
+
+<pre><code>{
+    "cluster_name" : "elasticsearch",
+    "status" : "green",
+    "timed_out" : false,
+    "number_of_nodes" : 3,              
+    "number_of_data_nodes" : 3,         
+    "active_primary_shards" : 5,        
+    "active_shards" : 15,                
+    "relocating_shards" : 0,            
+    "initializing_shards" : 0,          
+    "unassigned_shards" : 0             
+}
+</code></pre>
+
+<p>Using this method, we can continue to spin up as many instances as we need to replicate different scenarios or testing conditions. Vagrant has made this very easy to do. If you want a copy of the Vagrantfiles and Puppet modules to try this yourself, then you can find them on my <a href="https://github.com/stack72/vagrant-examples/tree/master/elasticsearch">github repository</a>. The scripts are available under the <a href="http://opensource.org/licenses/MIT">MIT</a> license.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/24/one-gun-many-enemies/">One Gun - Many Enemies</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-24T14:32:00+01:00" pubdate data-updated="true">Jul 24<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I spent some time, re-investigating Javascript. After a few months of intensive TDD and SOLID training at OpenTable I was curious how those principles apply in a slightly different environment. Guess what, they do not differ that much&hellip; I planned to write about all this sometime in the future after gaining more experience from real battles ahead, however <a href="http://watirmelon.com/2013/02/09/why-i-dont-like-Jasmine/">Watirmelon post</a> invited me to attack this subject immediately.</p>
+
+<p>I went through the available testing frameworks for Javascript and decided on Jasmine. Why? Mainly because of its BDD syntax which is fashionable this season. The second reason is that it has really cool documentation. Finally, the basic set up of just running an HTML file in a browser got me up and running fast.</p>
+
+<p>Let&rsquo;s look at the basics &ndash; what I expect from different types of tests and how Jasmine fits into those requirements:</p>
+
+<h2>Unit Testing</h2>
+
+<h3>Advice from senior craftsman</h3>
+
+<ul>
+<li>Shoot them one by one
+(structure your code so that it is easier to maintain)</li>
+<li>Be sure you kill with every shot
+(verify small bits of code to nail down issues)</li>
+<li>Kill them all
+(verify edge cases)</li>
+<li>Kill them quick
+(provide fast feedback on issues)</li>
+<li>Choose a fast shooting gun &ndash; the faster you shoot, the more enemies you will kill
+(unit tests must be blazing fast)</li>
+<li>Choose the most reliable gun &ndash; if it is stuck then you are dead
+(when unit tests are brittle you will stop depending on them)</li>
+<li>Your gun needs to be light enough to carry everywhere
+(unit tests are your gun, so you must be able to run them all locally)</li>
+</ul>
+
+
+<p>Jasmine works great for all those aims, as it is really fast and it allows you to stub both objects and DOM elements (especially combined with a Jasmine-jQuery plugin). Keep in mind that Unit Testing is useful only if you either write new code or refactor old code. Do not ever try to write Unit Tests for existing code which you don&rsquo;t intend to refactor. It&rsquo;s like shooting the dead. You simply cannot kill them with another bullet.</p>
+
+<h2>Integration Testing</h2>
+
+<h3>Advice from senior craftsman</h3>
+
+<ul>
+<li>Beware of the hidden sniper
+(test against external dependencies like files, databases, network services)</li>
+<li>You are part of your squad
+(verify that components of the application work well together)</li>
+<li>Observe the environment
+(try to use depenedencies as close to the real problem as possible e.g. example file, database with test data, test version of an external service)</li>
+<li>Point in the right direction
+(do not try to test your stack top-down, instead concentrate on interfaces and adapters that you could not test in unit tests)</li>
+</ul>
+
+
+<p>Integration tests will naturally be harder to quickly setup &ndash; they might break due to configuration problems or inaccessible external services. That&rsquo;s why you don&rsquo;t want to have that many of them. Still, you want to know that all your problems are due to your partner changing protocol. Once again nothing stops us from using Jasmine here.</p>
+
+<p>Jasmine just executes your tests, so the tests that point towards external services, send example files to your code etc. will all be a breeze to implement with Jasmine.</p>
+
+<h2>Acceptance Testing</h2>
+
+<h3>Aims</h3>
+
+<ul>
+<li>Confirm you are fighting the right war
+(show specification to your product owner/manager/client)</li>
+<li>Keep clean supply routes
+(test the functionality of your app with full set up and all dependencies)</li>
+<li>Find hidden mines
+(test your application in all environments to which you deploy)</li>
+</ul>
+
+
+<h3>Advice from senior craftsman</h3>
+
+<ul>
+<li>Speak in their language
+(use a tool which allows writing tests in natural language such as Cucumber or SpecFlow)</li>
+<li>Take your time
+(those tests will be slower, so accept that you will not always run them locally and that you will not run them every minute)</li>
+<li>Spend your resources wisely
+(acceptance tests are naturally much more brittle then other types of tests, so try to keep their number reasonably small)</li>
+</ul>
+
+
+<p>This is where I would not recommend Jasmine, simply because it doesn&rsquo;t fit this job. Its syntax is based on programming language, so it is harder to read by non-engineers. Jasmine allows you to execute events and call your code. However, your users will be most likely be using a browser to interact with your code, so it is much better to use a tool that also uses a browser to test your web page.</p>
+
+<h2>Conclusion</h2>
+
+<p>I find Jasmine extremely well suited for unit and integration testing. I wouldn&rsquo;t use it for acceptance tests as there are quite few better tools for that job. And I guess that is the issue that Alister Scott has with Jasmine on his blog &ndash; he tried to use it for acceptance testing. In that case I wouldn&rsquo;t choose Jasmine either. On the other hand I don&rsquo;t like using a screwdriver to hammer a nail.</p>
+
+<h2>Post Scriptum (on DOM dependency)</h2>
+
+<p>Alister also complains about integration issues between his server-side code and client-side code. His experience is that changes to IDs and classes in MVC applications result in failing Javascript. The issue is serious and shows one important mistake, which is hardcoding dependencies. IDs and class names are configurable details and Javascript code should be agnostic of them. To illustrate let&rsquo;s look at a simple test case from my pet-project:</p>
+
+<pre><code>describe("GameController", function(){
+  describe("During Initialize", function() {
+    var view;
+    var subject;
+
+    beforeEach(function() {    
+        setFixtures("&lt;div id="myid"&gt;&lt;/div&gt;");
+        subject = new GameView();
+
+        subject.CreateFabricInDiv("#myid");
+    });
+
+    it("creates fabric in div", function(){
+        expect($("#myid")).not.toBeEmpty();
+    });
+
+    it("holds pointer to canvas", function(){
+        expect(subject._canvas).not.toBe(undefined);
+    });
+ }); 
+</code></pre>
+
+<p>Do you see how &ldquo;#myid&rdquo; parameter is passed into the method call? We moved the configuration detail out from the Javascript code, which in my opinion it is the simplest solution to Alister&rsquo;s problem.</p>
+
+<p>If code is designed in such a way that IDs/class names are not embedded all around the codebase you can figure out quite few nice ways to keep them consistent between Javascript and server-side code.</p>
+
+<p>It also helps with code re-usability as you can use the same code on two separate pages with differing IDs!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/08/managing-windows-certificates-with-powershell/">Managing Windows Certificates with PowerShell</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-08T18:51:00+01:00" pubdate data-updated="true">Jul 8<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Managing certificates on Windows is <em>really</em> painful. There is no easy way to do it. The general way to install a certificate to a Windows Server 2008 machine is as follows:</p>
+
+<ul>
+<li>Open the Certificates snap-in for a user, computer, or service.</li>
+<li>In the console tree, click the logical store where you want to import the certificate.</li>
+<li>On the Action menu, point to All Tasks, and then click Import to start the Certificate Import Wizard.</li>
+<li>Type the file name containing the certificate to be imported.</li>
+<li>If you want to specify where the certificate is stored, select Place all certificates in the following store, click Browse, and choose the certificate store to use. OR</li>
+<li>If the certificate should be automatically placed in a certificate store based on the type of certificate, click Automatically select the certificate store based on the type of certificate.</li>
+</ul>
+
+
+<p>The first time I ran this process, I felt as though this was just wrong to not be able to automate. The goal of our team is to automate everything we are currently doing manually. PowerShell is a better option for this import process as it allows you to write code to do it. As we all know, code is better for a number of reasons, I won&rsquo;t go into the infrastructure as code argument in this post (but it is coming soon….). Using PowerShell, I can write a simple function as follows:</p>
+
+<pre><code>function Import-PfxCertificate($certName, $CertLocaton, $certRootStore, $certStore) {    
+     $pfx = new-object System.Security.Cryptography.X509Certificates.X509Certificate2    
+
+     $pfxPass = convertto-securestring $CertPassword -asplaintext -force
+
+     $certPath = $CertLocaton + "\" + $certName   
+     $pfx.import($certPath,$pfxPass,"Exportable,PersistKeySet")    
+
+     $store = new-object System.Security.Cryptography.X509Certificates.X509Store($certStore,$certRootStore)    
+     $store.open("MaxAllowed")    
+     $store.add($pfx)    
+     $store.close()    
+}
+</code></pre>
+
+<p>This makes certificate management easier. To manage certificates in this way, I just need to invoke a script similar to this:</p>
+
+<pre><code>.\import-certificate.ps1 -CertificateName "mycert.pfx" -CertLocation "c:\ssl\mycerts"
+</code></pre>
+
+<p>Much simpler! You can download a <a href="https://gist.github.com/opentable-devops/5951108">gist</a> of this script should you wish to use it. Please note that the license that this script is available under can be read from our <a href="https://github.com/opentable/licensing/blob/master/LICENSE">github repository</a>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -503,23 +900,23 @@ var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/01/07/react-testing/">Testing React Components</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/11/were-going-global/">Were Going Global</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/04/international/">International</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/05/06/puppet-community/">Puppet-Community</a>
       </li>
     
       <li class="post">
         <a href="/blog/2015/03/05/the-dns-abc/">The DNS ABC</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/02/16/hapi-js-and-sigterm/">Hapi.js and SIGTERM</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">Dismantling the monolith - Microsites at Opentable</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/02/02/a-beginners-guide-to-rest-services/">A Beginner&#8217;s guide to REST services</a>
       </li>
     
   </ul>
@@ -566,7 +963,7 @@ var result = geocoder.ReverseGeocode(-122.479046M, 37.819548M);
 
     </div>
   </div>
-  <footer role="contentinfo"><p>Copyright &copy; 2015 - OpenTable</p></footer>
+  <footer role="contentinfo"><p>Copyright &copy; 2016 - OpenTable</p></footer>
   
 
 

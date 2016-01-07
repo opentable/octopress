@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Testing | OpenTable Tech UK Blog]]></title>
   <link href="http://tech.opentable.co.uk/blog/categories/testing/atom.xml" rel="self"/>
   <link href="http://tech.opentable.co.uk/"/>
-  <updated>2015-05-05T21:37:46+01:00</updated>
+  <updated>2016-01-07T11:43:19+00:00</updated>
   <id>http://tech.opentable.co.uk/</id>
   <author>
     <name><![CDATA[OpenTable]]></name>
@@ -12,6 +12,182 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Testing React Components]]></title>
+    <link href="http://tech.opentable.co.uk/blog/2016/01/07/react-testing/"/>
+    <updated>2016-01-07T11:00:00+00:00</updated>
+    <id>http://tech.opentable.co.uk/blog/2016/01/07/react-testing</id>
+    <content type="html"><![CDATA[<p>At OpenTable it’s becoming an increasingly popular trend to use <em><a href="https://facebook.github.io/react/">React</a></em>.
+One of the reasons for this is the ability for it  to server-side render whilst still
+giving us the client side flexibility that we all crave!</p>
+
+<p>We all know to have stable, reliable software you need to have well written tests. Facebook knows this and
+provides the handy <em><a href="https://facebook.github.io/react/docs/test-utils.html">Test Utilities</a></em> library to make
+our lives easier.</p>
+
+<p>Cool — I hear you all say! But what is the best approach to testing React components?</p>
+
+<p>Well unfortunately this is something that is not very well documented and if not approached in
+the correct way can lead to brittle tests.</p>
+
+<p>Therefore I have written this blog post to discuss the different approaches we have available to us.</p>
+
+<p>All code used in this post is avaliable on my <em><a href="https://github.com/chriscartlidge/React-Testing-Blog-Code">GitHub</a></em>.</p>
+
+<h2>The Basics</h2>
+
+<p>To make our lives a lot easier when writing test it&rsquo;s best to use a couple of basic tools. Below is
+the absolute minimum required to start testing React components.</p>
+
+<ul>
+<li><em><a href="https://mochajs.org/">Mocha</a></em> &ndash; This is a testing framework that runs in the browser or Node.JS (others are available).</li>
+<li><em><a href="https://facebook.github.io/react/docs/test-utils.html">ReactTestUtils</a></em> &ndash; This is the basic testing framework that Facebook provides to go testing with React.</li>
+</ul>
+
+
+<h2>The Scenario</h2>
+
+<p>We have a landing page broken down into two separate components:</p>
+
+<ul>
+<li>Container &ndash; The holding container for all sub-components.</li>
+<li>Menu Bar &ndash; Contains the site navigation and is always displayed.</li>
+</ul>
+
+
+<p><img src="/images/posts/react-comp.png" alt="react-comp" /></p>
+
+<p>Each React component is self-contained and should be tested in isolation.</p>
+
+<p>For the purpose of this exercise we will focus on the test for the container component and
+making sure that the menu bar is displayed within it.</p>
+
+<h2>Approach 1 (Full DOM):</h2>
+
+<p>I like to call this the “Full DOM” approach because you take a component and render it in its entirety
+including all of its children. The React syntax are transformed and any assertion
+you make will be against the rendered HTML elements.</p>
+
+<p>Below is our test scenario written in this approach.</p>
+
+<p>```javascript
+import React from &lsquo;react/addons&rsquo;;
+&hellip;
+import jsdom from &lsquo;jsdom&rsquo;;</p>
+
+<p>global.document = jsdom.jsdom(&lsquo;&lt;!doctype html><html><body></body></html>&rsquo;);
+global.window = document.parentWindow;</p>
+
+<p>describe(&lsquo;Container&rsquo;, function () {
+  it(&lsquo;Show the menu bar&rsquo;, function () {</p>
+
+<pre><code>let container = TestUtils.renderIntoDocument(&lt;Container /&gt;);
+
+let result = TestUtils.scryRenderedDOMComponentsWithClass(container,
+  'menu-bar-container');
+
+assert.lengthOf(result, 1);
+</code></pre>
+
+<p>  });
+```
+If you run the above test it passes but how does it work?</p>
+
+<p>```javascript
+import jsdom from &lsquo;jsdom&rsquo;;</p>
+
+<p>global.document = jsdom.jsdom(&lsquo;&lt;!doctype html><html><body></body></html>&rsquo;);
+global.window = document.parentWindow;
+```
+This sets up our DOM which is a requirement of <em><a href="https://facebook.github.io/react/docs/test-utils.html#renderintodocument">TestUtils.renderIntoDocument</a></em>.</p>
+
+<p><code>javascript
+let container = TestUtils.renderIntoDocument(&lt;Container /&gt;);
+</code>
+<em><a href="https://facebook.github.io/react/docs/test-utils.html#renderintodocument">TestUtils.renderIntoDocument</a></em> then takes the React syntax and renders it into the DOM as HTML.
+<code>javascript
+let result = TestUtils.scryRenderedDOMComponentsWithClass(container, 'menu-bar-container');
+</code>
+We now query the DOM for a unique class that is contained within the menu-bar and get an array of
+DOM elements back which we can assert against.</p>
+
+<p>The example above is a common approach but is it necessarily the best way?</p>
+
+<p>From my point of view no, as this approach makes our tests brittle. We are exposing and querying on the inner workings
+of the menu-bar and if someone was to refactor it and remove/rename the &ldquo;menu-bar-container&rdquo; class then our test would fail.</p>
+
+<h2>Approach 2 (Shallow Rendering):</h2>
+
+<p>With the release of React 0.13 Facebook provided the ability to “shallow render” a component.
+This allows you to instantiate a component and get the result of its render function, a ReactElement, without a DOM.
+It also only renders the component one level deep so you can keep your tests more focused.</p>
+
+<p>```javascript
+import React, { addons } from &lsquo;react/addons&rsquo;;
+import Container from &lsquo;../../src/Container&rsquo;;
+import MenuBar from &lsquo;../../src/MenuBar&rsquo;;</p>
+
+<p>describe(&lsquo;Container&rsquo;, function () {
+  let shallowRenderer = React.addons.TestUtils.createRenderer();</p>
+
+<p>  it(&lsquo;Show the menu bar&rsquo;, function () {</p>
+
+<pre><code>shallowRenderer.render(&lt;Container/&gt;);
+let result = shallowRenderer.getRenderOutput();
+
+assert.deepEqual(result.props.children, [
+  &lt;MenuBar /&gt;
+]);
+</code></pre>
+
+<p>  });
+});
+```</p>
+
+<p>Again like the previous example this passes but how does it work?</p>
+
+<p><code>javascript
+let shallowRenderer = React.addons.TestUtils.createRenderer();
+</code>
+We first create the <em><a href="https://facebook.github.io/react/docs/test-utils.html#shallow-rendering">shallowRender</a></em> which handles the rendering of the React components.</p>
+
+<p><code>javascript
+shallowRenderer.render(&lt;Container/&gt;);
+</code>
+Then we pass in the component we have under test to the <em><a href="https://facebook.github.io/react/docs/test-utils.html#shallow-rendering">shallowRender</a></em>.</p>
+
+<p><code>javascript
+let result = shallowRenderer.getRenderOutput();
+assert.deepEqual(result.props.children, [&lt;MenuBar/&gt;]);
+</code></p>
+
+<p>And finally we get the output from the <em><a href="https://facebook.github.io/react/docs/test-utils.html#shallow-rendering">shallowRender</a></em> and
+assert that the children contain the menu-bar component.</p>
+
+<p>Is this approach any better than the previous? In my option yes and for the following reasons:</p>
+
+<ul>
+<li><p>We don&rsquo;t rely on the inner workings of the menu-bar to know if it has been rendered and therefore the markup can be refactored without
+any of the
+tests being broken.</p></li>
+<li><p>Less dependencies are being used as <em><a href="https://facebook.github.io/react/docs/test-utils.html#shallow-rendering">shallowRender</a></em> does not require
+a DOM to render into.</p></li>
+<li><p>It&rsquo;s a lot easier to see what is being asserted as we are able to use JSX syntax in assertions.</p></li>
+</ul>
+
+
+<h2>Conclusion</h2>
+
+<p>So is shallow rendering the silver bullet for React testing? Probably not as it still lacking on key feature for me when dealing
+with large components and that is the ability to easily query the ReactDOM (libraries like <em><a href="https://github.com/airbnb/enzyme">enzyme</a></em>
+are working towards improving this). But it is still a lot better than rendering the component out into HTML and coupling your tests
+to the inner components of others.</p>
+
+<p>In this blog post we have just scratched the surface of testing with React and I hope it&rsquo;s food for thought when writing your next set of
+React tests.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Acceptance Now]]></title>

@@ -9,7 +9,8 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="Puppet is an important tool to us at OpenTable; we couldn’t operate as efficiently without it but Puppet is more than a tool or a vendor, it is a &hellip;">
+  <meta name="description" content="At OpenTable it’s becoming an increasingly popular trend to use React.
+One of the reasons for this is the ability for it to server-side render whilst &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,6 +81,410 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/01/07/react-testing/">Testing React Components</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-01-07T11:00:00+00:00" pubdate data-updated="true">Jan 7<span>th</span>, 2016</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>At OpenTable it’s becoming an increasingly popular trend to use <em><a href="https://facebook.github.io/react/">React</a></em>.
+One of the reasons for this is the ability for it  to server-side render whilst still
+giving us the client side flexibility that we all crave!</p>
+
+<p>We all know to have stable, reliable software you need to have well written tests. Facebook knows this and
+provides the handy <em><a href="https://facebook.github.io/react/docs/test-utils.html">Test Utilities</a></em> library to make
+our lives easier.</p>
+
+<p>Cool — I hear you all say! But what is the best approach to testing React components?</p>
+
+<p>Well unfortunately this is something that is not very well documented and if not approached in
+the correct way can lead to brittle tests.</p>
+
+<p>Therefore I have written this blog post to discuss the different approaches we have available to us.</p>
+
+<p>All code used in this post is avaliable on my <em><a href="https://github.com/chriscartlidge/React-Testing-Blog-Code">GitHub</a></em>.</p>
+
+<h2>The Basics</h2>
+
+<p>To make our lives a lot easier when writing test it&rsquo;s best to use a couple of basic tools. Below is
+the absolute minimum required to start testing React components.</p>
+
+<ul>
+<li><em><a href="https://mochajs.org/">Mocha</a></em> &ndash; This is a testing framework that runs in the browser or Node.JS (others are available).</li>
+<li><em><a href="https://facebook.github.io/react/docs/test-utils.html">ReactTestUtils</a></em> &ndash; This is the basic testing framework that Facebook provides to go testing with React.</li>
+</ul>
+
+
+<h2>The Scenario</h2>
+
+<p>We have a landing page broken down into two separate components:</p>
+
+<ul>
+<li>Container &ndash; The holding container for all sub-components.</li>
+<li>Menu Bar &ndash; Contains the site navigation and is always displayed.</li>
+</ul>
+
+
+<p><img src="/images/posts/react-comp.png" alt="react-comp" /></p>
+
+<p>Each React component is self-contained and should be tested in isolation.</p>
+
+<p>For the purpose of this exercise we will focus on the test for the container component and
+making sure that the menu bar is displayed within it.</p>
+
+<h2>Approach 1 (Full DOM):</h2>
+
+<p>I like to call this the “Full DOM” approach because you take a component and render it in its entirety
+including all of its children. The React syntax are transformed and any assertion
+you make will be against the rendered HTML elements.</p>
+
+<p>Below is our test scenario written in this approach.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">import</span> <span class="nx">React</span> <span class="nx">from</span> <span class="s1">&#39;react/addons&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="p">...</span>
+</span><span class='line'><span class="kr">import</span> <span class="nx">jsdom</span> <span class="nx">from</span> <span class="s1">&#39;jsdom&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">global</span><span class="p">.</span><span class="nb">document</span> <span class="o">=</span> <span class="nx">jsdom</span><span class="p">.</span><span class="nx">jsdom</span><span class="p">(</span><span class="s1">&#39;&lt;!doctype html&gt;&lt;html&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">global</span><span class="p">.</span><span class="nb">window</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">parentWindow</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Container&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;Show the menu bar&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">container</span> <span class="o">=</span> <span class="nx">TestUtils</span><span class="p">.</span><span class="nx">renderIntoDocument</span><span class="p">(</span><span class="o">&lt;</span><span class="nx">Container</span> <span class="o">/&gt;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">TestUtils</span><span class="p">.</span><span class="nx">scryRenderedDOMComponentsWithClass</span><span class="p">(</span><span class="nx">container</span><span class="p">,</span>
+</span><span class='line'>      <span class="s1">&#39;menu-bar-container&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">assert</span><span class="p">.</span><span class="nx">lengthOf</span><span class="p">(</span><span class="nx">result</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you run the above test it passes but how does it work?</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">import</span> <span class="nx">jsdom</span> <span class="nx">from</span> <span class="s1">&#39;jsdom&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">global</span><span class="p">.</span><span class="nb">document</span> <span class="o">=</span> <span class="nx">jsdom</span><span class="p">.</span><span class="nx">jsdom</span><span class="p">(</span><span class="s1">&#39;&lt;!doctype html&gt;&lt;html&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">global</span><span class="p">.</span><span class="nb">window</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">parentWindow</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This sets up our DOM which is a requirement of <em><a href="https://facebook.github.io/react/docs/test-utils.html#renderintodocument">TestUtils.renderIntoDocument</a></em>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">let</span> <span class="nx">container</span> <span class="o">=</span> <span class="nx">TestUtils</span><span class="p">.</span><span class="nx">renderIntoDocument</span><span class="p">(</span><span class="o">&lt;</span><span class="nx">Container</span> <span class="o">/&gt;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em><a href="https://facebook.github.io/react/docs/test-utils.html#renderintodocument">TestUtils.renderIntoDocument</a></em> then takes the React syntax and renders it into the DOM as HTML.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">let</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">TestUtils</span><span class="p">.</span><span class="nx">scryRenderedDOMComponentsWithClass</span><span class="p">(</span><span class="nx">container</span><span class="p">,</span> <span class="s1">&#39;menu-bar-container&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We now query the DOM for a unique class that is contained within the menu-bar and get an array of
+DOM elements back which we can assert against.</p>
+
+<p>The example above is a common approach but is it necessarily the best way?</p>
+
+<p>From my point of view no, as this approach makes our tests brittle. We are exposing and querying on the inner workings
+of the menu-bar and if someone was to refactor it and remove/rename the &ldquo;menu-bar-container&rdquo; class then our test would fail.</p>
+
+<h2>Approach 2 (Shallow Rendering):</h2>
+
+<p>With the release of React 0.13 Facebook provided the ability to “shallow render” a component.
+This allows you to instantiate a component and get the result of its render function, a ReactElement, without a DOM.
+It also only renders the component one level deep so you can keep your tests more focused.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">import</span> <span class="nx">React</span><span class="p">,</span> <span class="p">{</span> <span class="nx">addons</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;react/addons&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="nx">Container</span> <span class="nx">from</span> <span class="s1">&#39;../../src/Container&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="nx">MenuBar</span> <span class="nx">from</span> <span class="s1">&#39;../../src/MenuBar&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Container&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">let</span> <span class="nx">shallowRenderer</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">addons</span><span class="p">.</span><span class="nx">TestUtils</span><span class="p">.</span><span class="nx">createRenderer</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;Show the menu bar&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">shallowRenderer</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="o">&lt;</span><span class="nx">Container</span><span class="o">/&gt;</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">shallowRenderer</span><span class="p">.</span><span class="nx">getRenderOutput</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">assert</span><span class="p">.</span><span class="nx">deepEqual</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">children</span><span class="p">,</span> <span class="p">[</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="nx">MenuBar</span> <span class="o">/&gt;</span>
+</span><span class='line'>    <span class="p">]);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Again like the previous example this passes but how does it work?</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">let</span> <span class="nx">shallowRenderer</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">addons</span><span class="p">.</span><span class="nx">TestUtils</span><span class="p">.</span><span class="nx">createRenderer</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We first create the <em><a href="https://facebook.github.io/react/docs/test-utils.html#shallow-rendering">shallowRender</a></em> which handles the rendering of the React components.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">shallowRenderer</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="o">&lt;</span><span class="nx">Container</span><span class="o">/&gt;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then we pass in the component we have under test to the <em><a href="https://facebook.github.io/react/docs/test-utils.html#shallow-rendering">shallowRender</a></em>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">let</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">shallowRenderer</span><span class="p">.</span><span class="nx">getRenderOutput</span><span class="p">();</span>
+</span><span class='line'><span class="nx">assert</span><span class="p">.</span><span class="nx">deepEqual</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">children</span><span class="p">,</span> <span class="p">[</span><span class="o">&lt;</span><span class="nx">MenuBar</span><span class="o">/&gt;</span><span class="p">]);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And finally we get the output from the <em><a href="https://facebook.github.io/react/docs/test-utils.html#shallow-rendering">shallowRender</a></em> and
+assert that the children contain the menu-bar component.</p>
+
+<p>Is this approach any better than the previous? In my option yes and for the following reasons:</p>
+
+<ul>
+<li><p>We don&rsquo;t rely on the inner workings of the menu-bar to know if it has been rendered and therefore the markup can be refactored without
+any of the
+tests being broken.</p></li>
+<li><p>Less dependencies are being used as <em><a href="https://facebook.github.io/react/docs/test-utils.html#shallow-rendering">shallowRender</a></em> does not require
+a DOM to render into.</p></li>
+<li><p>It&rsquo;s a lot easier to see what is being asserted as we are able to use JSX syntax in assertions.</p></li>
+</ul>
+
+
+<h2>Conclusion</h2>
+
+<p>So is shallow rendering the silver bullet for React testing? Probably not as it still lacking on key feature for me when dealing
+with large components and that is the ability to easily query the ReactDOM (libraries like <em><a href="https://github.com/airbnb/enzyme">enzyme</a></em>
+are working towards improving this). But it is still a lot better than rendering the component out into HTML and coupling your tests
+to the inner components of others.</p>
+
+<p>In this blog post we have just scratched the surface of testing with React and I hope it&rsquo;s food for thought when writing your next set of
+React tests.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/08/11/were-going-global/">Were Going Global</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-08-11T00:00:00+01:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>We&rsquo;re going (more) global</h2>
+
+<p>We&rsquo;re at the start of something exciting at OpenTable.</p>
+
+<p>We are the leading restaurant reservation system and as a tech team we are responsible for building first class systems for our restaurants and our consumers, who use our website and mobile apps to make and manage reservations.</p>
+
+<p>We&rsquo;ve been operating in a handfull of countries (United States, United Kingdom, Germany, Japan, Canada and Mexico) for a while now and the time is right for us to expand into lots of new countries.</p>
+
+<p>We want to provide an experience that makes restaurant reservations easy wherever you are in the world.</p>
+
+<p>This is an incredibly exciting opportunity for us as a tech team. Over the last couple of years we&rsquo;ve been working hard to re-architect our platform; the platform has evolved from a single monolithic codebase to a set of globalised microservices and sites. We achieved this by breaking our system up into small component verticals and growing small teams (a mixture of product, design and engineering) to take ownership of each vertical.</p>
+
+<p>We are building new sytems to scale and launch disruptive products in new markets all over the world.</p>
+
+<h3>How we work</h3>
+
+<p>As we&rsquo;ve grown as a tech team, across San Francisco and London, we&rsquo;ve evolved how we work together and we have ambitious goals.</p>
+
+<ul>
+<li><strong>We value small independent teams</strong> that take ownership of their feature/area, who care about what they do and who constantly strive to make things better. We&rsquo;re a big company but as teams we act small.</li>
+<li><strong>We ship tested code early and often</strong>. We know that the way you reduce risk is to get code into production and rely on unit, integration and acceptance testing to provide confidence in our software.</li>
+<li><strong>We open source software</strong> and we care about maintaining our OSS. Notably we&rsquo;ve released a feature toggle product called <a href="http://github.com/opentable/hobknob">Hobknob</a> and a web component framework called <a href="http://github.com/opentable/opencomponents">Open Components</a>. But check out the rest of the work we&rsquo;ve open sourced on <a href="http://github.com/Opentable">Github</a>.</li>
+<li><strong>We value autonomy</strong> All engineers produce solutions NOT specs from architects. We also value 20% time where two days a sprint are spent working on whatever you want.</li>
+<li><strong>We metric. We monitor. We log</strong> These are important to us. Each of our systems logs to our logging infrastructure (StatsD and Logstash) and we, as independant teams, build our own dashboards in Grafana and Kibana to visualise our metrics and logs. Our systems also use Nagios and PagerDuty to monitor and alert us of any issues.</li>
+<li><strong>We&rsquo;re data driven</strong> New features are always A/B tested and we make decision based on the results of these tests, not on personal opinion or management-driven feature development.</li>
+</ul>
+
+
+<h3>What&rsquo;s next?</h3>
+
+<p>Over the years we&rsquo;ve transitioned from a pure .NET stack to a more varied stack of languages and frameworks. We&rsquo;re not restrictive on language choice and more open to choosing the right language for the right solution. This has meant the introduction of Node.js and Java to our platform (and a couple of systems in other languages too), as well as many new systems in .NET on Mono. We&rsquo;re still big fans of .NET but we&rsquo;re not fans of Windows.</p>
+
+<p>We want strong engineers to come and work with us, whatever their background. We value people who are excited by learning new things and who care about the right solution.</p>
+
+<p>If you want to be involved <a href="http://www.opentable.com/careers/technology/">please check out our careers page</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/08/04/international/">International</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-08-04T00:00:00+01:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>We&rsquo;re going (more) global</h2>
+
+<ul>
+<li>Who are we? Where we are?</li>
+<li>Why we&rsquo;re expanding?</li>
+<li>The challenge for technology?</li>
+<li>How we work?
+
+<ul>
+<li>Git, NodeJS, .NET, Continuous Delivery, Logging/metrics/monitoring/provisioning</li>
+<li>Small teams</li>
+<li>Product/Design/Engineering in collaboration</li>
+<li>20% time, brown bags, talks</li>
+</ul>
+</li>
+<li>Sponsoring and talks (links to our talks)</li>
+<li>The roles</li>
+</ul>
+
+
+<p>We&rsquo;re at the start of something exciting at Opentable. If you don&rsquo;t know who we are, Opentable is the world leading restaurant reservation system. As a tech team we are responsible for building first class systems for our restaurants and our consumers who use our website and mobile apps to make and manage reservations. We&rsquo;ve been operating in a handfull of countries (US, UK, Germany, Japan, Canada and Mexico) for a while now and now is the time for us to expand into lots of new countries. We want to provide an experience that makes restaurant reservations easy whereever you are in the world.</p>
+
+<p>This is an incredibly exciting opportunity for us as a tech team. Over the last couple of years we&rsquo;ve been working hard to re-architect our platform. Our platform has evolved from a single monolithic codebase to a set of globalised microservices and sites. We achieved this by breaking our system up into small component verticals and growing small teams (a mixture of product, design and engineering) to take ownership of each vertical.</p>
+
+<p>To scale our systems and launch disruptive products in new markets all over the world we need to build new systems to facilitate this.</p>
+
+<h3>How we work</h3>
+
+<p>As we&rsquo;ve grown as a tech team, across San Francisco and London, we&rsquo;ve evolved how we work together.</p>
+
+<ul>
+<li><strong>We value small independant teams</strong> that take ownership of their feature/area, who care about what they do and who constantly strive to make things better.</li>
+<li><strong>We ship tested code early and often</strong>. We know that the way you reduce risk is to get code into production and rely on unit, integration and acceptance testing to provide confidence in our software.</li>
+<li><strong>We open source software</strong> and we care about maintaining our OSS. Notably we&rsquo;ve released a feature toggle product called <a href="http://github.com/opentable/hobknob">Hobknob</a> and a web component framework called <a href="http://github.com/opentable/opencomponents">Open Components</a>. But check out the rest of the work we&rsquo;ve open sourced on <a href="http://github.com/Opentable">Github</a>.</li>
+<li><strong>We value autonomy</strong> All engineers produce solutions NOT specs from &ldquo;architects&rdquo;. We also value 20% time where 2 days a sprint are spent working on whatever you want.</li>
+<li><strong>We metric. We monitor. We log</strong> These are important to us. Each of our systems logs to our logging infrastructure (StatsD and Logstash) and we, as independant teams, build our own dashboards in grafana and kibana to visualise our metrics and logs. Our systems also use Nagios and PagerDuty to monitor and alert us of any issues.</li>
+<li><strong>We&rsquo;re data driven</strong> New features are always a/b tested and we make decision based on the results of these tests, not on anyones personal opinion or management driven feature development.</li>
+</ul>
+
+
+<h3>Who we&rsquo;re looking for</h3>
+
+<p>Over the years we&rsquo;ve transitioned from a pure .NET stack to a more varied stack of languages and frameworks. We&rsquo;re less restrictive and more open to choosing the right language for the right solution. This has meant the introduction of Node.js and Java to our platform (and a couple of systems in other languages too), as well as many new systems in .NET on Mono. We&rsquo;re still big fans of .NET but we&rsquo;re not fans of Windows.</p>
+
+<p>We want strong engineers to come work for us, regardless of language. Over the years we&rsquo;ve gained a lot of experience in working with Node.js and many of us had no previous exposure to Node (the majority of us being .NET engineers). We&rsquo;re looking for people who are excited by learning something new and who care about the right solution over the their personal preference of language.</p>
+
+<h3>What we&rsquo;re doing</h3>
+
+<ul>
+<li>Multi-language platform</li>
+<li>Focus on reducing time to market</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1062,370 +1467,6 @@ Primary buttons are only used when there is an exceedingly distinct and clear ca
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/01/01/explaining-flux-architecture-with-macgyver-dot-js/">Explaining Flux architecture with macgyver.js</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-01-01T15:33:46+00:00" pubdate data-updated="true">Jan 1<span>st</span>, 2015</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>What is Flux?</h2>
-
-<p><a href="https://github.com/facebook/flux">Flux</a> is an application architectural pattern developed by Facebook. It was developed to solve some of the complexities of the MVC pattern when used at scale by favouring a uni-directional approach. It is a pattern and not a technology or framework.</p>
-
-<p><img src="/images/posts/mvc-scale.png" alt="MVC scale issue" /></p>
-
-<p>When applications that use the model-view-controller (MVC) pattern at any scale it becomes difficult to maintain consistent data across multiple views. In particular the case whereby flow between models and views is not uni-directional and may require increasing logic to maintain parity between views when model data is updated. Facebook hit this issue several times and in particular with their unseen count (an incremented value of unseen messages which is updated by several UI chat components). It wasn&rsquo;t until they realised that the MVC pattern accomodated the complexity that they stepped back from the problem and addressed the architecture.</p>
-
-<p>Flux is intentionally unidirectional.</p>
-
-<p><img src="/images/posts/flux.png" alt="flux" /></p>
-
-<p>Key to this architecture is the dispatcher. The dispatcher forms the gatekeeper that all actions must go through. When a view, or views, wish to do something they fire an action which the dispatcher correctly routes via registered callbacks made by the stores.</p>
-
-<p>Stores are responsible for the data and respond to callbacks from the dispatcher. When data is changed they emit change events that views listen to to notify them that data has changed. The view can then respond accordingly (for example to update/rebind).</p>
-
-<p>This will become more obvious when we go through the macgyver.js example.</p>
-
-<h2>What is macgyver.js?</h2>
-
-<p><a href="https://github.com/stevejhiggs/macgyver">Macgyver</a> is a project fork of <a href="http://mullet.io/">mullet.io</a> by <a href="https://github.com/stevejhiggs">Steve Higgs</a>. Mullet is an aggregate stack to get started using Node.js with Facebook&rsquo;s <a href="http://facebook.github.io/react/">React</a> framework on the client and Walmart&rsquo;s <a href="http://walmartlabs.github.io/hapi/">hapi.js</a> on the server.</p>
-
-<p>Steve initially swapped out Grunt for Gulp, updated hapi and React and fixed some issues with the React dev tools. I then added another example to incorporate the Flux architecture, which you can see <a href="https://github.com/stevejhiggs/macgyver/tree/master/reactPlusFlux">here</a>. As React was also developed by Facebook you can begin to see how flux compliments its design and component based model.</p>
-
-<h2>The macgyver.js Flux example</h2>
-
-<p>The demo is a very simple quiz. In true Macgyver style he is faced with abnormally unrealistic situations armed with impossibly useless &ldquo;every-day&rdquo; items to escape the situation. If you select the correct tool, you proceed to the next situation.</p>
-
-<p><img class="left" src="/images/posts/structure.png" width="200"></p>
-
-<p>Let&rsquo;s start by going through the uni-directional flow above and at the same time look at the code and its structure.</p>
-
-<p>When the game is first loaded the view fires an action to get the next situation. This is then fired off to the dispatcher, as are all actions.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">receiveSituations</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">AppDispatcher</span><span class="p">.</span><span class="nx">handleViewAction</span><span class="p">({</span>
-</span><span class='line'>          <span class="nx">actionType</span><span class="o">:</span> <span class="nx">MacgyverConstants</span><span class="p">.</span><span class="nx">RECEIVE_SITUATIONS_DATA</span><span class="p">,</span>
-</span><span class='line'>          <span class="nx">data</span><span class="o">:</span> <span class="nx">data</span>
-</span><span class='line'>      <span class="p">});</span>
-</span><span class='line'><span class="p">},</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The store registers to listen for events from the dispatcher with a registered callback. It has the job of loading the situation data and emitting an event when this data is changed. In this case the SituationStore.js has the job of setting the current situation for the view to render.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">AppDispatcher</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">payload</span><span class="p">){</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">action</span> <span class="o">=</span> <span class="nx">payload</span><span class="p">.</span><span class="nx">action</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">switch</span><span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">actionType</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">case</span> <span class="nx">MacgyverConstants</span><span class="p">.</span><span class="nx">RECEIVE_SITUATIONS_DATA</span><span class="o">:</span>
-</span><span class='line'>          <span class="nx">loadSituationsData</span><span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
-</span><span class='line'>          <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>      <span class="k">case</span> <span class="nx">MacgyverConstants</span><span class="p">.</span><span class="nx">CHECK_ANSWER</span><span class="o">:</span>
-</span><span class='line'>          <span class="nx">checkAnswer</span><span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
-</span><span class='line'>          <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>      <span class="k">default</span><span class="o">:</span>
-</span><span class='line'>          <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">SituationStore</span><span class="p">.</span><span class="nx">emitChange</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The React view (in this case Game.jsx) registers an event listener for these changes in the SituationStore using the React &ldquo;componentDidMount&rdquo; function. When the situation is received by the component it rebinds to the data by loading the sitution and the possible answers.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">Game</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">componentDidMount</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">SituationStore</span><span class="p">.</span><span class="nx">addChangeListener</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_onChange</span><span class="p">);</span>
-</span><span class='line'>      <span class="nx">ToolStore</span><span class="p">.</span><span class="nx">addChangeListener</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_onChange</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">},</span>
-</span><span class='line'>  <span class="nx">componentWillUnmount</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">SituationStore</span><span class="p">.</span><span class="nx">removeChangeListener</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_onChange</span><span class="p">);</span>
-</span><span class='line'>      <span class="nx">ToolStore</span><span class="p">.</span><span class="nx">removeChangeListener</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_onChange</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">},</span>
-</span><span class='line'>  <span class="nx">render</span><span class="o">:</span> <span class="p">...</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>When the user selects an answer this fires off another &ldquo;CHECK_ANSWER&rdquo; event to the dispatcher. The situation store recieves this event with the answer in the payload and checks whether the answer selected is the correct one. If it is it updates the situation and emits a changes event to which the view receives and rebinds the view to the new situation.</p>
-
-<h2>Conclusion</h2>
-
-<p>Flux can be quite difficult to fathom eventhough it is quite a simple architectural pattern. In this small example it does initially feel overly complex and indeed it probably is. The pattern was designed to solve issues that occur at large scale in MVC applications due to the increased amound of bi-directional dependencies between views and models. For smaller applications it could be seen as over-engineered, however I really like the simplicity in the uni-directional flow and the assurance that unit tests are almost always going to mimic the state changes possible in your application because of the guarantee of a simple flow of data.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/12/08/supporting-ie8-in-the-opentable-redesign/">Supporting IE8 in the OpenTable redesign</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-12-08T21:14:57+00:00" pubdate data-updated="true">Dec 8<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>We&rsquo;re really <a href="http://blog.opentable.com/2014/opentables-website-re-designed-re-architected-re-imagined/">proud to have released</a> last week our redesigned <a href="http://www.opentable.co.uk">OpenTable</a> site, the culmination of months of hard work from many talented people here in London and in San Francisco.</p>
-
-<p>However despite killing off our old site and its 2004 design, 2.8% of our visitors could have been crying into their keyboard as a far worse opentable.co.uk filled their screen.</p>
-
-<p>That version of OpenTable was our new responsive site viewed in Internet Explorer 8.</p>
-
-<p><img src="/images/posts/redesign-ie8.png" alt="Our redesign before we optimised for IE8" /></p>
-
-<p>The fundamental issue is that IE8 doesn&rsquo;t support media queries so the age-old browser would try to stretch our <em>mobile-first</em> responsive design as wide as it could go &ndash; not great across a 27&#8221; Thunderbolt.</p>
-
-<p>To solve the problem we first tried the <a href="https://github.com/scottjehl/Respond">Respond.js</a> polyfill but this didn&rsquo;t work as we&rsquo;d hoped.  The main issue appeared to be that because we serve our CSS and JS on a separate sub-domain we fell foul of the browser&rsquo;s cross-domain security.  We followed the Respond.js instructions to solve this but having no luck we looked for alternatives.</p>
-
-<h2>Legacssy</h2>
-
-<p>Further Googling lead us to <a href="https://github.com/robinpokorny/grunt-legacssy">Legacssy</a>. With this Grunt task we could create a IE8-only stylesheet and not have to serve extra JS and cross-domain proxy files to all visitors.</p>
-
-<p>Our existing process is to create our core CSS with an <code>app.scss</code> file and <a href="https://github.com/sindresorhus/grunt-sass">grunt-sass</a>.  Our additional step was to create an <code>app_ie8.scss</code> file, parse it with <code>grunt-sass</code> like before, but then also run it through Legacssy.</p>
-
-<h3>Our app.scss file</h3>
-
-<pre><code>@import 'normalize';
-
-@import 'components/global';
-
-@import
-  'components/icons',
-  'components/buttons',
-  'components/calendar',
-  'components/forms',
-  'components/pagination',
-  'components/star-rating';
-
-@import
-  'partials/footer',
-  'partials/header',
-  'partials/location-picker';
-</code></pre>
-
-<h3>And our app_ie8.scss file</h3>
-
-<pre><code>@import ‘app';
-@import 'browsers/_ie8.scss';
-</code></pre>
-
-<p>This process left us with a duplicate of the main site CSS that would be IE8 friendly &ndash; and as you can see we are also able to merge in an IE8 specific stylesheet with further overrides.  All we now needed to was serve this inside conditional comments after the main stylesheet, and CSS specificity would ensure our IE rules overwrite the media queries.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;!--[if lte IE 8]&gt;
-</span><span class='line'>&lt;link rel="stylesheet" href="//eu-srs.opentable.com/content/static/css/app_ie8.css" /&gt;
-</span><span class='line'>&lt;![endif]—&gt;</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Drawbacks</h2>
-
-<p>We are very happy with this solution as it generates the IE8 fixes as part of our automated build with no extra effort.  The only obvious negative is for the IE8 visitors who will effectively be downloading the same stylesheet twice, but if they are routinely browsing the web with IE8 this could be the least of their worries.</p>
-
-<h2>Conclusion</h2>
-
-<p>We&rsquo;re really proud of our new site; we&rsquo;re still ironing out some kinks but we hope that it&rsquo;s good enough for those of you who visit us with Internet Explorer 8 (probably through no fault of your own).</p>
-
-<p>For the record, here a couple of other issues we found which may help other intrepid developers with their IE debugging in 2015 and beyond.</p>
-
-<h3>Other IE8 issues</h3>
-
-<ul>
-<li>The other unsupported CSS values were rem units and RGBA colours.  After running Legacssy we used <a href="https://github.com/robwierzbowski/grunt-pixrem">pixrem.js</a> to replace rems with pixels and a custom task to replace RGBA values with their HEX equivalents.</li>
-<li>IE11&rsquo;s F12 developer tools don&rsquo;t render identically to native IE8. We used Microsoft&rsquo;s excellent <a href="http://www.modern.ie">modern.ie</a> site to download virtual machines with Windows 7 and IE8.</li>
-<li>We only tested on Windows 7 as this makes up 66% of our IE8 visitors. The remainder are on different operating systems which collectively only make up 0.95% of our total visitors; this is below our threshold for support.</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/11/28/proxying-with-hapi/">Proxying Services With Hapi.js</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-11-28T10:32:42+00:00" pubdate data-updated="true">Nov 28<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I&rsquo;ve raved in the past about how awesome <a href="http://hapijs.com">hapi.js</a> is, but I&rsquo;m going to talk about just a specific case today.</p>
-
-<p>We started off with just a couple of hapi.js apis. This was at a time when standing up new infrastructure was still a bit painful, so inevitably those apis ended up having more functionality in them than they should have. Now it&rsquo;s easy for us to get infrastructure, so we want to do more of it.</p>
-
-<p>Our goal is to have lots of small(er) apis that just look after one specific piece (skillfully avoiding using the buzzword &lsquo;microservices&rsquo;).</p>
-
-<p>When you want to split out functionality from one api to another, it can be a pain, especially if you have a lot of consumers who aren&rsquo;t particularly fast-moving or communicative. Or maybe you don&rsquo;t know all your consumers up front.</p>
-
-<p>You&rsquo;ve got a couple of options here:</p>
-
-<ul>
-<li><p>Maintain the functionality in two places and slowly migrate consumers across</p></li>
-<li><p>Use a proxy or routing layer in-front of the api to rewrite or redirect requests</p></li>
-<li><p>Write code in your api to proxy requests to a different server</p></li>
-</ul>
-
-
-<p>The first two options are pretty icky, and frankly the third isn&rsquo;t all that great either. It all depends on you having the right framework. Do you see where I&rsquo;m going here?</p>
-
-<h3>Enter Hapi.js</h3>
-
-<p>Hapi.js has the concept of a &lsquo;proxy&rsquo; handler, which can transparently proxy requests to a different server.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">server</span><span class="p">.</span><span class="nx">route</span><span class="p">([</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>    <span class="nx">method</span><span class="o">:</span> <span class="s1">&#39;GET&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;/foo&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">handler</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">proxy</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">host</span><span class="o">:</span> <span class="s1">&#39;my-other-service.mydomain.com&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">port</span><span class="o">:</span> <span class="mi">80</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">protocol</span><span class="o">:</span> <span class="s1">&#39;http&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">passThrough</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">xforward</span><span class="o">:</span> <span class="kc">true</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">]);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And boom, you&rsquo;re done. You can now safely delete <em>all</em> of that code from your api and move it. The <em>only</em> thing you need to have kicking about is that proxy handler code.</p>
-
-<p>The <code>passthrough</code> setting specifies whether or not to preserve headers on the original request, and <code>xforward</code> tells hapi to add (or append) an &lsquo;x-forwarded-for&rsquo; header to the request.</p>
-
-<p>The proxy handler is really powerful. It can rewrite the request (using <code>mapUri</code>), pass local-state (from the hapi instance) along, reject unauthorised requests, you can even hook into the response and monkey about with it if you want (using <code>onResponse</code>).</p>
-
-<p>For full details, see the <a href="http://hapijs.com/api/v7.5.2#route-options">proxy section</a> of the route options.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1441,23 +1482,23 @@ Primary buttons are only used when there is an exceedingly distinct and clear ca
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/01/07/react-testing/">Testing React Components</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/11/were-going-global/">Were Going Global</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/04/international/">International</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/05/06/puppet-community/">Puppet-Community</a>
       </li>
     
       <li class="post">
         <a href="/blog/2015/03/05/the-dns-abc/">The DNS ABC</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/02/16/hapi-js-and-sigterm/">Hapi.js and SIGTERM</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">Dismantling the monolith - Microsites at Opentable</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/02/02/a-beginners-guide-to-rest-services/">A Beginner&#8217;s guide to REST services</a>
       </li>
     
   </ul>
@@ -1504,7 +1545,7 @@ Primary buttons are only used when there is an exceedingly distinct and clear ca
 
     </div>
   </div>
-  <footer role="contentinfo"><p>Copyright &copy; 2015 - OpenTable</p></footer>
+  <footer role="contentinfo"><p>Copyright &copy; 2016 - OpenTable</p></footer>
   
 
 

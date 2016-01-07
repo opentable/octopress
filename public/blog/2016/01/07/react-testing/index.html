@@ -1,0 +1,475 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Testing React Components - OpenTable Tech UK Blog</title>
+  <meta name="author" content="OpenTable">
+
+  
+  <meta name="description" content="At OpenTable it’s becoming an increasingly popular trend to use React.
+One of the reasons for this is the ability for it to server-side render whilst &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://tech.opentable.co.uk/blog/2016/01/07/react-testing/">
+  <link href="/favicon-32.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="OpenTable Tech UK Blog" type="application/atom+xml">
+  <script src="//fonts.otstatic.com/zys4lfz.js"></script>
+  <script>try{Typekit.load();}catch(e){}</script>
+
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-2621903-16']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">OpenTable Tech UK Blog</a></h1>
+  
+    <h2>The technology blog for OpenTable UK.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:tech.opentable.co.uk" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/authors">Authors</a></li>
+  <li><a href="/about">About this blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Testing React Components</h1>
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/blog/authors/ccartlidge.html">Chris Cartlidge</a></span></span>
+
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-01-07T11:00:00+00:00" pubdate data-updated="true">Jan 7<span>th</span>, 2016</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>At OpenTable it’s becoming an increasingly popular trend to use <em><a href="https://facebook.github.io/react/">React</a></em>.
+One of the reasons for this is the ability for it  to server-side render whilst still
+giving us the client side flexibility that we all crave!</p>
+
+<p>We all know to have stable, reliable software you need to have well written tests. Facebook knows this and
+provides the handy <em><a href="https://facebook.github.io/react/docs/test-utils.html">Test Utilities</a></em> library to make
+our lives easier.</p>
+
+<p>Cool — I hear you all say! But what is the best approach to testing React components?</p>
+
+<p>Well unfortunately this is something that is not very well documented and if not approached in
+the correct way can lead to brittle tests.</p>
+
+<p>Therefore I have written this blog post to discuss the different approaches we have available to us.</p>
+
+<p>All code used in this post is avaliable on my <em><a href="https://github.com/chriscartlidge/React-Testing-Blog-Code">GitHub</a></em>.</p>
+
+<h2>The Basics</h2>
+
+<p>To make our lives a lot easier when writing test it&rsquo;s best to use a couple of basic tools. Below is
+the absolute minimum required to start testing React components.</p>
+
+<ul>
+<li><em><a href="https://mochajs.org/">Mocha</a></em> &ndash; This is a testing framework that runs in the browser or Node.JS (others are available).</li>
+<li><em><a href="https://facebook.github.io/react/docs/test-utils.html">ReactTestUtils</a></em> &ndash; This is the basic testing framework that Facebook provides to go testing with React.</li>
+</ul>
+
+
+<h2>The Scenario</h2>
+
+<p>We have a landing page broken down into two separate components:</p>
+
+<ul>
+<li>Container &ndash; The holding container for all sub-components.</li>
+<li>Menu Bar &ndash; Contains the site navigation and is always displayed.</li>
+</ul>
+
+
+<p><img src="/images/posts/react-comp.png" alt="react-comp" /></p>
+
+<p>Each React component is self-contained and should be tested in isolation.</p>
+
+<p>For the purpose of this exercise we will focus on the test for the container component and
+making sure that the menu bar is displayed within it.</p>
+
+<h2>Approach 1 (Full DOM):</h2>
+
+<p>I like to call this the “Full DOM” approach because you take a component and render it in its entirety
+including all of its children. The React syntax are transformed and any assertion
+you make will be against the rendered HTML elements.</p>
+
+<p>Below is our test scenario written in this approach.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">import</span> <span class="nx">React</span> <span class="nx">from</span> <span class="s1">&#39;react/addons&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="p">...</span>
+</span><span class='line'><span class="kr">import</span> <span class="nx">jsdom</span> <span class="nx">from</span> <span class="s1">&#39;jsdom&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">global</span><span class="p">.</span><span class="nb">document</span> <span class="o">=</span> <span class="nx">jsdom</span><span class="p">.</span><span class="nx">jsdom</span><span class="p">(</span><span class="s1">&#39;&lt;!doctype html&gt;&lt;html&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">global</span><span class="p">.</span><span class="nb">window</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">parentWindow</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Container&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;Show the menu bar&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">container</span> <span class="o">=</span> <span class="nx">TestUtils</span><span class="p">.</span><span class="nx">renderIntoDocument</span><span class="p">(</span><span class="o">&lt;</span><span class="nx">Container</span> <span class="o">/&gt;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">TestUtils</span><span class="p">.</span><span class="nx">scryRenderedDOMComponentsWithClass</span><span class="p">(</span><span class="nx">container</span><span class="p">,</span>
+</span><span class='line'>      <span class="s1">&#39;menu-bar-container&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">assert</span><span class="p">.</span><span class="nx">lengthOf</span><span class="p">(</span><span class="nx">result</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you run the above test it passes but how does it work?</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">import</span> <span class="nx">jsdom</span> <span class="nx">from</span> <span class="s1">&#39;jsdom&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">global</span><span class="p">.</span><span class="nb">document</span> <span class="o">=</span> <span class="nx">jsdom</span><span class="p">.</span><span class="nx">jsdom</span><span class="p">(</span><span class="s1">&#39;&lt;!doctype html&gt;&lt;html&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">global</span><span class="p">.</span><span class="nb">window</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">parentWindow</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This sets up our DOM which is a requirement of <em><a href="https://facebook.github.io/react/docs/test-utils.html#renderintodocument">TestUtils.renderIntoDocument</a></em>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">let</span> <span class="nx">container</span> <span class="o">=</span> <span class="nx">TestUtils</span><span class="p">.</span><span class="nx">renderIntoDocument</span><span class="p">(</span><span class="o">&lt;</span><span class="nx">Container</span> <span class="o">/&gt;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em><a href="https://facebook.github.io/react/docs/test-utils.html#renderintodocument">TestUtils.renderIntoDocument</a></em> then takes the React syntax and renders it into the DOM as HTML.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">let</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">TestUtils</span><span class="p">.</span><span class="nx">scryRenderedDOMComponentsWithClass</span><span class="p">(</span><span class="nx">container</span><span class="p">,</span> <span class="s1">&#39;menu-bar-container&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We now query the DOM for a unique class that is contained within the menu-bar and get an array of
+DOM elements back which we can assert against.</p>
+
+<p>The example above is a common approach but is it necessarily the best way?</p>
+
+<p>From my point of view no, as this approach makes our tests brittle. We are exposing and querying on the inner workings
+of the menu-bar and if someone was to refactor it and remove/rename the &ldquo;menu-bar-container&rdquo; class then our test would fail.</p>
+
+<h2>Approach 2 (Shallow Rendering):</h2>
+
+<p>With the release of React 0.13 Facebook provided the ability to “shallow render” a component.
+This allows you to instantiate a component and get the result of its render function, a ReactElement, without a DOM.
+It also only renders the component one level deep so you can keep your tests more focused.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">import</span> <span class="nx">React</span><span class="p">,</span> <span class="p">{</span> <span class="nx">addons</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;react/addons&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="nx">Container</span> <span class="nx">from</span> <span class="s1">&#39;../../src/Container&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="kr">import</span> <span class="nx">MenuBar</span> <span class="nx">from</span> <span class="s1">&#39;../../src/MenuBar&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Container&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">let</span> <span class="nx">shallowRenderer</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">addons</span><span class="p">.</span><span class="nx">TestUtils</span><span class="p">.</span><span class="nx">createRenderer</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;Show the menu bar&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">shallowRenderer</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="o">&lt;</span><span class="nx">Container</span><span class="o">/&gt;</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">let</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">shallowRenderer</span><span class="p">.</span><span class="nx">getRenderOutput</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">assert</span><span class="p">.</span><span class="nx">deepEqual</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">children</span><span class="p">,</span> <span class="p">[</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="nx">MenuBar</span> <span class="o">/&gt;</span>
+</span><span class='line'>    <span class="p">]);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Again like the previous example this passes but how does it work?</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">let</span> <span class="nx">shallowRenderer</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">addons</span><span class="p">.</span><span class="nx">TestUtils</span><span class="p">.</span><span class="nx">createRenderer</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We first create the <em><a href="https://facebook.github.io/react/docs/test-utils.html#shallow-rendering">shallowRender</a></em> which handles the rendering of the React components.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">shallowRenderer</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="o">&lt;</span><span class="nx">Container</span><span class="o">/&gt;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then we pass in the component we have under test to the <em><a href="https://facebook.github.io/react/docs/test-utils.html#shallow-rendering">shallowRender</a></em>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">let</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">shallowRenderer</span><span class="p">.</span><span class="nx">getRenderOutput</span><span class="p">();</span>
+</span><span class='line'><span class="nx">assert</span><span class="p">.</span><span class="nx">deepEqual</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">children</span><span class="p">,</span> <span class="p">[</span><span class="o">&lt;</span><span class="nx">MenuBar</span><span class="o">/&gt;</span><span class="p">]);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And finally we get the output from the <em><a href="https://facebook.github.io/react/docs/test-utils.html#shallow-rendering">shallowRender</a></em> and
+assert that the children contain the menu-bar component.</p>
+
+<p>Is this approach any better than the previous? In my option yes and for the following reasons:</p>
+
+<ul>
+<li><p>We don&rsquo;t rely on the inner workings of the menu-bar to know if it has been rendered and therefore the markup can be refactored without
+any of the
+tests being broken.</p></li>
+<li><p>Less dependencies are being used as <em><a href="https://facebook.github.io/react/docs/test-utils.html#shallow-rendering">shallowRender</a></em> does not require
+a DOM to render into.</p></li>
+<li><p>It&rsquo;s a lot easier to see what is being asserted as we are able to use JSX syntax in assertions.</p></li>
+</ul>
+
+
+<h2>Conclusion</h2>
+
+<p>So is shallow rendering the silver bullet for React testing? Probably not as it still lacking on key feature for me when dealing
+with large components and that is the ability to easily query the ReactDOM (libraries like <em><a href="https://github.com/airbnb/enzyme">enzyme</a></em>
+are working towards improving this). But it is still a lot better than rendering the component out into HTML and coupling your tests
+to the inner components of others.</p>
+
+<p>In this blog post we have just scratched the surface of testing with React and I hope it&rsquo;s food for thought when writing your next set of
+React tests.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/blog/authors/ccartlidge.html">Chris Cartlidge</a></span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-01-07T11:00:00+00:00" pubdate data-updated="true">Jan 7<span>th</span>, 2016</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>JavaScript</a>, <a class='category' href='/blog/categories/react/'>React</a>, <a class='category' href='/blog/categories/testing/'>Testing</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://tech.opentable.co.uk/blog/2016/01/07/react-testing/" data-via="opentabletechuk" data-counturl="http://tech.opentable.co.uk/blog/2016/01/07/react-testing/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/08/11/were-going-global/" title="Previous Post: Were Going Global">&laquo; Were Going Global</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/01/07/react-testing/">Testing React Components</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/11/were-going-global/">Were Going Global</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/08/04/international/">International</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/05/06/puppet-community/">Puppet-Community</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/05/the-dns-abc/">The DNS ABC</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+	<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/opentabletechuk"  data-widget-id="351711375858466817">Tweets by @opentabletechuk</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</section>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/opentable">@opentable</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'opentable',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>Copyright &copy; 2016 - OpenTable</p></footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

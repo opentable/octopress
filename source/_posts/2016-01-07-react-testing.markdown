@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Testing React Components"
-date: 2016-01-06 09:00:0 +0100
+date: 2016-01-07 12:00:0 +0100
 comments: true
 author: ccartlidge
 categories: [React, JavaScript, Testing]
@@ -34,7 +34,7 @@ the absolute minimum required to start testing React components.
 
 ##The Scenario
 
-We have a landing page broken down into 2 separate components:
+We have a landing page broken down into two separate components:
 
 - Container - The holding container for all sub-components.
 - Menu Bar - Contains the site navigation and is always displayed.
@@ -48,7 +48,7 @@ making sure that the menu bar is displayed within it.
 
 ##Approach 1 (Full DOM):
 
-I like to call this the “Full DOM” approach because you take a component and render it in it’s entirety
+I like to call this the “Full DOM” approach because you take a component and render it in its entirety
 including all of its children. The React syntax are transformed and any assertion
 you make will be against the rendered HTML elements.
 

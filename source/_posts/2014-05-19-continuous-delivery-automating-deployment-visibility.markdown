@@ -4,7 +4,7 @@ title: "Continuous Delivery: Automating Deployment Visibility"
 date: 2014-05-19 17:17:40 +0100
 comments: true
 author: rtomlinson
-categories: [Continuous Delivery, Hubot, Hipchat, Chatops]
+categories: [Continuous delivery, Hubot, Hipchat, Chatops]
 ---
 
 In our continued effort to drive towards a service oriented architecture each of our teams are continuously improving their deployment processes. Recently our team has focussed on automating as much as possible, putting as much into chat as we can and improving our logging/metrics.

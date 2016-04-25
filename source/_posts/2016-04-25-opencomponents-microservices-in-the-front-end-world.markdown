@@ -250,11 +250,10 @@ After more than a year in production, OC is still evolving. These are some of th
 * Semver and auto-generated documentation **enforce clear contracts**. Consumers can pick the version they want and component owners can keep clear what the contract is.
 * A more componentised front-end leads to write **more easily destroyable code**. As opposite of writing highly maintainable code, this approach promotes small iterations on very small, easily readable and testable units of code. In this perspective, recreating something from scratch is perfectly acceptable and recommended, as there is almost zero cost for a developer to start a new project and the infrastructure in place makes maintainance and deprecation as easy as a couple of clicks. 
 
-If you wish to try or know more about OpenComponents, visit [OC's github page][2] or have a look at [some components' examples][4]. If you would give us some feedback, asks us question, or contribute to the project get in touch via the [gitter chat][5] or via [e-mail][6]. We would love to hear your thoughts about this project.
+If you wish to try or know more about OpenComponents, visit [OC's github page][2] or have a look at [some components' examples][3]. If you would give us some feedback, asks us question, or contribute to the project get in touch via the [gitter chat][4] or via [e-mail][5]. We would love to hear your thoughts about this project.
 
 [1]: http://tech.opentable.co.uk/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/
 [2]: https://github.com/opentable/oc
-[3]: https://docs.npmjs.com/files/package.json
-[4]: https://github.com/matteofigus/oc-components-examples
-[5]: https://gitter.im/opentable/oc
-[6]: mailto:oc@opentable.com
+[3]: https://github.com/matteofigus/oc-components-examples
+[4]: https://gitter.im/opentable/oc
+[5]: mailto:oc@opentable.com

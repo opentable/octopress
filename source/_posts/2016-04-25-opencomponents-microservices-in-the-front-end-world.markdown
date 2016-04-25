@@ -22,13 +22,13 @@ OC is been in production for more than a year at OpenTable and it is [fully open
 OpenComponents involves two parts:
 
 * The **consumers** are web pages that need fragments of html for rendering partial contents. Sometimes they need some content during server-side rendering, somethings when executing code in the browser.
-* The **components** are small units of isomorphic code mainly consisting of html, javascript, css. They can optionally contain some logic, allowing a server-side node.js closure to compose a model that is used to render the view. When rendered they are pieces of pure html, ready to be injected in any web page.
+* The **components** are small units of isomorphic code mainly consisting of html, javascript, css. They can optionally contain some logic, allowing a server-side node.js closure to compose a model that is used to render the view. When rendered they are pieces of html, ready to be injected in any web page.
 
 The framework consists of three parts:
 
 * The **cli** allows developers to create, develop, test, and publish components.
 * The **library** is where the components are stored after the publishing. When components depend on static resources (such as images, css files, etc.) these are stored, during packaging and publishing, in a publicly-exposed part of the library that serves as cdn.
-* The **registry** is a REST API that is used to consume and publish components. It is the entity that handles the traffic between the library and the consumers.
+* The **registry** is a REST API that is used to consume components. It is the entity that handles the traffic between the library and the consumers.
 
 In the following example, you can see how a web page looks like when including both a server-side rendered component (*header*) and client-side (still) unrendered component (*advert*):
 

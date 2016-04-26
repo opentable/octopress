@@ -7,11 +7,11 @@ author: mfigus
 categories: [SOA, Microsites, Microservices, OpenComponents, OC] 
 ---
 
-Many engineers work every day on Opentable.com from our offices located in Europe, America, and Asia, pushing changes to production multiple times a day. Usually, this is very hard to achieve, in fact it took years for us to get to this point. I explained in a [previous article][1] how we dismantled our monolith in favour of a Microsites architecture. In the meanwhile, during the last two years we have been working on something I would define quite unique, given its purpose and its definition, called **OpenComponents**.
+Many engineers work every day on Opentable.com from our offices located in Europe, America, and Asia, pushing changes to production multiple times a day. Usually, this is very hard to achieve, in fact it took years for us to get to this point. I explained in a [previous article][1] how we dismantled our monolith in favour of a Microsites architecture. Since the publication of that blog post we have been working on something I would define as quite unique called OpenComponents.
 
 ### Another front-end framework?
 
-OpenComponents is a system for allowing people to have tools to facilitate code sharing, reduce dependencies, and easily approach new features and experiments from the back-end to the front-end. To achieve this, it is based on the concept of using services as interfaces for enabling pages to render partial contents located, executed and deployed independently.
+OpenComponents is a system for allowing people to have tools to facilitate code sharing, reduce dependencies, and easily approach new features and experiments from the back-end to the front-end. To achieve this, it is based on the concept of using services as interfaces for enabling pages to render partial content that is located, executed and deployed independently.
 
 OpenComponents is not *another SPA JS framework*: it is a set of conventions, patterns and tools to develop and quickly deploy fragments of front-end. In this perspective, it plays nicely with any existing architecture and framework in terms of front-end and back-end: its purpose is to **serve as delivery mechanism for a more modularised end-result in the front-end**.
 

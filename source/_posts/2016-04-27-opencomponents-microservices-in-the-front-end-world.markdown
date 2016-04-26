@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "OpenComponents - microservices in the front-end world"
-date: 2016-04-25 10:10:03 +0000
+date: 2016-04-27 10:10:00 +0000
 comments: true
 author: mfigus
 categories: [SOA, Microsites, Microservices, OpenComponents, OC] 
@@ -50,7 +50,7 @@ In the following example, you can see how a web page looks like when including b
 
 ### Getting started
 
-Node.js is required for creating OC components. Then to create a component:
+The only prerequisite for creating a component is node.js:
 
 ```sh
 $ npm install -g oc

@@ -9,8 +9,7 @@
   <meta name="author" content="OpenTable">
 
   
-  <meta name="description" content="At OpenTable it’s becoming an increasingly popular trend to use React.
-One of the reasons for this is the ability for it to server-side render whilst &hellip;">
+  <meta name="description" content="Many engineers work every day on opentable.com from our offices located in Europe, America, and Asia, pushing changes to production multiple times a &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +80,397 @@ One of the reasons for this is the ability for it to server-side render whilst &
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/04/27/opencomponents-microservices-in-the-front-end-world/">OpenComponents - microservices in the front-end world</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-04-27T11:10:00+01:00" pubdate data-updated="true">Apr 27<span>th</span>, 2016</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Many engineers work every day on opentable.com from our offices located in Europe, America, and Asia, pushing changes to production multiple times a day. Usually, this is very hard to achieve, in fact it took years for us to get to this point. <a href="http://tech.opentable.co.uk/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">I described in a previous article</a> how we dismantled our monolith in favour of a Microsites architecture. Since the publication of that blog post we have been working on something I believe to be quite unique, called <strong>OpenComponents</strong>.</p>
+
+<h3>Another front-end framework?</h3>
+
+<p>OpenComponents is a system to facilitate code sharing, reduce dependencies, and easily approach new features and experiments from the back-end to the front-end. To achieve this, it is based on the concept of using services as interfaces &ndash; enabling pages to render partial content that is located, executed and deployed independently.</p>
+
+<p>OpenComponents is not <em>another SPA JS framework</em>; it is a set of conventions, patterns and tools to develop and quickly deploy fragments of front-end. In this perspective, it plays nicely with any existing architecture and framework in terms of front-end and back-end. Its purpose is to <strong>serve as delivery mechanism for a more modularised end-result in the front-end</strong>.</p>
+
+<p>OC is been in production for more than a year at OpenTable and it is <a href="https://github.com/opentable/oc">fully open-sourced</a>.</p>
+
+<h2> Overview</h2>
+
+<p>OpenComponents involves two parts:</p>
+
+<ul>
+<li>The <strong>consumers</strong> are web pages that need fragments of HTML for rendering partial contents. Sometimes they need some content during server-side rendering, somethings when executing code in the browser.</li>
+<li>The <strong>components</strong> are small units of isomorphic code mainly consisting of HTML, Javascript and CSS. They can optionally contain some logic, allowing a server-side Node.js closure to compose a model that is used to render the view. When rendered they are pieces of HTML, ready to be injected in any web page.</li>
+</ul>
+
+
+<p>The framework consists of three parts:</p>
+
+<ul>
+<li>The <strong>cli</strong> allows developers to create, develop, test, and publish components.</li>
+<li>The <strong>library</strong> is where the components are stored after the publishing. When components depend on static resources (such as images, CSS files, etc.) these are stored, during packaging and publishing, in a publicly-exposed part of the library that serves as a CDN.</li>
+<li>The <strong>registry</strong> is a REST API that is used to consume components. It is the entity that handles the traffic between the library and the consumers.</li>
+</ul>
+
+
+<p>In the following example, you can see how a web page looks like when including both a server-side rendered component (<em>header</em>) and client-side (still) unrendered component (<em>advert</em>):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="cp">&lt;!DOCTYPE html&gt;</span>
+</span><span class='line'>  ...
+</span><span class='line'>  <span class="nt">&lt;oc</span><span class="na">-component</span> <span class="na">href=</span><span class="s">&quot;//oc-registry.com/header/1.X.X&quot;</span> <span class="na">data-rendered=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;//cdn.com/oc/header/1.2.3/img/logo.png&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/a&gt;</span>
+</span><span class='line'>  <span class="err">&lt;</span>/oc-component&gt;
+</span><span class='line'>  ...
+</span><span class='line'>  <span class="nt">&lt;p&gt;</span>page content<span class="nt">&lt;/p&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;oc</span><span class="na">-component</span> <span class="na">href=</span><span class="s">&quot;//oc-registry.com/advert/~1.3.5/?type=bottom&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="err">&lt;</span>/oc-component&gt;
+</span><span class='line'>  ...
+</span><span class='line'>  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;//oc-registry/oc-client/client.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Getting started</h3>
+
+<p>The only prerequisite for creating a component is Node.js:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm install -g oc
+</span><span class='line'><span class="nv">$ </span>mkdir components <span class="o">&amp;&amp;</span> <span class="nb">cd </span>components
+</span><span class='line'><span class="nv">$ </span>oc init my-component
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Components are folders containing the following files:</p>
+
+<table style="margin-bottom:16px;">
+    <tr>
+        <th style="font-weight:bold;padding:5px 10px;border-bottom:1px solid #ccc;">File</th>
+        <th style="font-weight:bold;padding:5px 10px;border-bottom:1px solid #ccc;">Description</th>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">package.json</td>
+        <td style="padding:5px 10px;font-weight: inherit;">A common <a href="https://docs.npmjs.com/files/package.json" target="_blank">node&#8217;s package.json</a>. An &#8220;oc&#8221; property contains some additional configuration.</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">view.html</td>
+        <td style="padding:5px 10px;font-weight: inherit;">The view containing the markup. Currently Handlebars and Jade view engines are supported. It can contain some CSS under the &lt;style&gt; tag and client-side Javascript under the &lt;script&gt; tag.</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">server.js (optional)</td>
+        <td style="padding:5px 10px;font-weight: inherit;">If the component has some logic, including consuming services, this is the entity that will produce the view-model to compile the view.</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">static files (optional)</td>
+        <td style="padding:5px 10px;font-weight: inherit;">Images, Javascript, and files that will be referenced in the HTML markup.</td>
+    </tr>
+    <tr>
+        <td style="padding:5px 10px;font-weight:bold;">*</td>
+        <td style="padding:5px 10px;font-weight: inherit;">Any other files that will be useful for the development such as tests, docs, etc.</td>
+    </tr>
+</table>
+
+
+<h2>Editing, debugging, testing</h2>
+
+<p>To start a local test registry using a components&#8217; folder as a library with a watcher:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>oc dev . 3030
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To see how the component looks like when consuming it:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>oc preview http://localhost:3030/hello-world
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As soon as you make changes on the component, you will be able to refresh this page and see how it looks. This an example for a component that handles some minimal logic:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>&lt;!-- view.html --&gt;
+</span><span class='line'>&lt;div&gt;Hello <span class="o">{{</span> name <span class="o">}}</span>&lt;/div&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// server.js</span>
+</span><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">data</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
+</span><span class='line'>  <span class="nx">callback</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="nx">context</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">name</span> <span class="o">||</span> <span class="s1">&#39;John Doe&#39;</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To test this component, we can curl <code>http://localhost:3030/my-component/?name=Jack</code>.</p>
+
+<h3>Publishing to a registry</h3>
+
+<p>You will need an online registry connected to a library. A component with the same name and version cannot already exist on that registry.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># just once we create a link between the current folder and a registry endpoint</span>
+</span><span class='line'><span class="nv">$ </span>oc registry add http://my-components-registry.mydomain.com
+</span><span class='line'>
+</span><span class='line'><span class="c"># then, ship it</span>
+</span><span class='line'><span class="nv">$ </span>oc publish my-component/
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now, it should be available at <code>http://my-components-registry.mydomain.com/my-component</code>.</p>
+
+<h2>Consuming components</h2>
+
+<p>From a consumer&rsquo;s perspective, a component is an HTML fragment. You can render components just on the client-side, just on the server-side, or use the client-side rendering as failover strategy for when the server-side rendering fails (for example because the registry is not responding quickly or it is down).</p>
+
+<p>You don&rsquo;t need Node.js to consume components on the server-side. The registry can provide rendered components so that you can consume them using any tech stack.</p>
+
+<p>When published, components are immutable and semantic versioned. The registry allows consumers to get any version of the component: the latest patch, or minor version, etc. For instance, <code>http://registry.com/component</code> serves the latest version, and <code>http://registry.com/component/^1.2.5</code> serves the most recent major version for v1.</p>
+
+<h3>Client-side rendering</h3>
+
+<p>To make this happen, a components&#8217; registry has to be publicly available.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="cp">&lt;!DOCTYPE html&gt;</span>
+</span><span class='line'>  ...
+</span><span class='line'>  <span class="nt">&lt;oc</span><span class="na">-component</span> <span class="na">href=</span><span class="s">&quot;//my-components-registry.mydomain.com/hello-world/1.X.X&quot;</span><span class="nt">&gt;</span><span class="err">&lt;</span>/oc-component&gt;
+</span><span class='line'>  ...
+</span><span class='line'>  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;//my-components-registry.mydomain.com/oc-client/client.js&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Server-side rendering</h3>
+
+<p>You can get rendered components via the registry REST API.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>curl http://my-components-registry.mydomain.com/hello-world
+</span><span class='line'>
+</span><span class='line'><span class="o">{</span>
+</span><span class='line'>  <span class="s2">&quot;href&quot;</span>: <span class="s2">&quot;https://my-components-registry.mydomain.com/hello-world&quot;</span>,
+</span><span class='line'>  <span class="s2">&quot;version&quot;</span>: <span class="s2">&quot;1.0.0&quot;</span>,
+</span><span class='line'>  <span class="s2">&quot;requestVersion&quot;</span>: <span class="s2">&quot;&quot;</span>,
+</span><span class='line'>  <span class="s2">&quot;html&quot;</span>: <span class="s2">&quot;&lt;oc-component href=\&quot;https://my-components-registry.mydomain.com/hello-world\&quot; data-hash=\&quot;cad2a9671257d5033d2abfd739b1660993021d02\&quot; data-name=\&quot;hello-world\&quot; data-rendered=\&quot;true\&quot; data-version=\&quot;1.0.13\&quot;&gt;Hello John doe!&lt;/oc-component&gt;&quot;</span>,
+</span><span class='line'>  <span class="s2">&quot;type&quot;</span>: <span class="s2">&quot;oc-component&quot;</span>,
+</span><span class='line'>  <span class="s2">&quot;renderMode&quot;</span>: <span class="s2">&quot;rendered&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Nevertheless, for improving caching and response size, when doing browser rendering, or using the <code>node.js</code> client or any language capable of executing server-side Javascript the request will look more like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'> curl http://my-components-registry.mydomain.com/hello-world/~1.0.0 -H Accept:application/vnd.oc.unrendered+json
+</span><span class='line'>
+</span><span class='line'><span class="o">{</span>
+</span><span class='line'>  <span class="s2">&quot;href&quot;</span>: <span class="s2">&quot;https://my-components-registry.mydomain.com/hello-world/~1.0.0&quot;</span>,
+</span><span class='line'>  <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;hello-world&quot;</span>,
+</span><span class='line'>  <span class="s2">&quot;version&quot;</span>: <span class="s2">&quot;1.0.0&quot;</span>,
+</span><span class='line'>  <span class="s2">&quot;requestVersion&quot;</span>: <span class="s2">&quot;~1.0.0&quot;</span>,
+</span><span class='line'>  <span class="s2">&quot;data&quot;</span>: <span class="o">{</span>
+</span><span class='line'>    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;John doe&quot;</span>
+</span><span class='line'>  <span class="o">}</span>,
+</span><span class='line'>  <span class="s2">&quot;template&quot;</span>: <span class="o">{</span>
+</span><span class='line'>    <span class="s2">&quot;src&quot;</span>: <span class="s2">&quot;https://s3.amazonaws.com/your-s3-bucket/components/hello-world/1.0.0/template.js&quot;</span>,
+</span><span class='line'>    <span class="s2">&quot;type&quot;</span>: <span class="s2">&quot;handlebars&quot;</span>,
+</span><span class='line'>    <span class="s2">&quot;key&quot;</span>: <span class="s2">&quot;cad2a9671257d5033d2abfd739b1660993021d02&quot;</span>
+</span><span class='line'>  <span class="o">}</span>,
+</span><span class='line'>  <span class="s2">&quot;type&quot;</span>: <span class="s2">&quot;oc-component&quot;</span>,
+</span><span class='line'>  <span class="s2">&quot;renderMode&quot;</span>: <span class="s2">&quot;unrendered&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Making a similar request it is possible to get the compiled view&rsquo;s url + the view-model as data. This is useful for caching the compiled view (taking advantage of components&#8217; immutability).</p>
+
+<h2>Setup a registry</h2>
+
+<p>The registry is a Node.js Express app that serves the components. It just needs an S3 account to be used as library.</p>
+
+<p>First, create a dir and install OC:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>mkdir oc-registry <span class="o">&amp;&amp;</span> <span class="nb">cd </span>oc-registry
+</span><span class='line'><span class="nv">$ </span>npm init
+</span><span class='line'><span class="nv">$ </span>npm install oc --save
+</span><span class='line'><span class="nv">$ </span>touch index.js
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is how <code>index.js</code> will look like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">oc</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;oc&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">configuration</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">verbosity</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">baseUrl</span><span class="o">:</span> <span class="s1">&#39;https://my-components-registry.mydomain.com/&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">port</span><span class="o">:</span> <span class="mi">3000</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">tempDir</span><span class="o">:</span> <span class="s1">&#39;./temp/&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">refreshInterval</span><span class="o">:</span> <span class="mi">600</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">pollingInterval</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">s3</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">key</span><span class="o">:</span> <span class="s1">&#39;your-s3-key&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">secret</span><span class="o">:</span> <span class="s1">&#39;your-s3-secret&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">bucket</span><span class="o">:</span> <span class="s1">&#39;your-s3-bucket&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">region</span><span class="o">:</span> <span class="s1">&#39;your-s3-region&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">path</span><span class="o">:</span> <span class="s1">&#39;//s3.amazonaws.com/your-s3-bucket/&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">componentsDir</span><span class="o">:</span> <span class="s1">&#39;components&#39;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">env</span><span class="o">:</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;production&#39;</span> <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">registry</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">oc</span><span class="p">.</span><span class="nx">Registry</span><span class="p">(</span><span class="nx">configuration</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">registry</span><span class="p">.</span><span class="nx">start</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">app</span><span class="p">){</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">){</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Registry not started: &#39;</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Conclusions</h2>
+
+<p>After more than a year in production, OC is still evolving. These are some of the most powerful features:</p>
+
+<ul>
+<li>It <strong>enables developers to create and publish components very easily</strong>. None of the operations need any infrastructural work as the framework takes care, when packaging, of making each component <em>production-ready</em>.</li>
+<li>It is <strong>framework agnostic</strong>. Microsites written in <em>C#</em>, <em>Node</em> and <em>Ruby</em> consume components on the server-side via the API. In the front-end, it is great for delivering neutral pieces of HTML but works well for Angular components and React views too.</li>
+<li>It enables <strong>granular ownership</strong>. Many teams can own components and they all are discoverable via the same service.</li>
+<li>Isomorphism is good for <strong>performance</strong>. It enables consumers to render things on the server-side when needed (mobile apps, SEO) and defer to the client-side contents that are not required on the first load (third-party widgets, adverts, SPA fragments).</li>
+<li>Isomorphism is good for <strong>robustness</strong>. When something is going bad on the server-side (the registry is erroring or slow) it is possible to use client-side rendering as a fail-over mechanism. The Node.js client does this by default.</li>
+<li>It is a good approach for <strong>experimentation</strong>. People can work closely to the business to create widgets that are capable of both getting data from back-end services and deliver them via rich UIs. We very often had teams that were able to create and instrument tests created via OC in less then 24 hours.</li>
+<li>Semver and auto-generated documentation <strong>enforce clear contracts</strong>. Consumers can pick the version they want and component owners can keep clear what the contract is.</li>
+<li>A more componentised front-end leads to write <strong>more easily destroyable code</strong>. As opposite of writing highly maintainable code, this approach promotes small iterations on very small, easily readable and testable units of code. In this perspective, recreating something from scratch is perfectly acceptable and recommended, as there is almost zero cost for a developer to start a new project and the infrastructure in place makes maintainance and deprecation as easy as a couple of clicks.</li>
+</ul>
+
+
+<p>If you wish to try or know more about OpenComponents, visit <a href="https://github.com/opentable/oc">OC&rsquo;s github page</a> or have a look at <a href="https://github.com/matteofigus/oc-components-examples">some component examples</a>. If you would give us some feedback, asks us question, or contribute to the project get in touch via the <a href="https://gitter.im/opentable/oc">gitter chat</a> or via <a href="mailto:oc@opentable.com">e-mail</a>. We would love to hear your thoughts about this project.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1468,113 +1858,6 @@ Primary buttons are only used when there is an exceedingly distinct and clear ca
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/12/08/supporting-ie8-in-the-opentable-redesign/">Supporting IE8 in the OpenTable redesign</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-12-08T21:14:57+00:00" pubdate data-updated="true">Dec 8<span>th</span>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>We&rsquo;re really <a href="http://blog.opentable.com/2014/opentables-website-re-designed-re-architected-re-imagined/">proud to have released</a> last week our redesigned <a href="http://www.opentable.co.uk">OpenTable</a> site, the culmination of months of hard work from many talented people here in London and in San Francisco.</p>
-
-<p>However despite killing off our old site and its 2004 design, 2.8% of our visitors could have been crying into their keyboard as a far worse opentable.co.uk filled their screen.</p>
-
-<p>That version of OpenTable was our new responsive site viewed in Internet Explorer 8.</p>
-
-<p><img src="/images/posts/redesign-ie8.png" alt="Our redesign before we optimised for IE8" /></p>
-
-<p>The fundamental issue is that IE8 doesn&rsquo;t support media queries so the age-old browser would try to stretch our <em>mobile-first</em> responsive design as wide as it could go &ndash; not great across a 27&#8221; Thunderbolt.</p>
-
-<p>To solve the problem we first tried the <a href="https://github.com/scottjehl/Respond">Respond.js</a> polyfill but this didn&rsquo;t work as we&rsquo;d hoped.  The main issue appeared to be that because we serve our CSS and JS on a separate sub-domain we fell foul of the browser&rsquo;s cross-domain security.  We followed the Respond.js instructions to solve this but having no luck we looked for alternatives.</p>
-
-<h2>Legacssy</h2>
-
-<p>Further Googling lead us to <a href="https://github.com/robinpokorny/grunt-legacssy">Legacssy</a>. With this Grunt task we could create a IE8-only stylesheet and not have to serve extra JS and cross-domain proxy files to all visitors.</p>
-
-<p>Our existing process is to create our core CSS with an <code>app.scss</code> file and <a href="https://github.com/sindresorhus/grunt-sass">grunt-sass</a>.  Our additional step was to create an <code>app_ie8.scss</code> file, parse it with <code>grunt-sass</code> like before, but then also run it through Legacssy.</p>
-
-<h3>Our app.scss file</h3>
-
-<pre><code>@import 'normalize';
-
-@import 'components/global';
-
-@import
-  'components/icons',
-  'components/buttons',
-  'components/calendar',
-  'components/forms',
-  'components/pagination',
-  'components/star-rating';
-
-@import
-  'partials/footer',
-  'partials/header',
-  'partials/location-picker';
-</code></pre>
-
-<h3>And our app_ie8.scss file</h3>
-
-<pre><code>@import ‘app';
-@import 'browsers/_ie8.scss';
-</code></pre>
-
-<p>This process left us with a duplicate of the main site CSS that would be IE8 friendly &ndash; and as you can see we are also able to merge in an IE8 specific stylesheet with further overrides.  All we now needed to was serve this inside conditional comments after the main stylesheet, and CSS specificity would ensure our IE rules overwrite the media queries.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;!--[if lte IE 8]&gt;
-</span><span class='line'>&lt;link rel="stylesheet" href="//eu-srs.opentable.com/content/static/css/app_ie8.css" /&gt;
-</span><span class='line'>&lt;![endif]—&gt;</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Drawbacks</h2>
-
-<p>We are very happy with this solution as it generates the IE8 fixes as part of our automated build with no extra effort.  The only obvious negative is for the IE8 visitors who will effectively be downloading the same stylesheet twice, but if they are routinely browsing the web with IE8 this could be the least of their worries.</p>
-
-<h2>Conclusion</h2>
-
-<p>We&rsquo;re really proud of our new site; we&rsquo;re still ironing out some kinks but we hope that it&rsquo;s good enough for those of you who visit us with Internet Explorer 8 (probably through no fault of your own).</p>
-
-<p>For the record, here a couple of other issues we found which may help other intrepid developers with their IE debugging in 2015 and beyond.</p>
-
-<h3>Other IE8 issues</h3>
-
-<ul>
-<li>The other unsupported CSS values were rem units and RGBA colours.  After running Legacssy we used <a href="https://github.com/robwierzbowski/grunt-pixrem">pixrem.js</a> to replace rems with pixels and a custom task to replace RGBA values with their HEX equivalents.</li>
-<li>IE11&rsquo;s F12 developer tools don&rsquo;t render identically to native IE8. We used Microsoft&rsquo;s excellent <a href="http://www.modern.ie">modern.ie</a> site to download virtual machines with Windows 7 and IE8.</li>
-<li>We only tested on Windows 7 as this makes up 66% of our IE8 visitors. The remainder are on different operating systems which collectively only make up 0.95% of our total visitors; this is below our threshold for support.</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1590,6 +1873,10 @@ Primary buttons are only used when there is an exceedingly distinct and clear ca
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/04/27/opencomponents-microservices-in-the-front-end-world/">OpenComponents - microservices in the front-end world</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/01/07/react-testing/">Testing React Components</a>
       </li>
     
@@ -1603,10 +1890,6 @@ Primary buttons are only used when there is an exceedingly distinct and clear ca
     
       <li class="post">
         <a href="/blog/2015/02/16/hapi-js-and-sigterm/">Hapi.js and SIGTERM</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/02/09/dismantling-the-monolith-microsites-at-opentable/">Dismantling the monolith - Microsites at Opentable</a>
       </li>
     
   </ul>
